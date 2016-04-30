@@ -4,7 +4,8 @@ Tags: Login,History,Browser,IP
 Requires at least: 3.0.1
 Tested up to: 4.3
 
-By this plugin you can track user login history.
+A simple wordpress plugin for user login history.
+
 
 == Description ==
 By this plugin you can track user login history.
@@ -18,7 +19,6 @@ Features:<ul>
 </ul>
 
 
-
 == Installation ==
 <ul>
 <li>Go to the wordpress control panel and go to "Plugins" menu and press the button "Add New".</li>
@@ -30,6 +30,5 @@ Features:<ul>
 
 == Screenshots ==
 1. User List with login details
-
 2. Plugin Settings
 
