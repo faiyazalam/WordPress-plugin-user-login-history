@@ -27,11 +27,9 @@ Features:<ul>
 <li>Go to the Options page and configure the plugin.</li>
 </ul>
 
-<p>view this posts if you want more details about installing plugins: <a href="http://www.wpfasthelp.com/how-to-install-wordpress-plugins.htm">
-http://www.wpfasthelp.com/how-to-install-wordpress-plugins.htm</a></p>
 
 == Screenshots ==
-1. Login history to show all login processes in details
+1. User List with login details
 
-2. Login Security options
+2. Plugin Settings
 
