@@ -68,9 +68,9 @@
 					<td colspan="3"><input class="button-primary" type="submit" value="<?php _e('Save All Changes','fauserloginhistory');?>"></td>
 				</tr>
 				<tr>
-					<td colspan="3" align="center"><p><?php _e('<strong>Note:</strong> You can add <strong> [fa_contact_form] </strong> shortcode where you want to display contact form in pages.','fauserloginhistory');?>
-					<?php  _e(' <br/> OR  You can add <strong> &lt;&#63;php do_shortcode("[fa_contact_form]"); &#63;&gt;</strong> shortcode in any template.','fauserloginhistory');?>
-					<?php  _e(' <br/> OR  You can add <strong> &lt;&#63;php echo do_shortcode("[fa_contact_form]"); &#63;&gt;</strong> shortcode in any template.','fauserloginhistory');?></p></td>
+					<td colspan="3" align="center"><p><?php _e('<strong>Note:</strong> You can add <strong> [fa_userloginhistory] </strong> shortcode where you want to display contact form in pages.','fauserloginhistory');?>
+					<?php  _e(' <br/> OR  You can add <strong> &lt;&#63;php do_shortcode("[fa_userloginhistory]"); &#63;&gt;</strong> shortcode in any template.','fauserloginhistory');?>
+					<?php  _e(' <br/> OR  You can add <strong> &lt;&#63;php echo do_shortcode("[fa_userloginhistory]"); &#63;&gt;</strong> shortcode in any template.','fauserloginhistory');?></p></td>
 				</tr>
 				<tr>
 					<td colspan="3"></td>

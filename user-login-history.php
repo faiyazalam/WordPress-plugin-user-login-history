@@ -52,7 +52,7 @@ function fa_bpm_options_setup(){
     $plugins_array['url'] = 'https://wordpress.org/plugins/responsive-contact-form/';
     $plugins_array['slug'] = 'responsive-contact-form';
     $plugins_array['plugin_file'] = 'ai-responsive-contact-form.php';
-    $plugins_array['shortcode'] = 'fa_userloginhistory_sc';
+    $plugins_array['shortcode'] = 'fa_userloginhistory';
 
     do_action('bpmcontext_add_to_allowed_plugins', $plugins_array);
 
@@ -91,18 +91,15 @@ function fa_register_fields(){
 }
 
 /*Uninstall Hook Plugin */
-
-if( function_exists('register_uninstall_hook') ){
-	register_uninstall_hook(__FILE__,'fa_userloginhistory_uninstall');			
-}
+register_deactivation_hook(__FILE__,'fa_userloginhistory_uninstall');		
 
 function fa_userloginhistory_uninstall(){ 
 	delete_option('fa_is_show_country');
-
-
 	global $wpdb;	
-$fa_user_logins_table = $wpdb->prefix . "user_logins";  
-	$wpdb->query("DROP TABLE IF EXISTS ".$fa_user_logins_table);
+$fa_user_logins_table = $wpdb->prefix . "fa_user_logins";  
+$sql = "DROP TABLE IF EXISTS .$fa_user_logins_table";
+$wpdb->query("DROP TABLE IF EXISTS ".$fa_user_logins_table);
+       
 }
 
 add_shortcode('fa_userloginhistory', 'fa_shortcode');
@@ -149,7 +146,7 @@ function fa_load_admin_scripts($hook) {
 function fa_add_user_logins_table(){	
 	global $wpdb;
 	
-	$fa_user_logins_table = $wpdb->prefix . "fa_userloginhistory";			
+	$fa_user_logins_table = $wpdb->prefix . "fa_user_logins";			
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');	  
 	
 	$wpdb->query("DROP TABLE IF EXISTS ".$fa_user_logins_table);
@@ -162,11 +159,13 @@ function fa_add_user_logins_table(){
   `browser` varchar(100) NOT NULL,
   `operating_system` varchar(100) NOT NULL,
   `country_name` varchar(100) NOT NULL,
-  `country_code` varchar(20) NOT NULL			  					  
+  `country_code` varchar(20) NOT NULL	,		  					  
    PRIMARY KEY (`id`)
 	) ";
+        
+      
 
-    dbDelta($fa_user_logins_table);
+    dbDelta($fa_sql_contact);
 }
 
 function fa_userloginhistory_settings(){

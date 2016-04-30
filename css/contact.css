@@ -1,7 +1,7 @@
 .responsive-contact-form #captchaimg {
    box-shadow: none;
    float: left;
-   height: 32px;
+   height: 32px; 
 }
 .responsive-contact-form #refresh {
    border: 0 none;

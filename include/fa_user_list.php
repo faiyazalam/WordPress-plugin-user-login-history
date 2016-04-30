@@ -87,7 +87,7 @@ $userLogins = $paginations['rows'];
 						foreach ( $userLogins as $userLogin ) {	 ?>
 							<tr>
 								<td style="width:40px;text-align:center;"><?php echo $no; ?></td>
-                                                                <td nowrap><a href="?page=fa_user_lists&user_id=<?php echo $userLogin->user_id ?>"><?php echo get_userdata($userLogin->user_id)->user_nicename;  ?></a></td>
+                                                                <td nowrap><a href="user-edit.php?user_id=<?php echo $userLogin->user_id ?>"><?php echo get_userdata($userLogin->user_id)->user_nicename;  ?></a></td>
 								<td nowrap><?php echo $userLogin->time_login; ?></td> 
 								<td nowrap><?php echo $userLogin->time_logout; ?></td> 
                                                                 <td nowrap><?php echo date('H:i:s' ,strtotime($userLogin->time_logout) - strtotime($userLogin->time_login)); ?></td> 
