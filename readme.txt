@@ -4,6 +4,9 @@ Tags: Login,History,Browser,IP
 Requires at least: 3.0.1
 Tested up to: 4.3
 
+Access My All Projects:
+https://github.com/faiyazalam/
+
 A simple wordpress plugin for user login history.
 
 
@@ -12,16 +15,20 @@ By this plugin you can track user login history.
 Features:<ul>
 <li>Track User IP Address</li>
 <li>Track User Country</li>
+<li>Login history to show all login processes in details.</li>
+</ul>
+
+To Do:<ul>
 <li>Block user by IP Address</li>
-<li>You can set the number of failed logins to show Captcha or showing it always.</li>
-<li>Login Blocker option to block the login processe for a period of time after specific number of failed logins.</li>
+<li>Show Captcha after a number of failed logins.</li>
+<li>Login Blocker option to block the login processes for a period of time after specific number of failed logins.</li>
 <li>Login history to show all login processes in details.</li>
 </ul>
 
 
 == Installation ==
 <ul>
-<li>Go to the wordpress control panel and go to "Plugins" menu and press the button "Add New".</li>
+<li>Go to the Wordpress control panel and go to "Plugins" menu and press the button "Add New".</li>
 <li>Go to the tab "Upload" and choose the file "wp-user-login-history.zip", click the button "Upload" to get the file uploaded.</li>
 <li>Lockup the plugin, and click "Activate" to get it active.</li>
 <li>Go to the Options page and configure the plugin.</li>
