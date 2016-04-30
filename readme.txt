@@ -1,7 +1,6 @@
 === WP User Login History ===
-Contributors: fakhris
-Donate link: http://www.clogica.com/donations.htm
-Tags: Login,History,Browser
+Author: Faiyaz Alam
+Tags: Login,History,Browser,IP
 Requires at least: 3.0.1
 Tested up to: 4.3
 
