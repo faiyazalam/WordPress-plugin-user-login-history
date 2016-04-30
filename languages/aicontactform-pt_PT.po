@@ -1,0 +1,274 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Responsive Contact Form v1.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Wed Dec 18 2013 18:51:58 GMT+0530 (India Standard Time)\n"
+"PO-Revision-Date: 2015-10-14 22:12+0100\n"
+"Last-Translator: João Paulo <jp.jp@sapo.pt>\n"
+"Language-Team: João Paulo Antunes <jp.jp@sapo.pt [ www.mundoemalerta.com ]>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.8.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Textdomain-Support: yes\n"
+"Language: pt_PT\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+msgid ""
+" <br/> OR  You can add <strong> &lt;&#63;php "
+"do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> shortcode in any "
+"template."
+msgstr ""
+" <br/> Ou você pode adicionar o código<strong>&lt;&#63;php "
+"do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> a qualquer tema."
+
+msgid ""
+" <br/> OR  You can add <strong> &lt;&#63;php echo "
+"do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> shortcode in any "
+"template."
+msgstr ""
+" <br/> Ou você pode adicionar o código<strong>  &lt;&#63;php echo "
+"do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> a qualquer tema."
+
+msgid " has contacted us"
+msgstr "Entre em contacto"
+
+msgid "(Format: MM-DD-YYYY)"
+msgstr "(Formato: MM-DD-AAAA)"
+
+msgid "<strong>Alert :</strong> Invalid captcha code!"
+msgstr "<br><strong>Atenção:</strong> O código captcha está incorrecto!</br>"
+
+msgid "<strong>Field Name</strong>"
+msgstr "<strong>Nome do campo</ strong>"
+
+msgid "<strong>Note: </strong>Email field is mandatory."
+msgstr "<strong>Nota: </ strong>Campo de email é obrigatório."
+
+msgid ""
+"<strong>Note: </strong>Enable captcha sets by default it to required field."
+msgstr ""
+"<strong>Nota: </strong>Activar Captcha por padrão para campos obrigatórios "
+
+msgid "<strong>Note: </strong>Select to show checkbox on form."
+msgstr ""
+"<strong> Nota: </strong>Seleccionar para mostrar caixa de verificação no "
+"formulário."
+
+msgid ""
+"<strong>Note:</strong> Default Reply Message \" Thank you for contacting "
+"us...We will get back to you soon... \" will be used."
+msgstr ""
+"<strong>Nota: </strong>Mensagem de resposta padrão \" Obrigado pelo seu "
+"contacto. Responderemos em breve... \" será usada."
+
+msgid ""
+"<strong>Note:</strong> Default subject text \" August Infotech \" will be "
+"used."
+msgstr ""
+"<strong>Nota: </strong>Texto de Assunto padrão \" Contacto Blog \" será "
+"utilizado."
+
+msgid ""
+"<strong>Note:</strong> You can add <strong> [ai_contact_form] </strong> "
+"shortcode where you want to display contact form in pages."
+msgstr ""
+"<strong>Nota: </strong>Pode adicionar o código<strong> [ai_contact_form] </"
+"strong> na página onde quer que apareça o formulário de contacto."
+
+msgid ""
+"<strong>Note:</strong> You can add multiple email addresses seperated by "
+"comma, to send email to multiple users."
+msgstr ""
+"<strong>Nota: </strong>Para enviar email a vários utilizadores "
+"simultaneamente, separe os emails por vírgulas."
+
+msgid "<strong>Required / Not Required Fields</strong>"
+msgstr "<strong>Obrigatório / Os campos não são obrigatórios</strong>"
+
+msgid "<strong>Select to Show / Hide Fields on form</strong>"
+msgstr ""
+"<strong> Seleccionar para mostrar / Ocultar campos do formulário</strong>"
+
+msgid "<strong>Succeed :</strong>Your details are submitted successfully!"
+msgstr "<strong>Sucesso: </strong>A sua mensagem foi enviada com sucesso!"
+
+msgid "AI Contact Form"
+msgstr "Formulário de Contacto"
+
+msgid "Action"
+msgstr "Acção"
+
+msgid "August Infotech"
+msgstr "August Infotech"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Captcha"
+msgstr "Captcha"
+
+msgid "Captcha Code"
+msgstr "Código de segurança"
+
+msgid "Captcha is not case sensitive."
+msgstr "Código de segurança não distingue maiúsculas e minúsculas."
+
+msgid "Captcha:"
+msgstr "Captcha:"
+
+msgid "Click to submit the form"
+msgstr "Clique para enviar a mensagem"
+
+msgid "Comment"
+msgstr "Mensagem"
+
+msgid "Comment : "
+msgstr "Mensagem:"
+
+msgid "Comment:"
+msgstr "Mensagem:"
+
+msgid "Contact Date"
+msgstr "Data do Contacto"
+
+msgid "Copy of form submitted"
+msgstr "Enviada copia do formulário"
+
+msgid "Email Address"
+msgstr "Endereço de email"
+
+msgid "Email Address:"
+msgstr "Endereço de email:"
+
+msgid "Email ID"
+msgstr "Email"
+
+msgid "Email ID :"
+msgstr "Email:"
+
+msgid "Email:"
+msgstr "Email:"
+
+msgid "Export User Records"
+msgstr "Exportar registos de utilizadores"
+
+msgid "From Date"
+msgstr "Desde Data"
+
+msgid "Go"
+msgstr "Ir"
+
+msgid "List Of Users Contacted Site"
+msgstr "Lista de utilizadores do site contactados"
+
+msgid "List of User Records"
+msgstr "Lista de registos de utilizadores"
+
+msgid "Message"
+msgstr "Mensagem"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Name :"
+msgstr "Nome:"
+
+msgid "Name:"
+msgstr "Nome:"
+
+msgid "No User Records Found !!! "
+msgstr "Registo de utilizador não encontrado!"
+
+msgid "Phone"
+msgstr "Telefone"
+
+msgid "Phone :"
+msgstr "Telefone:"
+
+msgid "Phone:"
+msgstr "Telefone:"
+
+msgid ""
+"Please click on column's title to sort the data according to specific "
+"column !!!"
+msgstr ""
+"Por favor, no título da coluna para ordenar os dados de acordo com a coluna "
+"específica!"
+
+msgid "Refresh Captcha Code"
+msgstr "Novo Código Segurança"
+
+msgid "Reply : "
+msgstr "Responder:"
+
+msgid "Reply Message for User:"
+msgstr "Responder à mensagem do utilizador:"
+
+msgid "Responsive Contact Form Settings"
+msgstr "Ajustes do formulário de contacto"
+
+msgid "Save All Changes"
+msgstr "Guardar todas as alterações"
+
+msgid "Send me a copy"
+msgstr "Desejo receber uma cópia"
+
+msgid "Send me a copy:"
+msgstr "Desejo receber uma cópia:"
+
+msgid "Settings"
+msgstr "Configurações"
+
+msgid "Sr. No"
+msgstr "Nº"
+
+msgid "Subject"
+msgstr "Assunto"
+
+msgid "Subject :"
+msgstr "Assunto:"
+
+msgid "Subject Text:"
+msgstr "Assunto Texto:"
+
+msgid "Subject:"
+msgstr "Assunto:"
+
+msgid "Submit"
+msgstr "Enviar"
+
+msgid "Thank you for contacting us...We will get back to you soon..."
+msgstr "Obrigado pelo seu contacto. Responderemos em breve..."
+
+msgid "To Date"
+msgstr "Até Data"
+
+msgid "User Details"
+msgstr "Informação do utilizador"
+
+msgid "User ID"
+msgstr "ID de utilizador"
+
+msgid "User List"
+msgstr "Lista de utilizadores"
+
+msgid "User Record Deleted."
+msgstr "Registo de utilizador eliminado."
+
+msgid "Username"
+msgstr "Nome de utilizador"
+
+msgid "Website Url"
+msgstr "Website URL"
+
+msgid "Website Url :"
+msgstr "Website URL :"
+
+msgid "Website:"
+msgstr "Website:"

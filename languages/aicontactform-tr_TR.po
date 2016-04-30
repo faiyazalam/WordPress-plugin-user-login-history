@@ -1,0 +1,399 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Responsive Contact Form v1.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: Wed Dec 18 2013 18:51:58 GMT+0530 (India Standard Time)\n"
+"PO-Revision-Date: 2013-12-20 11:31:31+0000\n"
+"Last-Translator: admin <thomas@augustinfotechteam.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Loco - https://localise.biz/\n"
+"X-Poedit-Language: \n"
+"X-Poedit-Country: \n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Textdomain-Support: yes"
+
+#: ai-responsive-contact-form.php:179
+#@ aicontactform
+msgid "AI Contact Form"
+msgstr "AI İletişim Formu"
+
+#: ai-responsive-contact-form.php:181
+#@ aicontactform
+msgid "User List"
+msgstr "kullanıcı Listesi"
+
+#: ai-responsive-contact-form.php:336
+#@ aicontactform
+msgid "August Infotech"
+msgstr "Ağustos Infotech"
+
+#: ai-responsive-contact-form.php:348
+#@ aicontactform
+msgid "Thank you for contacting us...We will get back to you soon..."
+msgstr "Bizimle bağlantı kurduğunuz için teşekkür ederiz ... Biz yakında size geri alacak ..."
+
+#: ai-responsive-contact-form.php:376
+#@ aicontactform
+msgid "Reply : "
+msgstr "Cevap :"
+
+#: ai-responsive-contact-form.php:394
+#@ aicontactform
+msgid "User Details"
+msgstr "kullanıcı Bilgileri"
+
+#: ai-responsive-contact-form.php:400
+#@ aicontactform
+msgid "Name :"
+msgstr "isim :"
+
+#: ai-responsive-contact-form.php:406
+#@ aicontactform
+msgid "Email ID :"
+msgstr "E-posta Adresi :"
+
+#: ai-responsive-contact-form.php:412
+#@ aicontactform
+msgid "Phone :"
+msgstr "Telefon :"
+
+#: ai-responsive-contact-form.php:420
+#@ aicontactform
+msgid "Website Url :"
+msgstr "Website Url :"
+
+#: ai-responsive-contact-form.php:428
+#@ aicontactform
+msgid "Subject :"
+msgstr "konu :"
+
+#: ai-responsive-contact-form.php:436
+#@ aicontactform
+msgid "Comment : "
+msgstr "Yorum:"
+
+#: ai-responsive-contact-form.php:444
+#@ aicontactform
+msgid " has contacted us"
+msgstr "bize ulaşın etti"
+
+#: ai-responsive-contact-form.php:459
+#@ aicontactform
+msgid "Copy of form submitted"
+msgstr "Sunulan formun fotokopisi"
+
+#: include/ai-contact-form-template.php:89
+#: include/ai-contact-form-template.php:95
+#@ aicontactform
+msgid "Name"
+msgstr "isim"
+
+#: include/ai-contact-form-template.php:102
+#: include/ai-contact-form-template.php:104
+#@ aicontactform
+msgid "Email ID"
+msgstr "E-posta Adresi"
+
+#: include/ai-contact-form-template.php:110
+#: include/ai-contact-form-template.php:113
+#@ aicontactform
+msgid "Phone"
+msgstr "telefon"
+
+#: include/ai-contact-form-template.php:122
+#: include/ai-contact-form-template.php:125
+#@ aicontactform
+msgid "Website Url"
+msgstr "Website Url"
+
+#: include/ai-contact-form-template.php:133
+#: include/ai-contact-form-template.php:136
+#@ aicontactform
+msgid "Subject"
+msgstr "konu"
+
+#: include/ai-contact-form-template.php:144
+#: include/ai-contact-form-template.php:147
+#@ aicontactform
+msgid "Comment"
+msgstr "yorum"
+
+#: include/ai-contact-form-template.php:157
+#: include/ai-contact-form-template.php:160
+#@ aicontactform
+msgid "Captcha"
+msgstr "Captcha"
+
+#: include/ai-contact-form-template.php:166
+#@ aicontactform
+msgid "Captcha is not case sensitive."
+msgstr "Captcha küçük harfe duyarlı değildir."
+
+#: include/ai-contact-form-template.php:176
+#@ aicontactform
+msgid "Send me a copy"
+msgstr "Bir kopyasını bana gönderin"
+
+#: include/ai-contact-form-template.php:183
+#@ aicontactform
+msgid "Submit"
+msgstr "sunmak"
+
+#: include/ai_settings.php:19
+#@ aicontactform
+msgid "Responsive Contact Form Settings"
+msgstr "Duyarlı İletişim Formu Ayarları"
+
+#: include/ai_settings.php:23
+#@ aicontactform
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: include/ai_settings.php:41
+#@ aicontactform
+msgid "<strong>Field Name</strong>"
+msgstr "<strong>alan Adı</strong>"
+
+#: include/ai_settings.php:43
+#@ aicontactform
+msgid "<strong>Select to Show / Hide Fields on form</strong>"
+msgstr "<strong>Göster seçin / Form alanları gizle</strong>"
+
+#: include/ai_settings.php:45
+#@ aicontactform
+msgid "<strong>Required / Not Required Fields</strong>"
+msgstr "<strong>gereken / Gerekmez Alanlar </strong>"
+
+#: include/ai_settings.php:51
+#@ aicontactform
+msgid "Name:"
+msgstr "isim:"
+
+#: include/ai_settings.php:69
+#@ aicontactform
+msgid "Phone:"
+msgstr "Telefon:"
+
+#: include/ai_settings.php:87
+#@ aicontactform
+msgid "Website:"
+msgstr "Web Sitesi:"
+
+#: include/ai_settings.php:105
+#@ aicontactform
+msgid "Subject:"
+msgstr "Konu:"
+
+#: include/ai_settings.php:123
+#@ aicontactform
+msgid "Comment:"
+msgstr "Yorum:"
+
+#: include/ai_settings.php:141
+#@ aicontactform
+msgid "Captcha:"
+msgstr "Captcha:"
+
+#: include/ai_settings.php:149
+#@ aicontactform
+msgid "<strong>Note: </strong>Enable captcha sets by default it to required field."
+msgstr "<strong>not: </strong>Gerekli alanına varsayılan onun tarafından Captcha setleri etkinleştirin."
+
+#: include/ai_settings.php:157
+#@ aicontactform
+msgid "Email:"
+msgstr "E-posta:"
+
+#: include/ai_settings.php:165
+#@ aicontactform
+msgid "<strong>Note: </strong>Email field is mandatory."
+msgstr "<strong>Not: </strong>E-posta alan zorunludur."
+
+#: include/ai_settings.php:170
+#@ aicontactform
+msgid "Send me a copy:"
+msgstr "Bir kopyasını bana gönderin:"
+
+#: include/ai_settings.php:177
+#@ aicontactform
+msgid "<strong>Note: </strong>Select to show checkbox on form."
+msgstr "<strong>Not: </strong> Formdaki onay kutusunu göstermek için seçin."
+
+#: include/ai_settings.php:203
+#@ aicontactform
+msgid "Email Address:"
+msgstr "E-posta Adresi:"
+
+#: include/ai_settings.php:213
+#@ aicontactform
+msgid "<strong>Note:</strong> You can add multiple email addresses seperated by comma, to send email to multiple users."
+msgstr "<strong>Not:</strong> Birden kullanıcılara e-posta göndermek için, virgül ile ayrılmış birden fazla e-posta adresleri ekleyebilirsiniz."
+
+#: include/ai_settings.php:221
+#@ aicontactform
+msgid "Subject Text:"
+msgstr "Konu Metin:"
+
+#: include/ai_settings.php:231
+#@ aicontactform
+msgid "<strong>Note:</strong> Default subject text \" August Infotech \" will be used."
+msgstr "<strong>Not:</strong> Varsayılan konu metni \" Ağustos Infotech \" kullanılacaktır."
+
+#: include/ai_settings.php:239
+#@ aicontactform
+msgid "Reply Message for User:"
+msgstr "Kullanıcı için Mesaj Cevap:"
+
+#: include/ai_settings.php:251
+#@ aicontactform
+msgid "<strong>Note:</strong> Default Reply Message \" Thank you for contacting us...We will get back to you soon... \" will be used."
+msgstr "<strong>Not:</strong> Standart Cevap Mesaj \" Bizimle bağlantı kurduğunuz için teşekkür ederiz ... Biz yakında size geri alacak ... \" kullanılacaktır."
+
+#: include/ai_settings.php:267
+#@ aicontactform
+msgid "Save All Changes"
+msgstr "Tüm Değişiklikleri Kaydet"
+
+#: include/ai_settings.php:277
+#@ aicontactform
+msgid "<strong>Note:</strong> You can add <strong> [ai_contact_form] </strong> shortcode where you want to display contact form in pages."
+msgstr "<strong>Not:</strong> Ekleyebilir <strong> [ai_contact_form] </strong> Eğer sayfalarında iletişim formunu görüntülemek istediğiniz kusur."
+
+#: include/ai_settings.php:279
+#@ aicontactform
+msgid " <br/> OR  You can add <strong> &lt;&#63;php do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> shortcode in any template."
+msgstr " <br/> OR ekleyebilir<strong> &lt;&#63;php do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> herhangi bir şablon kusur."
+
+#: include/ai_settings.php:281
+#@ aicontactform
+msgid " <br/> OR  You can add <strong> &lt;&#63;php echo do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> shortcode in any template."
+msgstr " <br/> OR ekleyebilir <strong> &lt;&#63;php echo do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> herhangi bir şablon kusur."
+
+#: include/ai_user_list.php:10
+#@ aicontactform
+msgid "User Record Deleted."
+msgstr "Kullanıcı Kaydı Silindi."
+
+#: include/ai_user_list.php:15
+#@ aicontactform
+msgid "List of User Records"
+msgstr "Kullanıcı Kayıt Listesi"
+
+#: include/ai_user_list.php:16
+#@ aicontactform
+msgid "Export User Records"
+msgstr "İhracat Kullanıcı Kayıtları"
+
+#: include/ai_user_list.php:22
+#@ aicontactform
+msgid "From Date"
+msgstr "Tarih"
+
+#: include/ai_user_list.php:22
+#: include/ai_user_list.php:25
+#@ aicontactform
+msgid "(Format: MM-DD-YYYY)"
+msgstr "(Biçim: AA-GG-YYYY)"
+
+#: include/ai_user_list.php:25
+#@ aicontactform
+msgid "To Date"
+msgstr "Tarih"
+
+#: include/ai_user_list.php:28
+#@ aicontactform
+msgid "Go"
+msgstr "gitmek"
+
+#: include/ai_user_list.php:29
+#@ aicontactform
+msgid "Cancel"
+msgstr "iptal"
+
+#: include/ai_user_list.php:36
+#@ aicontactform
+msgid "Please click on column's title to sort the data according to specific column !!!"
+msgstr "Belirli bir sütuna göre verileri sıralamak için sütunun başlığını tıklayınız!"
+
+#: include/ai_user_list.php:39
+#@ aicontactform
+msgid "Sr. No"
+msgstr "Sr yok"
+
+#: include/ai_user_list.php:40
+#: include/userlist_export.php:20
+#@ aicontactform
+msgid "Username"
+msgstr "adı"
+
+#: include/ai_user_list.php:41
+#: include/userlist_export.php:21
+#@ aicontactform
+msgid "Email Address"
+msgstr "E-posta Adresi"
+
+#: include/ai_user_list.php:42
+#: include/userlist_export.php:22
+#@ aicontactform
+msgid "Message"
+msgstr "mesaj"
+
+#: include/ai_user_list.php:43
+#: include/userlist_export.php:23
+#@ aicontactform
+msgid "Contact Date"
+msgstr "İletişim tarihi"
+
+#: include/ai_user_list.php:44
+#@ aicontactform
+msgid "Action"
+msgstr "eylem"
+
+#: include/ai_user_list.php:98
+#@ aicontactform
+msgid "No User Records Found !!! "
+msgstr "Hayır Kullanıcı Kayıt Bulunamadı!"
+
+#: include/userlist_export.php:16
+#@ aicontactform
+msgid "List Of Users Contacted Site"
+msgstr "Kullanıcılar Görüşülen Sitesi Listesi"
+
+#: include/userlist_export.php:19
+#@ aicontactform
+msgid "User ID"
+msgstr "kullanıcı Kimliği"
+
+#: include/ai-contact-form-template.php:161
+#@ aicontactform
+msgid "Refresh Captcha Code"
+msgstr "Güvenlik Kodu Yenile"
+
+#: include/ai-contact-form-template.php:164
+#@ aicontactform
+msgid "Captcha Code"
+msgstr "Captcha Kod"
+
+#: include/ai-contact-form-template.php:182
+#@ aicontactform
+msgid "Click to submit the form"
+msgstr "Formu göndermek için tıklayın"
+
+#: include/ai-contact-form-template.php:85
+#@ aicontactform
+msgid "<strong>Succeed :</strong>Your details are submitted successfully!"
+msgstr "<strong>başarılı olmak:</strong>Senin detayları başarıyla teslim edilir!"
+
+#: include/ai-contact-form-template.php:167
+#@ aicontactform
+msgid "<strong>Alert :</strong> Invalid captcha code!"
+msgstr "<strong>uyanık:</strong> Geçersiz CAPTCHA kodu!"
+

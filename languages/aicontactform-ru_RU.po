@@ -1,0 +1,429 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Responsive Contact Form v1.8\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-05-19 00:59:24+0000\n"
+"Last-Translator: admin <info@1245.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%100/10==1 ? 2 : n%10==1 ? 0 : (n+9)%10>3 ? 2 : 1;\n"
+"X-Generator: CSL v1.x\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-Bookmarks: \n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Textdomain-Support: yes"
+
+#: ai-responsive-contact-form.php:193
+#@ aicontactform
+msgid "AI Contact Form"
+msgstr "Форма обратной связи AI"
+
+#: ai-responsive-contact-form.php:352
+#@ aicontactform
+msgid "August Infotech"
+msgstr "Письмо с Вашего сайта"
+
+#: ai-responsive-contact-form.php:364
+#@ aicontactform
+msgid "Thank you for contacting us...We will get back to you soon..."
+msgstr "Благодарим Вас за обращение к нам. Мы свяжемся с Вами в ближайшее время!"
+
+#: ai-responsive-contact-form.php:392
+#@ aicontactform
+msgid "Reply : "
+msgstr "Ответ: "
+
+#: ai-responsive-contact-form.php:411
+#@ aicontactform
+msgid "User Details"
+msgstr "Информация о пользователе:"
+
+#: ai-responsive-contact-form.php:417
+#@ aicontactform
+msgid "Name :"
+msgstr "Имя:"
+
+#: ai-responsive-contact-form.php:423
+#@ aicontactform
+msgid "Email ID :"
+msgstr "E-mail:"
+
+#: ai-responsive-contact-form.php:429
+#@ aicontactform
+msgid "Phone :"
+msgstr "Телефон:"
+
+#: ai-responsive-contact-form.php:437
+#@ aicontactform
+msgid "Website Url :"
+msgstr "Сайт:"
+
+#: ai-responsive-contact-form.php:445
+#@ aicontactform
+msgid "Subject :"
+msgstr "Тема:"
+
+#: ai-responsive-contact-form.php:453
+#@ aicontactform
+msgid "Comment : "
+msgstr "Сообщение: "
+
+#: ai-responsive-contact-form.php:461
+#@ aicontactform
+msgid " has contacted us"
+msgstr " связался с Вами"
+
+#: ai-responsive-contact-form.php:477
+#@ aicontactform
+msgid "Copy of form submitted"
+msgstr "Копия формы обратной связи"
+
+#: include/ai-contact-form-template.php:208
+#@ aicontactform
+msgid "<strong>Succeed :</strong>Your details are submitted successfully!"
+msgstr "<strong>Спасибо! </strong>Ваше сообщение успешно отправлено!"
+
+#: include/ai-contact-form-template.php:107
+#: include/ai-contact-form-template.php:113
+#@ aicontactform
+msgid "Name"
+msgstr "Имя"
+
+#: include/ai-contact-form-template.php:120
+#: include/ai-contact-form-template.php:122
+#@ aicontactform
+msgid "Email ID"
+msgstr "E-mail"
+
+#: include/ai-contact-form-template.php:128
+#: include/ai-contact-form-template.php:131
+#@ aicontactform
+msgid "Phone"
+msgstr "Телефон"
+
+#: include/ai-contact-form-template.php:140
+#: include/ai-contact-form-template.php:143
+#@ aicontactform
+msgid "Website Url"
+msgstr "Сайт"
+
+#: include/ai-contact-form-template.php:151
+#: include/ai-contact-form-template.php:154
+#@ aicontactform
+msgid "Subject"
+msgstr "Тема"
+
+#: include/ai-contact-form-template.php:162
+#: include/ai-contact-form-template.php:165
+#@ aicontactform
+msgid "Comment"
+msgstr "Сообщение"
+
+#: include/ai-contact-form-template.php:175
+#: include/ai-contact-form-template.php:178
+#@ aicontactform
+msgid "Captcha"
+msgstr "Антиспам-картинка"
+
+#: include/ai-contact-form-template.php:179
+#@ aicontactform
+msgid "Refresh Captcha Code"
+msgstr "Обновить капчу"
+
+#: include/ai-contact-form-template.php:182
+#@ aicontactform
+msgid "Captcha Code"
+msgstr "Капча"
+
+#: include/ai-contact-form-template.php:184
+#@ aicontactform
+msgid "Captcha is not case sensitive."
+msgstr "не чувствительна к регистру"
+
+#: include/ai-contact-form-template.php:185
+#@ aicontactform
+msgid "<strong>Alert :</strong> Invalid captcha code!"
+msgstr "<strong>Внимание!</strong> Неверный код с картинки!"
+
+#: include/ai-contact-form-template.php:194
+#@ aicontactform
+msgid "Send me a copy"
+msgstr "Отправить мне копию"
+
+#: include/ai-contact-form-template.php:200
+#@ aicontactform
+msgid "Click to submit the form"
+msgstr "Нажмите, чтобы отправить форму"
+
+#: include/ai-contact-form-template.php:201
+#@ aicontactform
+msgid "Submit"
+msgstr "Отправить"
+
+#: include/ai_settings.php:11
+#@ aicontactform
+msgid "Responsive Contact Form Settings"
+msgstr "Настройки формы обратной связи AI"
+
+#: include/ai_settings.php:15
+#@ aicontactform
+msgid "Settings"
+msgstr "Настройки"
+
+#: include/ai_settings.php:25
+#@ aicontactform
+msgid "<strong>Field Name</strong>"
+msgstr "<strong>Поля формы</strong>"
+
+#: include/ai_settings.php:26
+#@ aicontactform
+msgid "<strong>Select to Show / Hide Fields on form</strong>"
+msgstr "<strong>Показывать?</strong>"
+
+#: include/ai_settings.php:27
+#@ aicontactform
+msgid "<strong>Required / Not Required Fields</strong>"
+msgstr "<strong>Обязательное поле?</strong>"
+
+#: include/ai_settings.php:30
+#@ aicontactform
+msgid "Name:"
+msgstr "Имя:"
+
+#: include/ai_settings.php:35
+#@ aicontactform
+msgid "Phone:"
+msgstr "Телефон:"
+
+#: include/ai_settings.php:40
+#@ aicontactform
+msgid "Website:"
+msgstr "Сайт:"
+
+#: include/ai_settings.php:45
+#@ aicontactform
+msgid "Subject:"
+msgstr "Тема:"
+
+#: include/ai_settings.php:50
+#@ aicontactform
+msgid "Comment:"
+msgstr "Сообщение:"
+
+#: include/ai_settings.php:55
+#@ aicontactform
+msgid "Captcha:"
+msgstr "Антиспам-картинка:"
+
+#: include/ai_settings.php:57
+#@ aicontactform
+msgid "<strong>Note: </strong>Enable captcha sets by default it to required field."
+msgstr "<strong>Заметка: </strong>Если антиспам-картинка (капча) включена, то она будет обязательным для заполнения полем."
+
+#: include/ai_settings.php:60
+#@ aicontactform
+msgid "Email:"
+msgstr "E-mail:"
+
+#: include/ai_settings.php:62
+#@ aicontactform
+msgid "<strong>Note: </strong>Email field is mandatory."
+msgstr "<strong>Заметка: </strong>Поле E-mail является обязательным."
+
+#: include/ai_settings.php:65
+#@ aicontactform
+msgid "Send me a copy:"
+msgstr "Отправить мне копию:"
+
+#: include/ai_settings.php:67
+#@ aicontactform
+msgid "<strong>Note: </strong>Select to show checkbox on form."
+msgstr "<strong>Заметка: </strong>Поставьте галочку, чтобы отображать это поле в форме."
+
+#: include/ai_settings.php:91
+#@ aicontactform
+msgid "Email Address:"
+msgstr "Ваш E-mail для получения писем:"
+
+#: include/ai_settings.php:94
+#@ aicontactform
+msgid "<strong>Note:</strong> You can add multiple email addresses seperated by comma, to send email to multiple users."
+msgstr "<strong>Заметка:</strong> Вы можете добавить несколько адресов (через запятую), чтобы получать письма сразу на несколько почтовых ящиков."
+
+#: include/ai_settings.php:98
+#@ aicontactform
+msgid "Subject Text:"
+msgstr "Тема автоответа:"
+
+#: include/ai_settings.php:101
+#@ aicontactform
+msgid "<strong>Note:</strong> Default subject text \" August Infotech \" will be used."
+msgstr "<strong>Заметка:</strong> По умолчанию будет использоваться тема \"Письмо с Вашего сайта\"."
+
+#: include/ai_settings.php:105
+#@ aicontactform
+msgid "Reply Message for User:"
+msgstr "Текст автоответа:"
+
+#: include/ai_settings.php:109
+#@ aicontactform
+msgid "<strong>Note:</strong> Default Reply Message \" Thank you for contacting us...We will get back to you soon... \" will be used."
+msgstr "<strong>Заметка:</strong> Текст ответа по умолчанию: \"Благодарим Вас за обращение к нам. Мы свяжемся с Вами в ближайшее время!\"."
+
+#: include/ai_settings.php:113
+#@ aicontactform
+msgid "Custom Css:"
+msgstr "Пользовательский CSS:"
+
+#: include/ai_settings.php:116
+#@ aicontactform
+msgid "<strong>Note:</strong> this CSS overrite to our contact plugin CSS And Also please use <strong>!important</strong> with your CSS property."
+msgstr "<strong>Заметка:</strong> этот CSS будет использован вместо стандартного CSS плагина. Используйте <strong>!important</strong> в Ваших CSS свойствах."
+
+#: include/ai_settings.php:122
+#@ aicontactform
+msgid "Save All Changes"
+msgstr "Сохранить все изменения"
+
+#: include/ai_settings.php:125
+#@ aicontactform
+msgid "<strong>Note:</strong> You can add <strong> [ai_contact_form] </strong> shortcode where you want to display contact form in pages."
+msgstr "<strong>Заметка:</strong> Добавьте шорткод <strong> [ai_contact_form] </strong> в то место <a href=\"/wp-admin/edit.php?post_type=page\" target=\"_blank/\\\">страницы</a> или <a href=\"/wp-admin/edit.php\" target=\"_blank/\\\">записи</a>, куда Вы хотите вставить форму обратной связи."
+
+#: include/ai_settings.php:126
+#@ aicontactform
+msgid " <br/> OR  You can add <strong> &lt;&#63;php do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> shortcode in any template."
+msgstr " <br/> ИЛИ  Вы можете вставить шорткод <strong> &lt;&#63;php do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> в любой шаблон."
+
+#: include/ai_settings.php:127
+#@ aicontactform
+msgid " <br/> OR  You can add <strong> &lt;&#63;php echo do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> shortcode in any template."
+msgstr " <br/> ИЛИ  Вы можете вставить другой шорткод <strong> &lt;&#63;php echo do_shortcode(\"[ai_contact_form]\"); &#63;&gt;</strong> в любой шаблон."
+
+#: include/ai_user_list.php:10
+#@ aicontactform
+msgid "User Record Deleted."
+msgstr "Информация о письме удалена."
+
+#: include/ai_user_list.php:15
+#@ aicontactform
+msgid "List of User Records"
+msgstr "Список писем"
+
+#: include/ai_user_list.php:16
+#@ aicontactform
+msgid "Export User Records"
+msgstr "Экспортировать письма"
+
+#: include/ai_user_list.php:22
+#@ aicontactform
+msgid "From Date"
+msgstr "С"
+
+#: include/ai_user_list.php:22
+#: include/ai_user_list.php:25
+#@ aicontactform
+msgid "(Format: MM-DD-YYYY)"
+msgstr "(Формат: ММ-ДД-ГГГГ)"
+
+#: include/ai_user_list.php:25
+#@ aicontactform
+msgid "To Date"
+msgstr "По"
+
+#: include/ai_user_list.php:28
+#@ aicontactform
+msgid "Go"
+msgstr "Найти"
+
+#: include/ai_user_list.php:29
+#@ aicontactform
+msgid "Cancel"
+msgstr "Отменить"
+
+#: include/ai_user_list.php:36
+#@ aicontactform
+msgid "Please click on column's title to sort the data according to specific column !!!"
+msgstr "Нажимайте на названия столбцов, чтобы сортировать данные по значениям конкретной колонки."
+
+#: include/ai_user_list.php:39
+#@ aicontactform
+msgid "Sr. No"
+msgstr "№"
+
+#: include/ai_user_list.php:40
+#: include/userlist_export.php:19
+#@ aicontactform
+msgid "Username"
+msgstr "Имя"
+
+#: include/ai_user_list.php:41
+#: include/userlist_export.php:20
+#@ aicontactform
+msgid "Email Address"
+msgstr "E-mail"
+
+#: include/ai_user_list.php:42
+#: include/userlist_export.php:21
+#@ aicontactform
+msgid "Message"
+msgstr "Сообщение"
+
+#: include/ai_user_list.php:43
+#: include/userlist_export.php:22
+#@ aicontactform
+msgid "Contact Date"
+msgstr "Дата"
+
+#: include/ai_user_list.php:44
+#@ aicontactform
+msgid "Action"
+msgstr "Действие"
+
+#: include/ai_user_list.php:98
+#@ aicontactform
+msgid "No User Records Found !!! "
+msgstr "Писем пока нет."
+
+#: include/userlist_export.php:15
+#@ aicontactform
+msgid "List Of Users Contacted Site"
+msgstr "Список писем, отправленных через форму обратной связи"
+
+#: include/userlist_export.php:18
+#@ aicontactform
+msgid "User ID"
+msgstr "ID пользователя"
+
+#: ai-responsive-contact-form.php:459
+#@ aicontactform
+msgid "User"
+msgstr "Посетитель сайта"
+
+#: include/ai_settings.php:70
+#@ aicontactform
+msgid "Remove user list:"
+msgstr "Не вести список писем:"
+
+#: include/ai_settings.php:72
+#@ aicontactform
+msgid "<strong>Note: </strong>Select checkbox to remove user list which connected to your website."
+msgstr "<strong>Заметка: </strong>Поставьте галочку, чтобы не записывать информацию об отправленных Вам письмах."
+
+#: include/ai_settings.php:75
+#@ aicontactform
+msgid "Success Message Display:"
+msgstr "Показывать сообщение об успешной отправке снизу:"
+
+#: include/ai_settings.php:77
+#@ aicontactform
+msgid "<strong>Note: </strong>Select checkbox to show the message displayed after successful submission below."
+msgstr "<strong>Заметка: </strong>Поставьте галочку, чтобы сообщение об успешной отправке письма отображалось под формой. По умолчанию оно отображается над формой."
+
