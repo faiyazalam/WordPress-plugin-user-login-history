@@ -11,6 +11,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A simple wordpress plugin for user login history.
 
+Note: This plugin is underdevelopment.
+
 
 == Description ==
 By this plugin you can track user login history.
