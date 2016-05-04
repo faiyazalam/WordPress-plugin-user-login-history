@@ -1,8 +1,9 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 
 	global $wpdb;
-	$table_name = $wpdb->prefix . "user_logins";
+	$table_name = $wpdb->prefix . "fa_user_logins";
 	$info=$_GET["info"];
 	if(!empty($info)){
 		if($info=="del")
@@ -41,11 +42,11 @@ $userLogins = $paginations['rows'];
 
 ?>
 <div class="wrap"> 
-	<img src="<?php echo plugins_url();?>/user-login-history/images/augustinfotech.jpg" class="icon32" />
+	<img src="<?php echo plugins_url('images/fa.jpg', __FILE__);?>" class="icon32" />
 	<h2><?php _e('User Login Hisory Records','fauserloginhistory');?>
 		<a class="button add-new-h2 dateshow" href="#"><?php _e('Export User Records','fauserloginhistory');?></a>
 	</h2>
-	<form method="post" name="exportdate" id="exportdateform" action="<?php echo plugins_url();?>/user-login-history/include/userlist_export.php" >	
+	<form method="post" name="exportdate" id="exportdateform" action="<?php echo plugins_url('include/userlist_export.php', __FILE__);?>" >	
          <div id="dateexport" style="display:none;width:100%;margin-bottom:10px;">
              <div class="form-wrap">
              <div style="float:left;">
@@ -98,7 +99,7 @@ $userLogins = $paginations['rows'];
 								<td nowrap><?php //echo $userLogin->country_code; ?></td> -->
 								<td style="width:40px;text-align:center;">								
 							<a onclick="javascript:return confirm('Are you sure, want to delete record of <?php echo $username; ?>?')" href="admin.php?page=fa_user_lists&info=del&did=<?php echo $userLogin->id;?>">
-							<img src="<?php echo plugins_url(); ?>/user-login-history/images/delete.png" title="Delete" alt="Delete" style="height:18px;" />
+							<img src="<?php echo plugins_url('images/delete.png',__FILE__); ?>" title="Delete" alt="Delete" style="height:18px;" />
 							</a>
 								</td>                
 							</tr>

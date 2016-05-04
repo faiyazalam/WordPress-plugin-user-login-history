@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $parse_uri = explode( 'wp-content', $_SERVER['SCRIPT_FILENAME'] );
 require_once( $parse_uri[0] . 'wp-load.php' );
 global $wpdb;
@@ -14,14 +15,14 @@ $act=$_REQUEST["act"];
 	$rs =' 
 		<table border="1" cellspacing="1" cellpadding="0">
 			<tr>
-				<th align="center" valign="middle" colspan="4">'.__('List Of Users Contacted Site','aicontactform').'</th>				
+				<th align="center" valign="middle" colspan="4">'.__('List Of Users Contacted Site','fauserloginhistory').'</th>				
 			</tr>
 			<tr>
-				<th align="left" valign="middle">'.__('User ID','aicontactform').'</th>
-				<th align="left" valign="middle">'.__('Username','aicontactform').'</th>
-				<th align="left" valign="middle">'.__('Email Address','aicontactform').'</th>
-				<th align="left" valign="middle">'.__('Message','aicontactform').'</th>
-				<th align="left" valign="middle">'.__('Contact Date','aicontactform').'</th>
+				<th align="left" valign="middle">'.__('User ID','fauserloginhistory').'</th>
+				<th align="left" valign="middle">'.__('Username','fauserloginhistory').'</th>
+				<th align="left" valign="middle">'.__('Email Address','fauserloginhistory').'</th>
+				<th align="left" valign="middle">'.__('Message','fauserloginhistory').'</th>
+				<th align="left" valign="middle">'.__('Contact Date','fauserloginhistory').'</th>
 			</tr>';
 			foreach($export_result as $row)
 			{ 								  

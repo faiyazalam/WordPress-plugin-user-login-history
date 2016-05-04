@@ -1,7 +1,9 @@
-
+<?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+?>
 
 <div class="wrap"> 
-	<img src="<?php echo plugins_url();?>/user-login-history/images/augustinfotech.jpg" class="icon32" />
+	<img src="<?php echo plugins_url('images/fa.jpg', __FILE__);?>" class="icon32" />
 	<h2><?php _e('FA User Login History Settings','fauserloginhistory'); ?></h2>
 	<form method="post" action="options.php" name="FAGolbalSiteOptions">
 		<?php settings_fields( 'fa-fields' ); ?>

@@ -25,9 +25,7 @@ if ( 'plugins.php' === $pagenow )
 }
 function update_notification_message( $plugin_data, $r )
 {
-    $data = file_get_contents( 'http://plugins.trac.wordpress.org/browser/responsive-contact-form/trunk/readme.txt?format=txt' );
-	$upgradetext = stristr( $data, '== Upgrade Notice ==' );	
-	$upgradenotice = stristr( $upgradetext, '*' );	
+  $upgradenotice = "";
 	$output = "<div style='color:#EEC2C1;font-weight: normal;background: #C92727;padding: 10px;border: 1px solid #eed3d7;border-radius: 4px;'><strong style='color:rgb(253, 230, 61)'>Update Notice : </strong> ".$upgradenotice."</div>";
 
     return print $output;
@@ -49,9 +47,9 @@ add_action( 'admin_init', 'fa_bpm_options_setup' );
 function fa_bpm_options_setup(){
 
     $plugins_array['name'] = __('User Login History', 'fauserloginhistory');
-    $plugins_array['url'] = 'https://wordpress.org/plugins/responsive-contact-form/';
-    $plugins_array['slug'] = 'responsive-contact-form';
-    $plugins_array['plugin_file'] = 'ai-responsive-contact-form.php';
+    $plugins_array['url'] = 'https://wordpress.org/plugins/user-login-history/';
+    $plugins_array['slug'] = 'user-login-history';
+    $plugins_array['plugin_file'] = 'fa-user-login-history.php';
     $plugins_array['shortcode'] = 'fa_userloginhistory';
 
     do_action('bpmcontext_add_to_allowed_plugins', $plugins_array);
@@ -114,12 +112,9 @@ add_action('admin_menu','fa_userloginhistory_setting');
 * Setup Admin menu item
 */
 function fa_userloginhistory_setting(){
-	add_menu_page(__('FA User Login History','fauserloginhistory'),__('FA User Login History','fauserloginhistory'),'manage_options','fa_userloginhistory','fa_userloginhistory_settings','','79.5');
-
-
+	   add_menu_page(__('FA User Login History','fauserloginhistory'),__('FA User Login History','fauserloginhistory'),'manage_options','fa_userloginhistory','fa_userloginhistory_settings','','79.5');
 	   global $page_options;
 	   $page_options = add_submenu_page('fa_userloginhistory', __('User List','fauserloginhistory_list'), __('User List','fauserloginhistory'),'manage_options', 'fa_user_lists', 'fa_user_list');
-	  
 }
 
 /*
@@ -139,7 +134,7 @@ function fa_load_admin_scripts($hook) {
 	global $page_options;
 	if( $hook != $page_options )
 		return;
-	wp_register_style( 'jquery-ui',  '//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css' );	
+        wp_register_style( 'jquery-ui', plugins_url('/css/jquery-ui.js' , __FILE__), array( 'jquery' ) );
 	wp_enqueue_style('jquery-ui');
 }
 
@@ -153,6 +148,7 @@ function fa_add_user_logins_table(){
 
 	$fa_sql_contact = "CREATE TABLE IF NOT EXISTS $fa_user_logins_table (
    id int(11) NOT NULL AUTO_INCREMENT,
+   user_id int(11) ,
   `time_login` datetime NOT NULL,
   `time_logout` datetime NOT NULL,
   `ip_address` varchar(20) NOT NULL,
@@ -197,22 +193,23 @@ if(!is_admin()){
 function fa_save_user_login()
 {
 
-    
+   
   	global $wpdb,$table_prefix, $current_user ;
-	$fa_user_logins_table = $table_prefix . 'user_logins';
+	$fa_user_logins_table = $table_prefix . 'fa_user_logins';
 	$ipAddress=getVisitorIpAddress();
-	$currentDate = getCurrentDateTime();
+	$currentDate = fa_getCurrentDateTime();
 	$Unknown = "Unknown";
 	$userId = $current_user->ID;
         $timeLogin = $currentDate;
-        $browser = getVisitorBrowser();
-        $operatingSystem = getVisitorOperatingSystem();
+        $browser = fa_getVisitorBrowser();
+        $operatingSystem = fa_getVisitorOperatingSystem();
        
-        $visitorCountryInfo =  getVisitorCountryInfo();
+        $visitorCountryInfo =  fa_getVisitorCountryInfo();
         $countryName = $visitorCountryInfo->geoplugin_countryName?$visitorCountryInfo->geoplugin_countryName:$Unknown;
         $countryCode = $visitorCountryInfo->geoplugin_countryCode?$visitorCountryInfo->geoplugin_countryCode:$Unknown;
 
 $sql=" insert into $fa_user_logins_table(user_id,time_login,ip_address,browser,operating_system,country_name, country_code) values('$userId','$timeLogin','$ipAddress','$browser','$operatingSystem','$countryName', '$countryCode'); ";
+
 return  $wpdb->query($sql);
          
 
@@ -260,15 +257,15 @@ function getVisitorIpAddress()
 	return  $ipaddress ;
 }
 
-function debugVar($param) {
+function fa_debugVar($param) {
 echo '<pre>'.print_r($param, TRUE).'</pre>';
 }
 
 
-function getCurrentDateTime() {
+function fa_getCurrentDateTime() {
     return date('Y-m-d h:i:s');
 }
-function getVisitorBrowser()
+function fa_getVisitorBrowser()
 {
 
 $userAgent= $_SERVER['HTTP_USER_AGENT'];
@@ -299,7 +296,7 @@ $userAgent= $_SERVER['HTTP_USER_AGENT'];
 	return 'Unknown'; 
 
 }
-function getVisitorCountryInfo($option = FALSE)
+function fa_getVisitorCountryInfo($option = FALSE)
 {
     /*
      {
@@ -347,7 +344,7 @@ function getVisitorCountryInfo($option = FALSE)
    
 }
 
-function getVisitorOperatingSystem()
+function fa_getVisitorOperatingSystem()
 {
 $userAgent= $_SERVER['HTTP_USER_AGENT'];
 		$oses = array (
@@ -388,9 +385,9 @@ function fa_save_user_logout()
 	global $wpdb,$table_prefix,$current_user;
     $userId=$current_user->ID;
     $emptyTime = '0000-00-00 00:00:00';
-    $timeLogout = getCurrentDateTime();
+    $timeLogout = fa_getCurrentDateTime();
     
-	$fa_user_logins_table = $table_prefix . 'user_logins';
+	$fa_user_logins_table = $table_prefix . 'fa_user_logins';
 	$sql=" select id from $fa_user_logins_table where user_id='$userId' and time_logout='$emptyTime' order by id desc limit 1 ; ";
 	$results = $wpdb->get_results($sql);
         

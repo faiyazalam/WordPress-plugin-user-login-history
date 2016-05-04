@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 	global $wpdb, $current_user;
 	$table_name = $wpdb->prefix . "user_logins";
 	
@@ -8,22 +9,22 @@
         
 ?>
 <div class="wrap"> 
-	<h2><?php _e('My Login Hisory Records','aicontactform');?>
+	<h2><?php _e('My Login Hisory Records','fauserloginhistory');?>
 	</h2>
 	
 			
 		<table class="wp-list-table widefat fixed display" id="userlist">
 				<thead style="cursor: pointer;">
 					<tr>
-						<th style="width:50px;text-align:left;"><u><?php _e('Sr. No','aicontactform');?></u></th>
-						<th><u><?php _e('Login at','aicontactform');?></u></th>                                  
-						<th><u><?php _e('Logout at','aicontactform');?></u></th>                                  
-						<th style="width:95px;text-align:left;"><u><?php  _e('Duration','aicontactform');?></u></th>                              
-<!--						<th style="width:95px;text-align:left;"><u><?php //_e('IP','aicontactform');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php// _e('Browser','aicontactform');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php //_e('Operating System','aicontactform');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php //_e('Country Name','aicontactform');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php //_e('Country Code','aicontactform');?></u></th>                              -->
+						<th style="width:50px;text-align:left;"><u><?php _e('Sr. No','fauserloginhistory');?></u></th>
+						<th><u><?php _e('Login at','fauserloginhistory');?></u></th>                                  
+						<th><u><?php _e('Logout at','fauserloginhistory');?></u></th>                                  
+						<th style="width:95px;text-align:left;"><u><?php  _e('Duration','fauserloginhistory');?></u></th>                              
+<!--						<th style="width:95px;text-align:left;"><u><?php //_e('IP','fauserloginhistory');?></u></th>                              
+						<th style="width:95px;text-align:left;"><u><?php// _e('Browser','fauserloginhistory');?></u></th>                              
+						<th style="width:95px;text-align:left;"><u><?php //_e('Operating System','fauserloginhistory');?></u></th>                              
+						<th style="width:95px;text-align:left;"><u><?php //_e('Country Name','fauserloginhistory');?></u></th>                              
+						<th style="width:95px;text-align:left;"><u><?php //_e('Country Code','fauserloginhistory');?></u></th>                              -->
 					</tr>
 				</thead>
 				<tbody>				     
@@ -48,7 +49,7 @@
 						<?php $no += 1;							
 						}
 					} else {
-						echo __('No User Records Found !!! ','aicontactform');
+						echo __('No User Records Found !!! ','fauserloginhistory');
 					} ?>					
 				</tbody>
 			</table>

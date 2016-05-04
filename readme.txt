@@ -22,7 +22,12 @@ Features:<ul>
 <li>Login history to show all login processes in details.</li>
 </ul>
 
-
+To Do:<ul>
+<li>Block user by IP Address</li>
+<li>Show Captcha after a number of failed logins.</li>
+<li>Login Blocker option to block the login processes for a period of time after specific number of failed logins.</li>
+<li>Login history to show all login processes in details.</li>
+</ul>
 
 
 == Installation ==
