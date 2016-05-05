@@ -22,21 +22,14 @@ Features:<ul>
 <li>Login history to show all login processes in details.</li>
 </ul>
 
-To Do:<ul>
-<li>Block user by IP Address</li>
-<li>Show Captcha after a number of failed logins.</li>
-<li>Login Blocker option to block the login processes for a period of time after specific number of failed logins.</li>
-<li>Login history to show all login processes in details.</li>
-</ul>
+
 
 
 == Installation ==
 <ul>
-<li>Download the plugin and rename this file to "user-login-history.zip"</li>
 <li>Go to the Wordpress control panel and go to "Plugins" menu and press the button "Add New".</li>
-<li>Go to the tab "Upload" and choose the file "wp-user-login-history.zip", click the button "Upload" to get the file uploaded.</li>
+<li>Go to the tab "Upload" and choose the file "user-login-history.zip", click the button "Upload" to get the file uploaded.</li>
 <li>Lockup the plugin, and click "Activate" to get it active.</li>
-<li>Go to the Options page and configure the plugin.</li>
 </ul>
 
 
