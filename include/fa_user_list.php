@@ -90,11 +90,11 @@ $userLogins = $paginations['rows'];
 								<td nowrap><?php echo $userLogin->time_login; ?></td> 
 								<td nowrap><?php echo $userLogin->time_logout == '0000-00-00 00:00:00'?'Logged In':$userLogin->time_logout; ?></td> 
                                                                 <td nowrap><?php echo date('H:i:s' ,strtotime($userLogin->time_logout) - strtotime($userLogin->time_login)); ?></td> 
-								<td nowrap><?php echo 'Hidden'//echo $userLogin->ip_address; ?></td> 
+								<td nowrap><?php echo $userLogin->ip_address; ?></td> 
 								<td nowrap><?php echo $userLogin->browser; ?></td> 
 								<td nowrap><?php echo $userLogin->operating_system; ?></td> 
-								<td nowrap><?php echo 'Hidden'//echo $userLogin->ip_address; ?></td> 
-						<td nowrap><?php echo 'Hidden'//echo $userLogin->ip_address; ?></td> 
+								<td nowrap><?php echo $userLogin->country_name; ?></td> 
+								<td nowrap><?php echo $userLogin->country_code; ?></td> 
 								<td style="width:40px;text-align:center;">								
 							<a onclick="javascript:return confirm('Are you sure, want to delete record of <?php echo $username; ?>?')" href="admin.php?page=fa_user_lists&info=del&did=<?php echo $userLogin->id;?>">
 							<img src="<?php echo plugins_url('images/delete.png',__FILE__); ?>" title="Delete" alt="Delete" style="height:18px;" />
