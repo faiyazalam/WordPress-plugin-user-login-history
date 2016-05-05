@@ -2,14 +2,13 @@
 /*
 Plugin Name: User Login History
 Plugin URI: https://github.com/faiyazalam/wp_login_history_plugin
-Description: User login history.
-Version: 2.7.1
+Description: A simple WordPress plugin for user login history.
+Version: 1.0
 Text Domain: fauserloginhistory
 Author: Faiyaz Alam
 Author URI: https://github.com/faiyazalam/
 */
 
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 define('AI_PDIR_PATH', plugin_dir_path(__FILE__ ));
 add_action('plugins_loaded', 'fa_userloginhistoryt_init');
 
@@ -134,8 +133,6 @@ function fa_load_admin_scripts($hook) {
 	global $page_options;
 	if( $hook != $page_options )
 		return;
-        wp_register_style( 'jquery-ui', plugins_url('/css/jquery-ui.js' , __FILE__), array( 'jquery' ) );
-	wp_enqueue_style('jquery-ui');
 }
 
 function fa_add_user_logins_table(){	
@@ -178,9 +175,7 @@ function fa_scripts(){
 	if(isset($_GET['page']) && preg_match('/^fa_/', @$_GET['page']) ){
 		wp_enqueue_script( 'fa_script', plugins_url( '/js/fa_script.js' , __FILE__ ) );		
 		wp_enqueue_script( 'fa_script_table', plugins_url('/js/jquery.dataTables.js' , __FILE__), array( 'jquery' ) );
-		wp_enqueue_script( 'jquery-ui', plugins_url('/js/jquery-ui.js' , __FILE__), array( 'jquery' ) );
 		wp_enqueue_style('wp-datatable',  plugins_url('/user-login-history/css/data_table.css'));
-		wp_enqueue_style('jquery-ui');
 	}
 }  
 add_action( 'admin_enqueue_scripts', 'fa_scripts' );

@@ -43,9 +43,7 @@ $userLogins = $paginations['rows'];
 ?>
 <div class="wrap"> 
 	<img src="<?php echo plugins_url('images/fa.jpg', __FILE__);?>" class="icon32" />
-	<h2><?php _e('User Login Hisory Records','fauserloginhistory');?>
-		<a class="button add-new-h2 dateshow" href="#"><?php _e('Export User Records','fauserloginhistory');?></a>
-	</h2>
+
 	<form method="post" name="exportdate" id="exportdateform" action="<?php echo plugins_url('include/userlist_export.php', __FILE__);?>" >	
          <div id="dateexport" style="display:none;width:100%;margin-bottom:10px;">
              <div class="form-wrap">
