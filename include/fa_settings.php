@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 ?>
 
 <div class="wrap"> 
-	<img src="<?php echo plugins_url('images/fa.jpg', __FILE__);?>" class="icon32" />
+	
 
 
 

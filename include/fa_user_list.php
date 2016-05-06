@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 			if(!empty($delid)){
                             //echo "delete from ".$table_name." where `user_id`= $delid";exit;
 				$wpdb->query( $wpdb->prepare( "delete from ".$table_name." where `id`= %s", $delid) );
-				echo "<div style='clear:both;'></div><div class='updated' id='message'><p><strong>:".__('User Record Deleted.','fauserloginhistory')."</strong>.</p></div>";
+				echo "<div style='clear:both;'></div><div class='updated' id='message'><p><strong>".__('User Record Deleted.','fauserloginhistory')."</strong>.</p></div>";
 			}
 			
 		}
@@ -36,30 +36,15 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 $options = array();
 $options['countQuery'] = $countQuery;
 $options['sqlQuery'] =  $sqlQuery;
-$paginations = fa_pagination($options);
+$paginations = ulh_pagination($options);
 $page_links = $paginations['page_links'];
 $userLogins = $paginations['rows'];
 
 ?>
 <div class="wrap"> 
-	<img src="<?php echo plugins_url('images/fa.jpg', __FILE__);?>" class="icon32" />
 
-	<form method="post" name="exportdate" id="exportdateform" action="<?php echo plugins_url('include/userlist_export.php', __FILE__);?>" >	
-         <div id="dateexport" style="display:none;width:100%;margin-bottom:10px;">
-             <div class="form-wrap">
-             <div style="float:left;">
-           		  <label><?php _e('From Date','fauserloginhistory');?></label><input type="text" name="start_date" id="startdate" class="input-txt" value=""/><br/><?php _e('(Format: MM-DD-YYYY)','fauserloginhistory');?>
-             </div>
-			 <div style="float:left;margin-left:50px;">
-	             <label><?php _e('To Date','fauserloginhistory');?></label><input type="text" name="end_date" id="enddate" class="input-txt" value=""/><br/><?php _e('(Format: MM-DD-YYYY)','fauserloginhistory');?>
-             </div>
-             <div style="float:left;margin-left:50px;margin-top:22px;">
-	             <input type="submit" value="<?php _e('Go','fauserloginhistory');?>" class="button add-new-h2 checkdate" id="submit" name="submit"/>
-	             <a class="button add-new-h2 checkcancel" href="#"><?php _e('Cancel','fauserloginhistory');?></a>
-           	 </div>             
-             </div>
-         </div>
-  	</form>
+
+
 			<?php settings_fields( 'ai-fields' ); ?>	
 			<table class="wp-list-table widefat fixed display" id="userlist">
 				<thead style="cursor: pointer;">
@@ -89,14 +74,14 @@ $userLogins = $paginations['rows'];
                                                                 <td nowrap><a href="user-edit.php?user_id=<?php echo $userLogin->user_id ?>"><?php echo get_userdata($userLogin->user_id)->user_nicename;  ?></a></td>
 								<td nowrap><?php echo $userLogin->time_login; ?></td> 
 								<td nowrap><?php echo $userLogin->time_logout == '0000-00-00 00:00:00'?'Logged In':$userLogin->time_logout; ?></td> 
-                                                                <td nowrap><?php echo date('H:i:s' ,strtotime($userLogin->time_logout) - strtotime($userLogin->time_login)); ?></td> 
+                                                                <td nowrap><?php echo $userLogin->time_logout != '0000-00-00 00:00:00'?date('H:i:s' ,strtotime($userLogin->time_logout) - strtotime($userLogin->time_login)):'Logged In'; ?></td> 
 								<td nowrap><?php echo $userLogin->ip_address; ?></td> 
 								<td nowrap><?php echo $userLogin->browser; ?></td> 
 								<td nowrap><?php echo $userLogin->operating_system; ?></td> 
 								<td nowrap><?php echo $userLogin->country_name; ?></td> 
 								<td nowrap><?php echo $userLogin->country_code; ?></td> 
 								<td style="width:40px;text-align:center;">								
-							<a onclick="javascript:return confirm('Are you sure, want to delete record of <?php echo $username; ?>?')" href="admin.php?page=fa_user_lists&info=del&did=<?php echo $userLogin->id;?>">
+							<a onclick="javascript:return confirm('Are you sure, want to delete record of <?php echo $username; ?>?')" href="admin.php?page=ulh_user_lists&info=del&did=<?php echo $userLogin->id;?>">
 							<img src="<?php echo plugins_url('images/delete.png',__FILE__); ?>" title="Delete" alt="Delete" style="height:18px;" />
 							</a>
 								</td>                

@@ -1,12 +1,21 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 	global $wpdb, $current_user;
-	$table_name = $wpdb->prefix . "user_logins";
-	
+	$table_name = $wpdb->prefix . "fa_user_logins";
 	$currentUserId = $current_user->ID;
- $timeLogout = '0000-00-00 00:00:00';
-        $userLogins = $wpdb->get_results( "select * from ".$table_name." where time_logout <> '$timeLogout' order by id DESC" );
+
+        $countQuery = "select count(id) from ".$table_name." where user_id = $currentUserId ";
+
+        $sqlQuery = "SELECT * FROM ".$table_name." where user_id = $currentUserId ";
+        $sqlQuery .= "order by id DESC";
         
+        
+$options = array();
+$options['countQuery'] = $countQuery;
+$options['sqlQuery'] =  $sqlQuery;
+$paginations = ulh_pagination($options);
+$page_links = $paginations['page_links'];
+$userLogins = $paginations['rows'];
 ?>
 <div class="wrap"> 
 	<h2><?php _e('My Login Hisory Records','fauserloginhistory');?>
