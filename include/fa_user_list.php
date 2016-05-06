@@ -45,7 +45,7 @@ $userLogins = $paginations['rows'];
 
 
 
-			<?php settings_fields( 'ai-fields' ); ?>	
+			<?php settings_fields( 'ai-fields' );   $options = get_option( 'ulh_settings' ); ?>	
 			<table class="wp-list-table widefat fixed display" id="userlist">
 				<thead style="cursor: pointer;">
 					<tr>
@@ -54,11 +54,26 @@ $userLogins = $paginations['rows'];
 						<th><u><?php _e('Login at','fauserloginhistory');?></u></th>                                  
 						<th><u><?php _e('Logout at','fauserloginhistory');?></u></th>                                  
 						<th style="width:95px;text-align:left;"><u><?php  _e('Duration','fauserloginhistory');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php _e('IP','fauserloginhistory');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php _e('Browser','fauserloginhistory');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php _e('Operating System','fauserloginhistory');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php _e('Country Name','fauserloginhistory');?></u></th>                              
-						<th style="width:95px;text-align:left;"><u><?php _e('Country Code','fauserloginhistory');?></u></th>                              
+						<th style="width:95px;text-align:left;"><u><?php _e('IP','fauserloginhistory');?></u></th>  
+                                                <?php
+                                              
+                                                     if(isset($options['ulh_is_show_browser'])){
+                                                         echo "<th style='width:95px;text-align:left;'><u>Browser</u></th>  ";
+                                                     }
+                                                     
+                                                       if( isset($options['ulh_is_show_operating_system'])){
+                                                         echo "<th style='width:95px;text-align:left;'><u>Operating System</u></th>  ";
+                                                     }
+                                                       if( isset($options['ulh_is_show_country_name'])){
+                                                         echo "<th style='width:95px;text-align:left;'><u>Country Name</u></th>  ";
+                                                     }
+                                                       if( isset($options['ulh_is_show_country_code'])){
+                                                         echo "<th style='width:95px;text-align:left;'><u>Country Code</u></th>  ";
+                                                     }
+                                                     
+                                                ?>
+						                            
+					
 						<th style="width:50px;text-align:center;"><?php _e('Action','fauserloginhistory');?></th>
 					</tr>
 				</thead>
@@ -76,10 +91,24 @@ $userLogins = $paginations['rows'];
 								<td nowrap><?php echo $userLogin->time_logout == '0000-00-00 00:00:00'?'Logged In':$userLogin->time_logout; ?></td> 
                                                                 <td nowrap><?php echo $userLogin->time_logout != '0000-00-00 00:00:00'?date('H:i:s' ,strtotime($userLogin->time_logout) - strtotime($userLogin->time_login)):'Logged In'; ?></td> 
 								<td nowrap><?php echo $userLogin->ip_address; ?></td> 
-								<td nowrap><?php echo $userLogin->browser; ?></td> 
-								<td nowrap><?php echo $userLogin->operating_system; ?></td> 
-								<td nowrap><?php echo $userLogin->country_name; ?></td> 
-								<td nowrap><?php echo $userLogin->country_code; ?></td> 
+                                                                
+                                                                <?php
+                              
+                                                                  if( isset($options['ulh_is_show_browser'])){
+                                                                      echo "<td nowrap> $userLogin->browser</td> ";
+                                                                  }
+                                                                  if( isset($options['ulh_is_show_operating_system'])){
+                                                                      echo "<td nowrap> $userLogin->operating_system</td> ";
+                                                                  }
+                                                                  if( isset($options['ulh_is_show_country_name'])){
+                                                                      echo "<td nowrap> $userLogin->country_name</td> ";
+                                                                  }
+                                                                  if(isset( $options['ulh_is_show_country_code'])){
+                                                                      echo "<td nowrap> $userLogin->country_code</td> ";
+                                                                  }
+                                                                  ?>
+								
+								
 								<td style="width:40px;text-align:center;">								
 							<a onclick="javascript:return confirm('Are you sure, want to delete record of <?php echo $username; ?>?')" href="admin.php?page=ulh_user_lists&info=del&did=<?php echo $userLogin->id;?>">
 							<img src="<?php echo plugins_url('images/delete.png',__FILE__); ?>" title="Delete" alt="Delete" style="height:18px;" />

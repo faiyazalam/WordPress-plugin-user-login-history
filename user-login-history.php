@@ -422,3 +422,134 @@ $page_links = paginate_links( array(
 return array('page_links'=>$page_links, 'rows' => $rows) ;
         }
 ?>
+
+        <?php
+add_action( 'admin_menu', 'ulh_add_admin_menu' );
+add_action( 'admin_init', 'ulh_settings_init' );
+
+
+function ulh_add_admin_menu(  ) { 
+
+	add_options_page( 'user-login-history', 'user-login-history', 'manage_options', 'user-login-history', 'ulh_options_page' );
+
+}
+
+
+function ulh_settings_init(  ) { 
+
+	register_setting( 'pluginPage', 'ulh_settings' );
+
+	add_settings_section(
+		'ulh_pluginPage_section', 
+		__( 'Select the columns that you want to display in the table User Login History ', 'fauserloginhistory' ), 
+		'ulh_settings_section_callback', 
+		'pluginPage'
+	);
+
+	add_settings_field( 
+		'ulh_is_show_browser', 
+		__( 'Browser', 'fauserloginhistory' ), 
+		'ulh_checkbox_field_0_render', 
+		'pluginPage', 
+		'ulh_pluginPage_section' 
+	);
+
+	add_settings_field( 
+		'ulh_is_show_operating_system', 
+		__( 'Operating System', 'fauserloginhistory' ), 
+		'ulh_checkbox_field_1_render', 
+		'pluginPage', 
+		'ulh_pluginPage_section' 
+	);
+
+	add_settings_field( 
+		'ulh_is_show_country_name', 
+		__( 'Country Name', 'fauserloginhistory' ), 
+		'ulh_checkbox_field_2_render', 
+		'pluginPage', 
+		'ulh_pluginPage_section' 
+	);
+
+	add_settings_field( 
+		'ulh_is_show_country_code', 
+		__( 'Country Code', 'fauserloginhistory' ), 
+		'ulh_checkbox_field_3_render', 
+		'pluginPage', 
+		'ulh_pluginPage_section' 
+	);
+
+
+}
+
+
+function ulh_checkbox_field_0_render(  ){ 
+
+	$options = get_option( 'ulh_settings' );
+       
+        $options['ulh_is_show_browser'] = isset($options['ulh_is_show_browser'])?$options['ulh_is_show_browser']:0;
+	?>
+	<input type='checkbox' name='ulh_settings[ulh_is_show_browser]' <?php checked( $options['ulh_is_show_browser'], 1 ); ?> value='1'>
+	<?php
+
+}
+
+
+function ulh_checkbox_field_1_render(  ) { 
+
+	$options = get_option( 'ulh_settings' );
+         $options['ulh_is_show_operating_system'] = isset($options['ulh_is_show_operating_system'])?$options['ulh_is_show_operating_system']:0;
+	?>
+	<input type='checkbox' name='ulh_settings[ulh_is_show_operating_system]' <?php checked( $options['ulh_is_show_operating_system'], 1 ); ?> value='1'>
+	<?php
+
+}
+
+
+function ulh_checkbox_field_2_render(  ) { 
+
+	$options = get_option( 'ulh_settings' );
+          $options['ulh_is_show_country_name'] = isset($options['ulh_is_show_country_name'])?$options['ulh_is_show_country_name']:0;
+	?>
+	<input type='checkbox' name='ulh_settings[ulh_is_show_country_name]' <?php checked( $options['ulh_is_show_country_name'], 1 ); ?> value='1'>
+	<?php
+
+}
+
+
+function ulh_checkbox_field_3_render(  ) { 
+
+	$options = get_option( 'ulh_settings' );
+        $options['ulh_is_show_country_code'] = isset($options['ulh_is_show_country_code'])?$options['ulh_is_show_country_code']:0;
+	?>
+	<input type='checkbox' name='ulh_settings[ulh_is_show_country_code]' <?php checked( $options['ulh_is_show_country_code'], 1 ); ?> value='1'>
+	<?php
+
+}
+
+
+function ulh_settings_section_callback(  ) { 
+
+	//echo __( 'This section description', 'fauserloginhistory' );
+
+}
+
+
+function ulh_options_page(  ) { 
+
+	?>
+	<form action='options.php' method='post'>
+
+		
+
+		<?php
+		settings_fields( 'pluginPage' );
+		do_settings_sections( 'pluginPage' );
+		submit_button();
+		?>
+
+	</form>
+	<?php
+
+}
+
+?>

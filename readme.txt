@@ -34,4 +34,5 @@ Features:<ul>
 
 == Screenshots ==
 1. User List with login details
+2. Plugin Settings
 
