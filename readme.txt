@@ -1,12 +1,16 @@
 === User Login History ===
 
 Contributors: faiyazalam
-Tags: login, history,browser, ip
+Tags: Login, Login Status, Login History, Active Login, Last Login, User IP, User Browser, User Country, User Track
 Requires at least: 3.0.1
 Tested up to: 4.5
 Stable tag: 4.5
+Version: 1.0
+Author: Faiyaz Alam
+Author URI: https://github.com/faiyazalam/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
 
 
 A simple WordPress plugin for user login history.
