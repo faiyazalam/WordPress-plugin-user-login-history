@@ -1,4 +1,4 @@
-=== WP User Login History ===
+=== User Login History ===
 
 Contributors: faiyazalam
 Tags: login, history,browser, ip
