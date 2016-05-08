@@ -20,7 +20,8 @@ A simple WordPress plugin for user login history.
 
 == Description ==
 By this plugin you can track any visitor with the following attributes:
-Features:<ul>
+
+<ul>
 <li>Timing for Login and Logout</li>
 <li>User Session Duration</li>
 <li>User IP Address</li>
@@ -38,12 +39,9 @@ To Do:<ul>
 </ul>
 
 Contribute to All My Free Projects at GitHub:
-You can contribute to this plugin as well as other projects just by requesting for new features, bug reports, or even pull requests!  Also you can request for any custom plugin or application for the platforms like WordPress, Cakephp and Magento.
+You can contribute to this plugin as well as other projects just by requesting for new features, bug reports, or even pull requests!  
 https://github.com/faiyazalam/user-login-history
 
-My Under Development Projects on Cakephp Framework
-1. Employee Time Sheet Management  System
-2. E-Commerce Solution:  Tracking and managing orders/customers from different channels like Flipkart, Amazon, Snapdeal, eBay etc.
 
 
 == Installation ==

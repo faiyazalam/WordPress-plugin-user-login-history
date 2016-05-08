@@ -12,24 +12,7 @@ Author URI: https://github.com/faiyazalam/
 define('AI_PDIR_PATH', plugin_dir_path(__FILE__ ));
 add_action('plugins_loaded', 'ulh_userloginhistoryt_init');
 
-/** Start Upgrade Notice **/
-global $pagenow;
-if ( 'plugins.php' === $pagenow )
-{
-    // Better update message
-    $file   = basename( __FILE__ );
-    $folder = basename( dirname( __FILE__ ) );
-    $hook = "in_plugin_update_message-{$folder}/{$file}";
-    add_action( $hook, 'ulh_update_notification_message', 20, 2 );
-}
-function ulh_update_notification_message( $plugin_data, $r )
-{
-  $upgradenotice = "";
-	$output = "<div style='color:#EEC2C1;font-weight: normal;background: #C92727;padding: 10px;border: 1px solid #eed3d7;border-radius: 4px;'><strong style='color:rgb(253, 230, 61)'>Update Notice : </strong> ".$upgradenotice."</div>";
 
-    return print $output;
-}
-/** End Upgrade Notice **/
 
 /* Activate Hook Plugin */
 register_activation_hook(__FILE__,'ulh_add_user_logins_table');
@@ -57,6 +40,7 @@ function ulh_bpm_options_setup(){
 
 add_action('admin_notices', 'ulh_bpm_admin_notice');
 function ulh_bpm_admin_notice() {
+   
     global $current_user ;
     $user_id = $current_user->ID;
     if ( ! get_user_meta($user_id, 'fa_bpm_ignore_notice') ) {
@@ -426,9 +410,7 @@ $page_links = paginate_links( array(
 ) );
 return array('page_links'=>$page_links, 'rows' => $rows) ;
         }
-?>
-
-        <?php
+        
 add_action( 'admin_menu', 'ulh_add_admin_menu' );
 add_action( 'admin_init', 'ulh_settings_init' );
 
@@ -556,5 +538,4 @@ function ulh_options_page(  ) {
 	<?php
 
 }
-
 ?>
