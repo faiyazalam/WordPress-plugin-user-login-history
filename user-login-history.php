@@ -203,6 +203,11 @@ function ulh_save_user_login()
         $countryName = $visitorCountryInfo->geoplugin_countryName?$visitorCountryInfo->geoplugin_countryName:$Unknown;
         $countryCode = $visitorCountryInfo->geoplugin_countryCode?$visitorCountryInfo->geoplugin_countryCode:$Unknown;
 
+        //update for already logged in
+        $sqlLoggedIn = "UPDATE $fa_user_logins_table SET time_logout = '$currentDate' WHERE time_logout = '0000-00-00 00:00:00' and user_id = $userId";
+        $wpdb->query($sqlLoggedIn);
+        
+        //now insert for new login
 $sql=" insert into $fa_user_logins_table(user_id,time_login,ip_address,browser,operating_system,country_name, country_code) values('$userId','$timeLogin','$ipAddress','$browser','$operatingSystem','$countryName', '$countryCode'); ";
 
 return  $wpdb->query($sql);

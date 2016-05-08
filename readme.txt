@@ -3,8 +3,8 @@
 Contributors: faiyazalam
 Tags: login, history,browser, ip
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
+Tested up to: 4.5
+Stable tag: 4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,13 +15,23 @@ A simple WordPress plugin for user login history.
 
 
 == Description ==
-By this plugin you can track user login history.
+By this plugin you can track any visitor with the following attributes:
 Features:<ul>
-<li>Track User IP Address</li>
-<li>Track User Country</li>
-<li>Login history to show all login processes in details.</li>
+<li>Timing for Login and Logout</li>
+<li>User Session Duration</li>
+<li>User IP Address</li>
+<li>User Browser</li>
+<li>User Operating System</li>
+<li>User Country Name</li>
+<li>User Country Code</li>
 </ul>
 
+To Do:<ul>
+<li>Block user by IP Address</li>
+<li>Show Captcha after a number of failed logins.</li>
+<li>Login Blocker option to block the login processes for a period of time after specific number of failed logins.</li>
+<li>Google Map to track user location.</li>
+</ul>
 
 
 == Installation ==
@@ -35,4 +45,5 @@ Features:<ul>
 == Screenshots ==
 1. User List with login details
 2. Plugin Settings
+
 
