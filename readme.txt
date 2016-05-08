@@ -33,6 +33,14 @@ To Do:<ul>
 <li>Google Map to track user location.</li>
 </ul>
 
+Contribute to All My Free Projects at GitHub:
+You can contribute to this plugin as well as other projects just by requesting for new features, bug reports, or even pull requests!  Also you can request for any custom plugin or application for the platforms like WordPress, Cakephp and Magento.
+https://github.com/faiyazalam/user-login-history
+
+My Under Development Projects on Cakephp Framework
+1. Employee Time Sheet Management  System
+2. E-Commerce Solution:  Tracking and managing orders/customers from different channels like Flipkart, Amazon, Snapdeal, eBay etc.
+
 
 == Installation ==
 <ul>
