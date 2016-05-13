@@ -40,14 +40,20 @@ function ulh_bpm_options_setup(){
 
 add_action('admin_notices', 'ulh_bpm_admin_notice');
 function ulh_bpm_admin_notice() {
-   
-    global $current_user ;
+    
+    $options = get_option( 'ulh_settings' );
+        $options['ulh_is_show_plugin_notice'] = isset($options['ulh_is_show_plugin_notice'])?$options['ulh_is_show_plugin_notice']:0;
+   if($options['ulh_is_show_plugin_notice'])
+   {
+       global $current_user ;
     $user_id = $current_user->ID;
     if ( ! get_user_meta($user_id, 'fa_bpm_ignore_notice') ) {
     echo '<div class="updated"><p>';
     printf(__('User Login History is a Free wp plugin.'));
     echo '</p></div>';
-    }
+    }  
+   }
+  
 }
 
 add_action('admin_init', 'ulh_bpm_nag_ignore');
@@ -432,6 +438,12 @@ function ulh_settings_init(  ) {
 		'ulh_settings_section_callback', 
 		'pluginPage'
 	);
+	add_settings_section(
+		'ulh_pluginPage_section_notice', 
+		__( 'Hide/Show Plugin Notice', 'fauserloginhistory' ), 
+		'ulh_settings_section_callback', 
+		'pluginPage'
+	);
 
 	add_settings_field( 
 		'ulh_is_show_browser', 
@@ -463,6 +475,13 @@ function ulh_settings_init(  ) {
 		'ulh_checkbox_field_3_render', 
 		'pluginPage', 
 		'ulh_pluginPage_section' 
+	);
+	add_settings_field( 
+		'ulh_is_show_plugin_notice', 
+		__( 'Hide Plugin Notice', 'fauserloginhistory' ), 
+		'ulh_checkbox_field_4_render', 
+		'pluginPage', 
+		'ulh_pluginPage_section_notice' 
 	);
 
 
@@ -512,7 +531,15 @@ function ulh_checkbox_field_3_render(  ) {
 	<?php
 
 }
+function ulh_checkbox_field_4_render(  ) { 
 
+	$options = get_option( 'ulh_settings' );
+        $options['ulh_is_show_plugin_notice'] = isset($options['ulh_is_show_plugin_notice'])?$options['ulh_is_show_plugin_notice']:0;
+	?>
+	<input type='checkbox' name='ulh_settings[ulh_is_show_plugin_notice]' <?php checked( $options['ulh_is_show_plugin_notice'], 1 ); ?> value='1'>
+	<?php
+
+}
 
 function ulh_settings_section_callback(  ) { 
 
@@ -524,6 +551,7 @@ function ulh_settings_section_callback(  ) {
 function ulh_options_page(  ) { 
 
 	?>
+        <h2>Settings - <strong>User Login History</strong></h2>
 	<form action='options.php' method='post'>
 
 		
