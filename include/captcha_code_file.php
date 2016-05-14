@@ -1,6 +1,5 @@
 <?php 
 session_start();
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 //Settings: You can customize the captcha here
 $image_width = 120;

@@ -8,8 +8,8 @@
   Author: Faiyaz Alam
   Author URI: https://github.com/faiyazalam/
  */
-
-define('AI_PDIR_PATH', plugin_dir_path(__FILE__));
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+define('ULH_PDIR_PATH', plugin_dir_path(__FILE__));
 add_action('plugins_loaded', 'ulh_userloginhistoryt_init');
 
 
@@ -50,7 +50,7 @@ function ulh_bpm_admin_notice() {
         $user_id = $current_user->ID;
         if (!get_user_meta($user_id, 'fa_bpm_ignore_notice')) {
             echo '<div class="updated"><p>';
-            printf(__('User Login History is a Free wp plugin.'));
+            printf(__('User Login History is a Free wp plugin. If you have any custom requirement please contact me at Skype Id: erfaiyazalam<br><a target = "_blank" href="https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/">View My Complete Profile at www.upwork.com</a>'));
             echo '</p></div>';
         }
     }
@@ -157,11 +157,11 @@ function ulh_add_user_logins_table() {
 }
 
 function ulh_userloginhistory_settings() {
-    include AI_PDIR_PATH . "/include/fa_settings.php";
+    include ULH_PDIR_PATH . "/include/fa_settings.php";
 }
 
 function ulh_user_list() {
-    include AI_PDIR_PATH . "/include/fa_user_list.php";
+    include ULH_PDIR_PATH . "/include/fa_user_list.php";
 }
 
 function ulh_scripts() {
@@ -443,7 +443,7 @@ function ulh_settings_init() {
             'ulh_is_show_country_code', __('Country Code', 'fauserloginhistory'), 'ulh_checkbox_field_3_render', 'pluginPage', 'ulh_pluginPage_section'
     );
     add_settings_field(
-            'ulh_is_show_plugin_notice', __('Hide Plugin Notice', 'fauserloginhistory'), 'ulh_checkbox_field_4_render', 'pluginPage', 'ulh_pluginPage_section_notice'
+            'ulh_is_show_plugin_notice', __('Show Plugin Notice', 'fauserloginhistory'), 'ulh_checkbox_field_4_render', 'pluginPage', 'ulh_pluginPage_section_notice'
     );
 }
 

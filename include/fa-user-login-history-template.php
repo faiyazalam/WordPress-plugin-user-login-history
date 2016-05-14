@@ -1,5 +1,4 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 	global $wpdb, $current_user;
 	$table_name = $wpdb->prefix . "fa_user_logins";
 	$currentUserId = $current_user->ID;
