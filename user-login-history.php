@@ -10,6 +10,11 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 define('ULH_PDIR_PATH', plugin_dir_path(__FILE__));
+define('ULH_SERVER_DEFAULT_TIMEZONE', 'UTC');
+define('ULH_DATE_DEFAULT_FORMAT', 'Y-m-d H:i:s');
+define('ULH_PLUGIN_NAME_FA', 'FA - User Login History');
+date_default_timezone_set(ULH_SERVER_DEFAULT_TIMEZONE);
+
 add_action('plugins_loaded', 'ulh_userloginhistoryt_init');
 
 
@@ -44,15 +49,20 @@ add_action('admin_notices', 'ulh_bpm_admin_notice');
 function ulh_bpm_admin_notice() {
 
     $options = get_option('ulh_settings');
-    $options['ulh_is_show_plugin_notice'] = isset($options['ulh_is_show_plugin_notice']) ? $options['ulh_is_show_plugin_notice'] : 0;
-    if ($options['ulh_is_show_plugin_notice']) {
+   $showNotice = isset($options['ulh_is_show_plugin_notice']) ? $options['ulh_is_show_plugin_notice'] : 0;
+    
+    if(isset($_GET['page']) && ('fa_userloginhistory' == $_GET['page']))
+    {
+     $showNotice = TRUE;   
+    }
+    if ($showNotice) {
         global $current_user;
         $user_id = $current_user->ID;
-        if (!get_user_meta($user_id, 'fa_bpm_ignore_notice')) {
-            echo '<div class="updated"><p>';
-            printf(__('User Login History is a Free wp plugin. If you have any custom requirement please contact me at Skype Id: erfaiyazalam<br><a target = "_blank" href="https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/">View My Complete Profile at www.upwork.com</a>'));
-            echo '</p></div>';
-        }
+ 
+            echo '<center><div class="updated"><p>';
+            printf(__(ULH_PLUGIN_NAME_FA." is a Free wp plugin. If you have any custom requirement please contact me at Skype Id: erfaiyazalam<br><a target = '_blank' href='https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/'>View My Complete Profile at www.upwork.com</a>"));
+            echo '</p></div></center>';
+        
     }
 }
 
@@ -88,10 +98,10 @@ function ulh_userloginhistory_uninstall() {
     $wpdb->query("DROP TABLE IF EXISTS " . $fa_user_logins_table);
 }
 
-add_shortcode('user_login_history', 'ulh_shortcode');
+add_shortcode('ulh_userloginhistory_sc', 'ulh_shortcode');
 
 function ulh_shortcode() {
-    include_once('include/fa-userloginhistory-template.php');
+    include_once('include/fa-user-login-history-template.php');
 }
 
 /* Settings in Admin Menu Item */
@@ -174,9 +184,9 @@ function ulh_scripts() {
 
 add_action('admin_enqueue_scripts', 'ulh_scripts');
 
-if (!is_admin()) {
-    wp_localize_script('my-ajax-request', 'MyAjax', array('ajaxurl' => admin_url('admin-ajax.php')));
-}
+//if (!is_admin()) {
+//    wp_localize_script('my-ajax-request', 'MyAjax', array('ajaxurl' => admin_url('admin-ajax.php')));
+//}
 
 function ulh_save_user_login() {
 
@@ -246,8 +256,14 @@ function ulh_debugVar($param, $isExit = FALSE) {
     }
 }
 
-function ulh_get_current_date_time() {
-    return date('Y-m-d h:i:s');
+
+function ulh_get_current_date_time($format = '', $timezone = '') {
+   
+    $timezone = "" == $timezone?ULH_SERVER_DEFAULT_TIMEZONE:$timezone;
+    $format = "" == $format?ULH_DATE_DEFAULT_FORMAT:$format;
+   
+    date_default_timezone_set($timezone);
+    return date($format);
 }
 
 function ulh_get_visitor_browser() {
@@ -386,6 +402,33 @@ function ulh_save_user_logout() {
     }
 }
 
+function ulh_get_time_zone_list() {
+  $zones_array = array();
+  $timestamp = time();
+  foreach(timezone_identifiers_list() as $key => $zone) {
+    date_default_timezone_set($zone);
+    $zones_array[$key]['zone'] = $zone;
+    $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
+  }
+  return $zones_array;
+}
+
+function  ulh_convertToUserTime($datetime, $format= '' ,$timezone = '')
+{
+     
+    $format = ""==$format?ULH_DATE_DEFAULT_FORMAT:$format;
+    $timezone = ""==$timezone?ULH_SERVER_DEFAULT_TIMEZONE:$timezone;
+    
+
+   
+    $date = new DateTime($datetime, new DateTimeZone(ULH_SERVER_DEFAULT_TIMEZONE));
+    $date->setTimezone( new DateTimeZone($timezone));
+  
+ 
+  
+    return  $date->format($format);
+   
+}
 function ulh_pagination($options = array()) {
 
     global $wpdb;
@@ -421,10 +464,13 @@ function ulh_settings_init() {
     register_setting('pluginPage', 'ulh_settings');
 
     add_settings_section(
-            'ulh_pluginPage_section', __('Select the columns that you want to display in the table User Login History ', 'fauserloginhistory'), 'ulh_settings_section_callback', 'pluginPage'
+            'ulh_pluginPage_section', __('Cusotomize user listing table', 'fauserloginhistory'), 'ulh_settings_section_callback_customize_table', 'pluginPage'
     );
     add_settings_section(
             'ulh_pluginPage_section_notice', __('Hide/Show Plugin Notice', 'fauserloginhistory'), 'ulh_settings_section_callback', 'pluginPage'
+    );
+    add_settings_section(
+            'ulh_pluginPage_section_preferred_timezone', __('Preferred Timezone', 'fauserloginhistory'), 'ulh_settings_section_callback_preffered_timezone', 'pluginPage'
     );
 
     add_settings_field(
@@ -444,6 +490,9 @@ function ulh_settings_init() {
     );
     add_settings_field(
             'ulh_is_show_plugin_notice', __('Show Plugin Notice', 'fauserloginhistory'), 'ulh_checkbox_field_4_render', 'pluginPage', 'ulh_pluginPage_section_notice'
+    );
+    add_settings_field(
+            'ulh_is_show_plugin_preferred_timezone', __('Select Preferred Timezone', 'fauserloginhistory'), 'ulh_checkbox_field_5_render', 'pluginPage', 'ulh_pluginPage_section_preferred_timezone'
     );
 }
 
@@ -492,10 +541,34 @@ function ulh_checkbox_field_4_render() {
     <input type='checkbox' name='ulh_settings[ulh_is_show_plugin_notice]' <?php checked($options['ulh_is_show_plugin_notice'], 1); ?> value='1'>
     <?php
 }
+function ulh_checkbox_field_5_render() {
+
+    $options = get_option('ulh_settings');
+    $options['ulh_is_show_plugin_preferred_timezone'] = isset($options['ulh_is_show_plugin_preferred_timezone']) ? $options['ulh_is_show_plugin_preferred_timezone'] : 0;
+    ?>
+     <select name="ulh_settings[ulh_is_show_plugin_preferred_timezone]" style="font-family: 'Courier New', Courier, monospace; width: 450px;">
+    <option value="0">Select Timezone</option>
+    <?php foreach(ulh_get_time_zone_list() as $t) { ?>
+
+         <option value="<?php print $t['zone'] ?>" <?php selected( $options['ulh_is_show_plugin_preferred_timezone'],$t['zone'] ); ?>>
+              <?php echo $t['zone']."(".$t['diff_from_GMT'].")"?>
+         </option>
+    <?php } ?>
+     </select>
+    <?php
+}
 
 function ulh_settings_section_callback() {
 
     //echo __( 'This section description', 'fauserloginhistory' );
+}
+function ulh_settings_section_callback_customize_table() {
+
+    echo __( 'Select the columns that you want to show on user listing table.', 'fauserloginhistory' );
+}
+function ulh_settings_section_callback_preffered_timezone() {
+
+    echo __( 'Set this option to convert the saved logged-in time into the preferred Timezone and then show on User Login History Listing table.<br>NOTE: To make the Timezone fix/static the plugin uses UTC that will be used to save user login time into database.', 'fauserloginhistory' );
 }
 
 function ulh_options_page() {

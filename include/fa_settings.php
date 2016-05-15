@@ -1,16 +1,52 @@
+
 <div class="wrap"> 
-	
-
-
-
-		<table class="form-table" id="email-settings">
+    <center> 
+        <h1><?php echo ULH_PLUGIN_NAME_FA?></h1>	
+		
+		
+		<table class="form-table" id="plugin-settings-features">
+                    <thead style="cursor: pointer;">
+					<tr>
+	<th style="width:50px;text-align:left;"><u><?php _e('By this plugin you can track any visitor with the following attributes:','fauserloginhistory');?></u></th>
+					</tr>
+				</thead>
 			<tbody>
-			<tr>
-					<td colspan="3" align="center"><p><?php _e('You can add <strong> [fa_userloginhistory] </strong> shortcode where you want to display <strong>User Login History</strong> in pages.','fauserloginhistory');?>
-					<?php  _e(' <br/> OR  You can add <strong> &lt;&#63;php do_shortcode("[fa_userloginhistory]"); &#63;&gt;</strong> shortcode in any template.','fauserloginhistory');?>
-					<?php  _e(' <br/> OR  You can add <strong> &lt;&#63;php echo do_shortcode("[fa_userloginhistory]"); &#63;&gt;</strong> shortcode in any template.','fauserloginhistory');?></p></td>
-				</tr>
+                                    <tr><td>
+                                            <ol>
+                            <li><?php _e('Timing for Login and Logout','fauserloginhistory');?></li>
+                            <li><?php _e('User Session Duration','fauserloginhistory');?></li>
+                            <li><?php _e('User IP Address','fauserloginhistory');?></li>
+                            <li><?php _e('User Browser','fauserloginhistory');?></li>
+                            <li><?php _e('User Operating System','fauserloginhistory');?></li>
+                            <li><?php _e('User Country Name','fauserloginhistory');?></li>
+                            <li><?php _e('User Country Code','fauserloginhistory');?></li>
+                        </ol>
+
+                                            
+                                </td></tr>
+                       
+			
 			</tbody>
 		</table>
-	
+        
+        	<table class="form-table" id="plugin-settings-features">
+                    <thead style="cursor: pointer;">
+					<tr>
+	<th style="width:50px;text-align:left;"><u><?php _e('Coming Soon Features:','fauserloginhistory');?></u></th>
+					</tr>
+				</thead>
+			<tbody>
+                            <tr><td> 
+                                    <ol>
+                            <li><?php _e('Block user by IP Address','fauserloginhistory');?></li>
+                            <li><?php _e('Show Captcha after a number of failed logins','fauserloginhistory');?></li>
+                            <li><?php _e('Login Blocker option to block the login processes for a period of time after specific number of failed logins','fauserloginhistory');?></li>
+                            <li><?php _e('Google Map to track user location','fauserloginhistory');?></li>
+                            <li><?php _e('Shortcode to display user login history table on post/page/template','fauserloginhistory');?></li>
+                                    </ol>
+                                    </td></tr>
+			
+			</tbody>
+		</table>
+	</center>   
 </div>

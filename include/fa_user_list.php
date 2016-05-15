@@ -33,10 +33,10 @@
         }
         
         $sqlQuery .= "order by id DESC";
-$options = array();
-$options['countQuery'] = $countQuery;
-$options['sqlQuery'] =  $sqlQuery;
-$paginations = ulh_pagination($options);
+$optionsPagination = array();
+$optionsPagination['countQuery'] = $countQuery;
+$optionsPagination['sqlQuery'] =  $sqlQuery;
+$paginations = ulh_pagination($optionsPagination);
 $page_links = $paginations['page_links'];
 $userLogins = $paginations['rows'];
 
@@ -45,8 +45,17 @@ $userLogins = $paginations['rows'];
 
 
 
-			<?php settings_fields( 'ai-fields' );   $options = get_option( 'ulh_settings' ); ?>	
+			<?php    $options = get_option( 'ulh_settings' ); 
+                           if(isset( $options['ulh_is_show_plugin_preferred_timezone']) && "" !=  $options['ulh_is_show_plugin_preferred_timezone'])
+                           {
+                              $timeZone =  $options['ulh_is_show_plugin_preferred_timezone'];   
+                           }
+                                                      
+                      
+                        ?>
+    <caption>This table showing the Date-Time in Timezone - <?php echo   $timeZone?$timeZone:ULH_SERVER_DEFAULT_TIMEZONE  ?></caption>
 			<table class="wp-list-table widefat fixed display" id="userlist">
+                    
 				<thead style="cursor: pointer;">
 					<tr>
 						<th style="width:50px;text-align:left;"><u><?php _e('Sr. No','fauserloginhistory');?></u></th>
@@ -56,6 +65,7 @@ $userLogins = $paginations['rows'];
 						<th style="width:95px;text-align:left;"><u><?php  _e('Duration','fauserloginhistory');?></u></th>                              
 						<th style="width:95px;text-align:left;"><u><?php _e('IP','fauserloginhistory');?></u></th>  
                                                 <?php
+                                               
                                               
                                                      if(isset($options['ulh_is_show_browser'])){
                                                          echo "<th style='width:95px;text-align:left;'><u>Browser</u></th>  ";
@@ -83,13 +93,28 @@ $userLogins = $paginations['rows'];
 					$no = 1;
 					if ( ! empty( $userLogins ) ) { ?>
 						<?php
-						foreach ( $userLogins as $userLogin ) {	 ?>
+						foreach ( $userLogins as $userLogin ) {
+                                                 
+                                                  
+                                                    $loginAt = ulh_convertToUserTime($userLogin->time_login, '', $timeZone);
+                                                  
+                                                   if($userLogin->time_logout == '0000-00-00 00:00:00')
+                                                       
+                                                   {
+                                                     $logoutAt =   FALSE;
+                                                   }
+ else {
+       $logoutAt = ulh_convertToUserTime($userLogin->time_logout, '', $timeZone); 
+ }
+                                                   
+                                                   
+                                                    ?>
 							<tr>
 								<td style="width:40px;text-align:center;"><?php echo $no; ?></td>
                                                                 <td nowrap><a href="user-edit.php?user_id=<?php echo $userLogin->user_id ?>"><?php echo get_userdata($userLogin->user_id)->user_nicename;  ?></a></td>
-								<td nowrap><?php echo $userLogin->time_login; ?></td> 
-								<td nowrap><?php echo $userLogin->time_logout == '0000-00-00 00:00:00'?'Logged In':$userLogin->time_logout; ?></td> 
-                                                                <td nowrap><?php echo $userLogin->time_logout != '0000-00-00 00:00:00'?date('H:i:s' ,strtotime($userLogin->time_logout) - strtotime($userLogin->time_login)):'Logged In'; ?></td> 
+								<td nowrap><?php echo $loginAt; ?></td> 
+								<td nowrap><?php echo $logoutAt == FALSE?'Loggen In':$loginAt ?></td> 
+                                                                <td nowrap><?php echo $logoutAt !== FALSE?date('H:i:s' ,strtotime($logoutAt) - strtotime($loginAt)):'Logged In'; ?></td> 
 								<td nowrap><?php echo $userLogin->ip_address; ?></td> 
                                                                 
                                                                 <?php
