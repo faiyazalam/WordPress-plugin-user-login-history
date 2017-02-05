@@ -151,12 +151,14 @@ PRIMARY KEY (`id`)
         if ($current_version && version_compare($current_version, $this->version, '<')) {
             //Older than 1.4.1
             if (version_compare($current_version, '1.4.1', '<')) {
+                update_option(ULH_PLUGIN_OPTION_PREFIX . 'frontend_fields', array('ip_address' => 1, 'old_role' => 1, 'country' => 1, 'login' => 1, 'logout' => 1));
+                update_option(ULH_PLUGIN_OPTION_PREFIX . 'frontend_limit', '20');
                 $message = sprintf(wp_kses(__('User Login History has had a change in the settings structure. Please head over to the <a href="%s">Backend Options</a> to make sure everything is correct.', 'user-login-history'), array('a' => array('href' => array()))), esc_url(admin_url() . 'options-general.php?page=user-login-history-settings&tab=backend'));
                 $this->add_admin_notice($message);
             }
-             //finally update DB for plugin table and current version
+            //finally update DB for plugin table and current version
             $this->after_plugin_update();
-            update_option($this->option_prefix.'version', $this->version);
+            update_option($this->option_prefix . 'version', $this->version);
         }
     }
 

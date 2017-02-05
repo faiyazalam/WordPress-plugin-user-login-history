@@ -3,14 +3,7 @@
 class User_Login_History_Public_List_Table_Helper {
 
     public function prepare_where_query() {
-
         $fields = array(
-            'user_id',
-            'username',
-            'country_name',
-            'browser',
-            'ip_address',
-            'role',
             'date_from',
             'date_to',
         );
@@ -20,14 +13,15 @@ class User_Login_History_Public_List_Table_Helper {
         $values = array();
         $date_type = FALSE;
 
-        if (isset($_GET['date_type']) && "login" == $_GET['date_type']) {
+        if(isset($_GET['date_type']))
+        {
+               if ("login" == $_GET['date_type']) {
             $date_type = 'login';
         }
-        if (isset($_GET['date_type']) && "logout" == $_GET['date_type']) {
+        if ("logout" == $_GET['date_type']) {
             $date_type = 'logout';
+        }   
         }
-
-
 
         foreach ($fields as $field) {
             $data_type = "%s";
@@ -35,22 +29,8 @@ class User_Login_History_Public_List_Table_Helper {
 
             if (isset($_GET[$field]) && "" != $_GET[$field]) {
                 $getValue = $_GET[$field];
-                if ('user_id' == $field) {
-                    $data_type = "%d";
-                    $field = 'a.user_id';
-                }
-                if ('username' == $field) {
-                    $operator_sign = "LIKE";
-                    $getValue = "%" . $getValue . "%";
-                    $field = 'a.username';
-                }
-                if ('role' == $field) {
-                    $field = 'meta_value';
-                    $operator_sign = "LIKE";
-                    $getValue = "%" . $getValue . "%";
-                }
 
-                if ($date_type) {
+                  if ($date_type && in_array($field, array('date_from', 'date_to'))) {
                     $Date_Time_Helper = new User_Login_History_Date_Time_Helper();
                     $default_timezone = $Date_Time_Helper->get_default_timezone();
                     $getValue = $Date_Time_Helper->convert_to_user_timezone($getValue, 'Y-m-d', $default_timezone);
@@ -67,8 +47,6 @@ class User_Login_History_Public_List_Table_Helper {
                         $getValue = $getValue . " 23:59:59";
                     }
                 }
-
-
 
                 $sql_query .= " AND $field $operator_sign $data_type ";
                 $count_query .= " AND $field $operator_sign $data_type ";

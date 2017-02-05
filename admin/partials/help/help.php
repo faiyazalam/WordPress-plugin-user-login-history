@@ -22,7 +22,7 @@
             </li>
             <li>
                 <p><?php _e('To see the tracked records in frontend, use the following shortcode in your template file:', 'user-login-history'); ?> 
-                <pre><code>&lt;?php do_action('user-login-history'); ?&gt;</code></pre>
+                <pre><code>&lt;?php do_shortcode('[user-login-history]'); ?&gt;</code></pre>
                 </p>
             </li>
         </ol>

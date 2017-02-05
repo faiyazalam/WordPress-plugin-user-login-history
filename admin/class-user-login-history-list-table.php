@@ -53,6 +53,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             'username',
             'country_name',
             'browser',
+            'operating_system',
             'ip_address',
             'role',
             'old_role',
@@ -91,6 +92,17 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                     $operator_sign = "LIKE";
                     $getValue = "%" . $getValue . "%";
                     $field = 'User.user_login';
+                }
+                
+                if ('browser' == $field) {
+                    $operator_sign = "LIKE";
+                    $getValue = "%" . $getValue . "%";
+                    $field = 'FaUserLogin.browser';
+                }
+                if ('country_name' == $field) {
+                    $operator_sign = "LIKE";
+                    $getValue = "%" . $getValue . "%";
+                    $field = 'FaUserLogin.country_name';
                 }
 
                 if ('role' == $field) {

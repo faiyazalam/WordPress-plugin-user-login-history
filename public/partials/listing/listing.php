@@ -7,10 +7,9 @@ if (!$current_user->ID) {
 
 $options = get_option(ULH_PLUGIN_OPTION_PREFIX.'frontend_fields');
 if (!$options) {
-    _e('No Content Found.', 'user-login-history');
+    _e('No Fields has been selected from admin panel. Please select fields from frontend option tab of the plugin setting.', 'user-login-history');
     return;
 }
-
 
 $Public_List_Table_Helper = new User_Login_History_Public_List_Table_Helper();
 $user_timezone = get_user_meta($current_user->ID, ULH_PLUGIN_OPTION_PREFIX . "user_timezone", TRUE);
@@ -41,8 +40,6 @@ $options_pagination['count_query'] = $count_query;
 $options_pagination['values'] = $prepare_sql['values'];
 $options_pagination['sql_query'] = $sql_query;
 $options_pagination['limit'] = $limit;
-
-
 
 $paginations = $Paginator_Helper->pagination($options_pagination);
 
