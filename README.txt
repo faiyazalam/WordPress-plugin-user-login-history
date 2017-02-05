@@ -5,7 +5,7 @@ Tags: login, last seen, history, active login, last login, ip, browser, country,
 Requires at least: 3.0.1
 Tested up to: 4.7
 Stable tag: 1.4
-Version: 1.4
+Version: 1.4.1
 Author: Faiyaz Alam
 Author URI: https://github.com/faiyazalam/
 License: GPLv2 or later
