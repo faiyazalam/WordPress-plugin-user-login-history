@@ -1,3 +1,5 @@
+This is a beta version. To download stable version visit: https://wordpress.org/plugins/user-login-history/
+
 === User Login History ===
 
 Contributors: faiyazalam
@@ -11,12 +13,7 @@ Author URI: https://github.com/faiyazalam/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-
-
 Easily tracks user login with a set of multiple attributes like ip, login/logout/last-seen time, country, username, user role, browser, OS etc.
-
-
-
 
 == Description ==
 By this plugin you can track any visitor with the following attributes:
