@@ -2,7 +2,7 @@
 /**
  * class User_Login_History_User_Tracker {
 
- * This class is used to track user based on different attributes e.g. ip, browser etc.
+ * Tracks user based on different attributes e.g. ip, browser etc.
  *
  * @link       https://github.com/faiyazalam
  * @since      1.4.1
@@ -210,7 +210,6 @@ class User_Login_History_User_Tracker {
             $ip = $remote;
         }
 
-
         $apiUrl = "http://www.geoplugin.net/json.gp?ip=" . $ip;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -220,7 +219,6 @@ class User_Login_History_User_Tracker {
         curl_close($ch);
         return json_decode($result);
     }
-
 
     /**
      * Get nearest timezone of the user.
@@ -275,7 +273,6 @@ class User_Login_History_User_Tracker {
     private function set_last_insert_id($id = NULL) {
         $_SESSION[$this->name][$this->last_insert_id_key] = $id ? $id : FALSE;
     }
-
 
             /**
      * Start the session if it is not started already.
