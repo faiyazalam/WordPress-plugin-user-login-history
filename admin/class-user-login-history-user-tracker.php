@@ -2,7 +2,7 @@
 /**
  * class User_Login_History_User_Tracker {
 
- * Tracks user based on different attributes e.g. ip, browser etc.
+ * This class is used to track user based on different attributes e.g. ip, browser etc.
  *
  * @link       https://github.com/faiyazalam
  * @since      1.4.1
@@ -104,6 +104,7 @@ class User_Login_History_User_Tracker {
             $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
         }
 
+        
         return $ip_address;
     }
 
@@ -210,6 +211,7 @@ class User_Login_History_User_Tracker {
             $ip = $remote;
         }
 
+
         $apiUrl = "http://www.geoplugin.net/json.gp?ip=" . $ip;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -219,6 +221,7 @@ class User_Login_History_User_Tracker {
         curl_close($ch);
         return json_decode($result);
     }
+
 
     /**
      * Get nearest timezone of the user.
@@ -273,6 +276,7 @@ class User_Login_History_User_Tracker {
     private function set_last_insert_id($id = NULL) {
         $_SESSION[$this->name][$this->last_insert_id_key] = $id ? $id : FALSE;
     }
+
 
             /**
      * Start the session if it is not started already.
@@ -338,9 +342,6 @@ class User_Login_History_User_Tracker {
         $lat = $geo_location->geoplugin_latitude ? $geo_location->geoplugin_latitude : $unknown;
         $long = $geo_location->geoplugin_longitude ? $geo_location->geoplugin_longitude : $unknown;
 
-        $country_code = "IN";
-        $lat = "28.7041";
-        $long = "77.1025";
         if ($lat != $unknown && $long != $unknown & $country_code != $unknown) {
             $user_timezone = $this->get_nearest_timezone($lat, $long, $country_code);
         }
@@ -350,11 +351,11 @@ class User_Login_History_User_Tracker {
         }
 
         //now insert for new login
-       // $sql = "insert into $table (, , , , , , , , country_code, old_role) values('$user_id','$user_login' ,'$time_login','$time_last_seen','$ip_address', '$browser','$operating_system','$country_name', '$country_code', '$old_roles'); ";
       $data = array(
           'user_id'=>$user_id,
           'username'=>$user_login,
           'time_login'=>$time_login,
+          'ip_address'=>$ip_address,
           'time_last_seen'=>$time_last_seen,
           'browser'=>$browser,
           'operating_system'=>$operating_system,
@@ -400,7 +401,6 @@ class User_Login_History_User_Tracker {
     public function set_current_user_timezone($user_timezone = '') {
         global $current_user;
         $user_id = $current_user->ID;
-
         return add_user_meta($user_id, $this->user_meta_timezone, $user_timezone, TRUE);
     }
 

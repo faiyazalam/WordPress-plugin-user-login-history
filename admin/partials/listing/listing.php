@@ -17,10 +17,10 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
                         <tr>
-                            <td><input readonly="readonly" autocomplete="off" placeholder="<?php _e("From", "user-login-history") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? $_GET['date_from'] : "" ?>" ></td>
-                            <td><input readonly="readonly" autocomplete="off" placeholder="<?php _e("To", "user-login-history") ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? $_GET['date_to'] : "" ?>" ></td>
+                            <td><input readonly="readonly" autocomplete="off" placeholder="<?php _e("From", "user-login-history") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? $_GET['date_from'] : "" ?>" class="textfield-bg"></td>
+                            <td><input readonly="readonly" autocomplete="off" placeholder="<?php _e("To", "user-login-history") ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? $_GET['date_to'] : "" ?>" class="textfield-bg"></td>
                             <td>
-                                <select name="date_type" >
+                                <select class="selectfield-bg" name="date_type" >
                                     <?php
                                     $date_types = array('login' => __("Login", "user-login-history"), 'logout' => __("Logout", "user-login-history"));
                                     foreach ($date_types as $date_type_key => $date_type) {
@@ -36,14 +36,14 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
                         <tr>
-                            <td><input placeholder="<?php _e("Enter User Id", "user-login-history") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? $_GET['user_id'] : "" ?>" ></td>
-                            <td><input placeholder="<?php _e("Enter Username", "user-login-history") ?>" name="username" value="<?php echo isset($_GET['username']) ? $_GET['username'] : "" ?>" ></td>
-                            <td><input placeholder="<?php _e("Enter Country", "user-login-history") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? $_GET['country_name'] : "" ?>" ></td>
-                            <td><input placeholder="<?php _e("Enter Browser", "user-login-history") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? $_GET['browser'] : "" ?>" ></td>
-                            <td><input placeholder="<?php _e("Enter OS", "user-login-history") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? $_GET['operating_system'] : "" ?>" ></td>
-                            <td><input placeholder="<?php _e("Enter IP Address", "user-login-history") ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? $_GET['ip_address'] : "" ?>" ></td>
+                            <td><input placeholder="<?php _e("Enter User Id", "user-login-history") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? $_GET['user_id'] : "" ?>" class="textfield-bg"></td>
+                            <td><input placeholder="<?php _e("Enter Username", "user-login-history") ?>" name="username" value="<?php echo isset($_GET['username']) ? $_GET['username'] : "" ?>" class="textfield-bg"></td>
+                            <td><input placeholder="<?php _e("Enter Country", "user-login-history") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? $_GET['country_name'] : "" ?>" class="textfield-bg"></td>
+                            <td><input placeholder="<?php _e("Enter Browser", "user-login-history") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? $_GET['browser'] : "" ?>" class="textfield-bg"></td>
+                            <td><input placeholder="<?php _e("Enter OS", "user-login-history") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? $_GET['operating_system'] : "" ?>" class="textfield-bg"></td>
+                            <td><input placeholder="<?php _e("Enter IP Address", "user-login-history") ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? $_GET['ip_address'] : "" ?>" class="textfield-bg"></td>
                             <td>
-                                <select style="width:150px" name="timezone">
+                                <select class="selectfield-bg" name="timezone">
                                     <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
                                     <?php
                                     foreach ($timezones as $timezone) {
@@ -55,7 +55,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                 </select>
                             </td>
                             <td>
-                                <select  name="role">
+                                <select class="selectfield-bg" name="role">
                                     <option value=""><?php _e("Select Current Role", "user-login-history") ?></option>
                                     <?php
                                     $selected_role = isset($_GET['role']) ? $_GET['role'] : NULL;
@@ -64,7 +64,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                 </select>
                             </td>
                             <td>
-                                <select  name="old_role">
+                                <select  class="selectfield-bg" name="old_role">
                                     <option value=""><?php _e("Select Old Role", "user-login-history") ?></option>
                                     <?php
                                     $selected_old_role = isset($_GET['old_role']) ? $_GET['old_role'] : NULL;
@@ -77,32 +77,35 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
                         <tr>
-                            <td>
-                                &nbsp;
+                            <td>&nbsp;
+                                
+                            </td>
+                            <td>&nbsp;
+                                
+                            </td>
+                            <td>&nbsp;
+                                
+                            </td>
+                            <td>&nbsp;
+                                
+                            </td>
+                            <td>&nbsp;
+                                
+                            </td>
+                            <td>&nbsp;
+                                
                             </td>
                             <td>
-                                &nbsp;
-                            </td>
-                            <td>
-                                &nbsp;
-                            </td>
-                            <td>
-                                &nbsp;
-                            </td>
-                            <td>
-                                &nbsp;
-                            </td>
-                            <td>
-                                <select  name="export-user-login-history" id="export-user-login-history" >
+                                <select class="selectfield-bg"  name="export-user-login-history" id="export-user-login-history" >
                                     <option value=""><?php _e('Download as', 'user-login-history'); ?></option> 
                                     <option value="csv"><?php _e("CSV", "user-login-history") ?></option> 
                                 </select>
                             </td>
                             <td>
-                                <a class="button"  href="<?php echo admin_url() . "admin.php?page=user-login-history" ?>"><?php _e('Reset', 'user-login-history'); ?></a>
+                                <a class="reset-bg"  href="<?php echo admin_url() . "admin.php?page=user-login-history" ?>" ><?php _e('Reset', 'user-login-history'); ?></a>
                             </td>
                             <td>
-                              <?php submit_button('Filter'); ?>
+                                <input class="filter-bg" id="submit" type="submit" name="submit" value="<?php _e('Filter', 'user-login-history') ?>" />
                             </td>
                         </tr>
                     </tbody></table>

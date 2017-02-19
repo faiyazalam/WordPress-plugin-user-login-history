@@ -184,6 +184,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                 . " INNER JOIN $table_users as User ON User.ID = FaUserLogin.user_id"
                 . " INNER JOIN $table_usermeta AS UserMeta ON UserMeta.user_id=FaUserLogin.user_id where UserMeta.meta_key = '{$wpdb->prefix}capabilities' AND  1 ";
 
+             
         $where_query = $this->prepare_where_query();
 
         if ($where_query) {
@@ -316,12 +317,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
 
             case 'time_last_seen':
-                // if user is logged out, logout time becomes last seen time
                 return $Date_Time_Helper->human_time_diff_from_now($item[$column_name], $timezone);
-            //     $item[$column_name] = $Date_Time_Helper->convert_to_user_timezone($item[$column_name], '', $timezone);
-            //   $current_date_time = $Date_Time_Helper->convert_to_user_timezone($current_date_time, '', $timezone);
-            // return "<span title = '$item[$column_name]'>" . human_time_diff(strtotime($item[$column_name]), strtotime($current_date_time)) . ' ago</span>';
-
             case 'duration':
                 return $item['time_logout'] != '0000-00-00 00:00:00' ? date('H:i:s', strtotime($item['time_logout']) - strtotime($item['time_login'])) : 'Logged In';
                 ;
@@ -376,7 +372,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             'user_id' => __('User Id', 'user-login-history'),
             'username' => __('Username', 'user-login-history'),
             'role' => __('Current Role', 'user-login-history'),
-            'old_role' => __('<span class="btf-tooltip" title="Role while user gets loggedin">Old Role(?)</span>', 'user-login-history'),
+            'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'user-login-history'),
             'ip_address' => __('IP', 'user-login-history'),
             'browser' => __('Browser', 'user-login-history'),
             'operating_system' => __('OS', 'user-login-history'),
