@@ -137,7 +137,7 @@ class User_Login_History_User_Tracker {
 
         foreach ($browsers as $browser => $pattern) {
 
-            if (eregi($pattern, $user_agent)) {
+            if (preg_match("/$pattern/i", $user_agent)) {
                 return $browser;
             }
         }
