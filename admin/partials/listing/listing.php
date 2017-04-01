@@ -25,7 +25,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                     $date_types = array('login' => __("Login", "user-login-history"), 'logout' => __("Logout", "user-login-history"));
                                     foreach ($date_types as $date_type_key => $date_type) {
                                         ?>
-                                        <option value="<?php print $date_type_key ?>" <?php selected($_GET['date_type'], $date_type_key); ?>>
+                                    <option value="<?php print $date_type_key ?>" <?php selected(isset($_GET['date_type'])?$_GET['date_type']:"", $date_type_key); ?>>
                                             <?php echo $date_type ?>
                                         </option>
                                     <?php } ?>
@@ -48,7 +48,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                     <?php
                                     foreach ($timezones as $timezone) {
                                         ?>
-                                        <option value="<?php print $timezone['zone'] ?>" <?php selected($_GET['timezone'], $timezone['zone']); ?>>
+                                    <option value="<?php print $timezone['zone'] ?>" <?php selected(isset($_GET['timezone'])?$_GET['timezone']:"", $timezone['zone']); ?>>
                                             <?php echo $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")" ?>
                                         </option>
                                     <?php } ?>

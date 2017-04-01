@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User_Login_History_List_Table
  * This class is used for listing table in admin panel.
@@ -12,25 +13,27 @@
  */
 ?>
 <?php
+
 require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-wp-list-table.php';
+
 class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
-        /**
+    /**
      * The name of the table used by this plugin.
      *
      * @since    1.4.1
      * @access   private
      * @var      string    $table    The name of the table used by this plugin.
      */
-        static private $table;
+    static private $table;
 
-        /**
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.4.1
      */
     public function __construct() {
-    global $table_prefix;
+        global $table_prefix;
         parent::__construct([
             'singular' => __('User Login History', 'user-login-history'), //singular name of the listed records
             'plural' => __('User Login Histories', 'user-login-history'), //plural name of the listed records
@@ -38,10 +41,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         ]);
 
 
-        self::$table = $table_prefix . ULH_TABLE_NAME;;
+        self::$table = $table_prefix . ULH_TABLE_NAME;
+        ;
     }
 
-            /**
+    /**
      * Prepare sql where query.
      *
      * @since    1.4.1
@@ -61,48 +65,51 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             'date_to',
             'timezone',
         );
+
+        $fields_2 = array(
+            'country_name',
+            'browser',
+            'operating_system',
+            'ip_address',
+        );
+
+
         $output = array();
         $sql_query = FALSE;
         $count_query = FALSE;
         $values = array();
         $date_type = FALSE;
 
-        
-        if(isset($_GET['date_type']))
-        {
-               if ("login" == $_GET['date_type']) {
-            $date_type = 'login';
+
+        if (isset($_GET['date_type'])) {
+            if ("login" == $_GET['date_type']) {
+                $date_type = 'login';
+            }
+            if ("logout" == $_GET['date_type']) {
+                $date_type = 'logout';
+            }
         }
-        if ("logout" == $_GET['date_type']) {
-            $date_type = 'logout';
-        }   
-        }
-        
+
         foreach ($fields as $field) {
             $data_type = "%s";
             $operator_sign = "=";
             if (isset($_GET[$field]) && "" != $_GET[$field]) {
-                
                 $getValue = $_GET[$field];
+
+                if (in_array($field, $fields_2)) {
+                    $operator_sign = "LIKE";
+                    $getValue = "%" . $getValue . "%";
+                    $field = "FaUserLogin.$field";
+                }
+
+                if ('old_role' == $field) {
+                    $operator_sign = "LIKE";
+                    $field = "FaUserLogin.$field";
+                }
+
                 if ('user_id' == $field) {
                     $data_type = "%d";
                     $field = 'FaUserLogin.user_id';
-                }
-                if ('username' == $field) {
-                    $operator_sign = "LIKE";
-                    $getValue = "%" . $getValue . "%";
-                    $field = 'User.user_login';
-                }
-                
-                if ('browser' == $field) {
-                    $operator_sign = "LIKE";
-                    $getValue = "%" . $getValue . "%";
-                    $field = 'FaUserLogin.browser';
-                }
-                if ('country_name' == $field) {
-                    $operator_sign = "LIKE";
-                    $getValue = "%" . $getValue . "%";
-                    $field = 'FaUserLogin.country_name';
                 }
 
                 if ('role' == $field) {
@@ -111,19 +118,18 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                     $getValue = "%" . $getValue . "%";
                 }
 
-                if ('old_role' == $field) {
+                if ('username' == $field) {
                     $operator_sign = "LIKE";
-                    $field = 'FaUserLogin.old_role';
+                    $getValue = "%" . $getValue . "%";
+                    $field = 'User.user_login';
                 }
 
                 if ($date_type && in_array($field, array('date_from', 'date_to'))) {
-                  
                     $Date_Time_Helper = new User_Login_History_Date_Time_Helper();
                     $default_timezone = $Date_Time_Helper->get_default_timezone();
                     $getValue = $Date_Time_Helper->convert_to_user_timezone($getValue, 'Y-m-d', $default_timezone);
 
                     if ('date_from' == $field) {
-
                         $field = 'FaUserLogin.time_' . $date_type;
                         $operator_sign = ">=";
                         $getValue = $getValue . " 00:00:00";
@@ -167,7 +173,6 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
         $sql = "select "
                 . "DISTINCT(FaUserLogin.id) as id, "
-                
                 . "User.user_login,"
                 . "FaUserLogin.country_name,"
                 . "FaUserLogin.country_code, "
@@ -184,7 +189,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                 . " INNER JOIN $table_users as User ON User.ID = FaUserLogin.user_id"
                 . " INNER JOIN $table_usermeta AS UserMeta ON UserMeta.user_id=FaUserLogin.user_id where UserMeta.meta_key = '{$wpdb->prefix}capabilities' AND  1 ";
 
-             
+
         $where_query = $this->prepare_where_query();
 
         if ($where_query) {
@@ -204,7 +209,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
         $sql .= " LIMIT $per_page";
         $sql .= '  OFFSET   ' . ( $page_number - 1 ) * $per_page . "   ";
-        
+
         if (!empty($get_values)) {
             return $wpdb->get_results($wpdb->prepare($sql, $get_values), 'ARRAY_A');
         }
@@ -274,9 +279,9 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * @return mixed
      */
     public function column_default($item, $column_name) {
-               global $current_user;
+        global $current_user;
         $Date_Time_Helper = new User_Login_History_Date_Time_Helper();
-      $timezone = get_user_meta($current_user->ID, ULH_PLUGIN_OPTION_PREFIX . "user_timezone", TRUE);
+        $timezone = get_user_meta($current_user->ID, ULH_PLUGIN_OPTION_PREFIX . "user_timezone", TRUE);
         $timezone = ("" != $timezone) ? $timezone : $Date_Time_Helper->get_default_timezone();
 
         $current_date_time = $Date_Time_Helper->get_current_date_time();
@@ -350,7 +355,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      */
     function column_name($item) {
 
-        $delete_nonce = wp_create_nonce(ULH_PLUGIN_OPTION_PREFIX.'delete_record');
+        $delete_nonce = wp_create_nonce(ULH_PLUGIN_OPTION_PREFIX . 'delete_record');
 
         $title = '<strong>' . $item['user_id'] . '</strong>';
 
@@ -447,7 +452,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         $this->items = self::get_rows($per_page, $current_page);
     }
 
-        /**
+    /**
      * Process bulk delete action.
      */
     public function process_bulk_action() {
@@ -458,7 +463,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             // In our file that handles the request, verify the nonce.
             $nonce = esc_attr($_REQUEST['_wpnonce']);
 
-            if (!wp_verify_nonce($nonce, ULH_PLUGIN_OPTION_PREFIX.'delete_record')) {
+            if (!wp_verify_nonce($nonce, ULH_PLUGIN_OPTION_PREFIX . 'delete_record')) {
                 die('Go get a life script kiddies');
             } else {
                 self::delete_record(absint($_GET['record']));

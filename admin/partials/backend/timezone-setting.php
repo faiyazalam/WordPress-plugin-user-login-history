@@ -32,7 +32,7 @@ $timezones = User_Login_History_Date_Time_Helper :: get_timezone_list();
             <tbody>
                 <tr>
                     <th scope="row">
-                        <span class="btf-tooltip" title="<?php _e('Convert the saved time into the preferred timezone and then show on listing table.', 'user-login-history') ?>">?</span><?php _e('Timezone', 'user-login-history') ?>:
+                        <span class="btf-tooltip" title="<?php _e('Convert date-time into the preferred timezone before showing them on the listing table.', 'user-login-history') ?>">?</span><?php _e('Timezone', 'user-login-history') ?>:
                     </th>
                     <td>
                         <select name="<?php echo $option_name ?>" style="font-family: 'Courier New', Courier, monospace; width: 450px;">
