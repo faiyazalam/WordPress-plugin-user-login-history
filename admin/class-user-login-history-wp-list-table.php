@@ -20,7 +20,7 @@
  * @author     Er Faiyaz Alam
  */
 ?>
-<?php 
+<?php
 class User_Login_History_WP_List_Table {
 
     /**
