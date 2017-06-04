@@ -160,10 +160,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * @param int $per_page
      * @param int $page_number
      *
+     * @since    1.4.1
+     * @access   public
      * @return mixed
      */
     public function get_rows($per_page = 5, $page_number = 1) {
-
         global $wpdb;
         $get_values = array();
 
@@ -220,6 +221,8 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * Delete a record.
      *
      * @param int $id row ID
+     * @since    1.4.1
+     * @access   public
      */
     public static function delete_record($id) {
         global $wpdb;
@@ -229,8 +232,9 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
     }
 
     /**
-     * Returns the count of records in the database.
-     *
+     * Returns the count of records in the table.
+     * @since    1.4.1
+     * @access   public
      * @return null|string
      */
     public function record_count() {
@@ -238,11 +242,9 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         global $wpdb;
         $get_values = array();
 
-
         $table = self::$table;
         $table_usermeta = $wpdb->prefix . "usermeta";
         $table_users = $wpdb->prefix . "users";
-
 
         $sql = "select "
                 . "COUNT(DISTINCT(FaUserLogin.id))"
@@ -253,7 +255,6 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         $where_query = $this->prepare_where_query();
 
         if ($where_query) {
-
             $sql .= $where_query['count_query'];
             $get_values = $where_query['values'];
         }
@@ -265,7 +266,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         return $wpdb->get_var($sql);
     }
 
-    /** Text displayed when no record is available */
+    /**
+     * Text displayed when no record is available 
+     * @since    1.4.1
+     * @access   public
+     */
     public function no_items() {
         _e('No records avaliable.', 'user-login-history');
     }
@@ -275,7 +280,8 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      *
      * @param array $item
      * @param string $column_name
-     *
+     * @since    1.4.1
+     * @access   public
      * @return mixed
      */
     public function column_default($item, $column_name) {
@@ -289,28 +295,21 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         switch ($column_name) {
             case 'user_id':
                 return $item[$column_name];
-
             case 'username':
                 $profile_link = get_edit_user_link($item['user_id']);
-
                 $username = $item['user_login'];
                 return "<a href= '$profile_link'>$username</a>";
-
             case 'role':
                 $user_data = get_userdata($item['user_id']);
                 return implode(',', $user_data->roles);
             case 'old_role':
-
                 return $item['old_role'];
-
             case 'browser':
                 return $item[$column_name];
             case 'time_login':
                 return $Date_Time_Helper->convert_to_user_timezone($item[$column_name], '', $timezone);
-
             case 'time_logout':
                 return $item[$column_name] == '0000-00-00 00:00:00' ? 'Logged In' : $Date_Time_Helper->convert_to_user_timezone($item[$column_name], '', $timezone);
-
             case 'ip_address':
                 return $item[$column_name];
             case 'timezone':
@@ -319,14 +318,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                 return $item[$column_name];
             case 'country_name':
                 return "Unknown" == $item[$column_name] ? $item[$column_name] : $item[$column_name] . "(" . $item['country_code'] . ")";
-
-
             case 'time_last_seen':
                 return $Date_Time_Helper->human_time_diff_from_now($item[$column_name], $timezone);
             case 'duration':
                 return $item['time_logout'] != '0000-00-00 00:00:00' ? date('H:i:s', strtotime($item['time_logout']) - strtotime($item['time_login'])) : 'Logged In';
                 ;
-
             default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
@@ -336,10 +332,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * Render the bulk edit checkbox
      *
      * @param array $item
-     *
+     * @since    1.4.1
+     * @access   public
      * @return string
      */
-    function column_cb($item) {
+    public function column_cb($item) {
 
         return sprintf(
                 '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['id']
@@ -350,10 +347,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * Method for name column
      *
      * @param array $item an array of DB data
-     *
+     * @since    1.4.1
+     * @access   public
      * @return string
      */
-    function column_name($item) {
+    public function column_name($item) {
 
         $delete_nonce = wp_create_nonce(ULH_PLUGIN_OPTION_PREFIX . 'delete_record');
 
@@ -368,10 +366,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
     /**
      *  Associative array of columns
-     *
+     * @since    1.4.1
+     * @access   public
      * @return array
      */
-    function get_columns() {
+    public function get_columns() {
         $columns = [
             'cb' => '<input type="checkbox" />',
             'user_id' => __('User Id', 'user-login-history'),
@@ -395,14 +394,14 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
     /**
      * Columns to make sortable.
-     *
+     * @since    1.4.1
+     * @access   public
      * @return array
      */
     public function get_sortable_columns() {
         $sortable_columns = array(
             'user_id' => array('user_id', true),
             'username' => array('username', true),
-            'role' => array('role', true),
             'old_role' => array('old_role', true),
             'time_login' => array('time_login', false),
             'time_logout' => array('time_logout', false),
@@ -419,7 +418,8 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
     /**
      * Returns an associative array containing the bulk action
-     *
+     * @since    1.4.1
+     * @access   public
      * @return array
      */
     public function get_bulk_actions() {
@@ -432,11 +432,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
     /**
      * Handles data query and filter, sorting, and pagination.
+     * @since    1.4.1
+     * @access   public
      */
     public function prepare_items() {
-
         $this->_column_headers = $this->get_column_info();
-
         /** Process bulk action */
         $this->process_bulk_action();
 
@@ -454,12 +454,13 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
     /**
      * Process bulk delete action.
+     * @since    1.4.1
+     * @access   public
      */
     public function process_bulk_action() {
-
         //Detect when a bulk action is being triggered...
+        $User_Login_History_Admin = new User_Login_History_Admin(ULH_PLUGIN_NAME, ULH_PLUGIN_VERSION, ULH_PLUGIN_OPTION_PREFIX);
         if ('delete' === $this->current_action()) {
-
             // In our file that handles the request, verify the nonce.
             $nonce = esc_attr($_REQUEST['_wpnonce']);
 
@@ -467,27 +468,22 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                 die('Go get a life script kiddies');
             } else {
                 self::delete_record(absint($_GET['record']));
-
                 // esc_url_raw() is used to prevent converting ampersand in url to "#038;"
                 // add_query_arg() return the current url
+                $User_Login_History_Admin->add_admin_notice('The record(s) has been deleted.');
                 wp_redirect(esc_url_raw(add_query_arg()));
                 exit;
             }
         }
-
         // If the delete bulk action is triggered
         if (( isset($_POST['action']) && $_POST['action'] == 'bulk-delete' ) || ( isset($_POST['action2']) && $_POST['action2'] == 'bulk-delete' )
         ) {
-
             $delete_ids = esc_sql($_POST['bulk-delete']);
-
             // loop over the array of record IDs and delete them
             foreach ($delete_ids as $id) {
                 self::delete_record($id);
             }
-
-            // esc_url_raw() is used to prevent converting ampersand in url to "#038;"
-            // add_query_arg() return the current url
+            $User_Login_History_Admin->add_admin_notice('The record(s) has been deleted.');
             wp_redirect(esc_url_raw(add_query_arg()));
             exit;
         }

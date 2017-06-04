@@ -64,10 +64,30 @@ class User_Login_History_Public {
         wp_register_script($this->name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
     }
 
+    /**
+     * Shortcode to show listing table for frontend user.
+     *
+     * @since    1.4.1
+     */
     public function shortcode_user_table() {
         wp_enqueue_script($this->name . '-jquery-ui.min.js');
         wp_enqueue_style($this->name . '-jquery-ui.min.css');
         require_once plugin_dir_path(__FILE__) . 'partials/listing/listing.php';
+    }
+    
+    /**
+     * Frontend user can select timezone.
+     *
+     * @since    1.4.1
+     */
+    public function ulh_public_select_timezone() {
+       if("" != $_POST['timezone'])
+       { 
+ global $current_user;
+$option_name = ULH_PLUGIN_OPTION_PREFIX . "user_timezone";
+update_user_meta($current_user->ID, $option_name, $_POST['timezone']);
+       }
+       exit;
     }
 
 }

@@ -12,7 +12,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
     <h1><?php _e(ucwords(str_replace("-", " ", ULH_PLUGIN_NAME)), 'user-login-history'); ?></h1>
     <div id="poststuff">
         <div class="search-filter">
-            <form name="user-login-histoty-search-form" method="get" action="">
+            <form name="user-login-histoty-search-form" method="get" action="" id="user-login-histoty-search-form">
                 <input type="hidden" name="page" value="user-login-history" />
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
@@ -42,6 +42,16 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                             <td><input placeholder="<?php _e("Enter Browser", "user-login-history") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? $_GET['browser'] : "" ?>" class="textfield-bg"></td>
                             <td><input placeholder="<?php _e("Enter OS", "user-login-history") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? $_GET['operating_system'] : "" ?>" class="textfield-bg"></td>
                             <td><input placeholder="<?php _e("Enter IP Address", "user-login-history") ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? $_GET['ip_address'] : "" ?>" class="textfield-bg"></td>
+                          
+                           
+
+                        </tr>
+                    </tbody></table>
+                
+                
+                <table class="wp-list-table widefat fixed striped">
+                    <tbody>
+                        <tr>
                             <td>
                                 <select class="selectfield-bg" name="timezone">
                                     <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
@@ -74,37 +84,28 @@ $timezones = $Date_Time_Helper->get_timezone_list();
 
                         </tr>
                     </tbody></table>
+                
+                
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
                         <tr>
-                            <td>&nbsp;
-                                
+                            <td>
+                                <button class="filter-bg" id="delete_all_user_login_history"><?php _e('Delete All Records', 'user-login-history'); ?></button> 
                             </td>
                             <td>&nbsp;
-                                
+                            </td>
+                             <td>&nbsp;
                             </td>
                             <td>&nbsp;
-                                
-                            </td>
-                            <td>&nbsp;
-                                
-                            </td>
-                            <td>&nbsp;
-                                
-                            </td>
-                            <td>&nbsp;
-                                
                             </td>
                             <td>
-                                <select class="selectfield-bg"  name="export-user-login-history" id="export-user-login-history" >
-                                    <option value=""><?php _e('Download as', 'user-login-history'); ?></option> 
-                                    <option value="csv"><?php _e("CSV", "user-login-history") ?></option> 
-                                </select>
+                                <a class="filter-bg" id="download_csv_button"><?php _e('Download CSV', 'user-login-history'); ?></a> 
                             </td>
                             <td>
                                 <a class="reset-bg"  href="<?php echo admin_url() . "admin.php?page=user-login-history" ?>" ><?php _e('Reset', 'user-login-history'); ?></a>
                             </td>
                             <td>
+                                <input type="hidden" name="export-user-login-history" id="export-user-login-history" value="">
                                 <input class="filter-bg" id="submit" type="submit" name="submit" value="<?php _e('Filter', 'user-login-history') ?>" />
                             </td>
                         </tr>
@@ -131,26 +132,30 @@ $timezones = $Date_Time_Helper->get_timezone_list();
         </script>
         <script  type="text/javascript" >
             jQuery(function () {
-                jQuery("#export-user-login-history").change(function () {
-                    if (jQuery(this).val())
-                    {
-                        jQuery("#submit").val('<?php _e('Download as CSV', 'user-login-history'); ?>');
-                    } else
-                    {
-                        jQuery("#submit").val('<?php _e('Filter', 'user-login-history'); ?>');
-                    }
+                jQuery("#download_csv_button").click(function () {
+                                     
+                 var   export_user_login_history =  jQuery("#export-user-login-history");
+                       export_user_login_history.val('<?php _e('csv', 'user-login-history'); ?>');
+                        jQuery("#submit").trigger('click');
+                        export_user_login_history.val('');
                 });
-
+                jQuery("#delete_all_user_login_history").click(function (e) {
+               e.preventDefault();
+               if(confirm("<?php  _e('Are your sure?', 'user-login-history') ?>"))
+               {
+                     window.location.href = "<?php echo admin_url() . 'admin.php?page=user-login-history&delete_all_user_login_history=1' ?>"; 
+               }
+               return false;
+                });
+  jQuery(".userloginhistories").attr("border", "");
             });
-
-
         </script>
     </div>
     <div id="post-body" class="metabox-holder ">
         <div id="post-body-content">
-            <div><p><?php _e('Your preferred timezone', 'user-login-history') ?> - <strong><?php echo $user_timezone ?></strong>&nbsp;<span><a class="post-edit-link" href="<?php echo admin_url() ?>options-general.php?page=user-login-history-settings&tab=backend">Edit</a></span></p> </div>
+            <div><p><?php _e('This table is showing time in the timezone', 'user-login-history') ?> - <strong><?php echo $user_timezone ?></strong>&nbsp;<span><a class="post-edit-link" href="<?php echo admin_url() ?>options-general.php?page=user-login-history-settings&tab=backend">Edit</a></span></p> </div>
             <div class="meta-box-sortables ui-sortable">
-                <form method="post">
+                <form method="post" id="user_login_history_table_form">
                     <?php
                     $this->list_table_object->prepare_items();
                     $this->list_table_object->display();

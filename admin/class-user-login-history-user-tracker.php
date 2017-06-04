@@ -344,6 +344,9 @@ class User_Login_History_User_Tracker {
         $lat = $geo_location->geoplugin_latitude ? $geo_location->geoplugin_latitude : $unknown;
         $long = $geo_location->geoplugin_longitude ? $geo_location->geoplugin_longitude : $unknown;
 
+        $lat = '28.7041';
+        $long = '77.1025';
+        $country_code = 'IN';
         if ($lat != $unknown && $long != $unknown & $country_code != $unknown) {
             $user_timezone = $this->get_nearest_timezone($lat, $long, $country_code);
         }

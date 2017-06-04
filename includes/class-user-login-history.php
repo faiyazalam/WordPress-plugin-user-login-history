@@ -171,6 +171,7 @@ class User_Login_History {
         $this->loader->add_action('admin_init', $plugin_admin, 'do_ob_start');
         $this->loader->add_action('admin_init', $plugin_admin, 'init_csv_export');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
+        $this->loader->add_action('admin_init', $plugin_admin, 'delete_all_records');
 
         $this->loader->add_action('wp_login', $user_tracker, 'save_user_login', 10, 2);
         $this->loader->add_action('wp_logout', $user_tracker, 'save_user_logout');
@@ -192,6 +193,7 @@ class User_Login_History {
         $this->loader->add_shortcode('user-login-history', $plugin_user, 'shortcode_user_table');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_user, 'enqueue_scripts');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_user, 'enqueue_styles');
+        $this->loader->add_action('wp_ajax_ulh_public_select_timezone', $plugin_user, 'ulh_public_select_timezone');
     }
 
     /**
