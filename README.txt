@@ -16,28 +16,27 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Easily tracks user login with a set of multiple attributes like ip, login/logout/last-seen time, country, username, user role, browser, OS etc.
 
 == Description ==
-By this plugin you can track any visitor with the following attributes:
-
-<ul>
-  <li>Login Time</li>
+Easily track any visitor login with the following attributes:
+        <ol>
+            <li>Login Time</li>
             <li>Logout Time</li>
             <li>Last Seen Time</li>
             <li>Session Duration</li>
+            <li>User ID</li>
+            <li>Username</li>
             <li>IP Address</li>
             <li>Browser</li>
             <li>Operating System</li>
             <li>Current Role</li>
-            <li>Old Role</li>
+            <li>Old Role - the role while user gets loggedin</li>
             <li>Country Name</li>
             <li>Country Code</li>
             <li>Timezone</li>
-</ul>
+        </ol>
 
-
-
-Contribute to All My Free Projects at GitHub:
-You can contribute to this plugin as well as other projects just by requesting for new features, bug reports, or even pull requests!  
-https://github.com/faiyazalam/user-login-history
+<p>Do you want to translate this plugin to another language?</p>
+<p>I recommend using <a target="_blank" href="http://poedit.net">POEdit</a> or if you prefer to do it straight from the WordPress admin interface use <a target="_blank" href="https://wordpress.org/plugins/loco-translate/">Loco Translate</a>. 
+When you’re done, send me the file(s) and I’ll add it to the official plugin.</p>
 
 
 
@@ -50,8 +49,10 @@ https://github.com/faiyazalam/user-login-history
 
 
 == Screenshots ==
-1. User List with login details
+1. User List with login details for backend.
 2. Screen Options
-2. Plugin Settings
+3. Settings - Backend Options
+4. Settings - Frontend Options
+5. Shortcode - User List with login details for frontend.
 
 

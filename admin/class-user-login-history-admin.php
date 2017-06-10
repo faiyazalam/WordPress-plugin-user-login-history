@@ -163,8 +163,7 @@ PRIMARY KEY (`id`)
      * @since    1.4.1
      */
     public function add_admin_menu() {
-        add_options_page('User Login History Settings', __('User Login History', 'user-login-history'), 'manage_options', 'user-login-history-settings', array($this, 'create_admin_interface')
-        );
+       add_options_page('User Login History Settings', __('User Login History', 'user-login-history'), 'manage_options', 'user-login-history-settings', array($this, 'create_admin_interface'));
     }
 
     /**

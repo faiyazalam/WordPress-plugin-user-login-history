@@ -40,7 +40,6 @@ $timezones = User_Login_History_Date_Time_Helper :: get_timezone_list();
 <?php
 foreach ($timezones as $timezone) {
     ?>
-
                                 <option value="<?php print $timezone['zone'] ?>" <?php selected($user_timezone, $timezone['zone']); ?>>
     <?php echo $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")" ?>
                                 </option>

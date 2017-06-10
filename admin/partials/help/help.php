@@ -14,9 +14,7 @@
     <div class="user-login-history-right-col">
         <h2><?php _e('How to use User Login History Plugin?', 'user-login-history'); ?></h2>
         <ol>
-            <li>
-                <p><?php _e('After successful installation of the plugin, you need to relogin so that the plugin can track the attributes like ip address, browser etc.', 'user-login-history'); ?></p>
-            </li>
+           
             <li>
                 <p><?php _e('To see the tracked records in admin, click on the plugin menu shown in the left sidebar.', 'user-login-history'); ?></p>
             </li>
