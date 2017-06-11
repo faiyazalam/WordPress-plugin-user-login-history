@@ -276,15 +276,26 @@ PRIMARY KEY (`id`)
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment;filename=login_log_' . $suffix . '.csv');
         $fp = fopen('php://output', 'w');
-
+$unknown = 'Unknown';
+$new_fields = array('old_role', 'timezone');
         $i = 0;
         foreach ($data as $row) {
             $row['current_role'] = implode('', array_keys(unserialize($row['meta_value'])));
             unset($row['meta_value']);
+            unset($row['meta_key']);
+            unset($row['umeta_id']);
             //output header row
             if (0 == $i) {
                 fputcsv($fp, array_keys($row));
+            }      
+           
+            foreach ($new_fields as $new_field) {
+                if(isset($row[$new_field]) && "" == $row[$new_field])
+            {
+                    $row[$new_field] = $unknown;
+            } 
             }
+            
             fputcsv($fp, $row);
             $i++;
         }

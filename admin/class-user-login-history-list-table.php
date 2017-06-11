@@ -289,6 +289,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         $Date_Time_Helper = new User_Login_History_Date_Time_Helper();
         $timezone = get_user_meta($current_user->ID, ULH_PLUGIN_OPTION_PREFIX . "user_timezone", TRUE);
         $timezone = ("" != $timezone) ? $timezone : $Date_Time_Helper->get_default_timezone();
+        $unknown = 'Unknown';
 
         $current_date_time = $Date_Time_Helper->get_current_date_time();
 
@@ -303,7 +304,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
                 $user_data = get_userdata($item['user_id']);
                 return implode(',', $user_data->roles);
             case 'old_role':
-                return $item['old_role'];
+                return $item['old_role']?$item['old_role']:$unknown;
             case 'browser':
                 return $item[$column_name];
             case 'time_login':
@@ -313,7 +314,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             case 'ip_address':
                 return $item[$column_name];
             case 'timezone':
-                return $item[$column_name];
+                return $item[$column_name]?$item[$column_name]:$unknown;
             case 'operating_system':
                 return $item[$column_name];
             case 'country_name':
@@ -321,9 +322,8 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             case 'time_last_seen':
                 return $Date_Time_Helper->human_time_diff_from_now($item[$column_name], $timezone);
             case 'duration':
-                return $item['time_logout'] != '0000-00-00 00:00:00' ? date('H:i:s', strtotime($item['time_logout']) - strtotime($item['time_login'])) : 'Logged In';
-                ;
-            default:
+        return $item['time_logout'] != '0000-00-00 00:00:00' ? date('H:i:s', strtotime($item['time_logout']) - strtotime($item['time_login'])) : 'Logged In';
+               default:
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
     }

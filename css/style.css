@@ -1,0 +1,8 @@
+
+h1{ text-align:center; font-size:30px !important; text-transform:uppercase; padding:24px 0 12px 0 !important; color:#636363 !important;}
+.form-table td{padding:5px 9px 0 0px !important;}
+.textfield-bg{ width:100%; padding:5px 0 5px 10px; border:1px solid @ccc; background:#fff; font-size:14px;}
+.selectfield-bg{width:100%; height:37px !important; border:1px solid @ccc !important; padding-left:10px !important;  font-size:14px !important;}
+.go-bg{ width:100%; padding:9px 10px !important; background:#636363 !important; color:#fff; cursor:pointer; border:none !important; border-radius:3px; text-transform:uppercase;}
+.go-bg:hover{ background:#333 !important; }
+.manage-column,.check-column, .user_id, .user_login, .time_login, .time_logout, .duration, .time_last_seen, .ip_address, .browser, .operating_system, .country_name, .country_code, .role{ border-right:1px solid #e5e5e5 !important;}

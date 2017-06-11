@@ -16,7 +16,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Easily tracks user login with a set of multiple attributes like ip, login/logout/last-seen time, country, username, user role, browser, OS etc.
 
 == Description ==
-Easily track any visitor login with the following attributes:
+Easily tracks user login with the following attributes:
         <ol>
             <li>Login Time</li>
             <li>Logout Time</li>
@@ -34,11 +34,17 @@ Easily track any visitor login with the following attributes:
             <li>Timezone</li>
         </ol>
 
+Other Features:
+ <ol>
+            <li>Timezone</li>
+            <li>CSV Export</li>
+            <li>Editable timezone for listing table</li>
+            <li>Shortcode to show listing table</li>
+</ol>
+
 <p>Do you want to translate this plugin to another language?</p>
 <p>I recommend using <a target="_blank" href="http://poedit.net">POEdit</a> or if you prefer to do it straight from the WordPress admin interface use <a target="_blank" href="https://wordpress.org/plugins/loco-translate/">Loco Translate</a>. 
 When you’re done, send me the file(s) and I’ll add it to the official plugin.</p>
-
-
 
 == Installation ==
 <ul>
@@ -46,7 +52,6 @@ When you’re done, send me the file(s) and I’ll add it to the official plugin
 <li>Go to the tab "Upload" and choose the file "user-login-history.zip", click the button "Upload" to get the file uploaded.</li>
 <li>Lockup the plugin, and click "Activate" to get it active.</li>
 </ul>
-
 
 == Screenshots ==
 1. User List with login details for backend.
