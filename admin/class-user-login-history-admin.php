@@ -267,18 +267,24 @@ PRIMARY KEY (`id`)
         }
         $sql .= ' ORDER BY id DESC';
         $data = $wpdb->get_results($wpdb->prepare($sql, $get_values), 'ARRAY_A');
-        if (!$data) {
-            return;
-        }
+         
+       
         //date string to suffix the file nanme: month - day - year - hour - minute
         $suffix = date('n-j-y_H-i');
         // send response headers to the browser
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment;filename=login_log_' . $suffix . '.csv');
+        
+         if (!$data) {
+             _e('No Records Found','user-login-history');
+             exit;
+        }
+        
         $fp = fopen('php://output', 'w');
 $unknown = 'Unknown';
 $new_fields = array('old_role', 'timezone');
         $i = 0;
+      
         foreach ($data as $row) {
             $row['current_role'] = implode('', array_keys(unserialize($row['meta_value'])));
             unset($row['meta_value']);
