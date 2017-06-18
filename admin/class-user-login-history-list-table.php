@@ -227,7 +227,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
     public static function delete_record($id) {
         global $wpdb;
         $wpdb->delete(
-                self::$table, [ 'id' => $id], [ '%d']
+                self::$table, array('id' => $id), array('%d')
         );
     }
 
@@ -357,9 +357,9 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
 
         $title = '<strong>' . $item['user_id'] . '</strong>';
 
-        $actions = [
+        $actions = array(
             'delete' => sprintf('<a href="?page=%s&action=%s&record=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', absint($item['id']), $delete_nonce)
-        ];
+        );
 
         return $title . $this->row_actions($actions);
     }
@@ -371,7 +371,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * @return array
      */
     public function get_columns() {
-        $columns = [
+        $columns = array(
             'cb' => '<input type="checkbox" />',
             'user_id' => __('User Id', 'user-login-history'),
             'username' => __('Username', 'user-login-history'),
@@ -386,7 +386,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
             'timezone' => __('Timezone', 'user-login-history'),
             'time_login' => __('Login', 'user-login-history'),
             'time_logout' => __('Logout', 'user-login-history'),
-        ];
+        );
 
 
         return $columns;
@@ -423,9 +423,9 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * @return array
      */
     public function get_bulk_actions() {
-        $actions = [
+        $actions = array(
             'bulk-delete' => 'Delete'
-        ];
+        );
 
         return $actions;
     }
@@ -444,10 +444,10 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
         $current_page = $this->get_pagenum();
         $total_items = self::record_count();
 
-        $this->set_pagination_args([
+        $this->set_pagination_args(array(
             'total_items' => $total_items, //WE have to calculate the total number of items
             'per_page' => $per_page //WE have to determine how many items to show on a page
-        ]);
+        ));
 
         $this->items = self::get_rows($per_page, $current_page);
     }

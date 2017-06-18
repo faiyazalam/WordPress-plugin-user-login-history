@@ -40,8 +40,8 @@ class User_Login_History_Table_Page {
      * @since    1.4.1
      */
     public function __construct() {
-        add_filter('set-screen-option', [ __CLASS__, 'set_screen'], 10, 3);
-        add_action('admin_menu', [ $this, 'plugin_menu']);
+        add_filter('set-screen-option', array(__CLASS__, 'set_screen'), 10, 3);
+        add_action('admin_menu', array($this, 'plugin_menu'));
     }
 
     /**
@@ -61,10 +61,10 @@ class User_Login_History_Table_Page {
     public function plugin_menu() {
 
         $hook = add_menu_page(
-                "User Login History", __("User Login History", 'user-login-history'), 'manage_options', 'user-login-history', [ $this, 'admin_listing_page'], plugin_dir_url(__FILE__) . 'images/icon.png'
+                "User Login History", __("User Login History", 'user-login-history'), 'manage_options', 'user-login-history', array($this, 'admin_listing_page'), plugin_dir_url(__FILE__) . 'images/icon.png'
         );
 
-        add_action("load-$hook", [ $this, 'screen_option']);
+        add_action("load-$hook", array($this, 'screen_option'));
     }
 
     /**
@@ -80,11 +80,11 @@ class User_Login_History_Table_Page {
      */
     public function screen_option() {
         $option = 'per_page';
-        $args = [
+        $args = array(
             'label' => __('Show Records Per Page', 'user-login-history'),
             'default' => 20,
             'option' => 'rows_per_page'
-        ];
+        );
 
         add_screen_option($option, $args);
 

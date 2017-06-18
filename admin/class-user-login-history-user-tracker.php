@@ -344,9 +344,7 @@ class User_Login_History_User_Tracker {
         $lat = $geo_location->geoplugin_latitude ? $geo_location->geoplugin_latitude : $unknown;
         $long = $geo_location->geoplugin_longitude ? $geo_location->geoplugin_longitude : $unknown;
 
-        $lat = '28.7041';
-        $long = '77.1025';
-        $country_code = 'IN';
+       
         if ($lat != $unknown && $long != $unknown & $country_code != $unknown) {
             $user_timezone = $this->get_nearest_timezone($lat, $long, $country_code);
         }
@@ -389,6 +387,11 @@ class User_Login_History_User_Tracker {
         $user_id = $current_user->ID;
         $table = $this->table;
         $last_id = $this->get_last_insert_id();
+        
+        if(!$user_id || !$last_id)
+        {
+            return;
+        }
         $sql = " update $table  set time_logout='$time_logout', time_last_seen='$time_logout' where id=$last_id ";
         $wpdb->query($sql);
         //unset session for this plugin after user gets logged out.
@@ -433,7 +436,8 @@ class User_Login_History_User_Tracker {
         $current_date = $this->get_current_date_time();
         $user_id = $current_user->ID;
         $last_id = $this->get_last_insert_id();
-        if (!$user_id) {
+        if(!$user_id || !$last_id)
+        {
             return;
         }
         $sql = " update $table set time_last_seen='$current_date' where id=$last_id ";
