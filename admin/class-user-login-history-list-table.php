@@ -34,11 +34,11 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      */
     public function __construct() {
         global $table_prefix;
-        parent::__construct([
+        parent::__construct(array(
             'singular' => __('User Login History', 'user-login-history'), //singular name of the listed records
             'plural' => __('User Login Histories', 'user-login-history'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
-        ]);
+        ));
 
 
         self::$table = $table_prefix . ULH_TABLE_NAME;
