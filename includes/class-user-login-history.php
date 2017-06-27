@@ -168,13 +168,14 @@ class User_Login_History {
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
         $this->loader->add_action('admin_init', $plugin_admin, 'settings_api_init');
         $this->loader->add_action('admin_init', $plugin_admin, 'check_update_version');
-        $this->loader->add_action('admin_init', $plugin_admin, 'do_ob_start');
+        $this->loader->add_action('init', $plugin_admin, 'do_ob_start');
         $this->loader->add_action('admin_init', $plugin_admin, 'init_csv_export');
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
         $this->loader->add_action('admin_init', $plugin_admin, 'delete_all_records');
 
         $this->loader->add_action('wp_login', $user_tracker, 'save_user_login', 10, 2);
         $this->loader->add_action('wp_logout', $user_tracker, 'save_user_logout');
+        $this->loader->add_action('init', $user_tracker, 'do_session_start');
         $this->loader->add_action('after_setup_theme', $user_tracker, 'update_time_last_seen');
         $this->loader->add_action('plugins_loaded', $user_tracker, 'create_table');
     }

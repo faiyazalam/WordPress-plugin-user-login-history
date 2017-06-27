@@ -85,7 +85,7 @@ class User_Login_History_User_Tracker {
         $this->last_insert_id_key = 'last_insert_id_key';
         $this->option_prefix = $option_prefix;
         $this->user_meta_timezone = $this->option_prefix . "user_timezone";
-        $this->do_session_start();
+      
     }
 
     /**
@@ -285,8 +285,8 @@ class User_Login_History_User_Tracker {
      *
      * @since    1.4.1
      */
-    private function do_session_start() {
-        if (!session_id()) {
+            public function do_session_start() {
+        if ("" == session_id()) {
             session_start();
         }
     }

@@ -64,7 +64,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history.php'
  * @since    1.4.1
  */
 function run_User_Login_History() {
-
     $plugin = new User_Login_History();
     $plugin->run();
 }
