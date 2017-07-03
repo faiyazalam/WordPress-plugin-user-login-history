@@ -5,9 +5,9 @@ This is a beta version. To download stable version visit: https://wordpress.org/
 Contributors: faiyazalam
 Tags: login, last seen, history, active login, last login, ip, browser, country, track, admin, member, members, profile, role, roles, shortcode, user, users, timezone
 Requires at least: 3.0.1
-Tested up to: 4.7
-Stable tag: 1.4
-Version: 1.4.1
+Tested up to: 4.8
+Stable tag: 1.5
+Version: 1.5
 Author: Faiyaz Alam
 Author URI: https://github.com/faiyazalam/
 License: GPLv2 or later

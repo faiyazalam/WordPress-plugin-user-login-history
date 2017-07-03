@@ -276,7 +276,7 @@ PRIMARY KEY (`id`)
         header('Content-Disposition: attachment;filename=login_log_' . $suffix . '.csv');
         
          if (!$data) {
-             _e('No Records Found','user-login-history');
+             _e('No Records Found!','user-login-history');
              exit;
         }
         

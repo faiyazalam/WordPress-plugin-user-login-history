@@ -272,7 +272,7 @@ class User_Login_History_List_Table extends User_Login_History_WP_List_Table {
      * @access   public
      */
     public function no_items() {
-        _e('No records avaliable.', 'user-login-history');
+        _e('No Records Found!', 'user-login-history');
     }
 
     /**
