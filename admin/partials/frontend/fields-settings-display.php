@@ -21,6 +21,7 @@ $options['country'] = isset($options['country']) ? $options['country'] : FALSE;
 $options['last_seen'] = isset($options['last_seen']) ? $options['last_seen'] : FALSE;
 $options['login'] = isset($options['login']) ? $options['login'] : FALSE;
 $options['logout'] = isset($options['logout']) ? $options['logout'] : FALSE;
+$options['duration'] = isset($options['duration']) ? $options['duration'] : FALSE;
 ?>
 <input type="checkbox" name="<?php echo $option_name;?>[old_role]" value="1"  <?php checked($options['old_role'], 1); ?> /><?php _e('Old Role', 'user-login-history')?></hr></hr>
 <input type="checkbox" name="<?php echo $option_name;?>[ip_address]" value="1"  <?php checked($options['ip_address'], 1); ?> /><?php _e('IP Address', 'user-login-history')?></hr></hr>

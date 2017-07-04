@@ -4,12 +4,22 @@ if (!$current_user->ID) {
     _e('Error- Unable to find user id.', 'user-login-history');
     return;
 }
-
+ $unknown = __('Unknown', 'user-login-history');
 $options = get_option(ULH_PLUGIN_OPTION_PREFIX.'frontend_fields');
 if (!$options) {
     _e('No Fields has been selected from admin panel. Please select fields from frontend option tab of the plugin setting.', 'user-login-history');
     return;
 }
+
+$options['old_role'] = isset($options['old_role']) ? $options['old_role'] : FALSE;
+$options['ip_address'] = isset($options['ip_address']) ? $options['ip_address'] : FALSE;
+$options['browser'] = isset($options['browser']) ? $options['browser'] : FALSE;
+$options['operating_system'] = isset($options['operating_system']) ? $options['operating_system'] : FALSE;
+$options['country'] = isset($options['country']) ? $options['country'] : FALSE;
+$options['last_seen'] = isset($options['last_seen']) ? $options['last_seen'] : FALSE;
+$options['login'] = isset($options['login']) ? $options['login'] : FALSE;
+$options['logout'] = isset($options['logout']) ? $options['logout'] : FALSE;
+$options['duration'] = isset($options['duration']) ? $options['duration'] : FALSE;
 
 $Public_List_Table_Helper = new User_Login_History_Public_List_Table_Helper();
 $user_timezone = get_user_meta($current_user->ID, ULH_PLUGIN_OPTION_PREFIX . "user_timezone", TRUE);
@@ -43,6 +53,7 @@ $paginations = $Paginator_Helper->pagination($options_pagination);
 $page_links = $paginations['page_links'];
 $logins = $paginations['rows'];
 $timezones = User_Login_History_Date_Time_Helper :: get_timezone_list();
+
 ?>
 <form name="user_login_history_public_filter_form" method="get" action="<?php echo $_SERVER['REQUEST_URI'] ?>">
     <table width="100%" class="form-table">
@@ -145,6 +156,7 @@ foreach ($timezones as $timezone) {
         if (!empty($logins)) {
             ?>
             <?php
+           
             foreach ($logins as $login) {
                 $time_login = $Date_Time_Helper->convert_to_user_timezone($login->time_login, '', $user_timezone);
                 $duration = "Loggedin";
@@ -161,22 +173,22 @@ foreach ($timezones as $timezone) {
                     <?php
                     if ($options['old_role']) {
                         ?>
-                        <td ><?php echo $login->old_role; ?></td>
+                        <td ><?php echo $login->old_role?$login->old_role:$unknown; ?></td>
                         <?php
                     }
                     if ($options['ip_address']) {
                         ?>
-                        <td ><?php echo $login->ip_address; ?></td>
+                        <td ><?php echo $login->ip_address?$login->ip_address:$unknown; ?></td>
                         <?php
                     }
                     if ($options['browser']) {
                         ?>
-                        <td ><?php echo $login->browser; ?></td>
+                        <td ><?php echo $login->browser?$login->browser:$unknown; ?></td>
                         <?php
                     }
                     if ($options['operating_system']) {
                         ?>
-                        <td ><?php echo $login->operating_system; ?></td>
+                        <td ><?php echo $login->operating_system?$login->operating_system:$unknown; ?></td>
                         <?php
                     }
                     if ($options['country']) {
@@ -192,7 +204,7 @@ foreach ($timezones as $timezone) {
                     if ($options['last_seen']) {
                         ?>
                         <td ><?php
-                            echo $Date_Time_Helper->human_time_diff_from_now($login->time_last_seen, $user_timezone);
+                            echo $login->time_last_seen?$Date_Time_Helper->human_time_diff_from_now($login->time_last_seen, $user_timezone):$unknown;
                             ;
                             ?></td>
                         <?php
@@ -213,7 +225,7 @@ foreach ($timezones as $timezone) {
                 $no += 1;
             }
         } else {
-            echo '<tr><td>'.__('No Records Found !!!', 'user-login-history').'</tr></td>';
+            echo '<tr><td>'.__('No Records Found!', 'user-login-history').'</tr></td>';
         }
         ?>
     </tbody>
@@ -251,8 +263,6 @@ foreach ($timezones as $timezone) {
             });
          });
       </script>
-      
-      
 <?php
 if ($page_links) {
     echo '<div class="tablenav"><div class="tablenav-pages" style="margin: 1em 0">' . $page_links . '</div></div>';
