@@ -97,9 +97,12 @@ PRIMARY KEY (`id`)
         }
 
         if ('admin.php' == $pagenow && isset($_GET['page']) && 'user-login-history' == $_GET['page']) {
-            wp_enqueue_style($this->name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+            wp_enqueue_style($this->name . '-admin-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
             wp_enqueue_style($this->name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
-            wp_enqueue_script($this->name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+            wp_enqueue_script($this->name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+            wp_enqueue_script($this->name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+             wp_localize_script( $this->name . '-admin-custom.js', 'ulh_admin_custom_object',
+          array( 'delete_confirm_message' => __('Are your sure?', 'user-login-history') ) );
         }
     }
 

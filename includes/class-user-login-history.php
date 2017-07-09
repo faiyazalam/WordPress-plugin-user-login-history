@@ -177,8 +177,8 @@ class User_Login_History {
         $this->loader->add_action('wp_logout', $user_tracker, 'save_user_logout');
         $this->loader->add_action('init', $user_tracker, 'do_session_start');
         $this->loader->add_action('after_setup_theme', $user_tracker, 'update_time_last_seen'); // auto update last seen time, sometime it does not work
-        $this->loader->add_action('init', $user_tracker, 'update_time_last_seen');// update update last seen time only after redirection
-        $this->loader->add_action('plugins_loaded', $user_tracker, 'create_table');
+        $this->loader->add_action('init', $user_tracker, 'update_time_last_seen');// update last seen time only after redirection
+        $this->loader->add_action('plugins_loaded', $user_tracker, 'create_table');// Create listing table on admin panel.
     }
 
     /**

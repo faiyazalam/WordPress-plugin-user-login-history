@@ -61,7 +61,20 @@ class User_Login_History_Public {
      */
     public function enqueue_scripts() {
 
-        wp_register_script($this->name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+       wp_register_script($this->name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+       wp_register_script($this->name . '-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+       wp_localize_script( $this->name . '-custom.js', 'ulh_custom_object',
+          array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+    }
+    
+    /**
+     * Used to add some code in frontend header.
+     *
+     * @since    1.5
+     */
+    public function ulh_head() {
+
+      echo 'thissssdfsddsfd';
     }
 
     /**

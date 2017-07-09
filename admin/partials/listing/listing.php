@@ -1,5 +1,6 @@
+<?php require_once plugin_dir_path(dirname(__FILE__)) . 'about/about-author.php'; ?>
+<?php require_once plugin_dir_path(dirname(__FILE__)) . 'about/plugin-notice.php'; ?>
 <?php
-require_once plugin_dir_path(dirname(__FILE__)) . 'about/about-author.php';
 global $current_user;
 $Date_Time_Helper = new User_Login_History_Date_Time_Helper();
 $user_timezone = get_user_meta($current_user->ID, ULH_PLUGIN_OPTION_PREFIX . "user_timezone", TRUE);
@@ -25,7 +26,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                     $date_types = array('login' => __("Login", "user-login-history"), 'logout' => __("Logout", "user-login-history"));
                                     foreach ($date_types as $date_type_key => $date_type) {
                                         ?>
-                                    <option value="<?php print $date_type_key ?>" <?php selected(isset($_GET['date_type'])?$_GET['date_type']:"", $date_type_key); ?>>
+                                        <option value="<?php print $date_type_key ?>" <?php selected(isset($_GET['date_type']) ? $_GET['date_type'] : "", $date_type_key); ?>>
                                             <?php echo $date_type ?>
                                         </option>
                                     <?php } ?>
@@ -40,15 +41,10 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                             <td><input placeholder="<?php _e("Enter Username", "user-login-history") ?>" name="username" value="<?php echo isset($_GET['username']) ? $_GET['username'] : "" ?>" class="textfield-bg"></td>
                             <td><input placeholder="<?php _e("Enter Country", "user-login-history") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? $_GET['country_name'] : "" ?>" class="textfield-bg"></td>
                             <td><input placeholder="<?php _e("Enter Browser", "user-login-history") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? $_GET['browser'] : "" ?>" class="textfield-bg"></td>
-                            <td><input placeholder="<?php _e("Enter OS", "user-login-history") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? $_GET['operating_system'] : "" ?>" class="textfield-bg"></td>
+                            <td><input placeholder="<?php _e("Enter Operating System", "user-login-history") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? $_GET['operating_system'] : "" ?>" class="textfield-bg"></td>
                             <td><input placeholder="<?php _e("Enter IP Address", "user-login-history") ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? $_GET['ip_address'] : "" ?>" class="textfield-bg"></td>
-                          
-                           
-
                         </tr>
                     </tbody></table>
-                
-                
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
                         <tr>
@@ -58,7 +54,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                     <?php
                                     foreach ($timezones as $timezone) {
                                         ?>
-                                    <option value="<?php print $timezone['zone'] ?>" <?php selected(isset($_GET['timezone'])?$_GET['timezone']:"", $timezone['zone']); ?>>
+                                        <option value="<?php print $timezone['zone'] ?>" <?php selected(isset($_GET['timezone']) ? $_GET['timezone'] : "", $timezone['zone']); ?>>
                                             <?php echo $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")" ?>
                                         </option>
                                     <?php } ?>
@@ -81,11 +77,8 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                                     wp_dropdown_roles($selected_old_role);
                                     ?>
                                 </select></td>
-
                         </tr>
                     </tbody></table>
-                
-                
                 <table class="wp-list-table widefat fixed striped">
                     <tbody>
                         <tr>
@@ -94,7 +87,7 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                             </td>
                             <td>&nbsp;
                             </td>
-                             <td>&nbsp;
+                            <td>&nbsp;
                             </td>
                             <td>&nbsp;
                             </td>
@@ -112,45 +105,8 @@ $timezones = $Date_Time_Helper->get_timezone_list();
                     </tbody></table>
             </form>
         </div>
-
         <br class="clear">
-        <script>
-            jQuery(function () {
-                jQuery(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
-
-            });
-
-            jQuery(function () {
-                jQuery("#date_to").datepicker({dateFormat: 'yy-mm-dd'});
-                jQuery("#date_from").datepicker({dateFormat: 'yy-mm-dd'}).bind("change", function () {
-                    var minValue = jQuery(this).val();
-                    minValue = jQuery.datepicker.parseDate("yy-mm-dd", minValue);
-                    minValue.setDate(minValue.getDate() + 0);
-                    jQuery("#date_to").datepicker("option", "minDate", minValue);
-                })
-            });
-        </script>
-        <script  type="text/javascript" >
-            jQuery(function () {
-                jQuery("#download_csv_button").click(function () {
-                                     
-                 var   export_user_login_history =  jQuery("#export-user-login-history");
-                       export_user_login_history.val('<?php _e('csv', 'user-login-history'); ?>');
-                        jQuery("#submit").trigger('click');
-                        export_user_login_history.val('');
-                });
-                jQuery("#delete_all_user_login_history").click(function (e) {
-               e.preventDefault();
-               if(confirm("<?php  _e('Are your sure?', 'user-login-history') ?>"))
-               {
-                     window.location.href = "<?php echo admin_url() . 'admin.php?page=user-login-history&delete_all_user_login_history=1' ?>"; 
-               }
-               return false;
-                });
-  jQuery(".userloginhistories").attr("border", "");
-            });
-        </script>
-    </div>
+       </div>
     <div id="post-body" class="metabox-holder ">
         <div id="post-body-content">
             <div><p><?php _e('This table is showing time in the timezone', 'user-login-history') ?> - <strong><?php echo $user_timezone ?></strong>&nbsp;<span><a class="post-edit-link" href="<?php echo admin_url() ?>options-general.php?page=user-login-history-settings&tab=backend">Edit</a></span></p> </div>

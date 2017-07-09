@@ -16,10 +16,10 @@
         <ol>
            
             <li>
-                <p><?php _e('To see the tracked records in admin, click on the plugin menu shown in the left sidebar.', 'user-login-history'); ?></p>
+                <p><?php _e('To see all the tracked records in admin, click on the plugin menu shown in the left sidebar.', 'user-login-history'); ?></p>
             </li>
             <li>
-                <p><?php _e('To see the tracked records in frontend, use the following shortcode in your template file:', 'user-login-history'); ?> 
+                <p><?php _e('To see all the tracked records of current loggedin user in frontend, use the following shortcode in your template file:', 'user-login-history'); ?> 
                 <pre><code>&lt;?php do_shortcode('[user-login-history]'); ?&gt;</code></pre>
                 </p>
             </li>

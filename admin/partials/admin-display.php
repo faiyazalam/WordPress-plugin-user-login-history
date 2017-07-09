@@ -13,6 +13,7 @@
 <div class="wrap">
     <h1>Settings :: <?php _e(ucwords(str_replace("-", " ", ULH_PLUGIN_NAME)), 'user-login-history');?></h1>
     <?php require_once plugin_dir_path(dirname(__FILE__)) . 'partials/about/about-author.php'; ?>
+    <?php require_once plugin_dir_path(dirname(__FILE__)) . 'partials/about/plugin-notice.php'; ?>
     <h2 class="nav-tab-wrapper">
         <?php
         $tabs = array(

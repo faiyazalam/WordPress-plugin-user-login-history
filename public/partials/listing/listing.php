@@ -231,40 +231,11 @@ foreach ($timezones as $timezone) {
     </tbody>
 </table>
 
-<script>
-    jQuery(function () {
-        jQuery(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
 
-    });
-
-    jQuery(function () {
-        jQuery("#date_to").datepicker({dateFormat: 'yy-mm-dd'});
-        jQuery("#date_from").datepicker({dateFormat: 'yy-mm-dd'}).bind("change", function () {
-            var minValue = jQuery(this).val();
-            minValue = jQuery.datepicker.parseDate("yy-mm-dd", minValue);
-            minValue.setDate(minValue.getDate() + 0);
-            jQuery("#date_to").datepicker("option", "minDate", minValue);
-        })
-    });
-</script>
-
-<script type = "text/javascript" language = "javascript">
-         jQuery(document).ready(function() {
-             var ulh_ajax_url = "<?php echo admin_url('admin-ajax.php')?>";
-            jQuery("#select_timezone").change(function(){
-               jQuery.ajax( {
-                  url:ulh_ajax_url,
-                  method:'post',
-                  data:{timezone:jQuery(this).val(),  action:'ulh_public_select_timezone'},
-                  success:function() {
-                    window.location.reload();
-                  }
-               });
-            });
-         });
-      </script>
 <?php
 if ($page_links) {
     echo '<div class="tablenav"><div class="tablenav-pages" style="margin: 1em 0">' . $page_links . '</div></div>';
 }
+wp_enqueue_script($this->name . '-jquery-ui.min.js');
+wp_enqueue_script($this->name . '-custom.js');
 ?>
