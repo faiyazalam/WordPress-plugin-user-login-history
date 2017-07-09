@@ -18,4 +18,4 @@ if(false == $plugin_notice || "" == $plugin_notice || ctype_space($plugin_notice
 }
 ?>
 <div class="update-nag"><p><?php echo $plugin_notice ?></p></div>
-<div><p>The above notice will be removed automatically.</p></div>
+<div><p><?php _e('The above notice will be removed automatically.', 'user-login-history')?></p></div>
