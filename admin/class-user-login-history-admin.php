@@ -101,8 +101,10 @@ PRIMARY KEY (`id`)
             wp_enqueue_style($this->name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
             wp_enqueue_script($this->name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
             wp_enqueue_script($this->name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
-             wp_localize_script( $this->name . '-admin-custom.js', 'ulh_admin_custom_object',
-          array( 'delete_confirm_message' => __('Are your sure?', 'user-login-history') ) );
+            wp_localize_script( $this->name . '-admin-custom.js', 'ulh_admin_custom_object', array( 
+                'delete_confirm_message' => __('Are your sure?', 'user-login-history'),
+                'admin_url' => admin_url(),
+                ) );
         }
     }
 

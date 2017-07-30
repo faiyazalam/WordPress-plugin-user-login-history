@@ -20,7 +20,7 @@ jQuery(function () {
         e.preventDefault();
         if (confirm(ulh_admin_custom_object.delete_confirm_message))
         {
-            window.location.href = "<?php echo admin_url() . 'admin.php?page=user-login-history&delete_all_user_login_history=1' ?>";
+            window.location.href = ulh_admin_custom_object.admin_url+'admin.php?page=user-login-history&delete_all_user_login_history=1';
         }
         return false;
     });
