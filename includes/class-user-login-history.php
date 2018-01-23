@@ -4,9 +4,9 @@
  * The file that defines the core plugin class
  *
  * A class definition that includes attributes and functions used across both the
- * public-facing side of the site and the dashboard.
+ * public-facing side of the site and the admin area.
  *
- * @link       http://
+ * @link       https://github.com/faiyazalam
  * @since      1.0.0
  *
  * @package    User_Login_History
@@ -16,7 +16,7 @@
 /**
  * The core plugin class.
  *
- * This is used to define internationalization, dashboard-specific hooks, and
+ * This is used to define internationalization, admin-specific hooks, and
  * public-facing site hooks.
  *
  * Also maintains the unique identifier of this plugin as well as the current
@@ -25,7 +25,7 @@
  * @since      1.0.0
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam
+ * @author     Er Faiyaz Alam <support@userloginhistory.com>
  */
 class User_Login_History {
 
@@ -44,9 +44,11 @@ class User_Login_History {
      *
      * @since    1.0.0
      * @access   protected
-     * @var      string    $User_Login_History    The string used to uniquely identify this plugin.
+     * @var      string    $plugin_name    The string used to uniquely identify this plugin.
      */
-    protected $User_Login_History;
+    protected $plugin_name;
+    protected $plugin_table_name;
+    protected $plugin_option_prefix;
 
     /**
      * The current version of the plugin.
@@ -57,34 +59,32 @@ class User_Login_History {
      */
     protected $version;
 
-        /**
-     * The option prefix of this plugin.
-     *
-     * @since    1.4.1
-     * @access   private
-     * @var      string    $version   To be used with options like user meta key, key for option table etc. for the plugin.
-     */
-    private $option_prefix;
-
     /**
      * Define the core functionality of the plugin.
      *
      * Set the plugin name and the plugin version that can be used throughout the plugin.
-     * Load the dependencies, define the locale, and set the hooks for the Dashboard and
+     * Load the dependencies, define the locale, and set the hooks for the admin area and
      * the public-facing side of the site.
      *
      * @since    1.0.0
      */
     public function __construct() {
-
-        $this->User_Login_History = ULH_PLUGIN_NAME;
-          $this->option_prefix = ULH_PLUGIN_OPTION_PREFIX;
-        $this->version = ULH_PLUGIN_VERSION;
+        if (defined('USER_LOGIN_HISTORY_VERSION')) {
+            $this->version = USER_LOGIN_HISTORY_VERSION;
+        } else {
+            $this->version = '1.0.0';
+        }
+        $this->plugin_name = 'user-login-history';
+        $this->plugin_table_name = USER_LOGIN_HISTORY_TABLE_NAME;
+        $this->plugin_option_prefix = USER_LOGIN_HISTORY_OPTION_PREFIX;
 
         $this->load_dependencies();
         $this->set_locale();
         $this->define_admin_hooks();
-        $this->define_public_hooks();
+
+        if (!is_admin()) {
+            $this->define_public_hooks();
+        }
     }
 
     /**
@@ -94,7 +94,7 @@ class User_Login_History {
      *
      * - User_Login_History_Loader. Orchestrates the hooks of the plugin.
      * - User_Login_History_i18n. Defines internationalization functionality.
-     * - User_Login_History_Admin. Defines all hooks for the dashboard.
+     * - User_Login_History_Admin. Defines all hooks for the admin area.
      * - User_Login_History_Public. Defines all hooks for the public side of the site.
      *
      * Create an instance of the loader which will be used to register the hooks
@@ -104,6 +104,8 @@ class User_Login_History {
      * @access   private
      */
     private function load_dependencies() {
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-error-handler.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-date-time-helper.php';
 
         /**
          * The class responsible for orchestrating the actions and filters of the
@@ -116,22 +118,24 @@ class User_Login_History {
          * of the plugin.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-i18n.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-paginator-helper.php';
 
         /**
-         * The class responsible for defining all actions that occur in the Dashboard.
+         * The class responsible for defining all actions that occur in the admin area.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public-list-table-helper.php';
- /**
-         * The class responsible for tracking user login.
+
+        /**
+         * The class responsible for defining all actions that occur in the public-facing
+         * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-user-tracker.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public.php';
 
-         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-date-time-helper.php';
 
-          $this->loader = new User_Login_History_Loader();
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-user-tracker.php';
+
+
+
+        $this->loader = new User_Login_History_Loader();
     }
 
     /**
@@ -146,13 +150,12 @@ class User_Login_History {
     private function set_locale() {
 
         $plugin_i18n = new User_Login_History_i18n();
-        $plugin_i18n->set_domain($this->get_User_Login_History());
 
         $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
     }
 
     /**
-     * Register all of the hooks related to the dashboard functionality
+     * Register all of the hooks related to the admin area functionality
      * of the plugin.
      *
      * @since    1.0.0
@@ -160,42 +163,36 @@ class User_Login_History {
      */
     private function define_admin_hooks() {
 
-        $plugin_admin = new User_Login_History_Admin($this->get_User_Login_History(), $this->get_version(), $this->get_option_prefix());
+        $plugin_admin = new User_Login_History_Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_table_name(), $this->get_plugin_option_prefix());
+  
 
-        $user_tracker = new User_Login_History_User_Tracker($this->get_User_Login_History(), $this->get_version(), $this->get_option_prefix());
+        if (is_admin()) {
+            $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+            $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        }
 
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_menu', $plugin_admin, 'add_admin_menu');
-        $this->loader->add_action('admin_init', $plugin_admin, 'settings_api_init');
-        $this->loader->add_action('admin_init', $plugin_admin, 'check_update_version');
-        $this->loader->add_action('init', $plugin_admin, 'do_ob_start');
-        $this->loader->add_action('admin_init', $plugin_admin, 'init_csv_export');
-        $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-        $this->loader->add_action('admin_init', $plugin_admin, 'delete_all_records');
+//hooks for admin as well as public
+          $this->loader->add_action('wp_login', $plugin_admin, 'user_login', 10, 2);
+        $this->loader->add_action('wp_logout', $plugin_admin, 'user_logout');
+        $this->loader->add_action('wp_login_failed', $plugin_admin, 'user_login_failed');
+        $this->loader->add_action('init', $plugin_admin, 'update_user_time_last_seen');
+      $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
 
-        $this->loader->add_action('wp_login', $user_tracker, 'save_user_login', 10, 2);
-        $this->loader->add_action('wp_logout', $user_tracker, 'save_user_logout');
-        $this->loader->add_action('init', $user_tracker, 'do_session_start');
-        $this->loader->add_action('after_setup_theme', $user_tracker, 'update_time_last_seen'); // auto update last seen time, sometime it does not work
-        $this->loader->add_action('init', $user_tracker, 'update_time_last_seen');// update last seen time only after redirection
-        $this->loader->add_action('plugins_loaded', $user_tracker, 'create_table');// Create listing table on admin panel.
+        $this->loader->add_action('set_logged_in_cookie', $plugin_admin, 'set_user_session_token', 10, 6);
     }
 
     /**
-     * Register all of the hooks related to the frontend functionality
+     * Register all of the hooks related to the public-facing functionality
      * of the plugin.
      *
-     * @since    1.4.1
+     * @since    1.0.0
      * @access   private
      */
     private function define_public_hooks() {
+        $plugin_public = new User_Login_History_Public($this->get_plugin_name(), $this->get_version(), $this->get_plugin_table_name(), $this->get_plugin_option_prefix());
 
-        $plugin_user = new User_Login_History_Public($this->get_User_Login_History(), $this->get_version());
-
-        $this->loader->add_shortcode('user-login-history', $plugin_user, 'shortcode_user_table');
-        $this->loader->add_action('wp_enqueue_scripts', $plugin_user, 'enqueue_scripts');
-        $this->loader->add_action('wp_enqueue_scripts', $plugin_user, 'enqueue_styles');
-        $this->loader->add_action('wp_ajax_ulh_public_select_timezone', $plugin_user, 'ulh_public_select_timezone');
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
     }
 
     /**
@@ -214,8 +211,8 @@ class User_Login_History {
      * @since     1.0.0
      * @return    string    The name of the plugin.
      */
-    public function get_User_Login_History() {
-        return $this->User_Login_History;
+    public function get_plugin_name() {
+        return $this->plugin_name;
     }
 
     /**
@@ -238,8 +235,12 @@ class User_Login_History {
         return $this->version;
     }
 
-    public function get_option_prefix() {
-        return $this->option_prefix;
+    public function get_plugin_table_name() {
+        return $this->plugin_table_name;
+    }
+
+    public function get_plugin_option_prefix() {
+        return $this->plugin_option_prefix;
     }
 
 }

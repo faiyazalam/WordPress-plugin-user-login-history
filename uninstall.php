@@ -1,9 +1,6 @@
 <?php
 
 /**
- * NOTICE: This file is kept as a safety-measure on my part (the developer of this plugin).
- * I may need to use it in a later update and reading the link below makes me think I might as well leave it here for now!
- *
  * Fired when the plugin is uninstalled.
  *
  * When populating this file, consider the following flow
@@ -23,9 +20,9 @@
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
  * @link       https://github.com/faiyazalam
- * @since      1.4.1
+ * @since      1.0.0
  *
- * @package    User Login History
+ * @package    User_Login_History
  */
 
 // If uninstall not called from WordPress, then exit.

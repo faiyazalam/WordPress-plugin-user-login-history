@@ -1,50 +1,118 @@
 <?php
+
 /**
  * Fired during plugin activation
  *
  * @link       https://github.com/faiyazalam
- * @since      1.4.1
+ * @since      1.0.0
  *
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam
+ */
+
+/**
+ * Fired during plugin activation.
+ *
+ * This class defines all code necessary to run during the plugin's activation.
+ *
+ * @since      1.0.0
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
+ * @author     Er Faiyaz Alam <support@userloginhistory.com>
  */
 class User_Login_History_Activator {
 
-    public static function activate() {
+	/**
+	 * Short Description. (use period)
+	 *
+	 * Long Description.
+	 *
+	 * @since    1.0.0
+	 */
+	public static function activate($network_wide) {
+        global $wpdb;
+        if (is_multisite() && $network_wide) {
+            // Get all blogs from current network the network and activate plugin on each one
+            $site_id = get_current_network_id();
+            $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs where site_id = $site_id");
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
+                self:: on_plugin_activate();
+                restore_current_blog();
+            }
+        } else {
+            self:: on_plugin_activate();
+        }
+    }
+
+    /**
+     * Creates plugin table and options 
+     */
+    public static function on_plugin_activate() {
+        self::create_table();
+        self::update_options();
+    }
+    
+/**
+ * Create main table for the plugin.
+ */
+    public static function create_table() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
-        $table = $wpdb->prefix . ULH_TABLE_NAME;
+        $table = $wpdb->prefix . USER_LOGIN_HISTORY_TABLE_NAME;
 
-        $sql = "CREATE TABLE $table (
-id int(11) NOT NULL AUTO_INCREMENT,
-user_id int(11) ,
-`username` varchar(100) NOT NULL,
+       $sql = "CREATE TABLE $table (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`session_token` varchar(200) NOT NULL,
+`user_id` int(11) NOT NULL,
+`username` varchar(200) NOT NULL,
 `time_login` datetime NOT NULL,
-`time_logout` datetime NOT NULL,
+`time_logout` datetime NULL,
 `time_last_seen` datetime NOT NULL,
-`ip_address` varchar(20) NOT NULL,
-`browser` varchar(100) NOT NULL,
-`operating_system` varchar(100) NOT NULL,
-`country_name` varchar(100) NOT NULL,
-`country_code` varchar(20) NOT NULL	,
-`timezone` varchar(20) NOT NULL	,
-`old_role` varchar(200) NOT NULL	, 
-PRIMARY KEY (`id`)
+`ip_address` varchar(200) NOT NULL,
+`browser` varchar(200) NOT NULL,
+`operating_system` varchar(200) NOT NULL,
+`country_name` varchar(200) NOT NULL,
+`country_code` varchar(200) NOT NULL,
+`timezone` varchar(200) NOT NULL,
+`old_role` varchar(200) NOT NULL, 
+`user_agent` text NOT NULL, 
+`login_status` varchar(50) NOT NULL, 
+`is_super_admin` INT(1) NOT NULL, 
+PRIMARY KEY (`id`),
+KEY `session_token` (`session_token`)
 ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta($sql);
+    }
+
+/**
+ * Create table whenever a new blog is created
+ */
+    public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
+        if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
+            switch_to_blog($blog_id);
+            self:: create_table();
+              self::update_options();
+            restore_current_blog();
+        }
+    }
+    
+/**
+ * Update plugin options.
+ */
+    public static function update_options() {
         update_option(ULH_PLUGIN_OPTION_PREFIX . 'version', ULH_PLUGIN_VERSION);
-       update_option(ULH_PLUGIN_OPTION_PREFIX.'frontend_fields', array(
-           'ip_address'=>1,
-           'old_role'=>1, 
-           'country'=>1, 
-           'login'=>1, 
-           'logout'=>1,
-           'duration'=>1,
-           ));
-       update_option(ULH_PLUGIN_OPTION_PREFIX.'frontend_limit', '20');
+        update_option(ULH_PLUGIN_OPTION_PREFIX . 'frontend_fields', array(
+            'ip_address' => 1,
+            'old_role' => 1,
+            'country' => 1,
+            'login' => 1,
+            'logout' => 1,
+            'duration' => 1,
+        ));
+        update_option(ULH_PLUGIN_OPTION_PREFIX . 'frontend_limit', '20');
     }
 
 }
