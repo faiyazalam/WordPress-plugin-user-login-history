@@ -47,8 +47,6 @@ class User_Login_History {
      * @var      string    $plugin_name    The string used to uniquely identify this plugin.
      */
     protected $plugin_name;
-    protected $plugin_table_name;
-    protected $plugin_option_prefix;
 
     /**
      * The current version of the plugin.
@@ -75,8 +73,6 @@ class User_Login_History {
             $this->version = '1.0.0';
         }
         $this->plugin_name = 'user-login-history';
-        $this->plugin_table_name = USER_LOGIN_HISTORY_TABLE_NAME;
-        $this->plugin_option_prefix = USER_LOGIN_HISTORY_OPTION_PREFIX;
 
         $this->load_dependencies();
         $this->set_locale();
@@ -106,7 +102,9 @@ class User_Login_History {
     private function load_dependencies() {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-error-handler.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-date-time-helper.php';
-
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-session-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-db-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-browser-helper.php';
         /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
@@ -119,21 +117,22 @@ class User_Login_History {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-i18n.php';
 
-        /**
-         * The class responsible for defining all actions that occur in the admin area.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin.php';
+       
 
-        /**
-         * The class responsible for defining all actions that occur in the public-facing
-         * side of the site.
-         */
+        if (is_admin()) {
+            //required files for admin only
+            require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-abstract-list-table.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-admin-list-table.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-singleton-admin-list-table.php';
+        }
+        else{
+            //required files for public only
+        }
+
+        //required files for admin as well as public
+         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public.php';
-
-
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-user-tracker.php';
-
-
 
         $this->loader = new User_Login_History_Loader();
     }
@@ -163,20 +162,24 @@ class User_Login_History {
      */
     private function define_admin_hooks() {
 
-        $plugin_admin = new User_Login_History_Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_table_name(), $this->get_plugin_option_prefix());
-  
+        $plugin_admin = new User_Login_History_Admin($this->get_plugin_name(), $this->get_version());
+
 
         if (is_admin()) {
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+
+            $this->loader->add_action('plugins_loaded', $plugin_admin, 'plugins_loaded');
+            $this->loader->add_action('admin_init', $plugin_admin, 'process_bulk_action');
+                    $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
         }
 
 //hooks for admin as well as public
-          $this->loader->add_action('wp_login', $plugin_admin, 'user_login', 10, 2);
+        $this->loader->add_action('wp_login', $plugin_admin, 'user_login', 10, 2);
         $this->loader->add_action('wp_logout', $plugin_admin, 'user_logout');
         $this->loader->add_action('wp_login_failed', $plugin_admin, 'user_login_failed');
         $this->loader->add_action('init', $plugin_admin, 'update_user_time_last_seen');
-      $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
+        $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
 
         $this->loader->add_action('set_logged_in_cookie', $plugin_admin, 'set_user_session_token', 10, 6);
     }
@@ -189,7 +192,7 @@ class User_Login_History {
      * @access   private
      */
     private function define_public_hooks() {
-        $plugin_public = new User_Login_History_Public($this->get_plugin_name(), $this->get_version(), $this->get_plugin_table_name(), $this->get_plugin_option_prefix());
+        $plugin_public = new User_Login_History_Public($this->get_plugin_name(), $this->get_version());
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
@@ -233,14 +236,6 @@ class User_Login_History {
      */
     public function get_version() {
         return $this->version;
-    }
-
-    public function get_plugin_table_name() {
-        return $this->plugin_table_name;
-    }
-
-    public function get_plugin_option_prefix() {
-        return $this->plugin_option_prefix;
     }
 
 }

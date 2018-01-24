@@ -103,8 +103,8 @@ KEY `session_token` (`session_token`)
  * Update plugin options.
  */
     public static function update_options() {
-        update_option(ULH_PLUGIN_OPTION_PREFIX . 'version', ULH_PLUGIN_VERSION);
-        update_option(ULH_PLUGIN_OPTION_PREFIX . 'frontend_fields', array(
+        update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'version', USER_LOGIN_HISTORY_VERSION);
+        update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'frontend_fields', array(
             'ip_address' => 1,
             'old_role' => 1,
             'country' => 1,
@@ -112,7 +112,7 @@ KEY `session_token` (`session_token`)
             'logout' => 1,
             'duration' => 1,
         ));
-        update_option(ULH_PLUGIN_OPTION_PREFIX . 'frontend_limit', '20');
+        update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'frontend_limit', '20');
     }
 
 }

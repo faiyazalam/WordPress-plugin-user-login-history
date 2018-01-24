@@ -30,7 +30,7 @@ class User_Login_History_DB_Helper {
         return $wpdb->get_var("SELECT CONCAT(domain,path) AS blog_name FROM $wpdb->blogs WHERE blog_id = $id ");
     }
     
-    static function get_message($key = '') {
+    static public function get_message($key = '') {
         $messages = array(
             'invalid_nonce'=>__('Well tried.', 'user-login-history'),
             'record_deleted'=>__('The record(s) has been deleted.', 'user-login-history'),
@@ -40,6 +40,20 @@ class User_Login_History_DB_Helper {
             return isset($messages[$key]) ? $messages[$key] : __('Message string is missing.', 'user-login-history');
     }
 
+    
+    static public function get_table_prefix(){
+         if(is_multisite()){
+             global $wpdb;
+             return  $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_session_current_login_blog_id());
+        }  else {
+            global $table_prefix;
+            return $table_prefix;
+        }
+    }
+    
+    static function get_table_name() {
+        return self::get_table_prefix(). USER_LOGIN_HISTORY_TABLE_NAME;
+    }
 
 
 }

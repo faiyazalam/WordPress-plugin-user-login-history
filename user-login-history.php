@@ -24,10 +24,9 @@
  * Text Domain:       user-login-history
  * Domain Path:       /languages
  */
-
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (!defined('WPINC')) {
+    die;
 }
 
 /**
@@ -35,43 +34,41 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'USER_LOGIN_HISTORY_VERSION', '1.0.0' );
-define( 'USER_LOGIN_HISTORY_TABLE_NAME', 'fa_user_logins' );
-define( 'USER_LOGIN_HISTORY_OPTION_PREFIX', 'fa_userloginhostory_' );
+define('USER_LOGIN_HISTORY_VERSION', '1.0.0');
+define('USER_LOGIN_HISTORY_TABLE_NAME', 'fa_user_logins');
+define('USER_LOGIN_HISTORY_OPTION_PREFIX', 'fa_userloginhostory_');
+define('USER_LOGIN_HISTORY_NONCE_PREFIX', 'userloginhostory_');
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-user-login-history-activator.php
  */
-function activate_user_login_history() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-user-login-history-activator.php';
-	User_Login_History_Activator::activate();
+function activate_user_login_history($network_wide) {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history-activator.php';
+    User_Login_History_Activator::activate($network_wide);
 }
 
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-user-login-history-deactivator.php
  */
-function deactivate_user_login_history() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-user-login-history-deactivator.php';
-	User_Login_History_Deactivator::deactivate();
+//function deactivate_user_login_history() {
+//	require_once plugin_dir_path( __FILE__ ) . 'includes/class-user-login-history-deactivator.php';
+//	User_Login_History_Deactivator::deactivate();
+//}
+
+register_activation_hook(__FILE__, 'activate_user_login_history');
+//register_deactivation_hook( __FILE__, 'deactivate_user_login_history' );
+
+if (is_multisite()) {
+    add_action('wpmu_new_blog', array('User_Login_History_Activator', 'on_create_blog'), 10, 6);
 }
-
-register_activation_hook( __FILE__, 'activate_user_login_history' );
-register_deactivation_hook( __FILE__, 'deactivate_user_login_history' );
-
-
-if(is_multisite())
-{
-add_action('wpmu_new_blog', array('User_Login_History_Activator', 'on_create_blog'), 10, 6);	
-}
-
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-user-login-history.php';
+require plugin_dir_path(__FILE__) . 'includes/class-user-login-history.php';
 
 /**
  * Begins execution of the plugin.
@@ -83,11 +80,9 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-user-login-history.php';
  * @since    1.0.0
  */
 function run_user_login_history() {
-   
-	$plugin = new User_Login_History();
-	$plugin->run();
 
+    $plugin = new User_Login_History();
+    $plugin->run();
 }
+
 run_user_login_history();
-
-
