@@ -42,6 +42,9 @@ class User_Login_History_Abstract_List_table extends WP_List_Table {
 			$sql .= ' ORDER BY ' . esc_sql( $_REQUEST['orderby'] );
 			$sql .= ! empty( $_REQUEST['order'] ) ? ' ' . esc_sql( $_REQUEST['order'] ) : ' ASC';
 		}
+ else {
+     $sql .= " ORDER BY id DESC";
+ }
 
 		$sql .= " LIMIT $per_page";
 		$sql .= ' OFFSET ' . ( $page_number - 1 ) * $per_page;
@@ -69,7 +72,7 @@ if(!empty($ids))
     }
   $ids = implode( ',', array_map( 'absint', $ids ) );
    
-  $wpdb->query( "DELETE FROM $this->table WHERE ID IN($ids)" );  
+  $wpdb->query( "DELETE FROM $this->table WHERE id IN($ids)" );  
 
 }
 return FALSE;

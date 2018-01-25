@@ -39,6 +39,7 @@ class User_Login_History_Admin {
      * @var      string    $version    The current version of this plugin.
      */
     private $version;
+    private $admin_notice_transient;
 
     /**
      * Initialize the class and set its properties.
@@ -51,34 +52,24 @@ class User_Login_History_Admin {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+        $this->admin_notice_transient = USER_LOGIN_HISTORY_OPTION_PREFIX . 'admin_notice_transient';
     }
 
     private function UserTracker() {
         return User_Login_History_User_Tracker::get_instance();
     }
 
-    private function Admin_List_table() {
-        return new User_Login_History_Admin_List_table();
+    private function Admin_List_Table() {
+        return new User_Login_History_Admin_List_Table();
     }
-
+    
+   
     /**
      * Register the stylesheets for the admin area.
      *
      * @since    1.0.0
      */
     public function enqueue_styles() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in User_Login_History_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The User_Login_History_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/user-login-history-admin.css', array(), $this->version, 'all');
     }
 
@@ -88,18 +79,6 @@ class User_Login_History_Admin {
      * @since    1.0.0
      */
     public function enqueue_scripts() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in User_Login_History_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The User_Login_History_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/user-login-history-admin.js', array('jquery'), $this->version, false);
     }
 
@@ -132,12 +111,13 @@ class User_Login_History_Admin {
     public function plugins_loaded() {
 
         User_Login_History_Singleton_Admin_List_Table::get_instance();
+        User_Login_History_Admin_Setting_Helper::get_instance($this->plugin_name);
     }
 
     public function process_bulk_action() {
-        if ($this->Admin_List_table()->process_bulk_action()) {
+        if ($this->Admin_List_Table()->process_bulk_action()) {
             $this->add_admin_notice(__('Record(s) has been deleted.'));
-            wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=".$_GET['page'])));
+            wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
             exit;
         }
     }
@@ -147,13 +127,13 @@ class User_Login_History_Admin {
      *
      */
     public function add_admin_notice($message) {
-        $notices = get_transient('user_login_history_admin_notice_transient');
+        $notices = get_transient($this->admin_notice_transient);
         if ($notices === false) {
             $new_notices[] = $message;
-            set_transient('user_login_history_admin_notice_transient', $new_notices, 120);
+            set_transient($this->admin_notice_transient, $new_notices, 120);
         } else {
             $notices[] = $message;
-            set_transient('user_login_history_admin_notice_transient', $notices, 120);
+            set_transient($this->admin_notice_transient, $notices, 120);
         }
     }
 
@@ -161,7 +141,7 @@ class User_Login_History_Admin {
      * Show admin notices
      */
     public function show_admin_notice() {
-        $notices = get_transient('user_login_history_admin_notice_transient');
+        $notices = get_transient($this->admin_notice_transient);
         $str = __('Dismiss this notice', 'user-login-history');
 
         if ($notices !== false) {
@@ -169,8 +149,14 @@ class User_Login_History_Admin {
                 echo '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible"> 
 <p><strong>' . $notice . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' . $str . '.</span></button></div>';
             }
-            delete_transient('user_login_history_admin_notice_transient');
+            delete_transient($this->admin_notice_transient);
         }
     }
+    
+    public function create_admin_settings() {
+       new User_Login_History_Admin_Setting_Helper($this->plugin_name);
+    }
+    
+   
 
 }

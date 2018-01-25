@@ -72,7 +72,7 @@ class User_Login_History {
         } else {
             $this->version = '1.0.0';
         }
-        $this->plugin_name = 'user-login-history';
+        $this->plugin_name = USER_LOGIN_HISTORY_NAME;
 
         $this->load_dependencies();
         $this->set_locale();
@@ -104,7 +104,7 @@ class User_Login_History {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-date-time-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-session-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-db-helper.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-browser-helper.php';
+       
         /**
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
@@ -124,6 +124,10 @@ class User_Login_History {
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-abstract-list-table.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-admin-list-table.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-singleton-admin-list-table.php';
+       
+            require plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-settings-api.php';
+    require plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-admin-setting-helper.php';
+            
         }
         else{
             //required files for public only
@@ -172,6 +176,7 @@ class User_Login_History {
             $this->loader->add_action('plugins_loaded', $plugin_admin, 'plugins_loaded');
             $this->loader->add_action('admin_init', $plugin_admin, 'process_bulk_action');
                     $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
+                   // $this->loader->add_action('plugins_loaded', $plugin_admin, 'create_admin_settings');
         }
 
 //hooks for admin as well as public
