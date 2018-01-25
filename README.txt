@@ -1,4 +1,4 @@
-This is a UNSTABLE version. To download stable version visit: https://wordpress.org/plugins/user-login-history/
+This is an UNSTABLE version. To download stable version visit: https://wordpress.org/plugins/user-login-history/
 
 === User Login History ===
 
