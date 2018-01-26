@@ -62,8 +62,7 @@ class User_Login_History_Admin {
     private function Admin_List_Table() {
         return new User_Login_History_Admin_List_Table();
     }
-    
-   
+
     /**
      * Register the stylesheets for the admin area.
      *
@@ -102,24 +101,31 @@ class User_Login_History_Admin {
         $this->UserTracker()->update_time_last_seen();
     }
 
-    public function session_start() {
+    private function session_start() {
         if ("" == session_id()) {
             session_start();
         }
     }
 
-    public function plugins_loaded() {
+    public function init() {
+        $this->session_start(); //this must be on high priority.
+        $this->update_user_time_last_seen();
+    }
 
-        User_Login_History_Singleton_Admin_List_Table::get_instance();
+    public function plugins_loaded() {
+        User_Login_History_Singleton_Admin_List_Table::get_instance($this->plugin_name);
         User_Login_History_Admin_Setting_Helper::get_instance($this->plugin_name);
     }
 
     public function process_bulk_action() {
-        if ($this->Admin_List_Table()->process_bulk_action()) {
-            $this->add_admin_notice(__('Record(s) has been deleted.'));
+        
+       $Admin_List_Table = new User_Login_History_Admin_List_Table();
+     if($Admin_List_Table->process_bulk_action())
+     {
+      $this->add_admin_notice(__('Record(s) has been deleted.'));
             wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
-            exit;
-        }
+            exit;   
+     }
     }
 
     /**
@@ -152,11 +158,22 @@ class User_Login_History_Admin {
             delete_transient($this->admin_notice_transient);
         }
     }
-    
+
     public function create_admin_settings() {
-       new User_Login_History_Admin_Setting_Helper($this->plugin_name);
+        new User_Login_History_Admin_Setting_Helper($this->plugin_name);
     }
+
+    public function admin_init() {
+        if(current_user_can('administrator'))
+        {
+              $this->process_bulk_action();
+        }
+      
+       
+    }
+
+
     
-   
+
 
 }

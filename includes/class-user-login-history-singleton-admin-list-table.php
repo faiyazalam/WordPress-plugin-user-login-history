@@ -6,11 +6,13 @@ class User_Login_History_Singleton_Admin_List_Table {
     static $instance;
     // customer WP_List_Table object
     public $admin_list_table;
+    public $plugin_name;
 
     // class constructor
-    public function __construct() {
+    public function __construct($plugin_name) {
         add_filter('set-screen-option', [ __CLASS__, 'set_screen'], 10, 3);
         add_action('admin_menu', [ $this, 'plugin_menu']);
+        $this->plugin_name = $plugin_name;
     }
 
     public static function set_screen($status, $option, $value) {
@@ -31,19 +33,7 @@ class User_Login_History_Singleton_Admin_List_Table {
      * Plugin settings page
      */
     public function plugin_settings_page() {
-        ?>
-        <div class="wrap">
-            <h2><?php _e('User Login History', 'user-login-history') ?></h2>
-            <div><form method="post">
-                    <?php
-                    $this->admin_list_table->prepare_items();
-                    $this->admin_list_table->display();
-                    ?>
-                </form>
-                <br class="clear">
-            </div>
-        </div>
-        <?php
+        require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/listing.php';
     }
 
     /**
@@ -63,9 +53,9 @@ class User_Login_History_Singleton_Admin_List_Table {
     }
 
     /** Singleton instance */
-    public static function get_instance() {
+    public static function get_instance($plugin_name) {
         if (!isset(self::$instance)) {
-            self::$instance = new self();
+            self::$instance = new self($plugin_name);
         }
 
         return self::$instance;

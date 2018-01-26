@@ -79,24 +79,44 @@ class User_Login_History_Admin_Setting_Helper {
                 array(
                     'name' => 'frontend_show_all_records',
                     'label' => 'Show All Records',
-                    'desc' => __('This is used for frontend listing table.', 'wedevs'),
-                    'type' => 'select',
-                    'options' => array(
-                        'current_user' => 'Show records of the current loggedin user only.',
-                        'all_users' => 'Show records of all the users.',
-                    )
+                    'desc' => __('Show records of all the users on the frontend listing table. By default it shows records of current user.', 'wedevs'),
+                    'type' => 'checkbox',
+                    
                 ),
                 array(
                     'name' => 'frontend_columns',
                     'label' => __('Display Columns', 'wedevs'),
                     'desc' => __('Choose the columns to be displayed on frontend listing table.', 'wedevs'),
                     'type' => 'multicheck',
-                    'default' => array('one' => 'ones', 'four' => 'four'),
+                    'default' => array(
+			'ip_address'    => __( 'IP Address', 'user-login-history' ),
+			'browser'    => __( 'Browser', 'user-login-history' ),
+			'operating_system' => __( 'Platform', 'user-login-history' ),
+			'country_name'    => __( 'Country Name', 'user-login-history' ),
+			'country_code'    => __( 'Country Code', 'user-login-history' ),
+			'timezone'    => __( 'Timezone', 'user-login-history' ),
+			'time_login'    => __( 'Login', 'user-login-history' ),
+			'time_last_seen'    => __( 'Last Seen', 'user-login-history' ),
+			'time_logout'    => __( 'Logout', 'user-login-history' ),
+			'login_status'    => __( 'Status', 'user-login-history' ),
+                    ),
                     'options' => array(
-                        'one' => 'One',
-                        'two' => 'Two',
-                        'three' => 'Three',
-                        'four' => 'Four'
+                       'user_id'    => __( 'User ID', 'user-login-history' ),
+			'username'    => __( 'Username', 'user-login-history' ),
+                        'current_role' => __( 'Current Role', 'user-login-history' ),
+                        'old_role' => __( 'Old Role', 'user-login-history' ),
+			'ip_address'    => __( 'IP Address', 'user-login-history' ),
+			'browser'    => __( 'Browser', 'user-login-history' ),
+			'operating_system' => __( 'Platform', 'user-login-history' ),
+			'country_name'    => __( 'Country Name', 'user-login-history' ),
+			'country_code'    => __( 'Country Code', 'user-login-history' ),
+			'timezone'    => __( 'Timezone', 'user-login-history' ),
+			'user_agent'    => __( 'User Agent', 'user-login-history' ),
+			'time_login'    => __( 'Login Date-Time', 'user-login-history' ),
+			'time_last_seen'    => __('Last Seen', 'user-login-history' ),
+			'time_logout'    => __( 'Logout Date-Time', 'user-login-history' ),
+			'is_super_admin'    => __( 'Super Admin', 'user-login-history' ),
+			'login_status'    => __( 'Login Status', 'user-login-history' ),
                     )
                 ),
             ),
@@ -106,19 +126,19 @@ class User_Login_History_Admin_Setting_Helper {
                     'label' => __('Status Color', 'wedevs'),
                     'desc' => __('Select color for login.', 'wedevs'),
                     'type' => 'color',
-                    'default' => ''
+                    'default' => '#b5d6a4'
                 ),
                 array(
                     'name' => 'login_status_logout_color',
                     'desc' => __('Select color for logout.', 'wedevs'),
                     'type' => 'color',
-                    'default' => ''
+                    'default' => '#d3bee2'
                 ),
                 array(
                     'name' => 'login_status_fail_color',
                     'desc' => __('Select color for fail.', 'wedevs'),
                     'type' => 'color',
-                    'default' => ''
+                    'default' => '#dd9d9d'
                 ),
             ),
         );

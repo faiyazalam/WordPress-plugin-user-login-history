@@ -3,17 +3,17 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-class User_Login_History_Abstract_List_table extends WP_List_Table {
+abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     
     private $table;
     /** Class constructor */
 	public function __construct() {
 
-		parent::__construct( [
+		parent::__construct( array(
 			'singular' => __( 'Customer', 'user-login-history' ), //singular name of the listed records
 			'plural'   => __( 'Customers', 'user-login-history' ), //plural name of the listed records
 			'ajax'     => false //does this table support ajax?
-		] );
+		) );
 
                 $this->table = User_Login_History_DB_Helper::get_table_name();
 	}
@@ -72,11 +72,26 @@ if(!empty($ids))
     }
   $ids = implode( ',', array_map( 'absint', $ids ) );
    
-  $wpdb->query( "DELETE FROM $this->table WHERE id IN($ids)" );  
+ $status =  $wpdb->query( "DELETE FROM $this->table WHERE id IN($ids)" );  
+ if($wpdb->last_error)
+ {
+     User_Login_History_Error_Handler::error_log($wpdb->last_error." ".$wpdb->last_query, __LINE__, __FILE__);
+ }
+ return $status;
 
 }
 return FALSE;
 	}
+        
+        public function delete_all_rows() {
+            global $wpdb;
+          $status =    $wpdb->query( "TRUNCATE $this->table" );  
+               if($wpdb->last_error)
+ {
+     User_Login_History_Error_Handler::error_log($wpdb->last_error." ".$wpdb->last_query, __LINE__, __FILE__);
+ }
+ return $status;
+        }
 
 
 	/**
@@ -184,10 +199,11 @@ return FALSE;
 	 * @return array
 	 */
 	function get_columns() {
-		$columns = [
+		$columns = array(
 			'cb'      => '<input type="checkbox" />',
 			'user_id'    => __( 'User ID', 'user-login-history' ),
 			'username'    => __( 'Username', 'user-login-history' ),
+                     // 'role' => __( 'Current Role', 'user-login-history' ),
                         'old_role' => __( 'Old Role', 'user-login-history' ),
 			'ip_address'    => __( 'IP Address', 'user-login-history' ),
 			'browser'    => __( 'Browser', 'user-login-history' ),
@@ -202,7 +218,7 @@ return FALSE;
 			'is_super_admin'    => __( 'Super Admin', 'user-login-history' ),
 			'login_status'    => __( 'Status', 'user-login-history' ),
 			
-		];
+		);
                 
 
 		return $columns;
@@ -242,9 +258,10 @@ return FALSE;
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$actions = [
-			'bulk-delete' => 'Delete'
-		];
+		$actions = array(
+			'bulk-delete' => 'Delete Selected Records',
+			'bulk-delete-all-admin' => 'Delete All Records',
+		);
 
 		return $actions;
 	}
@@ -264,35 +281,59 @@ return FALSE;
 		$current_page = $this->get_pagenum();
 		$total_items  = $this->record_count();
 
-		$this->set_pagination_args( [
+		$this->set_pagination_args( array(
 			'total_items' => $total_items, //WE have to calculate the total number of items
 			'per_page'    => $per_page //WE have to determine how many items to show on a page
-		] );
+		) );
 
 		$this->items = $this->get_rows( $per_page, $current_page );
 	}
 
 	public function process_bulk_action() {
+            $status = FALSE;
+            $action = FALSE;
+            
+            if(!empty($_POST['action']))
+            {
+                $action =  $_POST['action'];
+            }
+            
+            $current_action = $this->current_action();
+            if ($current_action) {
+            $action =  $current_action;
+        }
+           
+            if($action)
+            {
+                
+                switch ($action) {
+                    case 'bulk-delete':
+                       if(!empty($_POST['bulk-delete']))
+                       {
+                        $this->delete_rows(esc_sql($_POST['bulk-delete']) );
+                        $status = TRUE;   
+                       }
+			
+                        break;
+                    case 'bulk-delete-all-admin':
+			$this->delete_all_rows();
+                        $status = TRUE;
+                        break;
+                    
+                    case 'delete':
+			$this->delete_rows( absint( $_GET['customer'] ) );
+                        $status = TRUE;
+                        break;
 
-            if ( 'delete' === $this->current_action() ) {
-			$nonce = esc_attr( $_REQUEST['_wpnonce'] );
-
-			if ( ! wp_verify_nonce( $nonce, USER_LOGIN_HISTORY_NONCE_PREFIX.'delete_row' ) ) {
-				die( __('Go get a life script kiddies', 'user-login-history') );
-			}
-				$this->delete_rows( absint( $_GET['customer'] ) );
-                                return TRUE;
-		}
-
-		if ( ( isset( $_POST['action'] ) && $_POST['action'] == 'bulk-delete' )
-		     || ( isset( $_POST['action2'] ) && $_POST['action2'] == 'bulk-delete' )
-		) {
-			$delete_ids = esc_sql( $_POST['bulk-delete'] );
-			$this->delete_rows($delete_ids );
-                        return TRUE;
-		}
-                return FALSE;
+                    default:
+                        $status = FALSE;
+                        break;
+                }
+                
+            }
+                return $status;
 	}
+ 
 
 
 

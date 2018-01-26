@@ -103,7 +103,9 @@ class User_Login_History {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-error-handler.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-date-time-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-session-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-security-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-db-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-template-helper.php';
        
         /**
          * The class responsible for orchestrating the actions and filters of the
@@ -174,7 +176,8 @@ class User_Login_History {
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
             $this->loader->add_action('plugins_loaded', $plugin_admin, 'plugins_loaded');
-            $this->loader->add_action('admin_init', $plugin_admin, 'process_bulk_action');
+            $this->loader->add_action('admin_init', $plugin_admin, 'init');
+            $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
                     $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
                    // $this->loader->add_action('plugins_loaded', $plugin_admin, 'create_admin_settings');
         }
@@ -183,8 +186,8 @@ class User_Login_History {
         $this->loader->add_action('wp_login', $plugin_admin, 'user_login', 10, 2);
         $this->loader->add_action('wp_logout', $plugin_admin, 'user_logout');
         $this->loader->add_action('wp_login_failed', $plugin_admin, 'user_login_failed');
-        $this->loader->add_action('init', $plugin_admin, 'update_user_time_last_seen');
-        $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
+        $this->loader->add_action('init', $plugin_admin, 'init');
+    //    $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
 
         $this->loader->add_action('set_logged_in_cookie', $plugin_admin, 'set_user_session_token', 10, 6);
     }

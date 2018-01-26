@@ -52,4 +52,18 @@ static public function dropdown_time_field_types( $selected = '' ) {
 	}
 	echo $r;
 }
+static public function dropdown_timezone( $selected = '' ) {
+	$r = '';
+ $timezones = User_Login_History_Date_Time_Helper::get_timezone_list();
+	foreach ( $timezones as $timezone) {
+		$key = $timezone['zone'];
+		$name = $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")";
+		if ( $selected == $key ) {
+			$r .= "\n\t<option selected='selected' value='".$key."'>$name</option>";
+		} else {
+			$r .= "\n\t<option value='".$key."'>$name</option>";
+		}
+	}
+	echo $r;
+}
 }
