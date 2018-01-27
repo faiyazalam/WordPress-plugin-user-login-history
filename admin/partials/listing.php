@@ -10,8 +10,10 @@
                     <?php
                     User_Login_History_Template_Helper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL);
                     ?>
-                </select></fieldset>
-            <fieldset> <input placeholder="<?php _e("Enter User Id", "user-login-history") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? esc_attr($_GET['user_id']) : "" ?>" >
+                </select>
+            </fieldset>
+            <fieldset>
+                <input placeholder="<?php _e("Enter User Id", "user-login-history") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? esc_attr($_GET['user_id']) : "" ?>" >
                 <input placeholder="<?php _e("Enter Username", "user-login-history") ?>" name="username" value="<?php echo isset($_GET['username']) ? esc_attr($_GET['username']) : "" ?>" >
                 <input placeholder="<?php _e("Enter Country", "user-login-history") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? esc_attr($_GET['country_name']) : "" ?>" >
                 <input placeholder="<?php _e("Enter Browser", "user-login-history") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? esc_attr($_GET['browser']) : "" ?>" >
@@ -56,7 +58,6 @@
             <a class=""  href="<?php echo admin_url("admin.php?page=" . esc_attr($_GET['page'])) ?>" ><?php _e('RESET', 'user-login-history'); ?></a>
             <input type="hidden" name="<?php echo $this->plugin_name?>-export-csv" id="export-csv" value="">
            <input type="hidden" name="<?php echo $this->plugin_name?>-export-nonce" id="<?php echo $this->plugin_name?>-export-nonce" value="<?php echo wp_create_nonce(USER_LOGIN_HISTORY_OPTION_PREFIX . 'export_csv') ?>">
-
             <input class="" id="submit" type="submit" name="submit" value="<?php _e('FILTER', 'user-login-history') ?>" />
         </form>
         <br class="clear">

@@ -9,7 +9,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     private $table;
 
     /** Class constructor */
-    public function __construct() {
+    public function __construct($args = array()) {
 
         parent::__construct(array(
             'singular' => __('User', 'user-login-history'), //singular name of the listed records
@@ -415,34 +415,23 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     }
 
     public function process_bulk_action() {
+
         $status = FALSE;
-        $action = FALSE;
-         $nonce = "_wpnonce";
-
-        if (!empty($_POST['action'])) {
-            $action = $_POST['action'];
-        }
-
-        $current_action = $this->current_action();
-        if ($current_action) {
-            $action = $current_action;
-        }
-
-        if ($action) {
-           
-            switch ($action) {
+       $nonce =  !empty($_REQUEST['_wpnonce']) ? $_REQUEST['_wpnonce'] : "";
+       $bulk_action = 'bulk-' . $this->_args['plural'];
+       
+            switch ($this->current_action()) {
                 case 'bulk-delete':
                     if (!empty($_POST['bulk-delete'])) {
-                        if (!wp_verify_nonce(!empty($_REQUEST[$nonce]) ? $_REQUEST[$nonce] : "", 'bulk-' . $this->_args['plural'])) {
+                        if (!wp_verify_nonce($nonce, $bulk_action)) {
                             wp_die('invalid nonce');
                         }
                         $this->delete_rows(esc_sql($_POST['bulk-delete']));
                         $status = TRUE;
                     }
-
                     break;
                 case 'bulk-delete-all-admin':
-                    if (!wp_verify_nonce(!empty($_REQUEST[$nonce]) ? $_REQUEST[$nonce] : "", 'bulk-' . $this->_args['plural'])) {
+                    if (!wp_verify_nonce($nonce, $bulk_action)) {
                         wp_die('invalid nonce');
                     }
                     $this->delete_all_rows();
@@ -450,7 +439,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
                     break;
 
                 case 'delete':
-                    if (!wp_verify_nonce(!empty($_REQUEST[$nonce]) ? $_REQUEST[$nonce] : "", USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row')) {
+                    if (!wp_verify_nonce($nonce, USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row')) {
                         wp_die('invalid nonce');
                     }
                     $this->delete_rows(absint($_GET['customer']));
@@ -461,8 +450,19 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
                     $status = FALSE;
                     break;
             }
-        }
+        
         return $status;
+    }
+    
+        /**
+     * Generates content for a single row of the table
+     * Over-ridden method.
+     */
+    public function single_row($item) {
+        $login_status = !empty($item['login_status']) ? "login_status_" . $item['login_status'] : "";
+        echo "<tr class='$login_status'>";
+        $this->single_row_columns($item);
+        echo '</tr>';
     }
 
 }

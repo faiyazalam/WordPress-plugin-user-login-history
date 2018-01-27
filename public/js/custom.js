@@ -1,5 +1,5 @@
 jQuery(function () {
-//date picker
+//date-picker
     jQuery(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
     jQuery("#date_to").datepicker({dateFormat: 'yy-mm-dd'});
     jQuery("#date_from").datepicker({dateFormat: 'yy-mm-dd'}).bind("change", function () {
@@ -8,20 +8,15 @@ jQuery(function () {
         minValue.setDate(minValue.getDate() + 0);
         jQuery("#date_to").datepicker("option", "minDate", minValue);
     });
-
-//csv
-    jQuery("#download_csv_link").click(function () {
-        var export_csv = jQuery("#export-csv");
-        export_csv.val('csv');
-                jQuery("#submit").trigger('click');
-        export_csv.val('');
-    });
-    //delete all records
-    jQuery("#doaction, #doaction2, .delete").click(function (e) {
-        if (confirm(admin_custom_object.delete_confirm_message))
-        {
-            return true;
-        }
-        return false;
+//ajax-timezone
+    jQuery("#select_timezone").change(function () {
+        jQuery.ajax({
+            url: custom_object.ajax_url,
+            method: 'post',
+            data: {timezone: jQuery(this).val(), action: custom_object.plugin_name+'update_user_timezone'},
+            success: function () {
+                window.location.reload();
+            }
+        });
     });
 });

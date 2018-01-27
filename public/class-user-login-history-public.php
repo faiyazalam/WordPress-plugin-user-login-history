@@ -59,45 +59,47 @@ class User_Login_History_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	 public function enqueue_styles() {
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in User_Login_History_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The User_Login_History_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+        wp_register_style($this->plugin_name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+    }
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/user-login-history-public.css', array(), $this->version, 'all' );
+    /**
+     * Register the stylesheets for the public-facing side of the site.
+     *
+     */
+    public function enqueue_scripts() {
 
-	}
+        wp_register_script($this->plugin_name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+        wp_register_script($this->plugin_name . '-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+        wp_localize_script($this->plugin_name . '-custom.js', 'custom_object', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'plugin_name' => $this->plugin_name,
+            ));
+    }
 
-	/**
-	 * Register the JavaScript for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_scripts() {
+    /**
+     * Shortcode to show listing table for frontend user.
+     *
+     */
+    public function shortcode_user_table() {
+        require_once plugin_dir_path(__FILE__) . 'partials/user-login-history-public-display.php';
+        wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
+        wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
+        wp_enqueue_script($this->plugin_name . '-custom.js');
+    }
 
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in User_Login_History_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The User_Login_History_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/user-login-history-public.js', array( 'jquery' ), $this->version, false );
-
-	}
+    /**
+     * Frontend user can select timezone.
+     *
+     */
+    public function update_user_timezone() {
+        if (!empty($_POST[$this->plugin_name.'-timezone'])) {
+            global $current_user;
+            $option_name = USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone"; //DO NOT USER PLUGIN NAME AS PREFIX HERE TO AVOID BACKWARD COMPATIBILITY ISSSUE.
+            update_user_meta($current_user->ID, $option_name, $_POST[$this->plugin_name.'-timezone']);
+        }
+        exit;
+    }
 
 }
