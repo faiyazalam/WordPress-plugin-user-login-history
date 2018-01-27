@@ -34,11 +34,10 @@ if (!defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('USER_LOGIN_HISTORY_NAME', 'user-login-history');
+define('USER_LOGIN_HISTORY_NAME', 'user-login-history'); //used as prefix with style and script
 define('USER_LOGIN_HISTORY_VERSION', '1.0.0');
 define('USER_LOGIN_HISTORY_TABLE_NAME', 'fa_user_logins');
-define('USER_LOGIN_HISTORY_OPTION_PREFIX', 'fa_userloginhostory_');
-define('USER_LOGIN_HISTORY_NONCE_PREFIX', 'userloginhostory_');
+define('USER_LOGIN_HISTORY_OPTION_PREFIX', 'fa_userloginhostory_'); // used as prefix with option name, usermeta name, nonce name etc.
 
 /**
  * The code that runs during plugin activation.

@@ -103,7 +103,6 @@ class User_Login_History {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-error-handler.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-date-time-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-session-helper.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-security-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-db-helper.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-template-helper.php';
        

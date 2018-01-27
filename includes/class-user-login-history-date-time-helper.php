@@ -52,14 +52,13 @@ class User_Login_History_Date_Time_Helper {
      * @param type $output_timezone default is UTC
      * @return string returns converted datetime in default format i.e. Y-m-d H:i:s.
      */
-    public function convert_timezone($input_datetime = "", $input_timezone = "", $output_timezone = "") {
+    static public function convert_timezone($input_datetime = "", $input_timezone = "", $output_timezone = "") {
         if (!$input_datetime) {
             return FALSE;
         }
         $input_timezone = $input_timezone ? $input_timezone : self::DEFAULT_TIMEZONE;
         $output_timezone = $output_timezone ? $output_timezone : self::DEFAULT_TIMEZONE;
-
-        $date = new DateTime($input_datetime, $input_timezone);
+        $date = new DateTime($input_datetime, new DateTimeZone($input_timezone));
         $date->setTimezone(new DateTimeZone($output_timezone));
         return $date->format(self::DEFAULT_FORMAT); // do not convert format here, use get_convert_date_time().
     }
@@ -102,6 +101,12 @@ class User_Login_History_Date_Time_Helper {
             return $time_zone;
         }
         return FALSE;
+    }
+    
+   static public function get_last_time($time_logout, $time_last_seen) {
+        $logout_time_str = strtotime($time_logout);
+        return  $logout_time_str > 0 ? $logout_time_str : strtotime($time_last_seen);
+
     }
 
 }

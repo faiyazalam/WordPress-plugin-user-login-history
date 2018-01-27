@@ -23,7 +23,7 @@ class User_Login_History_Singleton_Admin_List_Table {
     public function plugin_menu() {
 
         $hook = add_menu_page(
-                'User Login History', 'User Login History', 'manage_options', 'user-login-history-admin-listing', [ $this, 'plugin_settings_page']
+                'User Login History', 'User Login History', 'manage_options', 'user-login-history-admin-listing', [ $this, 'admin_lisitng']
         );
 
         add_action("load-$hook", [ $this, 'screen_option']);
@@ -32,7 +32,7 @@ class User_Login_History_Singleton_Admin_List_Table {
     /**
      * Plugin settings page
      */
-    public function plugin_settings_page() {
+    public function admin_lisitng() {
         require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/listing.php';
     }
 
@@ -57,7 +57,6 @@ class User_Login_History_Singleton_Admin_List_Table {
         if (!isset(self::$instance)) {
             self::$instance = new self($plugin_name);
         }
-
         return self::$instance;
     }
 

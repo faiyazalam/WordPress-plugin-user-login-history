@@ -68,8 +68,13 @@ class User_Login_History_Admin {
      *
      * @since    1.0.0
      */
-    public function enqueue_styles() {
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/user-login-history-admin.css', array(), $this->version, 'all');
+       public function enqueue_styles() {
+        global $pagenow;
+
+        if ('admin.php' == $pagenow && isset($_GET['page']) && in_array($_GET['page'], array($this->plugin_name.'-admin-listing', $this->plugin_name.'-network-admin-listing'))) {
+            wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+            wp_enqueue_style($this->plugin_name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
+        }
     }
 
     /**
@@ -77,8 +82,19 @@ class User_Login_History_Admin {
      *
      * @since    1.0.0
      */
-    public function enqueue_scripts() {
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/user-login-history-admin.js', array('jquery'), $this->version, false);
+
+        public function enqueue_scripts() {
+        global $pagenow;
+
+        if ('admin.php' == $pagenow && isset($_GET['page']) && in_array($_GET['page'], array($this->plugin_name.'-admin-listing', $this->plugin_name.'-network-admin-listing'))) {
+            wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+            wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+            wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
+                'delete_confirm_message' => __('Are your sure?', 'user-login-history'),
+                'admin_url' => admin_url(),
+                'plugin_name' => $this->plugin_name,
+            ));
+        }
     }
 
     public function user_login_failed($user_login) {
@@ -109,6 +125,7 @@ class User_Login_History_Admin {
 
     public function init() {
         $this->session_start(); //this must be on high priority.
+        
         $this->update_user_time_last_seen();
     }
 
@@ -166,12 +183,82 @@ class User_Login_History_Admin {
     public function admin_init() {
         if(current_user_can('administrator'))
         {
+            $this->init_csv_export();
               $this->process_bulk_action();
         }
       
        
     }
 
+    
+        private function export_to_CSV() {
+        global $wpdb, $current_user;
+        $unknown = __('Unknown', 'user-login-history');
+      
+        $List_Table = new User_Login_History_Admin_List_table();
+        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
+       
+
+        $data = $List_Table->get_rows(0); // pass zero to retrieve all the records
+        //date string to suffix the file nanme: month - day - year - hour - minute
+        $suffix = date('n-j-y_H-i');
+        // send response headers to the browser
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment;filename=login_log_' . $suffix . '.csv');
+
+        if (!$data) {
+            echo 'No record.';
+            exit;
+        }
+
+        $fp = fopen('php://output', 'w');
+        $i = 0;
+
+        foreach ($data as $row) {
+            unset($row['meta_value']);
+            //calculate duration before time_last_seen - MANDATORY
+            $row['duration'] = $List_Table->column_default($row, 'duration');
+
+            $time_last_seen = $row['time_last_seen'];
+            $human_time_diff = human_time_diff(strtotime($time_last_seen));
+            $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone);
+            $row['time_last_seen'] = $human_time_diff . " " . __('ago', 'user-login-history') . " ($time_last_seen)";
+
+            $row['user_id'] = $List_Table->column_default($row, 'user_id');
+            $row['current_role'] = $List_Table->column_default($row, 'role');
+            $row['old_role'] = $List_Table->column_default($row, 'old_role');
+            $row['time_login'] = $List_Table->column_default($row, 'time_login');
+            $row['time_logout'] = $List_Table->column_default($row, 'time_logout');
+
+            $row['login_status'] = $List_Table->column_default($row, 'login_status');
+
+            if (is_multisite()) {
+                $row['is_super_admin'] = $List_Table->column_default($row, 'is_super_admin');
+            } else {
+                unset($row['is_super_admin']);
+            }
+
+
+            //output header row
+            if (0 == $i) {
+                fputcsv($fp, array_keys($row));
+            }
+
+            fputcsv($fp, $row);
+
+            $i++;
+        }
+        fclose($fp);
+        die();
+    }
+
+    public function init_csv_export() {
+        //Check if download was initiated
+        if (isset($_GET[$this->plugin_name.'-export-csv']) && "csv" == $_GET[$this->plugin_name.'-export-csv']) {
+            check_admin_referer(USER_LOGIN_HISTORY_OPTION_PREFIX . 'export_csv', $this->plugin_name.'-export-nonce');
+            $this->export_to_CSV();
+        }
+    }
 
     
 

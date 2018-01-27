@@ -14,7 +14,8 @@
 class User_Login_History_User_Tracker {
 
     /**
-     * Constants
+     * Login Status Constants
+     * DO NOT CHANGE THE VALUE OF THESE CONSTANTS BECAUSE THEY ARE SAVED IN DB.
      */
     const LOGIN_STATUS_LOGIN = 'Login';
     const LOGIN_STATUS_FAIL = 'Fail';
