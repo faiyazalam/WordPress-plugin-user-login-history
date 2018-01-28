@@ -400,7 +400,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         $this->_column_headers = $this->get_column_info();
 
         /** Process bulk action */
-        $this->process_bulk_action();
+      //  $this->process_bulk_action();
 
         $per_page = $this->get_items_per_page('rows_per_page');
         $current_page = $this->get_pagenum();
