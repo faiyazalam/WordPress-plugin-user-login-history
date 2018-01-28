@@ -55,5 +55,9 @@ class User_Login_History_DB_Helper {
         return self::get_table_prefix(). USER_LOGIN_HISTORY_TABLE_NAME;
     }
 
+    
+
+    
+    
 
 }

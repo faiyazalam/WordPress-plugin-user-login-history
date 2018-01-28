@@ -374,6 +374,9 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             'login_status' => array('login_status', false),
             'is_super_admin' => array('is_super_admin', false),
         );
+         if (is_multisite()) {
+            $sortable_columns['is_super_admin'] = array('is_super_admin', false);
+        }
         $sortable_columns = apply_filters('user_login_history_admin_get_sortable_columns', $sortable_columns);
         return $sortable_columns;
     }

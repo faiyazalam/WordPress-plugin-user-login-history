@@ -88,36 +88,8 @@ class User_Login_History_Admin_Setting_Helper {
                     'label' => __('Display Columns', 'wedevs'),
                     'desc' => __('Choose the columns to be displayed on frontend listing table.', 'wedevs'),
                     'type' => 'multicheck',
-                    'default' => array(
-			'ip_address'    => __( 'IP Address', 'user-login-history' ),
-			'browser'    => __( 'Browser', 'user-login-history' ),
-			'operating_system' => __( 'Platform', 'user-login-history' ),
-			'country_name'    => __( 'Country Name', 'user-login-history' ),
-			'country_code'    => __( 'Country Code', 'user-login-history' ),
-			'timezone'    => __( 'Timezone', 'user-login-history' ),
-			'time_login'    => __( 'Login', 'user-login-history' ),
-			'time_last_seen'    => __( 'Last Seen', 'user-login-history' ),
-			'time_logout'    => __( 'Logout', 'user-login-history' ),
-			'login_status'    => __( 'Status', 'user-login-history' ),
-                    ),
-                    'options' => array(
-                       'user_id'    => __( 'User ID', 'user-login-history' ),
-			'username'    => __( 'Username', 'user-login-history' ),
-                        'current_role' => __( 'Current Role', 'user-login-history' ),
-                        'old_role' => __( 'Old Role', 'user-login-history' ),
-			'ip_address'    => __( 'IP Address', 'user-login-history' ),
-			'browser'    => __( 'Browser', 'user-login-history' ),
-			'operating_system' => __( 'Platform', 'user-login-history' ),
-			'country_name'    => __( 'Country Name', 'user-login-history' ),
-			'country_code'    => __( 'Country Code', 'user-login-history' ),
-			'timezone'    => __( 'Timezone', 'user-login-history' ),
-			'user_agent'    => __( 'User Agent', 'user-login-history' ),
-			'time_login'    => __( 'Login Date-Time', 'user-login-history' ),
-			'time_last_seen'    => __('Last Seen', 'user-login-history' ),
-			'time_logout'    => __( 'Logout Date-Time', 'user-login-history' ),
-			'is_super_admin'    => __( 'Super Admin', 'user-login-history' ),
-			'login_status'    => __( 'Login Status', 'user-login-history' ),
-                    )
+                    'default' => $this->get_all_default_frontend_columns(),
+                    'options' => $this->get_all_frontend_columns()
                 ),
             ),
             $this->plugin_name . '-advanced' => array(
@@ -153,6 +125,40 @@ class User_Login_History_Admin_Setting_Helper {
         $this->settings_api->show_forms();
 
         echo '</div>';
+    }
+    
+    private function get_all_frontend_columns() {
+        $columns = array(
+                       'user_id'    => __( 'User ID', 'user-login-history' ),
+			'username'    => __( 'Username', 'user-login-history' ),
+                        'role' => __( 'Current Role', 'user-login-history' ),
+                        'old_role' => __( 'Old Role', 'user-login-history' ),
+			'ip_address'    => __( 'IP Address', 'user-login-history' ),
+			'browser'    => __( 'Browser', 'user-login-history' ),
+			'operating_system' => __( 'Platform', 'user-login-history' ),
+			'country_name'    => __( 'Country Name', 'user-login-history' ),
+			'timezone'    => __( 'Timezone', 'user-login-history' ),
+			'user_agent'    => __( 'User Agent', 'user-login-history' ),
+			'time_login'    => __( 'Login Date-Time', 'user-login-history' ),
+			'time_last_seen'    => __('Last Seen', 'user-login-history' ),
+			'time_logout'    => __( 'Logout Date-Time', 'user-login-history' ),
+			'login_status'    => __( 'Login Status', 'user-login-history' ),
+                    );
+                    return $columns;
+    }
+    
+     private function get_all_default_frontend_columns() {
+        $columns = array(
+			'ip_address'    => 'ip_address',
+			'browser'    => 'browser',
+			'operating_system' => 'operating_system',
+			'country_name'    => 'country_name',
+			'time_login'    => 'time_login',
+			'time_last_seen'    =>'time_last_seen',
+			'time_logout'    => 'time_logout',
+			'login_status'    => 'login_status',
+                    );
+                    return $columns;
     }
 
 }
