@@ -38,6 +38,7 @@ define('USER_LOGIN_HISTORY_NAME', 'user-login-history'); //used as prefix with s
 define('USER_LOGIN_HISTORY_VERSION', '1.0.0');
 define('USER_LOGIN_HISTORY_TABLE_NAME', 'fa_user_logins');
 define('USER_LOGIN_HISTORY_OPTION_PREFIX', 'fa_userloginhostory_'); // used as prefix with option name, usermeta name, nonce name etc.
+define('USER_LOGIN_HISTORY_USER_META_PREFIX', 'fa_userloginhostory_'); // used as prefix with option name, usermeta name, nonce name etc.
 
 /**
  * The code that runs during plugin activation.

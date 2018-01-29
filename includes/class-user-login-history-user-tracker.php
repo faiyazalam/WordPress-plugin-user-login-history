@@ -41,7 +41,7 @@ class User_Login_History_User_Tracker {
      * @var      string    $version    The version of this plugin.
      */
     public function __construct() {
-        $this->user_meta_timezone = USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone";
+        $this->user_meta_timezone = USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone";
     }
 
     /**

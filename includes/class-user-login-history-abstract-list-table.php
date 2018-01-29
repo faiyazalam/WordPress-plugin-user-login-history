@@ -50,12 +50,12 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         );
 
         foreach ($fields as $field) {
-            if (isset($_GET[$field]) && "" != $_GET[$field]) {
+            if (!empty($_GET[$field])) {
                 $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql($_GET[$field]) . "'";
             }
         }
 
-        if (isset($_GET['role']) && "" != $_GET['role']) {
+        if (!empty($_GET['role'])) {
 
             if ('superadmin' == $_GET['role']) {
                 $site_admins = get_super_admins();
@@ -66,7 +66,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             }
         }
 
-        if (isset($_GET['old_role']) && "" != $_GET['old_role']) {
+        if (!empty($_GET['old_role'])) {
             if ('superadmin' == $_GET['old_role']) {
                 $where_query .= " AND `FaUserLogin`.`is_super_admin` LIKE '1'";
             } else {
@@ -78,11 +78,11 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             $date_type = esc_sql($_GET['date_type']);
 
             if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
-                if (isset($_GET['date_from']) && "" != $_GET['date_from']) {
+                if (!empty($_GET['date_from'])) {
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($_GET['date_from']) . " 00:00:00'";
                 }
 
-                if (isset($_GET['date_to']) && "" != $_GET['date_to']) {
+                if (!empty($_GET['date_to'])) {
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($_GET['date_to']) . " 23:59:59'";
                 }
             }
@@ -118,7 +118,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         $sql .= ' GROUP BY FaUserLogin.id';
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
         } else {
             $sql .= ' ORDER BY id DESC';
         }
@@ -206,7 +206,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function column_default($item, $column_name) {
         global $current_user;
-        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
+        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone", TRUE);
 
         $timezone = $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
 
@@ -374,7 +374,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             'login_status' => array('login_status', false),
             'is_super_admin' => array('is_super_admin', false),
         );
-         if (is_multisite()) {
+        if (is_multisite()) {
             $sortable_columns['is_super_admin'] = array('is_super_admin', false);
         }
         $sortable_columns = apply_filters('user_login_history_admin_get_sortable_columns', $sortable_columns);
@@ -403,7 +403,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         $this->_column_headers = $this->get_column_info();
 
         /** Process bulk action */
-      //  $this->process_bulk_action();
+        //  $this->process_bulk_action();
 
         $per_page = $this->get_items_per_page('rows_per_page');
         $current_page = $this->get_pagenum();
@@ -420,44 +420,44 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     public function process_bulk_action() {
 
         $status = FALSE;
-       $nonce =  !empty($_REQUEST['_wpnonce']) ? $_REQUEST['_wpnonce'] : "";
-       $bulk_action = 'bulk-' . $this->_args['plural'];
-       
-            switch ($this->current_action()) {
-                case 'bulk-delete':
-                    if (!empty($_POST['bulk-delete'])) {
-                        if (!wp_verify_nonce($nonce, $bulk_action)) {
-                            wp_die('invalid nonce');
-                        }
-                        $this->delete_rows(esc_sql($_POST['bulk-delete']));
-                        $status = TRUE;
-                    }
-                    break;
-                case 'bulk-delete-all-admin':
+        $nonce = !empty($_REQUEST['_wpnonce']) ? $_REQUEST['_wpnonce'] : "";
+        $bulk_action = 'bulk-' . $this->_args['plural'];
+
+        switch ($this->current_action()) {
+            case 'bulk-delete':
+                if (!empty($_POST['bulk-delete'])) {
                     if (!wp_verify_nonce($nonce, $bulk_action)) {
                         wp_die('invalid nonce');
                     }
-                    $this->delete_all_rows();
+                    $this->delete_rows(esc_sql($_POST['bulk-delete']));
                     $status = TRUE;
-                    break;
+                }
+                break;
+            case 'bulk-delete-all-admin':
+                if (!wp_verify_nonce($nonce, $bulk_action)) {
+                    wp_die('invalid nonce');
+                }
+                $this->delete_all_rows();
+                $status = TRUE;
+                break;
 
-                case 'delete':
-                    if (!wp_verify_nonce($nonce, USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row')) {
-                        wp_die('invalid nonce');
-                    }
-                    $this->delete_rows(absint($_GET['customer']));
-                    $status = TRUE;
-                    break;
+            case 'delete':
+                if (!wp_verify_nonce($nonce, USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row')) {
+                    wp_die('invalid nonce');
+                }
+                $this->delete_rows(absint($_GET['customer']));
+                $status = TRUE;
+                break;
 
-                default:
-                    $status = FALSE;
-                    break;
-            }
-        
+            default:
+                $status = FALSE;
+                break;
+        }
+
         return $status;
     }
-    
-        /**
+
+    /**
      * Generates content for a single row of the table
      * Over-ridden method.
      */

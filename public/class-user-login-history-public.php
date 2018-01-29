@@ -53,14 +53,17 @@ class User_Login_History_Public {
 		$this->version = $version;
 
 	}
+        
+        public function init() {
+            $this->update_user_timezone();
+        }
 
-	/**
+        /**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
 	 * @since    1.0.0
 	 */
 	 public function enqueue_styles() {
-
         wp_register_style($this->plugin_name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
     }
 
@@ -83,6 +86,9 @@ class User_Login_History_Public {
      *
      */
     public function shortcode_user_table() {
+        if(!is_user_logged_in()){
+            return;
+        }
         require_once plugin_dir_path(__FILE__) . 'partials/user-login-history-public-display.php';
         wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
         wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
@@ -90,16 +96,22 @@ class User_Login_History_Public {
     }
 
     /**
-     * Frontend user can select timezone.
+     * Frontend user can update his timezone.
      *
      */
     public function update_user_timezone() {
-        if (!empty($_POST[$this->plugin_name.'-timezone'])) {
-            global $current_user;
-            $option_name = USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone"; //DO NOT USER PLUGIN NAME AS PREFIX HERE TO AVOID BACKWARD COMPATIBILITY ISSSUE.
-            update_user_meta($current_user->ID, $option_name, $_POST[$this->plugin_name.'-timezone']);
+        if(!isset($_POST[$this->plugin_name."_update_user_timezone"]))
+        {
+            return;
         }
-        exit;
+        
+        if(!wp_verify_nonce(!empty($_POST['_wpnonce'])?$_POST['_wpnonce']:"", $this->plugin_name."_update_user_timezone")){
+            wp_die('Nonce error');
+        }
+            global $current_user;
+            //Do not replace 'USER_LOGIN_HISTORY_USER_META_PREFIX' with '$plugin_name' here to avoid backward compatibility issue.
+            update_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone", !empty($_POST[$this->plugin_name."-timezone"])?$_POST[$this->plugin_name."-timezone"]:"");
+            wp_safe_redirect( esc_url_raw(add_query_arg()) );exit;
     }
 
 }

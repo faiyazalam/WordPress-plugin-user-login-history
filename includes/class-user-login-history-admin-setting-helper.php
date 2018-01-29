@@ -46,11 +46,11 @@ class User_Login_History_Admin_Setting_Helper {
         $sections = array(
             array(
                 'id' => $this->plugin_name . '-basics',
-                'title' => __('Basic Settings', 'wedevs')
+                'title' => __('Basic Settings', 'user-login-history')
             ),
             array(
                 'id' => $this->plugin_name . '-advanced',
-                'title' => __('Advanced Settings', 'wedevs')
+                'title' => __('Advanced Settings', 'user-login-history')
             ),
         );
         return $sections;
@@ -66,9 +66,9 @@ class User_Login_History_Admin_Setting_Helper {
             $this->plugin_name . '-basics' => array(
                 array(
                     'name' => 'frontend_limit',
-                    'label' => __('Show Records Per Page', 'wedevs'),
-                    'desc' => __('Number field with validation callback `floatval`', 'wedevs'),
-                    'placeholder' => __('10', 'wedevs'),
+                    'label' => __('Show Records Per Page', 'user-login-history'),
+                    'desc' => __('Enter number of records per page for the frontend listing table.', 'user-login-history'),
+                    'placeholder' => __('20', 'user-login-history'),
                     'min' => 0,
                     'max' => 100,
                     'step' => '1',
@@ -79,14 +79,14 @@ class User_Login_History_Admin_Setting_Helper {
                 array(
                     'name' => 'frontend_show_all_records',
                     'label' => 'Show All Records',
-                    'desc' => __('Show records of all the users on the frontend listing table. By default it shows records of current user.', 'wedevs'),
+                    'desc' => __('Show the records of all the users on the frontend listing table. By default it shows records of current user.', 'user-login-history'),
                     'type' => 'checkbox',
                     
                 ),
                 array(
                     'name' => 'frontend_columns',
-                    'label' => __('Display Columns', 'wedevs'),
-                    'desc' => __('Choose the columns to be displayed on frontend listing table.', 'wedevs'),
+                    'label' => __('Display Columns', 'user-login-history'),
+                    'desc' => __('Choose the columns to be displayed on the frontend listing table.', 'user-login-history'),
                     'type' => 'multicheck',
                     'default' => $this->get_all_default_frontend_columns(),
                     'options' => $this->get_all_frontend_columns()
@@ -95,20 +95,20 @@ class User_Login_History_Admin_Setting_Helper {
             $this->plugin_name . '-advanced' => array(
                 array(
                     'name' => 'login_status_login_color',
-                    'label' => __('Status Color', 'wedevs'),
-                    'desc' => __('Select color for login.', 'wedevs'),
+                    'label' => __('Status Color', 'user-login-history'),
+                    'desc' => __('Select color for login.', 'user-login-history'),
                     'type' => 'color',
                     'default' => '#b5d6a4'
                 ),
                 array(
                     'name' => 'login_status_logout_color',
-                    'desc' => __('Select color for logout.', 'wedevs'),
+                    'desc' => __('Select color for logout.', 'user-login-history'),
                     'type' => 'color',
                     'default' => '#d3bee2'
                 ),
                 array(
                     'name' => 'login_status_fail_color',
-                    'desc' => __('Select color for fail.', 'wedevs'),
+                    'desc' => __('Select color for fail.', 'user-login-history'),
                     'type' => 'color',
                     'default' => '#dd9d9d'
                 ),

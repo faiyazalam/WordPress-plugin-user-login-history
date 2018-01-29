@@ -12,13 +12,38 @@ class User_Login_History_Public_List_Table {
     private $items;
     private $table;
     private $plugin_name;
+    private $options;
 
-    public function __construct($limit = false) {
-
-        $this->limit = $limit > 0 ? intval($limit) : self::DEFALUT_LIMIT;
+    public function __construct($plugin_name) {
+        $this->plugin_name = $plugin_name;
         $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? intval($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
         $this->table = User_Login_History_DB_Helper::get_table_name();
-        $this->plugin_name = USER_LOGIN_HISTORY_NAME;
+        $this->set_options();
+        $this->set_limit();
+    }
+
+    private function get_option_names() {
+        return array('basics', 'advanced');
+    }
+
+    private function set_options() {
+        $opiton_names = $this->get_option_names();
+        foreach ($opiton_names as $opiton_name) {
+            $this->options[$opiton_name] = maybe_unserialize(get_option($this->plugin_name . '-' . $opiton_name));
+        }
+    }
+
+    private function get_options($opiton_name = 'basics') {
+        return $this->options[$opiton_name];
+    }
+
+    public function set_limit($limit = false) {
+        if ($limit) {
+            $this->limit = intval($limit);
+        } else {
+            $limit = get_option($this->plugin_name . '-basics');
+            $this->limit = !empty($limit['frontend_limit']) ? intval($limit['frontend_limit']) : self::DEFALUT_LIMIT;
+        }
     }
 
     public function prepare_items() {
@@ -52,12 +77,12 @@ class User_Login_History_Public_List_Table {
         );
 
         foreach ($fields as $field) {
-            if (isset($_GET[$field]) && "" != $_GET[$field]) {
+            if (!empty($_GET[$field])) {
                 $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql($_GET[$field]) . "'";
             }
         }
 
-        if (isset($_GET['role']) && "" != $_GET['role']) {
+        if (!empty($_GET['role'])) {
 
             if ('superadmin' == $_GET['role']) {
                 $site_admins = get_super_admins();
@@ -68,7 +93,7 @@ class User_Login_History_Public_List_Table {
             }
         }
 
-        if (isset($_GET['old_role']) && "" != $_GET['old_role']) {
+        if (!empty($_GET['old_role'])) {
             if ('superadmin' == $_GET['old_role']) {
                 $where_query .= " AND `FaUserLogin`.`is_super_admin` LIKE '1'";
             } else {
@@ -80,16 +105,23 @@ class User_Login_History_Public_List_Table {
             $date_type = esc_sql($_GET['date_type']);
 
             if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
-                if (isset($_GET['date_from']) && "" != $_GET['date_from']) {
+                if (!empty($_GET['date_from'])) {
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($_GET['date_from']) . " 00:00:00'";
                 }
 
-                if (isset($_GET['date_to']) && "" != $_GET['date_to']) {
+                if (!empty($_GET['date_to'])) {
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($_GET['date_to']) . " 23:59:59'";
                 }
             }
         }
-        $where_query = apply_filters('user_login_history_admin_prepare_where_query', $where_query);
+
+        $options = $this->get_options("basics");
+        if (!isset($options['frontend_show_all_records']) || "off" == $options['frontend_show_all_records']) {
+            global $current_user;
+            $where_query .= " AND FaUserLogin.user_id = $current_user->ID";
+        }
+
+        $where_query = apply_filters('user_login_history_public_prepare_where_query', $where_query);
         return $where_query;
     }
 
@@ -123,12 +155,12 @@ class User_Login_History_Public_List_Table {
     public function get_rows() {
         global $wpdb;
         $sql = $this->prepare_main_query();
-
+        
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
         } else {
-            $sql .= ' ORDER BY id DESC';
+            $sql .= ' ORDER BY FaUserLogin.time_login DESC';
         }
 
         if ($this->limit > 0) {
@@ -210,7 +242,7 @@ class User_Login_History_Public_List_Table {
 
     public function get_allowed_columns() {
         $allowed_columns = array();
-        $columns = maybe_unserialize(get_option($this->plugin_name . '-basics'));
+        $columns = $this->get_options();
         if (isset($columns['frontend_columns']) && is_array($columns['frontend_columns'])) {
             $allowed_columns = $columns['frontend_columns'];
         }
@@ -218,7 +250,7 @@ class User_Login_History_Public_List_Table {
     }
 
     public function print_column_headers() {
-        $columns = $this->get_columns();
+       
         $allowed_columns = $this->get_allowed_columns();
 
         //log the exception
@@ -227,15 +259,21 @@ class User_Login_History_Public_List_Table {
             $this->pagination_links = ""; //disable pagination link.
             return;
         }
+ $columns = $this->get_columns();
+ $order_by_key = 'orderby';
 
         $sortable_columns = $this->get_sortable_columns();
         foreach ($columns as $key => $column) {
-
+             $direction = '';
+//print only allowed column headers
             if (isset($allowed_columns[$key])) {
                 echo "<th>";
-
+//add sorting link to sortable column only
                 if (isset($sortable_columns[$key])) {
-                    $orderby = isset($sortable_columns[$key][0]) ? $sortable_columns[$key][0] : $key;
+                    //set query value for query param 'orderby'
+                    $sortable_column_name = !empty($sortable_columns[$key][0])?$sortable_columns[$key][0]:"";
+                    $orderby = $sortable_column_name ? $sortable_column_name : $key;
+                    //find default direction for the current column
                     if (isset($sortable_columns[$key][1]) && $sortable_columns[$key][1]) {
                         $order_a = 'asc';
                         $order_b = 'desc';
@@ -243,11 +281,21 @@ class User_Login_History_Public_List_Table {
                         $order_a = 'desc';
                         $order_b = 'asc';
                     }
-                    $order = !empty($_REQUEST['order']) && $_REQUEST['order'] === $order_a ? $order_b : $order_a;
 
-                    $page_number_string = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? "&" . self::DEFALUT_QUERY_ARG_PAGE_NUMBER . "=" . $this->page_number : "";
+                    $requested_order = !empty($_GET['order']) ? $_GET['order'] : "";
+                    
+                    //reverse the order
+                    $order = $requested_order === $order_a ? $order_b : $order_a;
 
-                    echo "<a href='?orderby=$orderby&order={$order}{$page_number_string}'>$column</a>";
+                    $page_number_string = !empty($_GET[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? "&" . self::DEFALUT_QUERY_ARG_PAGE_NUMBER . "=" . $this->page_number : "";
+
+                    if(isset($_GET[$order_by_key]) && $sortable_column_name == $_GET[$order_by_key])
+                    {
+                        
+                      $direction = $requested_order;
+                    }
+                    
+                    echo "<a href='?$order_by_key=$orderby&order={$order}{$page_number_string}'>$column<span class='sorting_hover_$order'>($order)</span><span class='sorting $direction'>$direction</span></a>";
                 } else {
                     echo $column;
                 }
@@ -262,152 +310,151 @@ class User_Login_History_Public_List_Table {
         <table>
             <thead>
                 <tr>
-        <?php $this->print_column_headers(); ?>
+                    <?php $this->print_column_headers(); ?>
                 </tr>
             </thead>
             <tbody>
-        <?php $this->display_rows_or_placeholder(); ?>
+                <?php $this->display_rows_or_placeholder(); ?>
             </tbody>
         </table>
-                    <?php
-                    $this->display_pagination();
-                }
+        <?php
+        $this->display_pagination();
+    }
 
-                public function display_rows_or_placeholder() {
-                    if ($this->has_items()) {
-                        $this->display_rows();
-                    } else {
-                        echo '<tr><td>';
-                        $this->no_items();
-                        echo '</td></tr>';
-                    }
-                }
+    public function display_rows_or_placeholder() {
+        if ($this->has_items()) {
+            $this->display_rows();
+        } else {
+            echo '<tr><td>';
+            $this->no_items();
+            echo '</td></tr>';
+        }
+    }
 
-                /**
-                 * Generate the table rows
-                 *
-                 * @since 3.1.0
-                 */
-                public function display_rows() {
-                    foreach ($this->items as $item)
-                        $this->single_row($item);
-                }
+    /**
+     * Generate the table rows
+     *
+     * @since 3.1.0
+     */
+    public function display_rows() {
+        foreach ($this->items as $item)
+            $this->single_row($item);
+    }
 
-                public function has_items() {
-                    return !empty($this->items);
-                }
+    public function has_items() {
+        return !empty($this->items);
+    }
 
-                /**
-                 * Message to be displayed when there are no items
-                 *
-                 * @since 3.1.0
-                 */
-                public function no_items() {
-                    _e('No items found.');
-                }
+    /**
+     * Message to be displayed when there are no items
+     *
+     * @since 3.1.0
+     */
+    public function no_items() {
+        _e('No items found.');
+    }
 
-                public function single_row($item) {
-                    echo '<tr>';
-                    $this->single_row_columns($item);
-                    echo '</tr>';
-                }
+    public function single_row($item) {
+        echo '<tr>';
+        $this->single_row_columns($item);
+        echo '</tr>';
+    }
 
-                public function single_row_columns($item) {
-                    $columns = $this->get_columns();
-                    $allowed_columns = $this->get_allowed_columns();
-
-
+    public function single_row_columns($item) {
+        $columns = $this->get_columns();
+        $allowed_columns = $this->get_allowed_columns();
 
 
-                    foreach ($columns as $column_name => $value) {
-                        if (in_array($column_name, $allowed_columns)) {
-                            echo "<td>" . $this->column_default($item, $column_name) . "</td>";
-                        }
-                    }
-                }
-
-                public function column_default($item, $column_name) {
-                    global $current_user;
-                    $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
-
-                    $timezone = $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
-
-                    $unknown = __('Unknown', 'user-login-history');
-                    $new_column_data = apply_filters('manage_user_login_history_admin_custom_column', '', $item, $column_name);
-                    switch ($column_name) {
-                        case 'user_id':
-                            if (!$item[$column_name]) {
-                                return $unknown;
-                            }
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'username':
-                            if (!$item['user_id']) {
-                                return $item[$column_name];
-                            }
-
-                            $profile_link = get_edit_user_link($item['user_id']);
-                            return "<a href= '$profile_link'>$item[$column_name]</a>";
-                        case 'role':
-                            if (!$item['user_id']) {
-                                return $unknown;
-                            }
-                            $user_data = get_userdata($item['user_id']);
-                            return isset($user_data->roles) && !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
-                        case 'old_role':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'browser':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'time_login':
-                            return User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
-                        case 'time_logout':
-                            if (!$item['user_id']) {
-                                return $unknown;
-                            }
-                            return strtotime($item[$column_name]) > 0 ? User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone) : __('Logged In', 'user-login-history');
-                        case 'ip_address':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'timezone':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'operating_system':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'country_name':
-                            $item['country_code'] = isset($item['country_code']) && "" != $item['country_code'] ? $item['country_code'] : $unknown;
-                            return in_array(strtolower($item[$column_name]), array("", strtolower($unknown))) ? $unknown : $item[$column_name] . "(" . $item['country_code'] . ")";
-                        case 'time_last_seen':
-                            if (!$item['user_id']) {
-                                return $unknown;
-                            }
-                            $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
-                            $human_time_diff = human_time_diff(strtotime($item[$column_name]));
-                            return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'user-login-history') . '</span>';
-                        case 'user_agent':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-                        case 'duration':
-                            $duration = human_time_diff(strtotime($item['time_login']), User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen']));
-                            ;
-                            return $duration ? $duration : $unknown;
-
-                        case 'login_status':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-
-                        case 'site_id':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-
-                        case 'blog_id':
-                            return $item[$column_name] ? $item[$column_name] : $unknown;
-
-                        case 'is_super_admin':
-                            return $item[$column_name] ? __('Yes', 'user-login-history') : __('No', 'user-login-history');
 
 
-                        default:
-                            if ($new_column_data) {
-                                echo $new_column_data;
-                                return;
-                            }
-                            return print_r($item, true); //Show the whole array for troubleshooting purposes
-                    }
-                }
-
+        foreach ($columns as $column_name => $value) {
+            if (in_array($column_name, $allowed_columns)) {
+                echo "<td>" . $this->column_default($item, $column_name) . "</td>";
             }
-            
+        }
+    }
+
+    public function column_default($item, $column_name) {
+        global $current_user;
+        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
+
+        $timezone = $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
+
+        $unknown = __('Unknown', 'user-login-history');
+        $new_column_data = apply_filters('manage_user_login_history_admin_custom_column', '', $item, $column_name);
+        switch ($column_name) {
+            case 'user_id':
+                if (!$item[$column_name]) {
+                    return $unknown;
+                }
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'username':
+                if (!$item['user_id']) {
+                    return $item[$column_name];
+                }
+
+                $profile_link = get_edit_user_link($item['user_id']);
+                return "<a href= '$profile_link'>$item[$column_name]</a>";
+            case 'role':
+                if (!$item['user_id']) {
+                    return $unknown;
+                }
+                $user_data = get_userdata($item['user_id']);
+                return isset($user_data->roles) && !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
+            case 'old_role':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'browser':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'time_login':
+                return User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
+            case 'time_logout':
+                if (!$item['user_id']) {
+                    return $unknown;
+                }
+                return strtotime($item[$column_name]) > 0 ? User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone) : __('Logged In', 'user-login-history');
+            case 'ip_address':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'timezone':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'operating_system':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'country_name':
+                $item['country_code'] = isset($item['country_code']) && "" != $item['country_code'] ? $item['country_code'] : $unknown;
+                return in_array(strtolower($item[$column_name]), array("", strtolower($unknown))) ? $unknown : $item[$column_name] . "(" . $item['country_code'] . ")";
+            case 'time_last_seen':
+                if (!$item['user_id']) {
+                    return $unknown;
+                }
+                $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
+                $human_time_diff = human_time_diff(strtotime($item[$column_name]));
+                return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'user-login-history') . '</span>';
+            case 'user_agent':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+            case 'duration':
+                $duration = human_time_diff(strtotime($item['time_login']), User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen']));
+                ;
+                return $duration ? $duration : $unknown;
+
+            case 'login_status':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+
+            case 'site_id':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+
+            case 'blog_id':
+                return $item[$column_name] ? $item[$column_name] : $unknown;
+
+            case 'is_super_admin':
+                return $item[$column_name] ? __('Yes', 'user-login-history') : __('No', 'user-login-history');
+
+
+            default:
+                if ($new_column_data) {
+                    echo $new_column_data;
+                    return;
+                }
+                return print_r($item, true); //Show the whole array for troubleshooting purposes
+        }
+    }
+
+}
