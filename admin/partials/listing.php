@@ -3,6 +3,8 @@
     <div class="<?php echo $this->plugin_name; ?>-search-filter">
         <form name="<?php echo $this->plugin_name . '-search-form'; ?>" method="get" action="" id="<?php echo $this->plugin_name . '-search-form'; ?>">
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']) ?>" />
+            <input type="hidden" name="order" value="<?php echo !empty($_GET['order']) ? esc_attr($_GET['order']) : "" ?>" />
+            <input type="hidden" name="orderby" value="<?php echo !empty($_GET['orderby']) ? esc_attr($_GET['orderby']) : "" ?>" />
             <fieldset> 
                 <input readonly autocomplete="off" placeholder="<?php _e("From", "user-login-history") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
                 <input readonly autocomplete="off" placeholder="<?php _e("To", "user-login-history") ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" >
@@ -57,7 +59,7 @@
             <a class="" id="download_csv_link"><?php _e('DOWNLOAD CSV', 'user-login-history'); ?></a> 
             <a class=""  href="<?php echo admin_url("admin.php?page=" . esc_attr($_GET['page'])) ?>" ><?php _e('RESET', 'user-login-history'); ?></a>
             <input type="hidden" name="<?php echo $this->plugin_name?>-export-csv" id="export-csv" value="">
-           <input type="hidden" name="<?php echo $this->plugin_name?>-export-nonce" id="<?php echo $this->plugin_name?>-export-nonce" value="<?php echo wp_create_nonce(USER_LOGIN_HISTORY_OPTION_PREFIX . 'export_csv') ?>">
+           <input type="hidden" name="<?php echo $this->plugin_name?>-export-nonce" id="<?php echo $this->plugin_name?>-export-nonce" value="<?php echo wp_create_nonce($this->plugin_name . 'export_csv') ?>">
             <input class="" id="submit" type="submit" name="submit" value="<?php _e('FILTER', 'user-login-history') ?>" />
         </form>
         <br class="clear">

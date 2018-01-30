@@ -134,7 +134,7 @@ class User_Login_History_Admin {
 
     public function process_bulk_action() {
         if ($this->Admin_List_Table()->process_bulk_action()) {
-            $this->add_admin_notice(__('Record(s) has been deleted.'));
+            $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
             wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
             exit;
         }
@@ -160,12 +160,11 @@ class User_Login_History_Admin {
      */
     public function show_admin_notice() {
         $notices = get_transient($this->admin_notice_transient);
-        $str = __('Dismiss this notice', 'user-login-history');
 
         if ($notices !== false) {
             foreach ($notices as $notice) {
                 echo '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible"> 
-<p><strong>' . $notice . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' . $str . '.</span></button></div>';
+<p><strong>' . $notice . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' .  __('Dismiss this notice', 'user-login-history') . '.</span></button></div>';
             }
             delete_transient($this->admin_notice_transient);
         }
@@ -185,9 +184,34 @@ class User_Login_History_Admin {
     public function init_csv_export() {
         //Check if download was initiated
         if (isset($_GET[$this->plugin_name . '-export-csv']) && "csv" == $_GET[$this->plugin_name . '-export-csv']) {
-            check_admin_referer(USER_LOGIN_HISTORY_OPTION_PREFIX . 'export_csv', $this->plugin_name . '-export-nonce');
+            check_admin_referer($this->plugin_name . 'export_csv', $this->plugin_name . '-export-nonce');
             $this->Admin_List_Table()->export_to_CSV();
         }
     }
+    
+    
+    //add_action( 'show_user_profile', 'show_extra_profile_fields' );
+//add_action( 'edit_user_profile', 'show_extra_profile_fields' );
+
+function show_extra_profile_fields( $user ) {
+    $this->UserProfile()->show_extra_profile_fields($user);
+}
+
+//add_action( 'user_profile_update_errors', 'user_profile_update_errors', 10, 3 );
+function user_profile_update_errors( $errors, $update, $user ) {
+ $this->UserProfile()->user_profile_update_errors($errors, $update, $user);
+}
+
+
+//add_action( 'personal_options_update', 'update_profile_fields' );
+//add_action( 'edit_user_profile_update', 'update_profile_fields' );
+
+function update_profile_fields( $user_id ) {
+ $this->UserProfile()->update_profile_fields($user_id);
+}
+
+private function UserProfile() {
+    return User_Login_History_User_Profile_Helper::get_instance($this->plugin_name);
+}
 
 }

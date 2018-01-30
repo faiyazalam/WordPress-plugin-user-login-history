@@ -141,6 +141,7 @@ class User_Login_History {
          require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public.php';
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-user-tracker.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-user-profile-helper.php';
 
         $this->loader = new User_Login_History_Loader();
     }
@@ -181,7 +182,11 @@ class User_Login_History {
             $this->loader->add_action('admin_init', $plugin_admin, 'init');
             $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
                     $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-                   // $this->loader->add_action('plugins_loaded', $plugin_admin, 'create_admin_settings');
+                   $this->loader->add_action('show_user_profile', $plugin_admin, 'show_extra_profile_fields');
+        $this->loader->add_action('edit_user_profile', $plugin_admin, 'show_extra_profile_fields');
+        $this->loader->add_action('user_profile_update_errors', $plugin_admin, 'user_profile_update_errors', 10, 3);
+        $this->loader->add_action('personal_options_update', $plugin_admin, 'update_profile_fields');
+        $this->loader->add_action('edit_user_profile_update', $plugin_admin, 'update_profile_fields');
         }
 
 //hooks for admin as well as public
@@ -189,7 +194,7 @@ class User_Login_History {
         $this->loader->add_action('wp_logout', $plugin_admin, 'user_logout');
         $this->loader->add_action('wp_login_failed', $plugin_admin, 'user_login_failed');
         $this->loader->add_action('init', $plugin_admin, 'init');
-    //    $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
+      
 
         $this->loader->add_action('set_logged_in_cookie', $plugin_admin, 'set_user_session_token', 10, 6);
     }

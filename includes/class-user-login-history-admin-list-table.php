@@ -1,7 +1,7 @@
 <?php
 
 class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_List_Table {
-    
+
     public function export_to_CSV() {
         global $current_user;
         $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
@@ -10,7 +10,7 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
         $suffix = date('n-j-y_H-i');
         // send response headers to the browser
         header('Content-Type: text/csv');
-        header('Content-Disposition: attachment;filename=login_log_' . $suffix . '.csv');
+        header('Content-Disposition: attachment;filename=user_login_history_' . $suffix . '.csv');
 
         if (!$data) {
             echo 'No record.';
@@ -22,6 +22,7 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
 
         foreach ($data as $row) {
             unset($row['meta_value']);
+            unset($row['session_token']);
             //calculate duration before time_last_seen - MANDATORY
             $row['duration'] = $this->column_default($row, 'duration');
 
@@ -54,4 +55,5 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
         fclose($fp);
         die();
     }
+
 }

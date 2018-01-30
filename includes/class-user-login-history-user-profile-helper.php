@@ -10,54 +10,62 @@
  * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  */
-class User_Login_History_DB_Helper {
-//
-// define('ULH_MESSAGE_INVALID_NONCE', __('Well tried.', 'user-login-history'));
-//define('ULH_MESSAGE_RECORD_DELETED', __('The record(s) has been deleted.', 'user-login-history'));
-//define('ULH_MESSAGE_NO_RECORD_FOUND', __('No records found.', 'user-login-history'));
+class User_Login_History_User_Profile_Helper {
 
-    /**
-     * 
-     * @global type $wpdb
-     * @param type $id
-     * @return string
-     */
-    static public function get_blog_name_by_id($id = NULL) {
-        if (!$id) {
-            return '';
+    private $plugin_name;
+    static $instance;
+
+    public function __construct($plugin_name) {
+        $this->plugin_name = $plugin_name;
+           $this->user_meta_timezone = USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone";
+    }
+
+    public static function get_instance($plugin_name) {
+        if (!isset(self::$instance)) {
+            self::$instance = new self($plugin_name);
         }
-        global $wpdb;
-        return $wpdb->get_var("SELECT CONCAT(domain,path) AS blog_name FROM $wpdb->blogs WHERE blog_id = $id ");
-    }
-    
-    static public function get_message($key = '') {
-        $messages = array(
-            'invalid_nonce'=>__('Well tried.', 'user-login-history'),
-            'record_deleted'=>__('The record(s) has been deleted.', 'user-login-history'),
-            'no_record_found'=>__('No records found.', 'user-login-history'),
-            );
-        
-            return isset($messages[$key]) ? $messages[$key] : __('Message string is missing.', 'user-login-history');
+        return self::$instance;
     }
 
-    
-    static public function get_table_prefix(){
-         if(is_multisite()){
-             global $wpdb;
-             return  $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_session_current_login_blog_id());
-        }  else {
-            global $table_prefix;
-            return $table_prefix;
+    function show_extra_profile_fields($user) {
+        $user_timezone = get_user_meta($user->ID, $this->user_meta_timezone, TRUE);
+        ?>
+        <h3><?php _e('User Login History', 'user-login-history'); ?></h3>
+
+        <table>
+            <tr>
+                <th><label for="<?php echo $this->plugin_name . "-timezone" ?>"><?php _e('Timezone', 'user-login-history'); ?></label></th>
+                <td>
+                    <select required="required" name="<?php echo $this->plugin_name . '-timezone' ?>">
+                        <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
+                        <?php
+                        User_Login_History_Template_Helper::dropdown_timezone($user_timezone);
+                        ?>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <?php
+    }
+
+    function user_profile_update_errors($errors, $update, $user) {
+        if (!$update) {
+            return;
+        }
+
+        if (empty($_POST[$this->plugin_name . '-timezone'])) {
+            $errors->add('user_timezone_error', __('<strong>ERROR</strong>: Please select a timezone.', 'user-login-history'));
         }
     }
-    
-    static function get_table_name() {
-        return self::get_table_prefix(). USER_LOGIN_HISTORY_TABLE_NAME;
+
+    function update_profile_fields($user_id) {
+        if (!current_user_can('edit_user', $user_id)) {
+            return false;
+        }
+        if (!empty($_POST[$this->plugin_name . '-timezone'])) {
+            update_user_meta($user_id, $this->user_meta_timezone, $_POST[$this->plugin_name . '-timezone']);
+        }
     }
-
-    
-
-    
-    
 
 }

@@ -22,7 +22,7 @@ $user_timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_P
     
     <form method="post" id="<?php echo $this->plugin_name ?>_update_user_timezone">
         <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce($this->plugin_name . "_update_user_timezone") ?>">
-        <select  id="select_timezone" name="<?php echo $this->plugin_name . '-timezone' ?>">
+        <select required="required"  id="select_timezone" name="<?php echo $this->plugin_name . '-timezone' ?>">
             <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
             <?php
             User_Login_History_Template_Helper::dropdown_timezone($user_timezone);
