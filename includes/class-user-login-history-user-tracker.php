@@ -195,14 +195,9 @@ class User_Login_History_User_Tracker {
         do_action('user_login_history_after_save_user_login_detail', $data);
     }
 
-    public static function get_instance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
+   
 
-    public function set_session_token($token = '') {
+    public function set_session_token($logged_in_cookie, $expire, $expiration, $user_id, $logged_in_text, $token) {
         $this->session_token = $token;
     }
 

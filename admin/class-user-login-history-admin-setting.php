@@ -5,27 +5,14 @@
  *
  * @author Tareq Hasan
  */
-class User_Login_History_Admin_Setting_Helper {
+class User_Login_History_Admin_Setting {
 
     private $settings_api;
     private $plugin_name;
-        static private $instance;
-    
-        /** Singleton instance */
-    public static function get_instance($plugin_name) {
-        if (!isset(self::$instance)) {
-            self::$instance = new self($plugin_name);
-        }
-
-        return self::$instance;
-    }
 
     function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
         $this->settings_api = new User_Login_History_Settings_API();
-
-        add_action('admin_init', array($this, 'admin_init'));
-        add_action('admin_menu', array($this, 'admin_menu'));
     }
 
     function admin_init() {
@@ -81,7 +68,6 @@ class User_Login_History_Admin_Setting_Helper {
                     'label' => 'Show All Records',
                     'desc' => __('Show the records of all the users on the frontend listing table. By default it shows records of current user.', 'user-login-history'),
                     'type' => 'checkbox',
-                    
                 ),
                 array(
                     'name' => 'frontend_columns',
@@ -126,39 +112,39 @@ class User_Login_History_Admin_Setting_Helper {
 
         echo '</div>';
     }
-    
+
     private function get_all_frontend_columns() {
         $columns = array(
-                       'user_id'    => __( 'User ID', 'user-login-history' ),
-			'username'    => __( 'Username', 'user-login-history' ),
-                        'role' => __( 'Current Role', 'user-login-history' ),
-                        'old_role' => __( 'Old Role', 'user-login-history' ),
-			'ip_address'    => __( 'IP Address', 'user-login-history' ),
-			'browser'    => __( 'Browser', 'user-login-history' ),
-			'operating_system' => __( 'Platform', 'user-login-history' ),
-			'country_name'    => __( 'Country Name', 'user-login-history' ),
-			'timezone'    => __( 'Timezone', 'user-login-history' ),
-			'user_agent'    => __( 'User Agent', 'user-login-history' ),
-			'time_login'    => __( 'Login Date-Time', 'user-login-history' ),
-			'time_last_seen'    => __('Last Seen', 'user-login-history' ),
-			'time_logout'    => __( 'Logout Date-Time', 'user-login-history' ),
-			'login_status'    => __( 'Login Status', 'user-login-history' ),
-                    );
-                    return $columns;
+            'user_id' => __('User ID', 'user-login-history'),
+            'username' => __('Username', 'user-login-history'),
+            'role' => __('Current Role', 'user-login-history'),
+            'old_role' => __('Old Role', 'user-login-history'),
+            'ip_address' => __('IP Address', 'user-login-history'),
+            'browser' => __('Browser', 'user-login-history'),
+            'operating_system' => __('Platform', 'user-login-history'),
+            'country_name' => __('Country Name', 'user-login-history'),
+            'timezone' => __('Timezone', 'user-login-history'),
+            'user_agent' => __('User Agent', 'user-login-history'),
+            'time_login' => __('Login Date-Time', 'user-login-history'),
+            'time_last_seen' => __('Last Seen', 'user-login-history'),
+            'time_logout' => __('Logout Date-Time', 'user-login-history'),
+            'login_status' => __('Login Status', 'user-login-history'),
+        );
+        return $columns;
     }
-    
-     private function get_all_default_frontend_columns() {
+
+    private function get_all_default_frontend_columns() {
         $columns = array(
-			'ip_address'    => 'ip_address',
-			'browser'    => 'browser',
-			'operating_system' => 'operating_system',
-			'country_name'    => 'country_name',
-			'time_login'    => 'time_login',
-			'time_last_seen'    =>'time_last_seen',
-			'time_logout'    => 'time_logout',
-			'login_status'    => 'login_status',
-                    );
-                    return $columns;
+            'ip_address' => 'ip_address',
+            'browser' => 'browser',
+            'operating_system' => 'operating_system',
+            'country_name' => 'country_name',
+            'time_login' => 'time_login',
+            'time_last_seen' => 'time_last_seen',
+            'time_logout' => 'time_logout',
+            'login_status' => 'login_status',
+        );
+        return $columns;
     }
 
 }

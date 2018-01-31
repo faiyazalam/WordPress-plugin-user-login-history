@@ -10,8 +10,7 @@ class User_Login_History_Singleton_Admin_List_Table {
 
     // class constructor
     public function __construct($plugin_name) {
-        add_filter('set-screen-option', [ __CLASS__, 'set_screen'], 10, 3);
-        add_action('admin_menu', [ $this, 'plugin_menu']);
+      
         $this->plugin_name = $plugin_name;
     }
 
@@ -52,12 +51,6 @@ class User_Login_History_Singleton_Admin_List_Table {
         $this->admin_list_table = new User_Login_History_Admin_List_table();
     }
 
-    /** Singleton instance */
-    public static function get_instance($plugin_name) {
-        if (!isset(self::$instance)) {
-            self::$instance = new self($plugin_name);
-        }
-        return self::$instance;
-    }
+
 
 }

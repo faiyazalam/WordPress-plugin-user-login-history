@@ -10,22 +10,16 @@
  * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  */
-class User_Login_History_User_Profile_Helper {
+class User_Login_History_User_Profile {
 
     private $plugin_name;
-    static $instance;
 
     public function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
            $this->user_meta_timezone = USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone";
     }
 
-    public static function get_instance($plugin_name) {
-        if (!isset(self::$instance)) {
-            self::$instance = new self($plugin_name);
-        }
-        return self::$instance;
-    }
+   
 
     function show_extra_profile_fields($user) {
         $user_timezone = get_user_meta($user->ID, $this->user_meta_timezone, TRUE);

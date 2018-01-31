@@ -96,41 +96,20 @@ class User_Login_History_Admin {
         }
     }
 
-    public function user_login_failed($user_login) {
-        $this->UserTracker()->user_login_failed($user_login);
-    }
 
-    public function user_logout() {
-        $this->UserTracker()->user_logout();
-    }
 
-    public function user_login($user_login, $user) {
-        $this->UserTracker()->user_login($user_login, $user);
-    }
+   
 
-    public function set_user_session_token($logged_in_cookie, $expire, $expiration, $user_id, $logged_in_text, $token) {
-        $this->UserTracker()->set_session_token($token);
-    }
+    
 
-    public function update_user_time_last_seen() {
-        $this->UserTracker()->update_time_last_seen();
-    }
-
-    private function session_start() {
+    public function session_start() {
         if ("" == session_id()) {
             session_start();
         }
     }
 
-    public function init() {
-        $this->session_start(); //this must be on high priority.
-        $this->update_user_time_last_seen();
-    }
+   
 
-    public function plugins_loaded() {
-        User_Login_History_Singleton_Admin_List_Table::get_instance($this->plugin_name);
-        User_Login_History_Admin_Setting_Helper::get_instance($this->plugin_name);
-    }
 
     public function process_bulk_action() {
         if ($this->Admin_List_Table()->process_bulk_action()) {
@@ -170,9 +149,7 @@ class User_Login_History_Admin {
         }
     }
 
-    public function create_admin_settings() {
-        new User_Login_History_Admin_Setting_Helper($this->plugin_name);
-    }
+
 
     public function admin_init() {
         if (current_user_can('administrator')) {
@@ -188,30 +165,4 @@ class User_Login_History_Admin {
             $this->Admin_List_Table()->export_to_CSV();
         }
     }
-    
-    
-    //add_action( 'show_user_profile', 'show_extra_profile_fields' );
-//add_action( 'edit_user_profile', 'show_extra_profile_fields' );
-
-function show_extra_profile_fields( $user ) {
-    $this->UserProfile()->show_extra_profile_fields($user);
-}
-
-//add_action( 'user_profile_update_errors', 'user_profile_update_errors', 10, 3 );
-function user_profile_update_errors( $errors, $update, $user ) {
- $this->UserProfile()->user_profile_update_errors($errors, $update, $user);
-}
-
-
-//add_action( 'personal_options_update', 'update_profile_fields' );
-//add_action( 'edit_user_profile_update', 'update_profile_fields' );
-
-function update_profile_fields( $user_id ) {
- $this->UserProfile()->update_profile_fields($user_id);
-}
-
-private function UserProfile() {
-    return User_Login_History_User_Profile_Helper::get_instance($this->plugin_name);
-}
-
 }
