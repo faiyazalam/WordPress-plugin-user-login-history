@@ -58,8 +58,8 @@
             <?php do_action('user_login_history_admin_listing_search_form'); ?>
             <a class="" id="download_csv_link"><?php _e('DOWNLOAD CSV', 'user-login-history'); ?></a> 
             <a class=""  href="<?php echo admin_url("admin.php?page=" . esc_attr($_GET['page'])) ?>" ><?php _e('RESET', 'user-login-history'); ?></a>
-            <input type="hidden" name="<?php echo $this->plugin_name?>-export-csv" id="export-csv" value="">
-           <input type="hidden" name="<?php echo $this->plugin_name?>-export-nonce" id="<?php echo $this->plugin_name?>-export-nonce" value="<?php echo wp_create_nonce($this->plugin_name . 'export_csv') ?>">
+            <input type="hidden" name="<?php echo $this->plugin_name?>_export_csv" id="export-csv" value="">
+           <input type="hidden" name="<?php echo $this->plugin_name?>_export_nonce" id="<?php echo $this->plugin_name?>_export_nonce" value="<?php echo wp_create_nonce($this->plugin_name . '_export_csv') ?>">
             <input class="" id="submit" type="submit" name="submit" value="<?php _e('FILTER', 'user-login-history') ?>" />
         </form>
         <br class="clear">

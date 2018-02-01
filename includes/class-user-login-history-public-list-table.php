@@ -13,37 +13,22 @@ class User_Login_History_Public_List_Table {
     private $table;
     private $plugin_name;
     private $options;
+    private $allowed_columns;
 
     public function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
         $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? intval($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
         $this->table = User_Login_History_DB_Helper::get_table_name();
-        $this->set_options();
-        $this->set_limit();
+      
+      
     }
 
-    private function get_option_names() {
-        return array('basics', 'advanced');
-    }
 
-    private function set_options() {
-        $opiton_names = $this->get_option_names();
-        foreach ($opiton_names as $opiton_name) {
-            $this->options[$opiton_name] = maybe_unserialize(get_option($this->plugin_name . '-' . $opiton_name));
-        }
-    }
 
-    private function get_options($opiton_name = 'basics') {
-        return $this->options[$opiton_name];
-    }
+
 
     public function set_limit($limit = false) {
-        if ($limit) {
-            $this->limit = intval($limit);
-        } else {
-            $limit = get_option($this->plugin_name . '-basics');
-            $this->limit = !empty($limit['frontend_limit']) ? intval($limit['frontend_limit']) : self::DEFALUT_LIMIT;
-        }
+            $this->limit =  $limit ?  intval($limit) : self::DEFALUT_LIMIT;
     }
 
     public function prepare_items() {
@@ -67,7 +52,6 @@ class User_Login_History_Public_List_Table {
             'username',
             'country_name',
             'browser',
-            'operating_system',
             'ip_address',
             'timezone',
             'country_name',
@@ -115,12 +99,6 @@ class User_Login_History_Public_List_Table {
             }
         }
 
-        $options = $this->get_options("basics");
-        if (!isset($options['frontend_show_all_records']) || "off" == $options['frontend_show_all_records']) {
-            global $current_user;
-            $where_query .= " AND FaUserLogin.user_id = $current_user->ID";
-        }
-
         $where_query = apply_filters('user_login_history_public_prepare_where_query', $where_query);
         return $where_query;
     }
@@ -162,7 +140,7 @@ class User_Login_History_Public_List_Table {
         } else {
             $sql .= ' ORDER BY FaUserLogin.time_login DESC';
         }
-
+       
         if ($this->limit > 0) {
             $sql .= " LIMIT $this->limit";
             $sql .= ' OFFSET   ' . ( $this->page_number - 1 ) * $this->limit;
@@ -170,8 +148,10 @@ class User_Login_History_Public_List_Table {
         }
         $result = $wpdb->get_results($sql, 'ARRAY_A');
         if ("" != $wpdb->last_error) {
+           
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
+        
         return $result;
     }
 
@@ -194,7 +174,7 @@ class User_Login_History_Public_List_Table {
             'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'user-login-history'),
             'ip_address' => __('IP Address', 'user-login-history'),
             'browser' => __('Browser', 'user-login-history'),
-            'operating_system' => __('OS', 'user-login-history'),
+            'operating_system' => __('Platform', 'user-login-history'),
             'country_name' => __('Country', 'user-login-history'),
             'duration' => __('Duration', 'user-login-history'),
             'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'user-login-history'),
@@ -204,7 +184,6 @@ class User_Login_History_Public_List_Table {
             'user_agent' => __('User Agent', 'user-login-history'),
             'login_status' => __('Login Status', 'user-login-history'),
         );
-
 
         $columns = apply_filters('user_login_history_public_get_columns', $columns);
         return $columns;
@@ -241,18 +220,22 @@ class User_Login_History_Public_List_Table {
     }
 
     public function get_allowed_columns() {
-        $allowed_columns = array();
-        $columns = $this->get_options();
-        if (isset($columns['frontend_columns']) && is_array($columns['frontend_columns'])) {
-            $allowed_columns = $columns['frontend_columns'];
-        }
-        return $allowed_columns;
+        
+        return $this->allowed_columns;
+    }
+    public function set_allowed_columns($columns = array()) {
+        
+        $columns =  is_array($columns) ? $columns : (is_string($columns) ? explode(',', $columns): array()) ;
+        $this->allowed_columns = array_map('trim', $columns);
+        return $this->allowed_columns;
+    
+        
     }
 
     public function print_column_headers() {
        
         $allowed_columns = $this->get_allowed_columns();
-
+ 
         //log the exception
         if (empty($allowed_columns)) {
             User_Login_History_Error_Handler::error_log("No columns is selected for frontend listing table.", __LINE__, __FILE__);
@@ -263,10 +246,12 @@ class User_Login_History_Public_List_Table {
  $order_by_key = 'orderby';
 
         $sortable_columns = $this->get_sortable_columns();
+       
         foreach ($columns as $key => $column) {
              $direction = '';
 //print only allowed column headers
-            if (isset($allowed_columns[$key])) {
+            if (in_array($key, $allowed_columns)) {
+               
                 echo "<th>";
 //add sorting link to sortable column only
                 if (isset($sortable_columns[$key])) {
@@ -322,6 +307,7 @@ class User_Login_History_Public_List_Table {
     }
 
     public function display_rows_or_placeholder() {
+      
         if ($this->has_items()) {
             $this->display_rows();
         } else {
@@ -337,6 +323,7 @@ class User_Login_History_Public_List_Table {
      * @since 3.1.0
      */
     public function display_rows() {
+         
         foreach ($this->items as $item)
             $this->single_row($item);
     }
@@ -355,6 +342,7 @@ class User_Login_History_Public_List_Table {
     }
 
     public function single_row($item) {
+        
         echo '<tr>';
         $this->single_row_columns($item);
         echo '</tr>';
@@ -363,10 +351,6 @@ class User_Login_History_Public_List_Table {
     public function single_row_columns($item) {
         $columns = $this->get_columns();
         $allowed_columns = $this->get_allowed_columns();
-
-
-
-
         foreach ($columns as $column_name => $value) {
             if (in_array($column_name, $allowed_columns)) {
                 echo "<td>" . $this->column_default($item, $column_name) . "</td>";

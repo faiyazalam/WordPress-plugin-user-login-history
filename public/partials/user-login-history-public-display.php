@@ -33,7 +33,10 @@ $user_timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_P
 
 </div>
 <?php
+$attributes = shortcode_atts(array('limit'=>20, 'columns' =>'operating_system,ip_address,browser,time_login,time_logout'), $attr);
 $obj = new User_Login_History_Public_List_Table($this->plugin_name);
+$obj->set_allowed_columns(!empty($attributes['columns'])?$attributes['columns']:"");
+$obj->set_limit(!empty($attributes['limit'])?$attributes['limit']:"");
 $obj->prepare_items();
 $obj->display();
 ?>

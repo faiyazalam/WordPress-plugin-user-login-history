@@ -55,14 +55,6 @@ class User_Login_History_Admin {
         $this->admin_notice_transient = USER_LOGIN_HISTORY_OPTION_PREFIX . 'admin_notice_transient';
     }
 
-    private function UserTracker() {
-        return User_Login_History_User_Tracker::get_instance();
-    }
-
-    private function Admin_List_Table() {
-        return new User_Login_History_Admin_List_Table();
-    }
-
     /**
      * Register the stylesheets for the admin area.
      *
@@ -70,7 +62,7 @@ class User_Login_History_Admin {
      */
     public function enqueue_styles() {
         global $pagenow;
-
+      
         if ('admin.php' == $pagenow && isset($_GET['page']) && in_array($_GET['page'], array($this->plugin_name . '-admin-listing', $this->plugin_name . '-network-admin-listing'))) {
             wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
             wp_enqueue_style($this->plugin_name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
@@ -96,23 +88,15 @@ class User_Login_History_Admin {
         }
     }
 
-
-
-   
-
-    
-
     public function session_start() {
         if ("" == session_id()) {
             session_start();
         }
     }
 
-   
-
-
     public function process_bulk_action() {
-        if ($this->Admin_List_Table()->process_bulk_action()) {
+        $Admin_List_Table = new User_Login_History_Admin_List_Table(null, $this->plugin_name);
+        if ($Admin_List_Table->process_bulk_action()) {
             $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
             wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
             exit;
@@ -143,13 +127,11 @@ class User_Login_History_Admin {
         if ($notices !== false) {
             foreach ($notices as $notice) {
                 echo '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible"> 
-<p><strong>' . $notice . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' .  __('Dismiss this notice', 'user-login-history') . '.</span></button></div>';
+<p><strong>' . $notice . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' . __('Dismiss this notice', 'user-login-history') . '.</span></button></div>';
             }
             delete_transient($this->admin_notice_transient);
         }
     }
-
-
 
     public function admin_init() {
         if (current_user_can('administrator')) {
@@ -158,11 +140,16 @@ class User_Login_History_Admin {
         }
     }
 
-    public function init_csv_export() {
+    private function init_csv_export() {
         //Check if download was initiated
-        if (isset($_GET[$this->plugin_name . '-export-csv']) && "csv" == $_GET[$this->plugin_name . '-export-csv']) {
-            check_admin_referer($this->plugin_name . 'export_csv', $this->plugin_name . '-export-nonce');
-            $this->Admin_List_Table()->export_to_CSV();
+        if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
+            if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
+                $Admin_List_Table = new User_Login_History_Admin_List_Table(null, $this->plugin_name);
+                $Admin_List_Table->export_to_CSV();
+            } else {
+                wp_die('Nonce error');
+            }
         }
     }
+
 }

@@ -85,14 +85,17 @@ class User_Login_History_Public {
      * Shortcode to show listing table for frontend user.
      *
      */
-    public function shortcode_user_table() {
+    public function shortcode_user_table($attr) {
         if(!is_user_logged_in()){
             return;
         }
+       
+        ob_start();
         require_once plugin_dir_path(__FILE__) . 'partials/user-login-history-public-display.php';
         wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
         wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
         wp_enqueue_script($this->plugin_name . '-custom.js');
+        return ob_get_clean();
     }
 
     /**
