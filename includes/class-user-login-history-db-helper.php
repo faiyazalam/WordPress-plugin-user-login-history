@@ -41,18 +41,17 @@ class User_Login_History_DB_Helper {
     }
 
     
-    static public function get_table_prefix(){
-         if(is_multisite()){
-             global $wpdb;
-             return  $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_session_current_login_blog_id());
-        }  else {
-            global $table_prefix;
-            return $table_prefix;
-        }
-    }
+
     
-    static function get_table_name() {
-        return self::get_table_prefix(). USER_LOGIN_HISTORY_TABLE_NAME;
+    static function get_table_name($blog_id = null) {
+      global $wpdb;
+    
+      if($blog_id === NULL)
+      {
+          $blog_id = User_Login_History_Session_Helper::get_current_login_blog_id();
+      }
+      
+             return $wpdb->get_blog_prefix($blog_id). USER_LOGIN_HISTORY_TABLE_NAME;
     }
 
     

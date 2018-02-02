@@ -6,7 +6,7 @@ abstract class User_Login_History_Abstract_List_Page {
 
     const DEFAULT_OPTION_VALUE = 20;
 
-    public $admin_list_table;
+    public $list_table;
     public $plugin_name;
     private $option_name;
 
@@ -38,7 +38,7 @@ abstract class User_Login_History_Abstract_List_Page {
         );
 
         add_screen_option('per_page', $args);
-        $this->admin_list_table = $this->get_list_table_object();
+        $this->list_table = $this->get_list_table_object();
     }
     
         /**

@@ -91,7 +91,7 @@ KEY `session_token` (`session_token`)
  * Create table whenever a new blog is created
  */
     public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
-        if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
+        if (is_plugin_active_for_network('WordPress-plugin-user-login-history/user-login-history.php')) {
             switch_to_blog($blog_id);
             self:: create_table();
               self::update_options();

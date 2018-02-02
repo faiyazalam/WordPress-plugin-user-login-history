@@ -119,33 +119,30 @@ class User_Login_History {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-i18n.php';
 
- require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-abstract-list-table.php';
- require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-abstract-list-page.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-abstract-list-table.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-abstract-list-page.php';
 
-  if(is_admin())
-        {
-        //required files for admin and network admin    
-       require plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-settings-api.php';
+        if (is_admin()) {
+            //required files for admin and network admin    
+            require plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-settings-api.php';
         }
-        
-if(is_network_admin()){
-     //required files for network admin only
-             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-table.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-page.php';
-}  
 
-if (is_admin() && !is_network_admin()) {
+        if (is_network_admin()) {
+            //required files for network admin only
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-table.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-page.php';
+        }
+
+        if (is_admin() && !is_network_admin()) {
             //required files for admin only
-           
+
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin-list-table.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin-list-page.php';
+        }
 
-           
-        } 
-        
-       
-        
-        if(!is_admin()) {
+
+
+        if (!is_admin()) {
             //required files for public only
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-public-list-table.php';
         }
@@ -184,47 +181,41 @@ if (is_admin() && !is_network_admin()) {
      */
     private function define_admin_hooks() {
         $plugin_admin = new User_Login_History_Admin($this->get_plugin_name(), $this->get_version());
-        
-        if(is_admin())
-        {
+
+        if (is_admin()) {
             //hooks for admin and network admin
-              $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+            $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-              $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-              
-               $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name());
+          
+
+            $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name());
             $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
             $this->loader->add_action('edit_user_profile', $User_Profile, 'show_extra_profile_fields');
             $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
             $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
             $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
+           
         }
 
-        if(is_network_admin()){
+        if (is_network_admin()) {
             //hooks for network admin only
-             $Admin_List_Page = new User_Login_History_Network_Admin_List_Page($this->get_plugin_name());
-           $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
+            $Admin_List_Page = new User_Login_History_Network_Admin_List_Page($this->get_plugin_name());
+            $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('network_admin_menu', $Admin_List_Page, 'plugin_menu');
-            
-        } 
-        
-        if(is_admin() && !is_network_admin()) {
+              $this->loader->add_action('admin_init', $plugin_admin, 'network_admin_init');
+                $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
+        }
+
+        if (is_admin() && !is_network_admin()) {
             //hooks for admin only
-          
             $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
-          
-
-           
-
-           
-
+              $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
             $Admin_List_Page = new User_Login_History_Admin_List_Page($this->get_plugin_name());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('admin_menu', $Admin_List_Page, 'plugin_menu');
         }
 
 //hooks for admin, network and public
-
         $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
 
         $User_Tracker = new User_Login_History_User_Tracker($this->get_plugin_name());

@@ -2,7 +2,7 @@
 class User_Login_History_Geo_Helper {
     private $api_geo_url;
     
-     public function __construct($url)
+     public function __construct($url = '')
     {
        
          $this->api_geo_url = $url?$url:'http://www.geoplugin.net/json.gp?ip=';

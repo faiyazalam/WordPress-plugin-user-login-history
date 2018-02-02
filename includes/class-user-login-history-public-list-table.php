@@ -17,7 +17,7 @@ class User_Login_History_Public_List_Table {
 
     public function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
-        $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? intval($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
+        $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? absint($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
         $this->table = User_Login_History_DB_Helper::get_table_name();
       
       
@@ -28,7 +28,7 @@ class User_Login_History_Public_List_Table {
 
 
     public function set_limit($limit = false) {
-            $this->limit =  $limit ?  intval($limit) : self::DEFALUT_LIMIT;
+            $this->limit =  $limit ?  absint($limit) : self::DEFALUT_LIMIT;
     }
 
     public function prepare_items() {

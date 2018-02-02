@@ -61,8 +61,13 @@ function activate_user_login_history($network_wide) {
 register_activation_hook(__FILE__, 'activate_user_login_history');
 //register_deactivation_hook( __FILE__, 'deactivate_user_login_history' );
 
-if (is_multisite()) {
-    add_action('wpmu_new_blog', array('User_Login_History_Activator', 'on_create_blog'), 10, 6);
+if (is_multisite() && is_network_admin()) {
+    add_action('wpmu_new_blog', 'on_create_blog', 10, 6);
+}
+
+function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history-activator.php';
+    User_Login_History_Activator::on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta);
 }
 
 /**
@@ -87,6 +92,4 @@ function run_user_login_history() {
 }
 
 run_user_login_history();
-
-
 ?>

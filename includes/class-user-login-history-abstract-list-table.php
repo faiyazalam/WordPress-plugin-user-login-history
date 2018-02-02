@@ -18,7 +18,8 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             'ajax' => false //does this table support ajax?
         ));
 
-        $this->table = User_Login_History_DB_Helper::get_table_name();
+        $this->table = User_Login_History_DB_Helper::get_table_name(get_current_blog_id());
+
         $this->plugin_name = $plugin_name;
     }
 
@@ -128,6 +129,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             $sql .= " LIMIT $per_page";
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
+
         $result = $wpdb->get_results($sql, 'ARRAY_A');
         if ("" != $wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
@@ -140,16 +142,15 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      *
      * @param int $id customer ID
      */
-    public function delete_rows($ids = array()) {
+    public function delete_rows($ids = array(), $blog_id = null) {
 
         global $wpdb;
         if (!empty($ids)) {
             if (!is_array($ids)) {
                 $ids = array($ids);
             }
-            $ids = implode(',', array_map('absint', $ids));
-
-            $status = $wpdb->query("DELETE FROM $this->table WHERE id IN($ids)");
+            $ids = esc_sql(implode(',', array_map('absint', $ids)));
+           $status = $wpdb->query("DELETE FROM ".User_Login_History_DB_Helper::get_table_name($blog_id)." WHERE id IN($ids)");
             if ($wpdb->last_error) {
                 User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
             }
@@ -295,9 +296,10 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      *
      * @return string
      */
-    function column_cb($item) {
+     public function column_cb($item) {
+         $blog_id = !empty($item['blog_id'])?$item['blog_id']:0;
         return sprintf(
-                '<input type="checkbox" name="bulk-delete[]" value="%s" />', $item['id']
+                '<input type="checkbox" name="bulk-delete[blog_id][%s][]" value="%s" />', $blog_id, $item['id']
         );
     }
 
@@ -346,7 +348,8 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             'login_status' => __('Login Status', 'user-login-history'),
         );
 
-        if (is_multisite()) {
+        if (is_network_admin()) {
+            $columns['blog_id'] = __('Blog ID', 'user-login-history');
             $columns['is_super_admin'] = __('Super Admin', 'user-login-history');
         }
         $columns = apply_filters('user_login_history_admin_get_columns', $columns);
@@ -426,11 +429,17 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
 
         switch ($this->current_action()) {
             case 'bulk-delete':
+                
                 if (!empty($_POST['bulk-delete'])) {
                     if (!wp_verify_nonce($nonce, $bulk_action)) {
                         wp_die('invalid nonce');
                     }
-                    $this->delete_rows(esc_sql($_POST['bulk-delete']));
+                    
+                    $ids = $_POST['bulk-delete']['blog_id'];
+                    foreach ($ids as $blog_id => $record_ids) {
+                        $this->delete_rows($record_ids, $blog_id);  
+                    }
+                  
                     $status = TRUE;
                 }
                 break;
@@ -468,7 +477,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         $this->single_row_columns($item);
         echo '</tr>';
     }
-    
+
     public function export_to_CSV() {
         global $current_user;
         $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);

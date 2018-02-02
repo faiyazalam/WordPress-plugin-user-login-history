@@ -1,6 +1,6 @@
 <div class="wrap">
-    <h2><?php _e('User Login History', 'user-login-history') ?></h2>
-  <div class="<?php echo $this->plugin_name; ?>-search-filter">
+    <h2><?php _e('User Login History Network', 'user-login-history') ?></h2>
+<div class="<?php echo $this->plugin_name; ?>-search-filter">
       <?php require(plugin_dir_path(dirname(__FILE__)) . 'partials/form/filter.php');?>
         <br class="clear">
     </div>

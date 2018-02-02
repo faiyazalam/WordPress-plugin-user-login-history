@@ -23,6 +23,7 @@ class User_Login_History_User_Tracker {
 
     static $instance;
     private $session_token;
+    private $table_name;
 
     /**
      * user meta key to hold timezone of current user.
@@ -44,6 +45,8 @@ class User_Login_History_User_Tracker {
         $this->user_meta_timezone = USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone";
     }
 
+   
+    
     /**
      * Fire if login success
      *
@@ -66,7 +69,7 @@ class User_Login_History_User_Tracker {
         $current_date = User_Login_History_Date_Time_Helper::get_current_date_time();
         $user_id = $current_user->ID;
 
-        $last_id = User_Login_History_Session_Helper::get_session_last_insert_id();
+        $last_id = User_Login_History_Session_Helper::get_last_insert_id();
         if (!$user_id || !$last_id) {
             return;
         }
@@ -95,7 +98,7 @@ class User_Login_History_User_Tracker {
     public function user_logout() {
         global $wpdb;
         $time_logout = User_Login_History_Date_Time_Helper::get_current_date_time();
-        $last_id = User_Login_History_Session_Helper::get_session_last_insert_id();
+        $last_id = User_Login_History_Session_Helper::get_last_insert_id();
 
         if (!$last_id) {
             return;
@@ -107,6 +110,7 @@ class User_Login_History_User_Tracker {
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
+       unset($_SESSION[USER_LOGIN_HISTORY_NAME]);
     }
 
     private function set_geo_object() {
@@ -128,6 +132,7 @@ class User_Login_History_User_Tracker {
     private function save_login($user_login, $user, $status = '') {
 
         global $wpdb;
+        $table = User_Login_History_DB_Helper::get_table_name();
         $this->set_geo_object();
         $this->set_browser_object();
      
@@ -145,7 +150,7 @@ class User_Login_History_User_Tracker {
         if ($lat != 0 && $long != 0 && $country_code) {
             $user_timezone = User_Login_History_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
         }
-
+$user_timezone = !empty($user_timezone) ? $user_timezone : "";
         //now insert for new login
         $data = array(
             'user_id' => $user_id,
@@ -159,7 +164,7 @@ class User_Login_History_User_Tracker {
             'country_name' => $country_name,
             'country_code' => $country_code,
             'old_role' => $old_roles,
-            'timezone' => !empty($user_timezone) ? $user_timezone : "",
+            'timezone' => $user_timezone,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
             'login_status' => $status,
             'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
@@ -170,8 +175,7 @@ class User_Login_History_User_Tracker {
         if (is_array($filtered_data) && !empty($filtered_data)) {
             $data = array_merge($data, $filtered_data);
         }
-        $wpdb->insert(User_Login_History_DB_Helper::get_table_name(), $data);
-
+        $wpdb->insert($table, $data);
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             return;
@@ -182,8 +186,9 @@ class User_Login_History_User_Tracker {
         }
 
         if ($wpdb->insert_id) {
-            User_Login_History_Session_Helper::set_session_last_insert_id($wpdb->insert_id);
-            User_Login_History_Session_Helper::set_session_current_login_blog_id();
+            User_Login_History_Session_Helper::set_last_insert_id($wpdb->insert_id);
+            User_Login_History_Session_Helper::set_current_login_blog_id();
+        
             add_user_meta($user_id, $this->user_meta_timezone, $user_timezone, true);
         }
 
@@ -191,7 +196,6 @@ class User_Login_History_User_Tracker {
             wp_logout();
             wp_die(__('You are not a member of this site. Please contact administrator.', 'user-login-history'));
         }
-        //this cab be used to send email.
         do_action('user_login_history_after_save_user_login_detail', $data);
     }
 
