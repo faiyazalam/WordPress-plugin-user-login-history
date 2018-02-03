@@ -65,7 +65,7 @@ class User_Login_History_User_Tracker {
 
         global $wpdb;
         $current_user = wp_get_current_user();
-        $table = User_Login_History_DB_Helper::get_table_name();
+        $table = $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_current_login_blog_id()). USER_LOGIN_HISTORY_TABLE_NAME;
         $current_date = User_Login_History_Date_Time_Helper::get_current_date_time();
         $user_id = $current_user->ID;
 
@@ -103,14 +103,14 @@ class User_Login_History_User_Tracker {
         if (!$last_id) {
             return;
         }
-        $table = User_Login_History_DB_Helper::get_table_name();
+        $table = $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_current_login_blog_id()). USER_LOGIN_HISTORY_TABLE_NAME;;
         $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . self::LOGIN_STATUS_LOGOUT . "' where id = '$last_id' ";
         $wpdb->query($sql);
 
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
-       unset($_SESSION[USER_LOGIN_HISTORY_NAME]);
+        User_Login_History_Session_Helper::destroy();
     }
 
     private function set_geo_object() {
@@ -132,7 +132,7 @@ class User_Login_History_User_Tracker {
     private function save_login($user_login, $user, $status = '') {
 
         global $wpdb;
-        $table = User_Login_History_DB_Helper::get_table_name();
+        $table = $wpdb->get_blog_prefix(). USER_LOGIN_HISTORY_TABLE_NAME;
         $this->set_geo_object();
         $this->set_browser_object();
      

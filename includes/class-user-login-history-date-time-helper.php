@@ -103,10 +103,10 @@ class User_Login_History_Date_Time_Helper {
         return FALSE;
     }
     
-   static public function get_last_time($time_logout, $time_last_seen) {
-        $logout_time_str = strtotime($time_logout);
-        return  $logout_time_str > 0 ? $logout_time_str : strtotime($time_last_seen);
-
+   static public function get_last_time($time_one, $time_two) {
+        $time_one_str = strtotime($time_one);
+        $time_two_str = strtotime($time_two);
+        return $time_one_str > $time_two_str ? $time_one : $time_two;
     }
 
 }

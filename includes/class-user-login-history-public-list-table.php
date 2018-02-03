@@ -14,18 +14,22 @@ class User_Login_History_Public_List_Table {
     private $plugin_name;
     private $options;
     private $allowed_columns;
+    private $table_timezone;
 
     public function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
         $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? absint($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
-        $this->table = User_Login_History_DB_Helper::get_table_name();
+        $this->set_table_name();
+        $this->set_table_timezone();
       
       
     }
 
-
-
-
+    
+    private function set_table_name() {
+        global $wpdb;
+        $this->table = $wpdb->prefix.USER_LOGIN_HISTORY_TABLE_NAME;
+    }
 
     public function set_limit($limit = false) {
             $this->limit =  $limit ?  absint($limit) : self::DEFALUT_LIMIT;
@@ -103,6 +107,7 @@ class User_Login_History_Public_List_Table {
         return $where_query;
     }
 
+    //Prepare main query with where query.
     public function prepare_main_query() {
         global $wpdb;
         $sql = " SELECT"
@@ -223,6 +228,7 @@ class User_Login_History_Public_List_Table {
         
         return $this->allowed_columns;
     }
+    
     public function set_allowed_columns($columns = array()) {
         
         $columns =  is_array($columns) ? $columns : (is_string($columns) ? explode(',', $columns): array()) ;
@@ -357,7 +363,15 @@ class User_Login_History_Public_List_Table {
             }
         }
     }
-
+    
+    public function set_table_timezone($timezone = ''){
+        $this->table_timezone = $timezone ? $timezone : User_Login_History_DB_Helper::get_current_user_timezone();
+    }
+    
+    public function get_table_timezone() {
+        return $this->table_timezone ? $this->table_timezone: User_Login_History_Date_Time_Helper::DEFAULT_TIMEZONE;
+    }
+    
     public function column_default($item, $column_name) {
         global $current_user;
         $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);

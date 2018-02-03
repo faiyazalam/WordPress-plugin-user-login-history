@@ -6,27 +6,27 @@ if (!class_exists('WP_List_Table')) {
 
 abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
 
-    private $table;
     protected $plugin_name;
+    private $table_timezone; //timezone for table 
 
     /** Class constructor */
-    public function __construct($args = array(), $plugin_name) {
-
-        parent::__construct(array(
-            'singular' => __('User', 'user-login-history'), //singular name of the listed records
-            'plural' => __('Users', 'user-login-history'), //plural name of the listed records
-            'ajax' => false //does this table support ajax?
-        ));
-
-        $this->table = User_Login_History_DB_Helper::get_table_name(get_current_blog_id());
-
+    public function __construct($args = array(), $plugin_name = '') {
+        parent::__construct($args);
         $this->plugin_name = $plugin_name;
+        $this->set_table_timezone();
     }
 
     public function no_items() {
         _e('No records avaliable.', 'user-login-history');
     }
 
+    public function set_table_timezone($timezone = ''){
+        $this->table_timezone = $timezone ? $timezone : User_Login_History_DB_Helper::get_current_user_timezone();
+    }
+    
+    public function get_table_timezone() {
+        return $this->table_timezone ? $this->table_timezone: User_Login_History_Date_Time_Helper::DEFAULT_TIMEZONE;
+    }
     /**
      * Retrieve customers data from the database
      *
@@ -93,110 +93,21 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         return $where_query;
     }
 
-    /**
-     * Retrieve rows
-     *
-     * @param int $per_page
-     * @param int $page_number
-     *
-     * @access   public
-     * @return mixed
-     */
-    public function get_rows($per_page = 20, $page_number = 1) {
-        global $wpdb;
 
-        $sql = " SELECT"
-                . " FaUserLogin.*, "
-                . " UserMeta.meta_value "
-                . " FROM " . $this->table . "  AS FaUserLogin"
-                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
-                . " WHERE 1 ";
 
-        $where_query = $this->prepare_where_query();
-        if ($where_query) {
-            $sql .= $where_query;
-        }
-        $sql .= ' GROUP BY FaUserLogin.id';
-        if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
-        } else {
-            $sql .= ' ORDER BY id DESC';
-        }
 
-        if ($per_page > 0) {
-            $sql .= " LIMIT $per_page";
-            $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
-        }
-
-        $result = $wpdb->get_results($sql, 'ARRAY_A');
-        if ("" != $wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
-        }
-        return $result;
-    }
-
-    /**
-     * Delete a customer record.
-     *
-     * @param int $id customer ID
-     */
-    public function delete_rows($ids = array(), $blog_id = null) {
-
-        global $wpdb;
-        if (!empty($ids)) {
-            if (!is_array($ids)) {
-                $ids = array($ids);
-            }
-            $ids = esc_sql(implode(',', array_map('absint', $ids)));
-           $status = $wpdb->query("DELETE FROM ".User_Login_History_DB_Helper::get_table_name($blog_id)." WHERE id IN($ids)");
-            if ($wpdb->last_error) {
-                User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
-            }
-            return $status;
-        }
-        return FALSE;
-    }
 
     public function delete_all_rows() {
-        global $wpdb;
-        $status = $wpdb->query("TRUNCATE $this->table");
+       global $wpdb;
+         $table = $wpdb->prefix.USER_LOGIN_HISTORY_TABLE_NAME;
+        $status = $wpdb->query("TRUNCATE $table");
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
         }
         return $status;
     }
 
-    /**
-     * Returns the count of records in the database.
-     *
-     * @return null|string
-     */
-    public function record_count() {
-        global $wpdb;
-        $sql = " SELECT"
-                . " FaUserLogin.id"
-                . " FROM " . $this->table . " AS FaUserLogin"
-                . " LEFT JOIN $wpdb->users AS User ON User.ID = FaUserLogin.user_id"
-                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
-                . " WHERE 1 ";
 
-        $where_query = $this->prepare_where_query();
-
-        if ($where_query) {
-            $sql .= $where_query;
-        }
-        $sql .= ' GROUP BY FaUserLogin.id';
-        $sql_count = "SELECT COUNT(*) as total FROM ($sql) AS FaUserLoginCount ";
-
-        $result = $wpdb->get_var($sql_count);
-        if ("" != $wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
-        }
-        return $result;
-    }
 
     /**
      * Render a column when no column specific method exist.
@@ -208,10 +119,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function column_default($item, $column_name) {
         global $current_user;
-        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone", TRUE);
-
-        $timezone = $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
-
+        $timezone = $this->get_table_timezone();
         $unknown = __('Unknown', 'user-login-history');
         $new_column_data = apply_filters('manage_user_login_history_admin_custom_column', '', $item, $column_name);
         switch ($column_name) {
@@ -263,10 +171,8 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             case 'user_agent':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'duration':
-                $duration = human_time_diff(strtotime($item['time_login']), User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen']));
-                ;
+                $duration = human_time_diff(strtotime($item['time_login']), strtotime(User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                 return $duration ? $duration : $unknown;
-
             case 'login_status':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
 
@@ -279,7 +185,6 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             case 'is_super_admin':
                 return $item[$column_name] ? __('Yes', 'user-login-history') : __('No', 'user-login-history');
 
-
             default:
                 if ($new_column_data) {
                     echo $new_column_data;
@@ -287,40 +192,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
                 }
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
-    }
-
-    /**
-     * Render the bulk edit checkbox
-     *
-     * @param array $item
-     *
-     * @return string
-     */
-     public function column_cb($item) {
-         $blog_id = !empty($item['blog_id'])?$item['blog_id']:0;
-        return sprintf(
-                '<input type="checkbox" name="bulk-delete[blog_id][%s][]" value="%s" />', $blog_id, $item['id']
-        );
-    }
-
-    /**
-     * Method for name column
-     *
-     * @param array $item an array of DB data
-     *
-     * @return string
-     */
-    function column_username($item) {
-
-        $delete_nonce = wp_create_nonce(USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row');
-
-        $title = '<strong>' . $item['username'] . '</strong>';
-
-        $actions = [
-            'delete' => sprintf('<a href="?page=%s&action=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', absint($item['id']), $delete_nonce),
-        ];
-
-        return $title . $this->row_actions($actions);
+        
     }
 
     /**
@@ -421,52 +293,6 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         $this->items = $this->get_rows($per_page, $current_page);
     }
 
-    public function process_bulk_action() {
-
-        $status = FALSE;
-        $nonce = !empty($_REQUEST['_wpnonce']) ? $_REQUEST['_wpnonce'] : "";
-        $bulk_action = 'bulk-' . $this->_args['plural'];
-
-        switch ($this->current_action()) {
-            case 'bulk-delete':
-                
-                if (!empty($_POST['bulk-delete'])) {
-                    if (!wp_verify_nonce($nonce, $bulk_action)) {
-                        wp_die('invalid nonce');
-                    }
-                    
-                    $ids = $_POST['bulk-delete']['blog_id'];
-                    foreach ($ids as $blog_id => $record_ids) {
-                        $this->delete_rows($record_ids, $blog_id);  
-                    }
-                  
-                    $status = TRUE;
-                }
-                break;
-            case 'bulk-delete-all-admin':
-                if (!wp_verify_nonce($nonce, $bulk_action)) {
-                    wp_die('invalid nonce');
-                }
-                $this->delete_all_rows();
-                $status = TRUE;
-                break;
-
-            case 'delete':
-                if (!wp_verify_nonce($nonce, USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row')) {
-                    wp_die('invalid nonce');
-                }
-                $this->delete_rows(absint($_GET['customer']));
-                $status = TRUE;
-                break;
-
-            default:
-                $status = FALSE;
-                break;
-        }
-
-        return $status;
-    }
-
     /**
      * Generates content for a single row of the table
      * Over-ridden method.
@@ -480,8 +306,10 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
 
     public function export_to_CSV() {
         global $current_user;
-        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
+        $timezone = $this->get_table_timezone();
+      
         $data = $this->get_rows(0); // pass zero to get all the records
+       
         //date string to suffix the file nanme: month - day - year - hour - minute
         $suffix = date('n-j-y_H-i');
         // send response headers to the browser
@@ -499,9 +327,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         foreach ($data as $row) {
             unset($row['meta_value']);
             unset($row['session_token']);
-            //calculate duration before time_last_seen - MANDATORY
             $row['duration'] = $this->column_default($row, 'duration');
-
             $time_last_seen = $row['time_last_seen'];
             $human_time_diff = human_time_diff(strtotime($time_last_seen));
             $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone);
@@ -530,6 +356,29 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         }
         fclose($fp);
         die();
+    }
+    
+    
+     /**
+     * Delete a customer record.
+     *
+     * @param int $id customer ID
+     */
+    public function delete_rows($ids = array()) {       
+        global $wpdb;
+         $table = $wpdb->prefix.USER_LOGIN_HISTORY_TABLE_NAME;
+        if (!empty($ids)) {
+            if (!is_array($ids)) {
+                $ids = array($ids);
+            }
+            $ids = esc_sql(implode(',', array_map('absint', $ids)));
+           $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
+            if ($wpdb->last_error) {
+                User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
+            }
+            return $status;
+        }
+        return FALSE;
     }
 
 }

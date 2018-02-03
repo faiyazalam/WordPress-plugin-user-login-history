@@ -1,4 +1,8 @@
-    <div class="<?php echo $this->plugin_name; ?>-search-filter">
+<?php
+$reset_URI = "admin.php?page=" . esc_attr($_GET['page']);
+$reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($reset_URI); 
+?>
+<div class="<?php echo $this->plugin_name; ?>-search-filter">
         <form name="<?php echo $this->plugin_name . '-search-form'; ?>" method="get" action="" id="<?php echo $this->plugin_name . '-search-form'; ?>">
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']) ?>" />
             <input type="hidden" name="order" value="<?php echo !empty($_GET['order']) ? esc_attr($_GET['order']) : "" ?>" />
@@ -60,7 +64,7 @@
             </fieldset>
             <?php do_action('user_login_history_network_admin_listing_search_form'); ?>
             <a class="" id="download_csv_link"><?php _e('DOWNLOAD CSV', 'user-login-history'); ?></a> 
-            <a class=""  href="<?php echo admin_url("admin.php?page=" . esc_attr($_GET['page'])) ?>" ><?php _e('RESET', 'user-login-history'); ?></a>
+            <a class=""  href="<?php echo $reset_URL ?>" ><?php _e('RESET', 'user-login-history'); ?></a>
             <input type="hidden" name="<?php echo $this->plugin_name?>_export_csv" id="export-csv" value="">
            <input type="hidden" name="<?php echo $this->plugin_name?>_export_nonce" id="<?php echo $this->plugin_name?>_export_nonce" value="<?php echo wp_create_nonce($this->plugin_name . '_export_csv') ?>">
             <input class="" id="submit" type="submit" name="submit" value="<?php _e('FILTER', 'user-login-history') ?>" />

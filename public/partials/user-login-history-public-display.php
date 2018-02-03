@@ -1,7 +1,3 @@
-<?php
-global $current_user;
-$user_timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone", TRUE);
-?>
 <form name="<?php echo $this->plugin_name . '-search-form'; ?>" method="get" action="" id="<?php echo $this->plugin_name . '-search-form'; ?>">
     <fieldset> 
         <input readonly autocomplete="off" placeholder="<?php _e("From", "user-login-history") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
@@ -13,11 +9,14 @@ $user_timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_P
         </select>
     </fieldset>
     <?php do_action('user_login_history_public_listing_search_form'); ?>
-    <input class="" id="submit" type="submit" name="submit" value="<?php _e('FILTER', 'user-login-history') ?>" />
+<?php if($reset_URL) {?>
+    <a class=""  href="<?php echo $reset_URL ?>" ><?php _e('RESET', 'user-login-history'); ?></a>
+<?php }?>
+        <input class="" id="submit" type="submit" name="submit" value="<?php _e('FILTER', 'user-login-history') ?>" />
 </form>
 <div>
     <p>
-<?php _e('This table is showing time in the timezone', 'user-login-history') ?> - <?php echo $user_timezone ? $user_timezone : User_Login_History_Date_Time_Helper::DEFAULT_TIMEZONE ?>
+<?php _e('This table is showing time in the timezone', 'user-login-history') ?> - <?php echo $timezone ?>
     </p> 
     
     <form method="post" id="<?php echo $this->plugin_name ?>_update_user_timezone">
@@ -25,7 +24,7 @@ $user_timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_P
         <select required="required"  id="select_timezone" name="<?php echo $this->plugin_name . '-timezone' ?>">
             <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
             <?php
-            User_Login_History_Template_Helper::dropdown_timezone($user_timezone);
+            User_Login_History_Template_Helper::dropdown_timezone($timezone);
             ?>
         </select>
         <input type="submit" name="<?php echo $this->plugin_name . "_update_user_timezone" ?>" value="<?php echo __("Apply", 'user-login-history') ?>">
@@ -33,10 +32,6 @@ $user_timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_P
 
 </div>
 <?php
-$attributes = shortcode_atts(array('limit'=>20, 'columns' =>'operating_system,ip_address,browser,time_login,time_logout'), $attr);
-$obj = new User_Login_History_Public_List_Table($this->plugin_name);
-$obj->set_allowed_columns(!empty($attributes['columns'])?$attributes['columns']:"");
-$obj->set_limit(!empty($attributes['limit'])?$attributes['limit']:"");
 $obj->prepare_items();
 $obj->display();
 ?>

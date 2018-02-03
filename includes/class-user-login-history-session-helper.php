@@ -19,6 +19,10 @@ class User_Login_History_Session_Helper {
     static public function get_last_insert_id() {
         return isset($_SESSION[USER_LOGIN_HISTORY_NAME][self::LAST_INSERT_ID_KEY]) ? $_SESSION[USER_LOGIN_HISTORY_NAME][self::LAST_INSERT_ID_KEY] : FALSE;
     }
+    
+    static public function destroy() {
+        unset($_SESSION[USER_LOGIN_HISTORY_NAME]);
+    }
 
     
 

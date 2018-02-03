@@ -1,0 +1,1 @@
+<?php _e('This table is showing time in the timezone', 'user-login-history') ?> - <strong><?php echo $this->list_table->get_table_timezone() ?></strong>&nbsp;<span><a class="" href="<?php echo get_edit_user_link() ?>"><?php _e('Edit', 'user-login-history') ?></a></span>
