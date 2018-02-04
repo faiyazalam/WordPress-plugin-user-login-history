@@ -17,8 +17,7 @@
 <div>
     <p>
 <?php _e('This table is showing time in the timezone', 'user-login-history') ?> - <?php echo $timezone ?>
-    </p> 
-    
+    </p>
     <form method="post" id="<?php echo $this->plugin_name ?>_update_user_timezone">
         <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce($this->plugin_name . "_update_user_timezone") ?>">
         <select required="required"  id="select_timezone" name="<?php echo $this->plugin_name . '-timezone' ?>">
@@ -29,7 +28,6 @@
         </select>
         <input type="submit" name="<?php echo $this->plugin_name . "_update_user_timezone" ?>" value="<?php echo __("Apply", 'user-login-history') ?>">
     </form>
-
 </div>
 <?php
 $obj->prepare_items();

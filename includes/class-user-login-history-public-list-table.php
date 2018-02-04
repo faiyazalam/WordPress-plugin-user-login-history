@@ -21,8 +21,6 @@ class User_Login_History_Public_List_Table {
         $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? absint($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
         $this->set_table_name();
         $this->set_table_timezone();
-      
-      
     }
 
     
@@ -282,10 +280,8 @@ class User_Login_History_Public_List_Table {
 
                     if(isset($_GET[$order_by_key]) && $sortable_column_name == $_GET[$order_by_key])
                     {
-                        
                       $direction = $requested_order;
                     }
-                    
                     echo "<a href='?$order_by_key=$orderby&order={$order}{$page_number_string}'>$column<span class='sorting_hover_$order'>($order)</span><span class='sorting $direction'>$direction</span></a>";
                 } else {
                     echo $column;
@@ -373,13 +369,9 @@ class User_Login_History_Public_List_Table {
     }
     
     public function column_default($item, $column_name) {
-        global $current_user;
-        $timezone = get_user_meta($current_user->ID, USER_LOGIN_HISTORY_OPTION_PREFIX . "user_timezone", TRUE);
-
-        $timezone = $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
-
+        $timezone = $this->get_table_timezone();
         $unknown = __('Unknown', 'user-login-history');
-        $new_column_data = apply_filters('manage_user_login_history_admin_custom_column', '', $item, $column_name);
+        $new_column_data = apply_filters('manage_user_login_history_public_custom_column', '', $item, $column_name);
         switch ($column_name) {
             case 'user_id':
                 if (!$item[$column_name]) {
@@ -390,7 +382,6 @@ class User_Login_History_Public_List_Table {
                 if (!$item['user_id']) {
                     return $item[$column_name];
                 }
-
                 $profile_link = get_edit_user_link($item['user_id']);
                 return "<a href= '$profile_link'>$item[$column_name]</a>";
             case 'role':
@@ -430,22 +421,15 @@ class User_Login_History_Public_List_Table {
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'duration':
                 $duration = human_time_diff(strtotime($item['time_login']), User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen']));
-                ;
                 return $duration ? $duration : $unknown;
-
             case 'login_status':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
-
             case 'site_id':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
-
             case 'blog_id':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
-
             case 'is_super_admin':
                 return $item[$column_name] ? __('Yes', 'user-login-history') : __('No', 'user-login-history');
-
-
             default:
                 if ($new_column_data) {
                     echo $new_column_data;

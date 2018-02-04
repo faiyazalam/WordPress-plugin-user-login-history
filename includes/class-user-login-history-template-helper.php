@@ -60,7 +60,13 @@ class User_Login_History_Template_Helper {
             User_Login_History_User_Tracker::LOGIN_STATUS_LOGIN => __("Login", "user-login-history"),
             User_Login_History_User_Tracker::LOGIN_STATUS_LOGOUT => __("Logout", "user-login-history"),
             User_Login_History_User_Tracker::LOGIN_STATUS_FAIL => __("Fail", "user-login-history"),
+         
         );
+        
+        if(is_multisite())
+        {
+            $types[User_Login_History_User_Tracker::LOGIN_STATUS_BLOCK] = __("Block", "user-login-history");
+        }
         foreach ($types as $key => $type) {
             $name = $type;
             if ($selected == $key) {

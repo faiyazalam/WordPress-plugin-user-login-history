@@ -17,13 +17,18 @@ class User_Login_History_User_Tracker {
      * Login Status Constants
      * DO NOT CHANGE THE VALUE OF THESE CONSTANTS BECAUSE THEY ARE SAVED IN DB.
      */
-    const LOGIN_STATUS_LOGIN = 'Login';
-    const LOGIN_STATUS_FAIL = 'Fail';
-    const LOGIN_STATUS_LOGOUT = 'Logout';
+    const LOGIN_STATUS_LOGIN = 'login';
+    const LOGIN_STATUS_FAIL = 'fail';
+    const LOGIN_STATUS_LOGOUT = 'logout';
+    
+    //If user is not allowed to login on another blog.
+    //This is for network enabled mode only.
+    const LOGIN_STATUS_BLOCK = 'block';
 
     static $instance;
     private $session_token;
     private $table_name;
+     private  $login_status = false;
 
     /**
      * user meta key to hold timezone of current user.
@@ -75,11 +80,13 @@ class User_Login_History_User_Tracker {
         }
         $sql = "update $table set time_last_seen='$current_date' where id = '$last_id' and user_id = '$user_id'";
 
-        $wpdb->query($sql);
+      $status = $wpdb->query($sql);
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
+        return $status;
     }
+   
 
     /**
      * Fire if login failed.
@@ -89,6 +96,8 @@ class User_Login_History_User_Tracker {
     public function user_login_failed($user_login) {
         $this->save_login($user_login, NULL, self::LOGIN_STATUS_FAIL);
     }
+    
+   
 
     /**
      * Fire on logout
@@ -99,13 +108,14 @@ class User_Login_History_User_Tracker {
         global $wpdb;
         $time_logout = User_Login_History_Date_Time_Helper::get_current_date_time();
         $last_id = User_Login_History_Session_Helper::get_last_insert_id();
+        $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
 
         if (!$last_id) {
             return;
         }
         $table = $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_current_login_blog_id()). USER_LOGIN_HISTORY_TABLE_NAME;;
-        $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . self::LOGIN_STATUS_LOGOUT . "' where id = '$last_id' ";
-        $wpdb->query($sql);
+        $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where id = '$last_id' ";
+       $wpdb->query($sql);
 
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
@@ -193,6 +203,7 @@ $user_timezone = !empty($user_timezone) ? $user_timezone : "";
         }
 
         if (is_multisite() && !is_user_member_of_blog($user_id) && !is_super_admin($user_id)) {
+            $this->login_status = self::LOGIN_STATUS_BLOCK;
             wp_logout();
             wp_die(__('You are not a member of this site. Please contact administrator.', 'user-login-history'));
         }

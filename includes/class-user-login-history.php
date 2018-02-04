@@ -186,7 +186,6 @@ class User_Login_History {
             //hooks for admin and network admin
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-          
 
             $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name());
             $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
@@ -194,7 +193,6 @@ class User_Login_History {
             $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
             $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
             $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
-           
         }
 
         if (is_network_admin()) {
@@ -202,14 +200,14 @@ class User_Login_History {
             $Admin_List_Page = new User_Login_History_Network_Admin_List_Page($this->get_plugin_name());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('network_admin_menu', $Admin_List_Page, 'plugin_menu');
-              $this->loader->add_action('admin_init', $plugin_admin, 'network_admin_init');
-                $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
+            $this->loader->add_action('admin_init', $plugin_admin, 'network_admin_init');
+            $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
         }
 
         if (is_admin() && !is_network_admin()) {
             //hooks for admin only
             $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
-              $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
+            $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
             $Admin_List_Page = new User_Login_History_Admin_List_Page($this->get_plugin_name());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('admin_menu', $Admin_List_Page, 'plugin_menu');
@@ -217,7 +215,6 @@ class User_Login_History {
 
 //hooks for admin, network and public
         $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
-
         $User_Tracker = new User_Login_History_User_Tracker($this->get_plugin_name());
         $this->loader->add_action('init', $User_Tracker, 'update_time_last_seen');
         $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_session_token', 10, 6);
@@ -235,7 +232,9 @@ class User_Login_History {
      */
     private function define_public_hooks() {
         $plugin_public = new User_Login_History_Public($this->get_plugin_name(), $this->get_version());
-        $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table');
+        //The shortcode "[user-login-history]" is deprecated since version 1.7 and is here only for backward compatibility.
+        $this->loader->add_shortcode('user-login-history', $plugin_public, 'shortcode_user_table'); //old-shortcode
+        $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table'); //new shortcode
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         $this->loader->add_action('init', $plugin_public, 'init');

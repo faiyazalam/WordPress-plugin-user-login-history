@@ -98,8 +98,9 @@ class User_Login_History_Public {
         $obj->set_allowed_columns(!empty($attributes['columns']) ? $attributes['columns'] : "");
         $obj->set_limit(!empty($attributes['limit']) ? $attributes['limit'] : "");
         $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
+        $custom_template = get_template_directory() . "/" . $this->plugin_name . '/public/partials/listing.php';
         ob_start();
-        require_once plugin_dir_path(__FILE__) . 'partials/user-login-history-public-display.php';
+        require_once(file_exists($custom_template) ? $custom_template : plugin_dir_path(__FILE__) . 'partials/listing.php');
         wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
         wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
         wp_enqueue_script($this->plugin_name . '-custom.js');
