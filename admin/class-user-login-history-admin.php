@@ -95,20 +95,46 @@ class User_Login_History_Admin {
     }
 
     public function process_bulk_action() {
-        $Admin_List_Table = new User_Login_History_Admin_List_Table(null, $this->plugin_name);
-        if ($Admin_List_Table->process_bulk_action()) {
+          $status = FALSE;
+         
+          
+        $List_Table = is_network_admin() ? new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name) : new User_Login_History_Admin_List_Table(null, $this->plugin_name);
+      
+        if ($List_Table->process_bulk_action()) {
             $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
-            wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
+            $status = TRUE;
+        }
+        
+        if ($List_Table->delete_single_row()) {
+            $this->add_admin_notice(__('Record has been deleted.', 'user-login-history'));
+             $status = TRUE;
+        }
+        
+        if($status){
+             $redirect = "admin.php?page=" . $_GET['page'];
+             wp_safe_redirect(esc_url_raw(is_network_admin() ? network_admin_url($redirect) : admin_url($redirect)));
             exit;
         }
     }
 
     public function network_process_bulk_action() {
        
+        $status = FALSE;
+          
         $Network_Admin_List_Table = new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name);
+      
         if ($Network_Admin_List_Table->process_bulk_action()) {
             $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
-            wp_safe_redirect(esc_url_raw(network_admin_url("admin.php?page=" . $_GET['page'])));
+            $status = TRUE;
+        }
+        
+        if ($Network_Admin_List_Table->delete_single_row()) {
+            $this->add_admin_notice(__('Record has been deleted.', 'user-login-history'));
+             $status = TRUE;
+        }
+        
+        if($status){
+             wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
             exit;
         }
     }
@@ -147,15 +173,16 @@ class User_Login_History_Admin {
         if (current_user_can('administrator')) {
             $this->init_csv_export();
             $this->process_bulk_action();
+            
         }
     }
 
-    public function network_admin_init() {
-        if (current_user_can('administrator')) {
-            $this->network_init_csv_export();
-            $this->network_process_bulk_action();
-        }
-    }
+//    public function network_admin_init() {
+//        if (current_user_can('administrator')) {
+//            $this->network_init_csv_export();
+//            $this->network_process_bulk_action();
+//        }
+//    }
 
     private function init_csv_export() {
         //Check if download was initiated

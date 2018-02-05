@@ -92,5 +92,9 @@ class User_Login_History_Template_Helper {
         }
         echo $r;
     }
+    
+    static public function plugin_name() {
+        return "User Login History";
+    }
 
 }

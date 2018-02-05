@@ -129,6 +129,7 @@ class User_Login_History {
 
         if (is_network_admin()) {
             //required files for network admin only
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-setting.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-table.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-page.php';
         }
@@ -193,20 +194,24 @@ class User_Login_History {
             $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
             $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
             $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
+            $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
         }
 
         if (is_network_admin()) {
             //hooks for network admin only
-            $Admin_List_Page = new User_Login_History_Network_Admin_List_Page($this->get_plugin_name());
-            $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
-            $this->loader->add_action('network_admin_menu', $Admin_List_Page, 'plugin_menu');
-            $this->loader->add_action('admin_init', $plugin_admin, 'network_admin_init');
+            $Network_Admin_List_Page = new User_Login_History_Network_Admin_List_Page($this->get_plugin_name());
+            $this->loader->add_filter('set-screen-option', $Network_Admin_List_Page, 'set_screen', 10, 3);
+            $this->loader->add_action('network_admin_menu', $Network_Admin_List_Page, 'plugin_menu');
             $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
+            
+            $Network_Admin_Setting = new User_Login_History_Network_Admin_Setting($this->plugin_name);
+            $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
+            $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'update');
         }
 
         if (is_admin() && !is_network_admin()) {
             //hooks for admin only
-            $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
+          
             $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
             $Admin_List_Page = new User_Login_History_Admin_List_Page($this->get_plugin_name());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);

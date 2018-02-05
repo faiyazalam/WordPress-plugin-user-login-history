@@ -92,4 +92,9 @@ function run_user_login_history() {
 }
 
 run_user_login_history();
+
+//add_action('admin_init', 'test');
+//function test() {
+//    update_site_option('test', 'varlsdfs');
+//}
 ?>
