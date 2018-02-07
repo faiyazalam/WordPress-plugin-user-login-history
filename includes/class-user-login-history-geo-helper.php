@@ -1,19 +1,27 @@
 <?php
+
+/**
+ * User_Login_History_Geo_Helper
+ *
+ * @link       https://github.com/faiyazalam
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
+ * @author     Er Faiyaz Alam <support@userloginhistory.com>
+ */
 class User_Login_History_Geo_Helper {
+
     private $api_geo_url;
-    
-     public function __construct($url = '')
-    {
-       
-         $this->api_geo_url = $url?$url:'http://www.geoplugin.net/json.gp?ip=';
-         //https://tools.keycdn.com/geo.json?host=
+
+    public function __construct() {
+
+        $this->api_geo_url = 'http://www.geoplugin.net/json.gp?ip=';
+        //https://tools.keycdn.com/geo.json?host=
     }
-    
-    
+
     /**
-     * Get IP Address of user.
+     * Retrieve IP Address of user.
      *
-     * @return string
+     * @return string The IP address of user.
      */
     public function get_ip() {
         $ip_address = $_SERVER['REMOTE_ADDR'];
@@ -26,19 +34,19 @@ class User_Login_History_Geo_Helper {
         return $ip_address;
     }
 
-
     /**
-     * Get geo location.
+     * Retrieve the geo location.
      *
-     * @return string
+     * @return string The response from geo API.
      */
     public function get_geo_location() {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $this->api_geo_url.$this->get_ip());
+        curl_setopt($ch, CURLOPT_URL, $this->api_geo_url . $this->get_ip());
         $result = curl_exec($ch);
         curl_close($ch);
         return json_decode($result);
     }
+
 }

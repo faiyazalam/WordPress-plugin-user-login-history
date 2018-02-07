@@ -23,7 +23,7 @@
         <select required="required"  id="select_timezone" name="<?php echo $this->plugin_name . '-timezone' ?>">
             <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
             <?php
-            User_Login_History_Template_Helper::dropdown_timezone($timezone);
+            User_Login_History_Template_Helper::dropdown_timezones($timezone);
             ?>
         </select>
         <input type="submit" name="<?php echo $this->plugin_name . "_update_user_timezone" ?>" value="<?php echo __("Apply", 'user-login-history') ?>">

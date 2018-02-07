@@ -98,30 +98,25 @@ class User_Login_History_Public {
         $obj->set_allowed_columns(!empty($attributes['columns']) ? $attributes['columns'] : "");
         $obj->set_limit(!empty($attributes['limit']) ? $attributes['limit'] : "");
         $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
-        $custom_template = get_template_directory() . "/" . $this->plugin_name . '/public/partials/listing.php';
         ob_start();
-        require_once(file_exists($custom_template) ? $custom_template : plugin_dir_path(__FILE__) . 'partials/listing.php');
+        require_once(plugin_dir_path(__FILE__) . 'partials/listing.php');
         wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
         wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
         wp_enqueue_script($this->plugin_name . '-custom.js');
         return ob_get_clean();
     }
 
-    /**
-     * Frontend user can update his timezone.
-     *
-     */
+
     public function update_user_timezone() {
-        if (!isset($_POST[$this->plugin_name . "_update_user_timezone"])) {
+        if (!isset($_POST[$this->plugin_name . "_update_user_timezone"]) || empty($_POST['_wpnonce'])) {
             return;
         }
-
-        if (!wp_verify_nonce(!empty($_POST['_wpnonce']) ? $_POST['_wpnonce'] : "", $this->plugin_name . "_update_user_timezone")) {
-            wp_die('Nonce error');
+        
+        if (!wp_verify_nonce($_POST['_wpnonce'], $this->plugin_name . "_update_user_timezone")) {
+            return;
         }
+        
         global $current_user;
-        //Do not replace 'USER_LOGIN_HISTORY_USER_META_PREFIX' with '$plugin_name' here to avoid backward compatibility issue.
-
         update_user_meta($current_user->ID, USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone", !empty($_POST[$this->plugin_name . "-timezone"]) ? $_POST[$this->plugin_name . "-timezone"] : "");
         wp_safe_redirect(esc_url_raw(add_query_arg()));
         exit;

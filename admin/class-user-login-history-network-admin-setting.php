@@ -7,7 +7,6 @@
  */
 class User_Login_History_Network_Admin_Setting 
 {
-    public $updated;
     public $plugin_name;
     
     function __construct($plugin_name = 'user-login-history') {
@@ -46,38 +45,7 @@ class User_Login_History_Network_Admin_Setting
  
     public function screen()
     {
-        ?>
- 
-        <div class="wrap">
- 
-            <h2><?php echo User_Login_History_Template_Helper::plugin_name() ?></h2>
- 
-            <?php if ( $this->updated ) : ?>
-                <div class="updated notice is-dismissible">
-                    <p><?php _e('Settings updated successfully!', 'my-plugin-domain'); ?></p>
-                </div>
-            <?php endif; ?>
- 
-            <form method="post">
-                <input type="hidden" name="<?php echo $this->plugin_name.'_network_admin_setting_submit'?>" >
-                <fieldset>
-                     <label>
-                        <?php _e('Block User', 'user-login-history'); ?>
-                        <br/>
-                        <input type="checkbox" <?php checked( $this->getSettings('block_user'), 1 ); ?>  name="block_user" value="<?php echo esc_attr($this->getSettings('block_user')); ?>" size="50" />
-                    </label>
-                </fieldset>
-              
-
- 
-                <?php wp_nonce_field($this->plugin_name.'_network_admin_setting_nonce', $this->plugin_name.'_network_admin_setting_nonce'); ?>
-                <?php submit_button(); ?>
- 
-            </form>
- 
-        </div>
- 
-        <?php
+        require_once plugin_dir_path((__FILE__)) . 'partials/settings/network-admin.php';
     }
  
     /**
@@ -93,13 +61,13 @@ class User_Login_History_Network_Admin_Setting
              
             if ( empty( $_POST[$this->plugin_name.'_network_admin_setting_nonce'] ) )
             {
-               return;  
+               return false;  
             }
                
  
             if ( !wp_verify_nonce($_POST[$this->plugin_name.'_network_admin_setting_nonce'], $this->plugin_name.'_network_admin_setting_nonce') )
             {
-                return;
+                return false;
             }
  
             return $this->update_settings();
@@ -118,6 +86,9 @@ class User_Login_History_Network_Admin_Setting
         if ( isset($_POST['block_user']) ) {
             $settings['block_user'] = 1;
         }
+        if ( isset($_POST['block_user_message']) ) {
+            $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
+        }
  
       
         if ( $settings ) {
@@ -130,7 +101,7 @@ class User_Login_History_Network_Admin_Setting
             delete_site_option($this->plugin_name.'_settings');
         }
    
-        $this->updated = true;
+        return TRUE;
     }
  
     /**
@@ -139,7 +110,7 @@ class User_Login_History_Network_Admin_Setting
       * @param $setting string optional setting name
       */
  
-    public function getSettings($setting='')
+    public function get_settings($setting='')
     {
         global $settings;
  
@@ -152,6 +123,7 @@ class User_Login_History_Network_Admin_Setting
  
         $settings = wp_parse_args(get_site_option($this->plugin_name.'_settings'), array(
             'block_user' => null,
+            'block_user_message' => 'Please contact website administrator.',
         ));
  
         if ( $setting ) {

@@ -44,7 +44,6 @@ class User_Login_History_Admin {
     /**
      * Initialize the class and set its properties.
      *
-     * @since    1.0.0
      * @param      string    $plugin_name       The name of this plugin.
      * @param      string    $version    The version of this plugin.
      */
@@ -52,7 +51,7 @@ class User_Login_History_Admin {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->admin_notice_transient = USER_LOGIN_HISTORY_OPTION_PREFIX . 'admin_notice_transient';
+        $this->admin_notice_transient = $this->plugin_name.'admin_notice_transient';
     }
 
     /**
@@ -95,46 +94,23 @@ class User_Login_History_Admin {
     }
 
     public function process_bulk_action() {
-          $status = FALSE;
-         
-          
-        $List_Table = is_network_admin() ? new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name) : new User_Login_History_Admin_List_Table(null, $this->plugin_name);
-      
+        $status = FALSE;
+        $is_network_admin = is_network_admin();
+        $List_Table = $is_network_admin ? new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME, User_Login_History_DB_Helper::get_current_user_timezone()) : new User_Login_History_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME, User_Login_History_DB_Helper::get_current_user_timezone());
+
         if ($List_Table->process_bulk_action()) {
             $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
             $status = TRUE;
         }
-        
+
         if ($List_Table->delete_single_row()) {
             $this->add_admin_notice(__('Record has been deleted.', 'user-login-history'));
-             $status = TRUE;
-        }
-        
-        if($status){
-             $redirect = "admin.php?page=" . $_GET['page'];
-             wp_safe_redirect(esc_url_raw(is_network_admin() ? network_admin_url($redirect) : admin_url($redirect)));
-            exit;
-        }
-    }
-
-    public function network_process_bulk_action() {
-       
-        $status = FALSE;
-          
-        $Network_Admin_List_Table = new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name);
-      
-        if ($Network_Admin_List_Table->process_bulk_action()) {
-            $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
             $status = TRUE;
         }
-        
-        if ($Network_Admin_List_Table->delete_single_row()) {
-            $this->add_admin_notice(__('Record has been deleted.', 'user-login-history'));
-             $status = TRUE;
-        }
-        
-        if($status){
-             wp_safe_redirect(esc_url_raw(admin_url("admin.php?page=" . $_GET['page'])));
+
+        if ($status) {
+            $redirect = "admin.php?page=" . $_GET['page'];
+            wp_safe_redirect(esc_url_raw($is_network_admin ? network_admin_url($redirect) : admin_url($redirect)));
             exit;
         }
     }
@@ -143,13 +119,13 @@ class User_Login_History_Admin {
      * Add admin notices
      *
      */
-    public function add_admin_notice($message) {
+    public function add_admin_notice($message, $type = 'success') {
         $notices = get_transient($this->admin_notice_transient);
         if ($notices === false) {
-            $new_notices[] = $message;
+            $new_notices[] = array($message, $type);
             set_transient($this->admin_notice_transient, $new_notices, 120);
         } else {
-            $notices[] = $message;
+            $notices[] = array($message, $type);
             set_transient($this->admin_notice_transient, $notices, 120);
         }
     }
@@ -162,8 +138,7 @@ class User_Login_History_Admin {
 
         if ($notices !== false) {
             foreach ($notices as $notice) {
-                echo '<div id="setting-error-settings_updated" class="updated settings-error notice is-dismissible"> 
-<p><strong>' . $notice . '</strong></p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' . __('Dismiss this notice', 'user-login-history') . '.</span></button></div>';
+                echo '<div class="notice notice-' . $notice[1] . ' is-dismissible"><p>' . $notice[0] . '</p></div>';
             }
             delete_transient($this->admin_notice_transient);
         }
@@ -173,39 +148,25 @@ class User_Login_History_Admin {
         if (current_user_can('administrator')) {
             $this->init_csv_export();
             $this->process_bulk_action();
-            
         }
     }
-
-//    public function network_admin_init() {
-//        if (current_user_can('administrator')) {
-//            $this->network_init_csv_export();
-//            $this->network_process_bulk_action();
-//        }
-//    }
 
     private function init_csv_export() {
         //Check if download was initiated
         if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
             if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
-                $Admin_List_Table = new User_Login_History_Admin_List_Table(null, $this->plugin_name);
-                $Admin_List_Table->export_to_CSV();
-            } else {
-                wp_die('Nonce error');
+        $List_Table = is_network_admin() ? new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new User_Login_History_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
+                $List_Table->export_to_CSV();
             }
         }
     }
 
-    private function network_init_csv_export() {
-
-        //Check if download was initiated
-        if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
-            if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
-                $Admin_List_Table = new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name);
-                $Admin_List_Table->export_to_CSV();
-            } else {
-                wp_die('Nonce error');
-            }
+    public function update_network_setting() {
+        $obj = new User_Login_History_Network_Admin_Setting();
+        if ($obj->update()) {
+            $this->add_admin_notice(__('Settings updated successfully.', 'user-login-history'));
+            wp_safe_redirect(network_admin_url("settings.php?page=" . $_GET['page']));
+            exit;
         }
     }
 

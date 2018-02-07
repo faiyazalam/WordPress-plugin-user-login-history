@@ -4,7 +4,6 @@
  * Fired during plugin activation
  *
  * @link       https://github.com/faiyazalam
- * @since      1.0.0
  *
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
@@ -15,21 +14,19 @@
  *
  * This class defines all code necessary to run during the plugin's activation.
  *
- * @since      1.0.0
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam <support@userloginhistory.com>
  */
 class User_Login_History_Activator {
 
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function activate($network_wide) {
+    /**
+     * Short Description. (use period)
+     *
+     * Long Description.
+     *
+     */
+    public static function activate($network_wide) {
         global $wpdb;
         if (is_multisite() && $network_wide) {
             // Get all blogs from current network the network and activate plugin on each one
@@ -39,7 +36,7 @@ class User_Login_History_Activator {
                 switch_to_blog($blog_id);
                 self:: on_plugin_activate();
             }
-             restore_current_blog();
+            restore_current_blog();
         } else {
             self:: on_plugin_activate();
         }
@@ -52,16 +49,16 @@ class User_Login_History_Activator {
         self::create_table();
         self::update_options();
     }
-    
-/**
- * Create main table for the plugin.
- */
+
+    /**
+     * Create main table for the plugin.
+     */
     public static function create_table() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
         $table = $wpdb->prefix . USER_LOGIN_HISTORY_TABLE_NAME;
 
-       $sql = "CREATE TABLE $table (
+        $sql = "CREATE TABLE $table (
 `id` int(11) NOT NULL AUTO_INCREMENT,
 `session_token` varchar(200) NOT NULL,
 `user_id` int(11) NOT NULL,
@@ -87,32 +84,23 @@ KEY `session_token` (`session_token`)
         dbDelta($sql);
     }
 
-/**
- * Create table whenever a new blog is created
- */
+    /**
+     * Create table whenever a new blog is created.
+     */
     public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
         if (is_plugin_active_for_network('WordPress-plugin-user-login-history/user-login-history.php')) {
             switch_to_blog($blog_id);
             self:: create_table();
-              self::update_options();
+            self::update_options();
             restore_current_blog();
         }
     }
-    
-/**
- * Update plugin options.
- */
+
+    /**
+     * Update plugin options.
+     */
     public static function update_options() {
         update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'version', USER_LOGIN_HISTORY_VERSION);
-        update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'frontend_fields', array(
-            'ip_address' => 1,
-            'old_role' => 1,
-            'country' => 1,
-            'login' => 1,
-            'logout' => 1,
-            'duration' => 1,
-        ));
-        update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'frontend_limit', '20');
     }
 
 }

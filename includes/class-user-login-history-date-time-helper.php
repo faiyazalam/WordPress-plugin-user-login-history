@@ -12,27 +12,41 @@
 class User_Login_History_Date_Time_Helper {
 
     /**
-     * Constant
-     *
+     * Defalult timizone.
      */
     const DEFAULT_TIMEZONE = 'UTC';
+
+    /**
+     * Defalult date format.
+     */
     const DEFAULT_FORMAT = 'Y-m-d H:i:s';
 
     //this is used to show on html
+    /**
+     * Converts date format.
+     * It is used to print date on html.
+     * 
+     * @param string $date The date with database format i.e. Y-m-d H:i:s
+     * @param string $format The date format in which the date is to be converted.
+     * @return string|int|bool Formatted date string or Unix timestamp. False if $date is empty.
+     */
     static public function convert_format($date, $format = "") {
         $format = $format ? $format : self::DEFAULT_FORMAT;
         return mysql2date($format, $date);
     }
 
-    //this is used to save id db
-        static public function get_current_date_time() {
+    /**
+     * This is used to get the current date to be saved in DB.
+     * @return string The current date.
+     */
+    static public function get_current_date_time() {
         return date(self::DEFAULT_FORMAT);
     }
-    
+
     /**
-     * get list of all the time zones
+     * Retrieves the list of all the timezones.
      *
-     * @return array list of all the time zones
+     * @return array The array containing all the timezones.
      */
     static public function get_timezone_list() {
         $zones_array = array();
@@ -46,7 +60,8 @@ class User_Login_History_Date_Time_Helper {
     }
 
     /**
-     * Convert datetime into a different timezone and format.
+     * Converts datetime into a different timezone and format.
+     * 
      * @param type $input_datetime
      * @param type $input_timezone default is UTC
      * @param type $output_timezone default is UTC
@@ -64,7 +79,7 @@ class User_Login_History_Date_Time_Helper {
     }
 
     /**
-     * Get nearest time zone of the user.
+     * Gets nearest time zone of the user.
      *
      * @param string $cur_lat current lattitude
      * @param string $cur_long current longitude
@@ -102,8 +117,14 @@ class User_Login_History_Date_Time_Helper {
         }
         return FALSE;
     }
-    
-   static public function get_last_time($time_one, $time_two) {
+
+    /**
+     * Compares the two input date-time and returns the latest one.
+     * @param string $time_one
+     * @param string $time_two
+     * @return string The latest input date-time.
+     */
+    static public function get_last_time($time_one, $time_two) {
         $time_one_str = strtotime($time_one);
         $time_two_str = strtotime($time_two);
         return $time_one_str > $time_two_str ? $time_one : $time_two;

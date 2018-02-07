@@ -35,7 +35,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
                     <option value="unknown" <?php selected($selected_timezone, "unknown"); ?> ><?php _e('Unknown', 'user-login-history') ?></option>
                     <?php
-                    User_Login_History_Template_Helper::dropdown_timezone($selected_timezone);
+                    User_Login_History_Template_Helper::dropdown_timezones($selected_timezone);
                     ?>
                 </select>
                 <select  name="role">
@@ -59,7 +59,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                 </select>
                 <select  name="login_status">
                     <option value=""><?php _e('Select Login Status', 'user-login-history') ?></option>
-                    <?php User_Login_History_Template_Helper::dropdown_login_status(isset($_GET['login_status']) ? $_GET['login_status'] : ""); ?>
+                    <?php User_Login_History_Template_Helper::dropdown_login_statuses(isset($_GET['login_status']) ? $_GET['login_status'] : ""); ?>
                 </select>
             </fieldset>
             <?php do_action('user_login_history_network_admin_listing_search_form'); ?>

@@ -2,12 +2,13 @@
 
 class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abstract_List_Table {
 
-    public function __construct($args = array(), $plugin_name) {
-        parent::__construct(array(
+    public function __construct($args = array(), $plugin_name, $table_name) {
+        $defaults  = array(
             'singular' => __('network_admin_user', 'user-login-history'), //singular name of the listed records
             'plural' => __('network_admin_users', 'user-login-history'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
-                ), $plugin_name);
+                );
+        parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name);
     }
 
     /**
@@ -35,7 +36,7 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         $blog_ids = $this->get_current_network_blog_ids();
 
         foreach ($blog_ids as $blog_id) {
-            $table = $wpdb->get_blog_prefix($blog_id) . USER_LOGIN_HISTORY_TABLE_NAME;
+            $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
             if (0 < $i) {
                 $sql .= " UNION ";
             }
@@ -117,7 +118,7 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         $blog_ids = $this->get_current_network_blog_ids();
         
         foreach ($blog_ids as $blog_id) {
-            $table = $wpdb->get_blog_prefix($blog_id) . USER_LOGIN_HISTORY_TABLE_NAME;
+            $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
 
             if (0 < $i) {
                 $sql .= " UNION ";
@@ -152,19 +153,23 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
      */
     function column_username($item) {
         $blog_id = !empty($item['blog_id']) ? $item['blog_id'] : 0;
-        $delete_nonce = wp_create_nonce(USER_LOGIN_HISTORY_OPTION_PREFIX . 'delete_row_by_' . $this->_args['singular']);
+        $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
         $title = '<strong>' . $item['username'] . '</strong>';
         $actions = array(
             'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_network_admin_listing_table_delete_single_row', absint($blog_id), absint($item['id']), $delete_nonce),
         );
         return $title . $this->row_actions($actions);
     }
+    
+    
+    
+
 
     public function process_bulk_action() {
-        if (!isset($_POST[$this->plugin_name . '_network_admin_listing_table']) || empty($_POST['_wpnonce'])) {
+         if (!isset($_POST[$this->plugin_name .'_network_admin_listing_table']) || empty($_POST['_wpnonce'])) {
             return FALSE;
         }
-          
+        
         $status = FALSE;
         $nonce = $_POST['_wpnonce'];
         $bulk_action = 'bulk-' . $this->_args['plural'];

@@ -6,34 +6,85 @@ if (!class_exists('WP_List_Table')) {
 
 abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
 
-    protected $plugin_name;
-    private $table_timezone; //timezone for table 
+    /**
+     * Default timezone for the table.
+     */
+    const DEFAULT_TABLE_TIMEZONE = 'UTC';
 
-    /** Class constructor */
-    public function __construct($args = array(), $plugin_name = '') {
+    /**
+     * The unique identifier of this plugin.
+     *
+     * @access   protected
+     * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+     */
+    protected $plugin_name;
+
+    /**
+     * The name of the table.
+     *
+     * @access   protected
+     * @var      string    $table_name
+     */
+    protected $table_name;
+
+    /**
+     * Holds the timezone to be used in table.
+     *
+     * @access   private
+     * @var      string    $table_timezone
+     */
+    private $table_timezone;
+
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @access public
+     * @param      array    $args       The overridden arguments.
+     * @param      string    $plugin_name       The name of this plugin.
+     * @param      string    $table_name    The table name.
+     * @param      string    $table_timezone   The timezone for table.
+     */
+    public function __construct($args = array(), $plugin_name = '', $table_name = '', $table_timezone = '') {
         parent::__construct($args);
         $this->plugin_name = $plugin_name;
-        $this->set_table_timezone();
+        $this->table_name = $table_name; //main table of the plugin
+        $this->set_table_timezone($table_timezone);
     }
 
+    /**
+     * Message to be displayed when there are no items
+     *
+     * @access public
+     */
     public function no_items() {
         _e('No records avaliable.', 'user-login-history');
     }
 
-    public function set_table_timezone($timezone = ''){
-        $this->table_timezone = $timezone ? $timezone : User_Login_History_DB_Helper::get_current_user_timezone();
-    }
-    
-    public function get_table_timezone() {
-        return $this->table_timezone ? $this->table_timezone: User_Login_History_Date_Time_Helper::DEFAULT_TIMEZONE;
-    }
     /**
-     * Retrieve customers data from the database
+     * Sets the timezone to be used for table listing.
+     * 
+     * @access public
+     * @param string $timezone
+     */
+    public function set_table_timezone($timezone = '') {
+        $this->table_timezone = $timezone;
+    }
+
+    /**
+     * Gets the timezone to be used for table listing.
+     * 
+     * @access public
+     * @return string
+     */
+    public function get_table_timezone() {
+        return $this->table_timezone ? $this->table_timezone : self::DEFAULT_TABLE_TIMEZONE;
+    }
+
+    /**
+     * Prepares the where query.
      *
-     * @param int $per_page
-     * @param int $page_number
-     *
-     * @return mixed
+     * @access public
+     * @return string
      */
     public function prepare_where_query() {
         $where_query = '';
@@ -93,13 +144,14 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         return $where_query;
     }
 
-
-
-
-
+    /**
+     * Deletes all records from the plugin table.
+     * 
+     * @access public
+     */
     public function delete_all_rows() {
-       global $wpdb;
-         $table = $wpdb->prefix.USER_LOGIN_HISTORY_TABLE_NAME;
+        global $wpdb;
+        $table = $wpdb->prefix . $this->table_name;
         $status = $wpdb->query("TRUNCATE $table");
         if ($wpdb->last_error) {
             User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
@@ -107,11 +159,10 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         return $status;
     }
 
-
-
     /**
      * Render a column when no column specific method exist.
      *
+     * @access public
      * @param array $item
      * @param string $column_name
      *
@@ -192,12 +243,12 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
                 }
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
-        
     }
 
     /**
      *  Associative array of columns
      *
+     * @access public
      * @return array
      */
     public function get_columns() {
@@ -231,6 +282,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     /**
      * Columns to make sortable.
      *
+     * @access public
      * @return array
      */
     public function get_sortable_columns() {
@@ -260,6 +312,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     /**
      * Returns an associative array containing the bulk action
      *
+     * @access public 
      * @return array
      */
     public function get_bulk_actions() {
@@ -273,21 +326,18 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
 
     /**
      * Handles data query and filter, sorting, and pagination.
+     * 
+     * @access public
      */
     public function prepare_items() {
-
         $this->_column_headers = $this->get_column_info();
-
-        /** Process bulk action */
-        //  $this->process_bulk_action();
-
         $per_page = $this->get_items_per_page('rows_per_page');
         $current_page = $this->get_pagenum();
         $total_items = $this->record_count();
 
         $this->set_pagination_args(array(
-            'total_items' => $total_items, //WE have to calculate the total number of items
-            'per_page' => $per_page //WE have to determine how many items to show on a page
+            'total_items' => $total_items,
+            'per_page' => $per_page
         ));
 
         $this->items = $this->get_rows($per_page, $current_page);
@@ -296,6 +346,8 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     /**
      * Generates content for a single row of the table
      * Over-ridden method.
+     * 
+     * @access public
      */
     public function single_row($item) {
         $login_status = !empty($item['login_status']) ? "login_status_" . $item['login_status'] : "";
@@ -304,12 +356,17 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         echo '</tr>';
     }
 
+    /**
+     * Exports CSV
+     * 
+     * @access public
+     * @global type $current_user
+     */
     public function export_to_CSV() {
         global $current_user;
         $timezone = $this->get_table_timezone();
-      
+
         $data = $this->get_rows(0); // pass zero to get all the records
-       
         //date string to suffix the file nanme: month - day - year - hour - minute
         $suffix = date('n-j-y_H-i');
         // send response headers to the browser
@@ -357,22 +414,22 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         fclose($fp);
         die();
     }
-    
-    
-     /**
-     * Delete a customer record.
+
+    /**
+     * Delete a record from the plugin table.
      *
-     * @param int $id customer ID
+     * @access public
+     * @param int $id The record ID
      */
-    public function delete_rows($ids = array()) {       
+    public function delete_rows($ids = array()) {
         global $wpdb;
-         $table = $wpdb->prefix.USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->prefix . $this->table_name;
         if (!empty($ids)) {
             if (!is_array($ids)) {
                 $ids = array($ids);
             }
             $ids = esc_sql(implode(',', array_map('absint', $ids)));
-           $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
+            $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
             if ($wpdb->last_error) {
                 User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
             }

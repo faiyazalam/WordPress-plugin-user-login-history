@@ -33,7 +33,7 @@ class User_Login_History_User_Profile {
                     <select required="required" name="<?php echo $this->plugin_name . '-timezone' ?>">
                         <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
                         <?php
-                        User_Login_History_Template_Helper::dropdown_timezone($user_timezone);
+                        User_Login_History_Template_Helper::dropdown_timezones($user_timezone);
                         ?>
                     </select>
                 </td>

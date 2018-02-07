@@ -2,12 +2,14 @@
 
 class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_List_Table {
 
-    public function __construct($args = array(), $plugin_name = '') {
-        parent::__construct(array(
-            'singular' => $plugin_name . '_admin_user', //singular name of the listed records
-            'plural' => $plugin_name . '_admin_users', //plural name of the listed records
+    public function __construct($args = array(), $plugin_name, $table_name, $table_timezone) {
+      
+       $defaults  = array(
+            'singular' => __('admin_user', 'user-login-history'), //singular name of the listed records
+            'plural' => __('admin_users', 'user-login-history'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
-                ), $plugin_name);
+                );
+        parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name , $table_timezone);
     }
 
     /**
@@ -33,7 +35,7 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
      */
     public function get_rows($per_page = 20, $page_number = 1) {
         global $wpdb;
-        $table = $wpdb->prefix . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->prefix . $this->table_name;
         $sql = " SELECT"
                 . " FaUserLogin.*, "
                 . " UserMeta.meta_value "
@@ -73,7 +75,7 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
      */
     public function record_count() {
         global $wpdb;
-        $table = $wpdb->prefix . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->prefix . $this->table_name;
         $sql = " SELECT"
                 . " FaUserLogin.id"
                 . " FROM " . $table . " AS FaUserLogin"
@@ -115,10 +117,10 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
     }
 
     public function process_bulk_action() {
-        if (!isset($_POST[$this->plugin_name . '_admin_listing_table']) || empty($_POST['_wpnonce'])) {
+         if (!isset($_POST[$this->plugin_name .'_admin_listing_table']) || empty($_POST['_wpnonce'])) {
             return FALSE;
         }
-
+        
         $status = FALSE;
         $nonce = $_POST['_wpnonce'];
         $bulk_action = 'bulk-' . $this->_args['plural'];

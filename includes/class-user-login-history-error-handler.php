@@ -1,13 +1,12 @@
 <?php
 
 /**
- * User_Login_History_Error_Handler
+ * The class saves error log in the plugin log file.
  *
  * @link       https://github.com/faiyazalam
- *
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam
+ * @author     Er Faiyaz Alam <support@userloginhistory.com>
  */
 class User_Login_History_Error_Handler {
 
