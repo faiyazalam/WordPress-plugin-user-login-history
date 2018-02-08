@@ -6,7 +6,8 @@
  * @link       https://github.com/faiyazalam
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam <support@userloginhistory.com>
+ * @author     Er Faiyaz Alam
+ * @access private
  */
 class User_Login_History_DB_Helper {
 
@@ -37,8 +38,30 @@ class User_Login_History_DB_Helper {
             $user_id = $current_user->ID;
         }
 
-        $timezone = get_user_meta($user_id, USER_LOGIN_HISTORY_USER_META_PREFIX . "user_timezone", TRUE);
+        $timezone = get_user_meta($user_id, USER_LOGIN_HISTORY_USERMETA_PREFIX . "user_timezone", TRUE);
         return $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
     }
 
+    
+    static public function get_blog_by_id_and_network_id($blog_id, $network_id) {
+        global $wpdb;
+        $where = '';
+           if ($blog_id) {
+            $where .= " AND `blog_id` = " . esc_sql(absint($blog_id));
+        }
+        
+        if($network_id)
+        {
+           $where .= " AND `site_id` = " . esc_sql(absint($network_id));
+  
+        }
+             
+           $sql = "SELECT blog_id FROM $wpdb->blogs WHERE 1 $where";
+        
+ $result = $wpdb->get_col($sql);
+        if ($wpdb->last_error) {
+            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+        }
+        return $result;
+    }
 }

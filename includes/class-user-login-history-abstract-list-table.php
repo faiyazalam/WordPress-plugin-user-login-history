@@ -1,5 +1,16 @@
 <?php
 
+/**
+ * This abstract class can help to create admin listing table.
+ *
+ * @link       https://github.com/faiyazalam
+ * 
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
+ * @author     Er Faiyaz Alam
+ * @access private
+ */
+
 if (!class_exists('WP_List_Table')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
@@ -44,7 +55,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      * @param      string    $table_name    The table name.
      * @param      string    $table_timezone   The timezone for table.
      */
-    public function __construct($args = array(), $plugin_name = '', $table_name = '', $table_timezone = '') {
+    public function __construct($args = array(), $plugin_name, $table_name, $table_timezone = '') {
         parent::__construct($args);
         $this->plugin_name = $plugin_name;
         $this->table_name = $table_name; //main table of the plugin

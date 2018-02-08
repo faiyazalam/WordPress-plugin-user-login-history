@@ -1,3 +1,14 @@
+<?php
+
+/**
+ * Template file to render setting page for network admin.
+ *
+ * @link       https://github.com/faiyazalam
+ *
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin/partials/settings
+ */
+?>
 <div class="wrap">
     <h2><?php echo User_Login_History_Template_Helper::plugin_name() ?></h2>
     <form method="post">

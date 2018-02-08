@@ -6,6 +6,7 @@
  * @link       https://github.com/faiyazalam
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
+ * @access private
  */
 
 /**
@@ -17,7 +18,7 @@
  *
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam <support@userloginhistory.com>
+ * @author     Er Faiyaz Alam
  */
 class User_Login_History_Loader {
 

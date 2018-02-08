@@ -13,7 +13,8 @@
  * @link       https://github.com/faiyazalam
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam <support@userloginhistory.com>
+ * @author     Er Faiyaz Alam
+ * @access private
  */
 class User_Login_History {
 
@@ -164,7 +165,7 @@ class User_Login_History {
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-            $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name());
+            $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name(), USER_LOGIN_HISTORY_USERMETA_PREFIX);
             $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
             $this->loader->add_action('edit_user_profile', $User_Profile, 'show_extra_profile_fields');
             $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
@@ -196,7 +197,7 @@ class User_Login_History {
 
 //hooks for admin, network and public
         $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
-        $User_Tracker = new User_Login_History_User_Tracker($this->get_plugin_name(), $this->get_version(), USER_LOGIN_HISTORY_USER_META_PREFIX);
+        $User_Tracker = new User_Login_History_User_Tracker($this->get_plugin_name());
         $this->loader->add_action('init', $User_Tracker, 'update_time_last_seen');
         $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_session_token', 10, 6);
         $this->loader->add_action('wp_login', $User_Tracker, 'user_login', 10, 2);
@@ -244,7 +245,7 @@ class User_Login_History {
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      * 
-     *@return    User_Login_History_Loader    Orchestrates the hooks of the plugin.
+     * @return    User_Login_History_Loader    Orchestrates the hooks of the plugin.
      */
     public function get_loader() {
         return $this->loader;

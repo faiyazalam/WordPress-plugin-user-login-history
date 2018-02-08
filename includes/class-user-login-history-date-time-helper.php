@@ -6,8 +6,9 @@
  * @link       https://github.com/faiyazalam
  *
  * @package    User_Login_History
- * @subpackage User_Login_History/admin
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
+ * @access private
  */
 class User_Login_History_Date_Time_Helper {
 

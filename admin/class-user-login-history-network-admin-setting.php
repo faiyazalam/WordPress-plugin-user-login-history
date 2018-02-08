@@ -1,134 +1,128 @@
 <?php
 
 /**
- * WordPress settings API demo class
+ * User_Login_History_Network_Admin_Setting
  *
- * @author Tareq Hasan
+ * @link       https://github.com/faiyazalam
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
+ * @author     Er Faiyaz Alam
+ * @access private
  */
-class User_Login_History_Network_Admin_Setting 
-{
-    public $plugin_name;
-    
-    function __construct($plugin_name = 'user-login-history') {
+class User_Login_History_Network_Admin_Setting {
+
+    /**
+     * The unique identifier of this plugin.
+     *
+     * @access   private
+     * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+     */
+    private $plugin_name;
+
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @access public
+     * @param      array    $args       The overridden arguments.
+     * @param      string    $plugin_name       The name of this plugin.
+     */
+    function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
     }
-    /**
-      * This method will be used to register
-      * our custom settings admin page
-      */
- 
 
- 
     /**
-      * This method will be used to register
-      * our custom settings admin page
-      */
- 
-    public function add_setting_menu()
-    {
+     * The callback function for the action hook - network_admin_menu.
+     */
+    public function add_setting_menu() {
         add_submenu_page(
-            'settings.php',
-            __('User Login History', 'user-login-history'),
-            __('User Login History'),
-            'manage_options',
-            $this->plugin_name.'-setting',
-            array($this, 'screen')
+                'settings.php', __('User Login History', 'user-login-history'), __('User Login History'), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
         );
- 
-        return $this;
     }
- 
+
     /**
-      * This method will parse the contents of
-      * our custom settings age
-      */
- 
-    public function screen()
-    {
+     * The template file for setting page.
+     * 
+     * @access private
+     * @return string The template file path.
+     */
+    private function screen() {
         require_once plugin_dir_path((__FILE__)) . 'partials/settings/network-admin.php';
     }
- 
+
     /**
-      * Check for POST (form submission)
-      * Verifies nonce first then calls
-      * update_settings method to update.
-      */
- 
-    public function update()
-    {
-     
-        if ( isset($_POST[$this->plugin_name."_network_admin_setting_submit"]) ) {
-             
-            if ( empty( $_POST[$this->plugin_name.'_network_admin_setting_nonce'] ) )
-            {
-               return false;  
-            }
-               
- 
-            if ( !wp_verify_nonce($_POST[$this->plugin_name.'_network_admin_setting_nonce'], $this->plugin_name.'_network_admin_setting_nonce') )
-            {
+     * Check nonce and form submission and then update the settings.
+     * 
+     * @access public
+     */
+    public function update() {
+
+        if (isset($_POST[$this->plugin_name . "_network_admin_setting_submit"])) {
+
+            if (empty($_POST[$this->plugin_name . '_network_admin_setting_nonce'])) {
                 return false;
             }
- 
+
+            if (!wp_verify_nonce($_POST[$this->plugin_name . '_network_admin_setting_nonce'], $this->plugin_name . '_network_admin_setting_nonce')) {
+                return false;
+            }
+
             return $this->update_settings();
         }
     }
- 
+
     /**
-      * Updates settings
-      */
- 
-    public function update_settings()
-    {
+     * Updates the settings.
+     * 
+     * @access private
+     */
+    private function update_settings() {
         $settings = array();
-       
- 
-        if ( isset($_POST['block_user']) ) {
+
+
+        if (isset($_POST['block_user'])) {
             $settings['block_user'] = 1;
         }
-        if ( isset($_POST['block_user_message']) ) {
+        if (isset($_POST['block_user_message'])) {
             $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
         }
- 
-      
-        if ( $settings ) {
+
+
+        if ($settings) {
             // update new settings
             global $wpdb;
-            update_site_option($this->plugin_name.'_settings', $settings);
-            
+            update_site_option($this->plugin_name . '_settings', $settings);
         } else {
             // empty settings, revert back to default
-            delete_site_option($this->plugin_name.'_settings');
+            delete_site_option($this->plugin_name . '_settings');
         }
-   
+
         return TRUE;
     }
- 
+
     /**
-      * Updates settings
-      *
-      * @param $setting string optional setting name
-      */
- 
-    public function get_settings($setting='')
-    {
+     * Gets the setting by name.
+     *
+     * @param $setting string optional setting name
+     */
+    public function get_settings($setting = '') {
         global $settings;
- 
-        if ( isset($settings) ) {
-            if ( $setting ) {
+
+        if (isset($settings)) {
+            if ($setting) {
                 return isset($settings[$setting]) ? $settings[$setting] : null;
             }
             return $settings;
         }
- 
-        $settings = wp_parse_args(get_site_option($this->plugin_name.'_settings'), array(
+
+        $settings = wp_parse_args(get_site_option($this->plugin_name . '_settings'), array(
             'block_user' => null,
             'block_user_message' => 'Please contact website administrator.',
         ));
- 
-        if ( $setting ) {
+
+        if ($setting) {
             return isset($settings[$setting]) ? $settings[$setting] : null;
         }
         return $settings;
     }
+
 }

@@ -1,3 +1,14 @@
+<?php
+
+/**
+ * Template file to render listing table for network admin.
+ *
+ * @link       https://github.com/faiyazalam
+ *
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin/partials
+ */
+?>
 <div class="wrap">
     <h2><?php _e('User Login History Network', 'user-login-history') ?></h2>
         <div><p><?php require(plugin_dir_path(dirname(__FILE__)) . 'partials/timezone.php');?></p></div>

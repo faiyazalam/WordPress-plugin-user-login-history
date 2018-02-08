@@ -1,3 +1,14 @@
+<?php
+
+/**
+ * Template file to render listing table for admin.
+ *
+ * @link       https://github.com/faiyazalam
+ *
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin/partials
+ */
+?>
 <form name="<?php echo $this->plugin_name . '-search-form'; ?>" method="get" action="" id="<?php echo $this->plugin_name . '-search-form'; ?>">
     <fieldset> 
         <input readonly autocomplete="off" placeholder="<?php _e("From", "user-login-history") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >

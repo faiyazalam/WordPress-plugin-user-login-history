@@ -1,4 +1,14 @@
 <?php
+
+/**
+ * Template file to render filter form on the listing table.
+ *
+ * @link       https://github.com/faiyazalam
+ *
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin/partials/form
+ */
+
 $reset_URI = "admin.php?page=" . esc_attr($_GET['page']);
 $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($reset_URI); 
 ?>

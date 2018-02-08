@@ -1,21 +1,41 @@
 <?php
 
+/**
+ * This is used to create network admin listing table.
+ * 
+ * @link       https://github.com/faiyazalam
+ *
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
+ * @author     Er Faiyaz Alam
+ * @access private
+ */
+
 class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abstract_List_Table {
 
-    public function __construct($args = array(), $plugin_name, $table_name) {
+        /**
+     * Initialize the class and set its properties.
+     *
+     * @access public
+     * @param      array    $args       The overridden arguments.
+     * @param      string    $plugin_name       The name of this plugin.
+     * @param      string    $table_name    The table name.
+     * @param      string    $table_timezone   The timezone for table.
+     */
+    public function __construct($args = array(), $plugin_name, $table_name, $table_timezone = '') {
         $defaults  = array(
             'singular' => __('network_admin_user', 'user-login-history'), //singular name of the listed records
             'plural' => __('network_admin_users', 'user-login-history'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
                 );
-        parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name);
+        parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
     }
 
     /**
      * Render the bulk edit checkbox
      *
      * @param array $item
-     *
+     *@access public
      * @return string
      */
     public function column_cb($item) {
@@ -25,6 +45,15 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         );
     }
 
+        /**
+     * Retrieve rows
+     * 
+     * @access   public
+     * @param int $per_page
+     * @param int $page_number
+     * @access   public
+     * @return mixed
+     */
     public function get_rows($per_page = 20, $page_number = 1) {
       
         global $wpdb;
@@ -79,30 +108,19 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
     }
 
     /**
+     * Get blog ids of the current network.
      * 
+     * @access private
      * @global type $wpdb
      * @return array
      */
     private function get_current_network_blog_ids() {
-        global $wpdb;
-        $where = "";
-
-        if (!empty($_GET['blog_id'])) {
-            $where .= " AND `blog_id` = " . esc_sql(absint($_GET['blog_id']));
-        }
-
-        $where .= " AND `site_id` = " . get_current_network_id();
-        $sql = "SELECT blog_id FROM $wpdb->blogs WHERE 1 $where";
-
-        $result = $wpdb->get_col($sql);
-        if ($wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
-        }
-        return $result;
+        return User_Login_History_DB_Helper::get_blog_by_id_and_network_id(!empty($_GET['blog_id']) ? $_GET['blog_id']: NULL, get_current_network_id());
     }
 
+
     /**
-     * Returns the count of records in the table.
+     * Returns the count of records in the database.
      * 
      * @access   public
      * @return null|string

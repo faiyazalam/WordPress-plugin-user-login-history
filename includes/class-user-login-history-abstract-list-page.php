@@ -1,14 +1,14 @@
 <?php
 
 /**
- * User_Login_History_Abstract_List_Page
- * 
- * An abstract class used to create admin menu for listing page.
+ * This abstract class can help to create admin menu for listing page.
  *
  * @link       https://github.com/faiyazalam
+ * 
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam <support@userloginhistory.com>
+ * @author     Er Faiyaz Alam
+ * @access private
  */
 abstract class User_Login_History_Abstract_List_Page {
 /**
@@ -95,6 +95,7 @@ abstract class User_Login_History_Abstract_List_Page {
         add_screen_option('per_page', $args);
         $this->list_table = $this->get_list_table_object();
     }
+
     /**
      * Loads the listing template file.
      * 
@@ -103,6 +104,7 @@ abstract class User_Login_History_Abstract_List_Page {
   public function load_template() {
         require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/listing.php';
     }
+    
  /**
      * This function will return object of list table class e.g. new WP_List_Table().
      */

@@ -6,7 +6,8 @@
  * @link       https://github.com/faiyazalam
  * @package    User_Login_History
  * @subpackage User_Login_History/includes
- * @author     Er Faiyaz Alam <support@userloginhistory.com>
+ * @author     Er Faiyaz Alam
+ * @access private
  */
 class User_Login_History_User_Tracker {
 
@@ -34,22 +35,6 @@ class User_Login_History_User_Tracker {
     protected $plugin_name;
 
     /**
-     * The current version of the plugin.
-     *
-     * @access   protected
-     * @var      string    $version    The current version of the plugin.
-     */
-    protected $version;
-
-    /**
-     * Prefix for usermeta key.
-     *
-     * @access   protected
-     * @var      string    $usermeta_prefix
-     */
-    protected $usermeta_prefix;
-
-    /**
      * Stores user session token.
      * 
      * @access private
@@ -64,14 +49,6 @@ class User_Login_History_User_Tracker {
      * @var string|bool $login_status The login status of user.
      */
     private $login_status = false;
-
-    /**
-     * Stores usermeta key for timezone.
-     * 
-     * @access   private
-     * @var      string    $usermeta_key_timezone
-     */
-    private $usermeta_key_timezone;
 
     /**
      * Stores instance of geo helper class.
@@ -93,24 +70,21 @@ class User_Login_History_User_Tracker {
      * Initialize the class and set its properties.
      *
      * @var      string    $plugin_name       The name of this plugin.
-     * @var      string    $version    The version of this plugin.
-     * @var      string    $usermeta_prefix    The prefix for usermeta key.
      */
-    public function __construct($plugin_name, $version, $usermeta_prefix) {
+    public function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
-        $this->version = $version;
-        $this->usermeta_key_timezone = $usermeta_prefix . "user_timezone";
     }
 
     /**
-     * Block user if the user is not allowed to login on another blog.
+     * Blocks user if the user is not allowed to 
+     * login on another blog on the network.
+     * 
      * @access private
      */
     private function is_blocked_user_on_this_blog($user_id) {
         if (is_multisite() && !is_user_member_of_blog($user_id) && !is_super_admin($user_id)) {
-            $Network_Admin_Setting = new User_Login_History_Network_Admin_Setting();
+            $Network_Admin_Setting = new User_Login_History_Network_Admin_Setting($this->plugin_name);
             if ($Network_Admin_Setting->get_settings('block_user')) {
-
                 $this->login_status = self::LOGIN_STATUS_BLOCK;
                 wp_logout();
                 wp_die($Network_Admin_Setting->get_settings('block_user_message'));
@@ -146,6 +120,7 @@ class User_Login_History_User_Tracker {
      */
     private function save_login($user_login, $user, $status = '') {
         global $wpdb;
+        $unknown = 'unknown';
         $table = $wpdb->get_blog_prefix() . USER_LOGIN_HISTORY_TABLE_NAME;
         $this->set_geo_object();
         $this->set_browser_object();
@@ -161,7 +136,6 @@ class User_Login_History_User_Tracker {
         if ($lat != 0 && $long != 0 && $country_code) {
             $user_timezone = User_Login_History_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
         }
-        $user_timezone = !empty($user_timezone) ? $user_timezone : "";
         //now insert for new login
         $data = array(
             'user_id' => $user_id,
@@ -175,7 +149,7 @@ class User_Login_History_User_Tracker {
             'country_name' => $country_name,
             'country_code' => $country_code,
             'old_role' => $old_roles,
-            'timezone' => $user_timezone,
+            'timezone' => !empty($user_timezone) ? $user_timezone : $unknown,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
             'login_status' => $status,
             'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
@@ -199,8 +173,10 @@ class User_Login_History_User_Tracker {
         if ($wpdb->insert_id) {
             User_Login_History_Session_Helper::set_last_insert_id($wpdb->insert_id);
             User_Login_History_Session_Helper::set_current_login_blog_id();
-
-            add_user_meta($user_id, $this->usermeta_key_timezone, $user_timezone, true);
+            if (!empty($user_timezone)) {
+                $UserProfile = new User_Login_History_User_Profile($this->plugin_name, $user_id);
+                $UserProfile->add_timezone($user_timezone);
+            }
         }
         $this->is_blocked_user_on_this_blog($user_id);
         do_action('user_login_history_after_save_user_login_detail', $data);
