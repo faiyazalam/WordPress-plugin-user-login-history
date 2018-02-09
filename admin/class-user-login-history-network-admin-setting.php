@@ -42,10 +42,10 @@ class User_Login_History_Network_Admin_Setting {
     /**
      * The template file for setting page.
      * 
-     * @access private
+     * @access public
      * @return string The template file path.
      */
-    private function screen() {
+    public function screen() {
         require_once plugin_dir_path((__FILE__)) . 'partials/settings/network-admin.php';
     }
 

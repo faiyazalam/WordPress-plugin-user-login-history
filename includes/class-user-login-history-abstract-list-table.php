@@ -315,6 +315,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         );
         if (is_multisite()) {
             $sortable_columns['is_super_admin'] = array('is_super_admin', false);
+            $sortable_columns['blog_id'] = array('blog_id', false);
         }
         $sortable_columns = apply_filters('user_login_history_admin_get_sortable_columns', $sortable_columns);
         return $sortable_columns;
@@ -328,8 +329,8 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function get_bulk_actions() {
         $actions = array(
-            'bulk-delete' => 'Delete Selected Records',
-            'bulk-delete-all-admin' => 'Delete All Records',
+            'bulk-delete' => __('Delete Selected Records', 'user-login-history'),
+            'bulk-delete-all-admin' => __('Delete All Records', 'user-login-history'),
         );
 
         return $actions;
@@ -342,7 +343,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function prepare_items() {
         $this->_column_headers = $this->get_column_info();
-        $per_page = $this->get_items_per_page('rows_per_page');
+        $per_page = $this->get_items_per_page(str_replace("-", "_", $this->plugin_name)."_rows_per_page");
         $current_page = $this->get_pagenum();
         $total_items = $this->record_count();
 

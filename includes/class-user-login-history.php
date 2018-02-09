@@ -222,7 +222,9 @@ class User_Login_History {
         $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table'); //new shortcode
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
-        $this->loader->add_action('init', $plugin_public, 'init');
+        
+             $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name(), USER_LOGIN_HISTORY_USERMETA_PREFIX);
+            $this->loader->add_action('init', $User_Profile, 'update_user_timezone');
     }
 
     /**

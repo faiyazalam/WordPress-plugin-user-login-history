@@ -66,7 +66,7 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
         if ($where_query) {
             $sql .= $where_query;
         }
-        $sql .= ' GROUP BY FaUserLogin.id';
+      //  $sql .= ' GROUP BY FaUserLogin.id';
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
             $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
@@ -96,9 +96,8 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
         global $wpdb;
         $table = $wpdb->prefix . $this->table_name;
         $sql = " SELECT"
-                . " FaUserLogin.id"
+                . " COUNT(FaUserLogin.id) AS total"
                 . " FROM " . $table . " AS FaUserLogin"
-                . " LEFT JOIN $wpdb->users AS User ON User.ID = FaUserLogin.user_id"
                 . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
                 . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
                 . " WHERE 1 ";
@@ -108,10 +107,10 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
         if ($where_query) {
             $sql .= $where_query;
         }
-        $sql .= ' GROUP BY FaUserLogin.id';
-        $sql_count = "SELECT COUNT(*) as total FROM ($sql) AS FaUserLoginCount ";
+      //  $sql .= ' GROUP BY FaUserLogin.id';
+//        $sql_count = "SELECT COUNT(*) as total FROM ($sql) AS FaUserLoginCount ";
 
-        $result = $wpdb->get_var($sql_count);
+        $result = $wpdb->get_var($sql);
         if ("" != $wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
@@ -126,10 +125,11 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
      * @return string
      */
     function column_username($item) {
+        $title = $item['user_id'] ? "<a href='".get_edit_user_link($item['user_id'])."'>".esc_html($item['username'])."</a>" : '<strong>' . $item['username'] . '</strong>';
         $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
-        $title = '<strong>' . $item['username'] . '</strong>';
+      //  $title = '<strong>' . $item['username'] . '</strong>';
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_admin_listing_table_delete_single_row', absint($item['id']), $delete_nonce),
+            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_admin_listing_table_delete_single_row', absint($item['id']), $delete_nonce),
         );
         return $title . $this->row_actions($actions);
     }
@@ -193,7 +193,7 @@ class User_Login_History_Admin_List_Table extends User_Login_History_Abstract_Li
             wp_die('invalid nonce');
         }
 
-        return $this->delete_rows($_GET['customer']);
+        return $this->delete_rows($_GET['record_id']);
     }
 
 }

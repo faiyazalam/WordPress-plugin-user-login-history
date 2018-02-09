@@ -41,6 +41,6 @@
     </form>
 </div>
 <?php
-$obj->prepare_items();
-$obj->display();
+$Public_List_Table->prepare_items();
+$Public_List_Table->display();
 ?>

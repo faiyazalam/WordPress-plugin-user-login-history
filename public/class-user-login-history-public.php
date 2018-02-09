@@ -57,14 +57,6 @@ class User_Login_History_Public {
         return TRUE;
     }
 
-
-    /**
- * The callback function for the action hook - init.
- */
-    public function init() {
-        $this->update_user_timezone();
-    }
-
     /**
      * Register the stylesheets for the public-facing side of the site.
      *
@@ -103,35 +95,26 @@ class User_Login_History_Public {
         if (!is_user_logged_in()) {
             return;
         }
-        $obj = new User_Login_History_Public_List_Table($this->plugin_name);
-        $timezone = $obj->get_table_timezone();
+        global $current_user;
+        $Public_List_Table = new User_Login_History_Public_List_Table($this->plugin_name);
+        $UserProfile = new User_Login_History_User_Profile($this->plugin_name);
+        $Public_List_Table->set_table_timezone($UserProfile->get_current_user_timezone());
+        $timezone = $Public_List_Table->get_table_timezone();
         $default_args = array(
             'reset_link' => '',
             'limit' => 20,
             'columns' => 'operating_system,ip_address,browser,time_login,time_logout');
         $attributes = shortcode_atts($default_args, $attr);
-        $obj->set_allowed_columns(!empty($attributes['columns']) ? $attributes['columns'] : "");
-        $obj->set_limit(!empty($attributes['limit']) ? $attributes['limit'] : "");
+        $Public_List_Table->set_allowed_columns(!empty($attributes['columns']) ? $attributes['columns'] : "");
+        $Public_List_Table->set_limit(!empty($attributes['limit']) ? $attributes['limit'] : "");
         $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
+        $_GET['user_id'] = $current_user->ID;
         ob_start();
         require_once(plugin_dir_path(__FILE__) . 'partials/listing.php');
         return ob_get_clean();
     }
 
 
-    public function update_user_timezone() {
-        if (!isset($_POST[$this->plugin_name . "_update_user_timezone"]) || empty($_POST['_wpnonce'])) {
-            return;
-        }
-        
-        if (!wp_verify_nonce($_POST['_wpnonce'], $this->plugin_name . "_update_user_timezone")) {
-            return;
-        }
-        
-        global $current_user;
-        update_user_meta($current_user->ID, USER_LOGIN_HISTORY_USERMETA_PREFIX . "user_timezone", !empty($_POST[$this->plugin_name . "-timezone"]) ? $_POST[$this->plugin_name . "-timezone"] : "");
-        wp_safe_redirect(esc_url_raw(add_query_arg()));
-        exit;
-    }
+
 
 }

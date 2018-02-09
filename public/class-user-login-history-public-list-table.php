@@ -5,6 +5,8 @@ class User_Login_History_Public_List_Table {
     const DEFALUT_LIMIT = 20;
     const DEFALUT_PAGE_NUMBER = 1;
     const DEFALUT_QUERY_ARG_PAGE_NUMBER = 'pagenum';
+    const DEFAULT_TABLE_TIMEZONE = 'UTC';
+    
 
     private $limit;
     private $page_number;
@@ -44,6 +46,7 @@ class User_Login_History_Public_List_Table {
             'total' => ceil($this->record_count() / $this->limit), //total pages
             'current' => $this->page_number
         ));
+
     }
 
     public function prepare_where_query() {
@@ -105,8 +108,16 @@ class User_Login_History_Public_List_Table {
         return $where_query;
     }
 
-    //Prepare main query with where query.
-    public function prepare_main_query() {
+    /**
+     * Retrieve rows
+     *
+     * @param int $per_page
+     * @param int $page_number
+     *
+     * @access   public
+     * @return mixed
+     */
+    public function get_rows() {
         global $wpdb;
         $sql = " SELECT"
                 . " FaUserLogin.*, "
@@ -120,22 +131,7 @@ class User_Login_History_Public_List_Table {
         if ($where_query) {
             $sql .= $where_query;
         }
-        $sql .= ' GROUP BY FaUserLogin.id';
-        return $sql;
-    }
-
-    /**
-     * Retrieve rows
-     *
-     * @param int $per_page
-     * @param int $page_number
-     *
-     * @access   public
-     * @return mixed
-     */
-    public function get_rows() {
-        global $wpdb;
-        $sql = $this->prepare_main_query();
+     //   $sql .= ' GROUP BY FaUserLogin.id';
         
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
@@ -157,12 +153,27 @@ class User_Login_History_Public_List_Table {
         
         return $result;
     }
-
+/**
+ * Count the records.
+ * 
+ * @global type $wpdb
+ * @return string The number of records found.
+ */
     public function record_count() {
-        global $wpdb;
-        $sql = $this->prepare_main_query();
+          global $wpdb;
+        $sql = " SELECT"
+                . " COUNT(FaUserLogin.id) as total "
+                . " FROM " . $this->table . "  AS FaUserLogin"
+                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
+                . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                . " WHERE 1 ";
 
-        $result = $wpdb->get_var("SELECT COUNT(*) as total FROM ($sql) AS FaUserLoginCount ");
+        $where_query = $this->prepare_where_query();
+        if ($where_query) {
+            $sql .= $where_query;
+        }
+      //  $sql .= ' GROUP BY FaUserLogin.id';
+        $result = $wpdb->get_var($sql);
         if ("" != $wpdb->last_error) {
             User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
@@ -223,23 +234,17 @@ class User_Login_History_Public_List_Table {
     }
 
     public function get_allowed_columns() {
-        
         return $this->allowed_columns;
     }
     
     public function set_allowed_columns($columns = array()) {
-        
         $columns =  is_array($columns) ? $columns : (is_string($columns) ? explode(',', $columns): array()) ;
         $this->allowed_columns = array_map('trim', $columns);
         return $this->allowed_columns;
-    
-        
     }
 
     public function print_column_headers() {
-       
         $allowed_columns = $this->get_allowed_columns();
- 
         //log the exception
         if (empty($allowed_columns)) {
             User_Login_History_Error_Handler::error_log("No columns is selected for frontend listing table.", __LINE__, __FILE__);
@@ -248,7 +253,6 @@ class User_Login_History_Public_List_Table {
         }
  $columns = $this->get_columns();
  $order_by_key = 'orderby';
-
         $sortable_columns = $this->get_sortable_columns();
        
         foreach ($columns as $key => $column) {
@@ -309,7 +313,6 @@ class User_Login_History_Public_List_Table {
     }
 
     public function display_rows_or_placeholder() {
-      
         if ($this->has_items()) {
             $this->display_rows();
         } else {
@@ -325,7 +328,6 @@ class User_Login_History_Public_List_Table {
      * @since 3.1.0
      */
     public function display_rows() {
-         
         foreach ($this->items as $item)
             $this->single_row($item);
     }
@@ -344,7 +346,6 @@ class User_Login_History_Public_List_Table {
     }
 
     public function single_row($item) {
-        
         echo '<tr>';
         $this->single_row_columns($item);
         echo '</tr>';
@@ -361,11 +362,11 @@ class User_Login_History_Public_List_Table {
     }
     
     public function set_table_timezone($timezone = ''){
-        $this->table_timezone = $timezone ? $timezone : User_Login_History_DB_Helper::get_current_user_timezone();
+        $this->table_timezone = $timezone;
     }
     
     public function get_table_timezone() {
-        return $this->table_timezone ? $this->table_timezone: User_Login_History_Date_Time_Helper::DEFAULT_TIMEZONE;
+        return $this->table_timezone ? $this->table_timezone: self::DEFAULT_TABLE_TIMEZONE;
     }
     
     public function column_default($item, $column_name) {

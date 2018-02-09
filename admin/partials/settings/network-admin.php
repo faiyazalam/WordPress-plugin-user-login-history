@@ -10,7 +10,7 @@
  */
 ?>
 <div class="wrap">
-    <h2><?php echo User_Login_History_Template_Helper::plugin_name() ?></h2>
+    <h2><?php echo User_Login_History_Template_Helper::plugin_name() ?> <?php _e('- Network Settings', 'user-login-history') ?></h2>
     <form method="post">
         <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_setting_submit' ?>" >
         <fieldset>

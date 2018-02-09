@@ -124,6 +124,30 @@ class User_Login_History_User_Profile {
         $timezone = get_user_meta($current_user->ID, $this->usermeta_key_timezone, TRUE);
         return $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
     }
+    /**
+     * Check form submission and nonce and then update user timezone.
+     * This is used to handle request of front-end.
+     * After processing request, it redirects to current page.
+     * 
+     * @access public
+     * 
+     */
+        public function update_user_timezone() {
+           
+        if (!isset($_POST[$this->plugin_name . "_update_user_timezone"]) || empty($_POST['_wpnonce'])) {
+            return;
+        }
+        
+        if (!wp_verify_nonce($_POST['_wpnonce'], $this->plugin_name . "_update_user_timezone")) {
+            return;
+        }
+       
+        
+        global $current_user;
+        update_user_meta($current_user->ID, $this->usermeta_key_timezone, $_POST[$this->plugin_name . "-timezone"]);
+        wp_safe_redirect(esc_url_raw(add_query_arg()));
+        exit;
+    }
     
     
 }

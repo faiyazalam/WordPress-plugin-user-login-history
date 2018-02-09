@@ -49,7 +49,7 @@ abstract class User_Login_History_Abstract_List_Page {
      */
     public function __construct($plugin_name = '') {
         $this->plugin_name = $plugin_name;
-        $this->option_name = $this->plugin_name.'_rows_per_page';
+        $this->option_name = str_replace("-", "_", $this->plugin_name)."_rows_per_page";
     }
 
     /**
@@ -89,7 +89,8 @@ abstract class User_Login_History_Abstract_List_Page {
         $args = array(
             'label' => __('Records per page', 'user-login-history'),
             'default' => self::DEFAULT_OPTION_VALUE,
-            'option' => $this->option_name
+            'option' => $this->option_name //option name should not contain hyphen. 
+            //WP replaces hyphen with underscore while processing request. See the definition of set_screen_options()
         );
 
         add_screen_option('per_page', $args);

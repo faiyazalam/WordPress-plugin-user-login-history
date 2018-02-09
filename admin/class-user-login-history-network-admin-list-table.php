@@ -10,10 +10,9 @@
  * @author     Er Faiyaz Alam
  * @access private
  */
-
 class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abstract_List_Table {
 
-        /**
+    /**
      * Initialize the class and set its properties.
      *
      * @access public
@@ -23,19 +22,30 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
      * @param      string    $table_timezone   The timezone for table.
      */
     public function __construct($args = array(), $plugin_name, $table_name, $table_timezone = '') {
-        $defaults  = array(
+        $defaults = array(
             'singular' => __('network_admin_user', 'user-login-history'), //singular name of the listed records
             'plural' => __('network_admin_users', 'user-login-history'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
-                );
+        );
         parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
+    }
+
+    /**
+     * Get blog ids of the current network.
+     * 
+     * @access private
+     * @global type $wpdb
+     * @return array
+     */
+    private function get_current_network_blog_ids() {
+        return User_Login_History_DB_Helper::get_blog_by_id_and_network_id(!empty($_GET['blog_id']) ? $_GET['blog_id'] : NULL, get_current_network_id());
     }
 
     /**
      * Render the bulk edit checkbox
      *
      * @param array $item
-     *@access public
+     * @access public
      * @return string
      */
     public function column_cb($item) {
@@ -45,7 +55,7 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         );
     }
 
-        /**
+    /**
      * Retrieve rows
      * 
      * @access   public
@@ -55,7 +65,6 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
      * @return mixed
      */
     public function get_rows($per_page = 20, $page_number = 1) {
-      
         global $wpdb;
         $where_query = $this->prepare_where_query();
         $get_values = array();
@@ -66,8 +75,9 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
 
         foreach ($blog_ids as $blog_id) {
             $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
+
             if (0 < $i) {
-                $sql .= " UNION ";
+                $sql .= " UNION ALL";
             }
 
             $sql .= " SELECT"
@@ -83,13 +93,13 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
                 $sql .= $where_query;
             }
 
-            $sql .= ' GROUP BY FaUserLogin.id ';
+            //   $sql .= ' GROUP BY FaUserLogin.id ';
             $i++;
         }
 
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
         } else {
             $sql .= ' ORDER BY id DESC';
         }
@@ -98,7 +108,6 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
             $sql .= " LIMIT $per_page";
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
-
         $result = $wpdb->get_results($sql, 'ARRAY_A');
 
         if ("" != $wpdb->last_error) {
@@ -106,18 +115,6 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         }
         return $result;
     }
-
-    /**
-     * Get blog ids of the current network.
-     * 
-     * @access private
-     * @global type $wpdb
-     * @return array
-     */
-    private function get_current_network_blog_ids() {
-        return User_Login_History_DB_Helper::get_blog_by_id_and_network_id(!empty($_GET['blog_id']) ? $_GET['blog_id']: NULL, get_current_network_id());
-    }
-
 
     /**
      * Returns the count of records in the database.
@@ -134,17 +131,17 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         $i = 0;
         $sql = "";
         $blog_ids = $this->get_current_network_blog_ids();
-        
+
         foreach ($blog_ids as $blog_id) {
             $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
 
             if (0 < $i) {
-                $sql .= " UNION ";
+                $sql .= " UNION ALL";
             }
 
 
-            $sql .= "SELECT COUNT(*) as count FROM  (SELECT"
-                    . " FaUserLogin.id"
+            $sql .= " SELECT"
+                    . " COUNT(FaUserLogin.id) AS count"
                     . " FROM $table  AS FaUserLogin"
                     . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
                     . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
@@ -154,10 +151,11 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
                 $sql .= $where_query;
             }
 
-            $sql .= ' GROUP BY FaUserLogin.id) AS FaUserLoginSubCount';
+           // $sql .= ' GROUP BY FaUserLogin.id) AS FaUserLoginSubCount';
+           // $sql .= ' ) AS FaUserLoginSubCount';
+
             $i++;
         }
-
         $sql_count = "SELECT SUM(count) as total FROM ($sql) AS FaUserLoginCount";
         return $wpdb->get_var($sql_count);
     }
@@ -172,29 +170,25 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
     function column_username($item) {
         $blog_id = !empty($item['blog_id']) ? $item['blog_id'] : 0;
         $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
-        $title = '<strong>' . $item['username'] . '</strong>';
+        $title = $item['user_id'] ? "<a href='" . get_edit_user_link($item['user_id']) . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . $item['username'] . '</strong>';
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&customer=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_network_admin_listing_table_delete_single_row', absint($blog_id), absint($item['id']), $delete_nonce),
+            'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_network_admin_listing_table_delete_single_row', absint($blog_id), absint($item['id']), $delete_nonce),
         );
         return $title . $this->row_actions($actions);
     }
-    
-    
-    
-
 
     public function process_bulk_action() {
-         if (!isset($_POST[$this->plugin_name .'_network_admin_listing_table']) || empty($_POST['_wpnonce'])) {
+        if (!isset($_POST[$this->plugin_name . '_network_admin_listing_table']) || empty($_POST['_wpnonce'])) {
             return FALSE;
         }
-        
+
         $status = FALSE;
         $nonce = $_POST['_wpnonce'];
         $bulk_action = 'bulk-' . $this->_args['plural'];
 
         switch ($this->current_action()) {
             case 'bulk-delete':
-                
+
                 if (!empty($_POST['bulk-delete'])) {
                     if (!wp_verify_nonce($nonce, $bulk_action)) {
                         return FALSE;
@@ -221,18 +215,14 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
                 restore_current_blog();
                 $status = TRUE;
                 break;
-
-         
-
             default:
                 $status = FALSE;
                 break;
         }
         return $status;
     }
-    
-    
-     public function delete_single_row() {
+
+    public function delete_single_row() {
         if (empty($_GET['action']) || $this->plugin_name . '_network_admin_listing_table_delete_single_row' != $_GET['action'] || empty($_REQUEST['_wpnonce'])) {
             return FALSE;
         }
@@ -240,20 +230,20 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         $nonce = $_GET['_wpnonce'];
 
 
-  if (!wp_verify_nonce($nonce, $this->plugin_name . 'delete_row_by_' . $this->_args['singular'])) {
-                    wp_die('invalid nonce');
-                }
-                //get the blog id of current network.
-                $blog_ids = $this->get_current_network_blog_ids();
-                $blog_id = !empty($blog_ids[0]) ? absint($blog_ids[0]) : NULL;
+        if (!wp_verify_nonce($nonce, $this->plugin_name . 'delete_row_by_' . $this->_args['singular'])) {
+            wp_die('invalid nonce');
+        }
+        //get the blog id of current network.
+        $blog_ids = $this->get_current_network_blog_ids();
+        $blog_id = !empty($blog_ids[0]) ? absint($blog_ids[0]) : NULL;
 
-                if ($blog_id) {
-                    switch_to_blog($blog_id);
-                    $this->delete_rows($_GET['customer']);
-                    restore_current_blog();
-                    $status = TRUE;
-                }
-                return $status;
+        if ($blog_id) {
+            switch_to_blog($blog_id);
+            $this->delete_rows($_GET['record_id']);
+            restore_current_blog();
+            $status = TRUE;
+        }
+        return $status;
     }
 
 }

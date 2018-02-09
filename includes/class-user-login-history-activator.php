@@ -15,10 +15,10 @@
 class User_Login_History_Activator {
 
     /**
-     * Short Description. (use period)
      *
-     * Long Description.
-     *
+     *Fired on plugin activation.
+     * 
+     * @access public
      */
     public static function activate($network_wide) {
         global $wpdb;
@@ -46,6 +46,8 @@ class User_Login_History_Activator {
 
     /**
      * Create main table for the plugin.
+     * 
+     * @access public
      */
     public static function create_table() {
         global $wpdb;
@@ -80,6 +82,8 @@ KEY `session_token` (`session_token`)
 
     /**
      * Create table whenever a new blog is created.
+     * 
+     * @access public
      */
     public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
         if (is_plugin_active_for_network('WordPress-plugin-user-login-history/user-login-history.php')) {
@@ -92,6 +96,8 @@ KEY `session_token` (`session_token`)
 
     /**
      * Update plugin options.
+     * 
+     * @access public
      */
     public static function update_options() {
         update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'version', USER_LOGIN_HISTORY_VERSION);

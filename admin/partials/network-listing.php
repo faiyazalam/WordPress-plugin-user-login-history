@@ -10,7 +10,7 @@
  */
 ?>
 <div class="wrap">
-    <h2><?php _e('User Login History Network', 'user-login-history') ?></h2>
+    <h2><?php echo User_Login_History_Template_Helper::plugin_name() ?> <?php _e('Network', 'user-login-history') ?></h2>
         <div><p><?php require(plugin_dir_path(dirname(__FILE__)) . 'partials/timezone.php');?></p></div>
 <div class="<?php echo $this->plugin_name; ?>-search-filter">
       <?php require(plugin_dir_path(dirname(__FILE__)) . 'partials/form/filter.php');?>
