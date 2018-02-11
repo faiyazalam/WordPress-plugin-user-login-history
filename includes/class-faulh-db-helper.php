@@ -1,15 +1,15 @@
 <?php
 
 /**
- * User_Login_History_DB_Helper.
+ * Faulh_DB_Helper.
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_DB_Helper {
+class Faulh_DB_Helper {
 
     /**
      * Retrieve the blog name by blog id.
@@ -28,6 +28,9 @@ class User_Login_History_DB_Helper {
 
     /**
      * Get blog by blog id and network id.
+     * If only blog id is passed, it will return only that blog id from db.
+     * If only network id is passed, it will return all the blog ids belong to the passed network id.
+     * If both ids are passed, it will return only one blog id belong to the passed network id.
      * 
      * @global type $wpdb
      * @param int $blog_id 
@@ -48,7 +51,7 @@ class User_Login_History_DB_Helper {
         $sql = "SELECT blog_id FROM $wpdb->blogs WHERE 1 $where";
         $result = $wpdb->get_col($sql);
         if ($wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
         return $result;
     }

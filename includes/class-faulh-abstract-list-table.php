@@ -5,17 +5,16 @@
  *
  * @link       https://github.com/faiyazalam
  * 
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-
 if (!class_exists('WP_List_Table')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
+abstract class Faulh_Abstract_List_table extends WP_List_Table {
 
     /**
      * Default timezone for the table.
@@ -68,7 +67,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      * @access public
      */
     public function no_items() {
-        _e('No records avaliable.', 'user-login-history');
+        _e('No records avaliable.', 'faulh');
     }
 
     /**
@@ -89,6 +88,14 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function get_table_timezone() {
         return $this->table_timezone ? $this->table_timezone : self::DEFAULT_TABLE_TIMEZONE;
+    }
+
+    /**
+     * 
+     * @return type
+     */
+    public function table_timezone_edit() {
+        return __('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_table_timezone() . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . __('Edit', 'faulh') . "</a></span>";
     }
 
     /**
@@ -165,7 +172,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
         $table = $wpdb->prefix . $this->table_name;
         $status = $wpdb->query("TRUNCATE $table");
         if ($wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
         }
         return $status;
     }
@@ -182,8 +189,10 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     public function column_default($item, $column_name) {
         global $current_user;
         $timezone = $this->get_table_timezone();
-        $unknown = __('Unknown', 'user-login-history');
+        $unknown = 'unknown';
         $new_column_data = apply_filters('manage_user_login_history_admin_custom_column', '', $item, $column_name);
+
+        $country_code = empty($row['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
         switch ($column_name) {
             case 'user_id':
                 if (!$item[$column_name]) {
@@ -208,12 +217,12 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             case 'browser':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'time_login':
-                return User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
+                return Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
             case 'time_logout':
                 if (!$item['user_id']) {
                     return $unknown;
                 }
-                return strtotime($item[$column_name]) > 0 ? User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone) : __('Logged In', 'user-login-history');
+                return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone) : __('Logged In', 'faulh');
             case 'ip_address':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'timezone':
@@ -221,19 +230,20 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             case 'operating_system':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'country_name':
-                $item['country_code'] = isset($item['country_code']) && "" != $item['country_code'] ? $item['country_code'] : $unknown;
-                return in_array(strtolower($item[$column_name]), array("", strtolower($unknown))) ? $unknown : $item[$column_name] . "(" . $item['country_code'] . ")";
+                return in_array(strtolower($item[$column_name]), array("", strtolower($unknown))) ? $unknown : $item[$column_name] . "(" . $country_code . ")";
+            case 'country_code':
+                return $country_code;
             case 'time_last_seen':
                 if (!$item['user_id']) {
                     return $unknown;
                 }
-                $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
+                $time_last_seen = Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
                 $human_time_diff = human_time_diff(strtotime($item[$column_name]));
-                return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'user-login-history') . '</span>';
+                return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'faulh') . '</span>';
             case 'user_agent':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'duration':
-                $duration = human_time_diff(strtotime($item['time_login']), strtotime(User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
+                $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                 return $duration ? $duration : $unknown;
             case 'login_status':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
@@ -245,7 +255,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
                 return $item[$column_name] ? $item[$column_name] : $unknown;
 
             case 'is_super_admin':
-                return $item[$column_name] ? __('Yes', 'user-login-history') : __('No', 'user-login-history');
+                return $item[$column_name] ? __('Yes', 'faulh') : __('No', 'faulh');
 
             default:
                 if ($new_column_data) {
@@ -265,26 +275,26 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     public function get_columns() {
         $columns = array(
             'cb' => '<input type="checkbox" />',
-            'user_id' => __('User Id', 'user-login-history'),
-            'username' => __('Username', 'user-login-history'),
-            'role' => __('Current Role', 'user-login-history'),
-            'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'user-login-history'),
-            'ip_address' => __('IP', 'user-login-history'),
-            'browser' => __('Browser', 'user-login-history'),
-            'operating_system' => __('Platform', 'user-login-history'),
-            'country_name' => __('Country', 'user-login-history'),
-            'duration' => __('Duration', 'user-login-history'),
-            'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'user-login-history'),
-            'timezone' => __('Timezone', 'user-login-history'),
-            'time_login' => __('Login', 'user-login-history'),
-            'time_logout' => __('Logout', 'user-login-history'),
-            'user_agent' => __('User Agent', 'user-login-history'),
-            'login_status' => __('Login Status', 'user-login-history'),
+            'user_id' => __('User Id', 'faulh'),
+            'username' => __('Username', 'faulh'),
+            'role' => __('Current Role', 'faulh'),
+            'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'faulh'),
+            'ip_address' => __('IP', 'faulh'),
+            'browser' => __('Browser', 'faulh'),
+            'operating_system' => __('Platform', 'faulh'),
+            'country_name' => __('Country', 'faulh'),
+            'duration' => __('Duration', 'faulh'),
+            'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'faulh'),
+            'timezone' => __('Timezone', 'faulh'),
+            'time_login' => __('Login', 'faulh'),
+            'time_logout' => __('Logout', 'faulh'),
+            'user_agent' => __('User Agent', 'faulh'),
+            'login_status' => __('Login Status', 'faulh'),
         );
 
         if (is_network_admin()) {
-            $columns['blog_id'] = __('Blog ID', 'user-login-history');
-            $columns['is_super_admin'] = __('Super Admin', 'user-login-history');
+            $columns['blog_id'] = __('Blog ID', 'faulh');
+            $columns['is_super_admin'] = __('Super Admin', 'faulh');
         }
         $columns = apply_filters('user_login_history_admin_get_columns', $columns);
         return $columns;
@@ -329,8 +339,8 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function get_bulk_actions() {
         $actions = array(
-            'bulk-delete' => __('Delete Selected Records', 'user-login-history'),
-            'bulk-delete-all-admin' => __('Delete All Records', 'user-login-history'),
+            'bulk-delete' => __('Delete Selected Records', 'faulh'),
+            'bulk-delete-all-admin' => __('Delete All Records', 'faulh'),
         );
 
         return $actions;
@@ -343,7 +353,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
      */
     public function prepare_items() {
         $this->_column_headers = $this->get_column_info();
-        $per_page = $this->get_items_per_page(str_replace("-", "_", $this->plugin_name)."_rows_per_page");
+        $per_page = $this->get_items_per_page($this->plugin_name . "_rows_per_page");
         $current_page = $this->get_pagenum();
         $total_items = $this->record_count();
 
@@ -377,13 +387,14 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
     public function export_to_CSV() {
         global $current_user;
         $timezone = $this->get_table_timezone();
+        $unknown = 'unknown';
 
         $data = $this->get_rows(0); // pass zero to get all the records
         //date string to suffix the file nanme: month - day - year - hour - minute
-        $suffix = date('n-j-y_H-i');
+        $suffix = "user_login_history_".date('n-j-y_H-i');
         // send response headers to the browser
         header('Content-Type: text/csv');
-        header('Content-Disposition: attachment;filename=user_login_history_' . $suffix . '.csv');
+        header('Content-Disposition: attachment;filename=' . $suffix . '.csv');
 
         if (!$data) {
             echo 'No record.';
@@ -392,35 +403,34 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
 
         $fp = fopen('php://output', 'w');
         $i = 0;
-
+        $record = array();
         foreach ($data as $row) {
-            unset($row['meta_value']);
-            unset($row['session_token']);
-            $row['duration'] = $this->column_default($row, 'duration');
+            $record['user_id'] = $this->column_default($row, 'user_id');
+            $record['current_role'] = $this->column_default($row, 'role');
+            $record['old_role'] = $this->column_default($row, 'old_role');
+            $record['ip_address'] = $this->column_default($row, 'ip_address');
+            $record['browser'] = $this->column_default($row, 'browser');
+            $record['operating_system'] = $this->column_default($row, 'operating_system');
+            $record['country_code'] = $this->column_default($row, 'country_code');
+            $record['country_name'] = $this->column_default($row, 'country_name');
+            $record['timezone'] = $this->column_default($row, 'timezone');
+            $record['duration'] = $this->column_default($row, 'duration');
             $time_last_seen = $row['time_last_seen'];
             $human_time_diff = human_time_diff(strtotime($time_last_seen));
-            $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone);
-            $row['time_last_seen'] = $human_time_diff . " " . __('ago', 'user-login-history') . " ($time_last_seen)";
-
-            $row['user_id'] = $this->column_default($row, 'user_id');
-            $row['current_role'] = $this->column_default($row, 'role');
-            $row['old_role'] = $this->column_default($row, 'old_role');
-            $row['time_login'] = $this->column_default($row, 'time_login');
-            $row['time_logout'] = $this->column_default($row, 'time_logout');
-
-            $row['login_status'] = $this->column_default($row, 'login_status');
-
+            $time_last_seen = Faulh_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone);
+            $record['time_last_seen'] = $human_time_diff . " " . __('ago', 'faulh') . " ($time_last_seen)";
+            $record['time_login'] = $this->column_default($row, 'time_login');
+            $record['time_logout'] = $this->column_default($row, 'time_logout');
+            $record['login_status'] = $this->column_default($row, 'login_status');
+            $record['user_agent'] = $this->column_default($row, 'user_agent');
             if (is_multisite()) {
-                $row['is_super_admin'] = $this->column_default($row, 'is_super_admin');
-            } else {
-                unset($row['is_super_admin']);
+                $record['is_super_admin'] = $this->column_default($row, 'is_super_admin');
             }
             //output header row
             if (0 == $i) {
-                fputcsv($fp, array_keys($row));
+                fputcsv($fp, array_keys($record));
             }
-
-            fputcsv($fp, $row);
+            fputcsv($fp, $record);
             $i++;
         }
         fclose($fp);
@@ -443,7 +453,7 @@ abstract class User_Login_History_Abstract_List_table extends WP_List_Table {
             $ids = esc_sql(implode(',', array_map('absint', $ids)));
             $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
             if ($wpdb->last_error) {
-                User_Login_History_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
+                Faulh_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
             }
             return $status;
         }

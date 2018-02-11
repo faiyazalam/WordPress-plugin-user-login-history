@@ -11,19 +11,19 @@
  * version of the plugin.
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History {
+class Faulh {
 
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
      *
      * @access   protected
-     * @var      User_Login_History_Loader    $loader    Maintains and registers all hooks for the plugin.
+     * @var      Faulh_Loader    $loader    Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -57,7 +57,7 @@ class User_Login_History {
         } else {
             $this->version = '1.0.0';
         }
-        $this->plugin_name = USER_LOGIN_HISTORY_NAME;
+        $this->plugin_name = 'faulh';
 
         $this->load_dependencies();
         $this->set_locale();
@@ -73,10 +73,10 @@ class User_Login_History {
      *
      * Include the following files that make up the plugin:
      *
-     * - User_Login_History_Loader. Orchestrates the hooks of the plugin.
-     * - User_Login_History_i18n. Defines internationalization functionality.
-     * - User_Login_History_Admin. Defines all hooks for the admin area.
-     * - User_Login_History_Public. Defines all hooks for the public side of the site.
+     * - Faulh_Loader. Orchestrates the hooks of the plugin.
+     * - Faulh_i18n. Defines internationalization functionality.
+     * - Faulh_Admin. Defines all hooks for the admin area.
+     * - Faulh_Public. Defines all hooks for the public side of the site.
      *
      * Create an instance of the loader which will be used to register the hooks
      * with WordPress.
@@ -88,65 +88,65 @@ class User_Login_History {
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-loader.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-loader.php';
 
         /**
          * The class responsible for defining internationalization functionality
          * of the plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-i18n.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-i18n.php';
         /**
          * Include all the common helpers.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-error-handler.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-date-time-helper.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-session-helper.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-db-helper.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-template-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-error-handler.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-date-time-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-session-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-db-helper.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-template-helper.php';
         /**
          * Include all the common abstract or base classes.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-abstract-list-table.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-abstract-list-page.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-abstract-list-table.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-abstract-list-page.php';
 
         if (is_network_admin()) {
             //required files for network admin only
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-table.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-list-page.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-network-admin-list-table.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-network-admin-list-page.php';
         }
 
         if (is_admin() && !is_network_admin()) {
             //required files for admin only
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin-list-table.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin-list-page.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-list-table.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-list-page.php';
         }
 
         //required files for admin as well as public
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-network-admin-setting.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-admin.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-user-tracker.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-user-login-history-user-profile.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-network-admin-setting.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-user-tracker.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-user-profile.php';
 
         if (!is_admin()) {
             //required files for public only
-            require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public-list-table.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-user-login-history-public.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-faulh-public-list-table.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-faulh-public.php';
         }
 
-        $this->loader = new User_Login_History_Loader();
+        $this->loader = new Faulh_Loader();
     }
 
     /**
      * Define the locale for this plugin for internationalization.
      *
-     * Uses the User_Login_History_i18n class in order to set the domain and to register the hook
+     * Uses the Faulh_i18n class in order to set the domain and to register the hook
      * with WordPress.
      *
      * @access   private
      */
     private function set_locale() {
 
-        $plugin_i18n = new User_Login_History_i18n();
+        $plugin_i18n = new Faulh_i18n();
 
         $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
     }
@@ -158,14 +158,14 @@ class User_Login_History {
      * @access   private
      */
     private function define_admin_hooks() {
-        $plugin_admin = new User_Login_History_Admin($this->get_plugin_name(), $this->get_version());
+        $plugin_admin = new Faulh_Admin($this->get_plugin_name(), $this->get_version());
 
         if (is_admin()) {
             //hooks for admin and network admin
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
             $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
-            $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name(), USER_LOGIN_HISTORY_USERMETA_PREFIX);
+            $User_Profile = new Faulh_User_Profile($this->get_plugin_name(), $this->get_version());
             $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
             $this->loader->add_action('edit_user_profile', $User_Profile, 'show_extra_profile_fields');
             $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
@@ -177,27 +177,25 @@ class User_Login_History {
 
         if (is_network_admin()) {
             //hooks for network admin only
-            $Network_Admin_List_Page = new User_Login_History_Network_Admin_List_Page($this->get_plugin_name());
+            $Network_Admin_List_Page = new Faulh_Network_Admin_List_Page($this->get_plugin_name());
             $this->loader->add_filter('set-screen-option', $Network_Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('network_admin_menu', $Network_Admin_List_Page, 'plugin_menu');
             $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
 
-            $Network_Admin_Setting = new User_Login_History_Network_Admin_Setting($this->plugin_name);
+            $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
             $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
         }
 
         if (is_admin() && !is_network_admin()) {
             //hooks for admin only
-
             $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-            $Admin_List_Page = new User_Login_History_Admin_List_Page($this->get_plugin_name());
+            $Admin_List_Page = new Faulh_Admin_List_Page($this->get_plugin_name(), $this->get_version());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('admin_menu', $Admin_List_Page, 'plugin_menu');
         }
-
 //hooks for admin, network and public
         $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
-        $User_Tracker = new User_Login_History_User_Tracker($this->get_plugin_name());
+        $User_Tracker = new Faulh_User_Tracker($this->get_plugin_name(), $this->get_version());
         $this->loader->add_action('init', $User_Tracker, 'update_time_last_seen');
         $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_session_token', 10, 6);
         $this->loader->add_action('wp_login', $User_Tracker, 'user_login', 10, 2);
@@ -213,7 +211,7 @@ class User_Login_History {
      * @access   private
      */
     private function define_public_hooks() {
-        $plugin_public = new User_Login_History_Public($this->get_plugin_name(), $this->get_version());
+        $plugin_public = new Faulh_Public($this->get_plugin_name(), $this->get_version());
         /**
          * The shortcode "[user-login-history]" is deprecated since version 1.7.0.
          * It is here only for backward compatibility.
@@ -223,7 +221,7 @@ class User_Login_History {
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
         
-             $User_Profile = new User_Login_History_User_Profile($this->get_plugin_name(), USER_LOGIN_HISTORY_USERMETA_PREFIX);
+             $User_Profile = new Faulh_User_Profile($this->get_plugin_name(), $this->get_version());
             $this->loader->add_action('init', $User_Profile, 'update_user_timezone');
     }
 
@@ -247,7 +245,7 @@ class User_Login_History {
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      * 
-     * @return    User_Login_History_Loader    Orchestrates the hooks of the plugin.
+     * @return    Faulh_Loader    Orchestrates the hooks of the plugin.
      */
     public function get_loader() {
         return $this->loader;

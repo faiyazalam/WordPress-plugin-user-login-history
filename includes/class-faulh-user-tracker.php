@@ -4,12 +4,12 @@
  * The class that saves user's login detail.
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_User_Tracker {
+class Faulh_User_Tracker {
 
     /**
      * Login Status Constants.
@@ -33,6 +33,14 @@ class User_Login_History_User_Tracker {
      * @var      string    $plugin_name    The string used to uniquely identify this plugin.
      */
     protected $plugin_name;
+    
+     /**
+     * The version of this plugin.
+     *
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
+    private $version;
 
     /**
      * Stores user session token.
@@ -71,8 +79,9 @@ class User_Login_History_User_Tracker {
      *
      * @var      string    $plugin_name       The name of this plugin.
      */
-    public function __construct($plugin_name) {
+    public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
+        $this->version = $version;
     }
 
     /**
@@ -83,7 +92,7 @@ class User_Login_History_User_Tracker {
      */
     private function is_blocked_user_on_this_blog($user_id) {
         if (is_multisite() && !is_user_member_of_blog($user_id) && !is_super_admin($user_id)) {
-            $Network_Admin_Setting = new User_Login_History_Network_Admin_Setting($this->plugin_name);
+            $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
             if ($Network_Admin_Setting->get_settings('block_user')) {
                 $this->login_status = self::LOGIN_STATUS_BLOCK;
                 wp_logout();
@@ -97,8 +106,8 @@ class User_Login_History_User_Tracker {
      * @access private
      */
     private function set_geo_object() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-geo-helper.php';
-        $this->geo_object = new User_Login_History_Geo_Helper();
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-geo-helper.php';
+        $this->geo_object = new Faulh_Geo_Helper();
     }
 
     /**
@@ -106,8 +115,8 @@ class User_Login_History_User_Tracker {
      * @access private
      */
     private function set_browser_object() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-user-login-history-browser-helper.php';
-        $this->browser_object = new User_Login_History_Browser_Helper();
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-browser-helper.php';
+        $this->browser_object = new Faulh_Browser_Helper();
     }
 
     /**
@@ -124,17 +133,16 @@ class User_Login_History_User_Tracker {
         $table = $wpdb->get_blog_prefix() . USER_LOGIN_HISTORY_TABLE_NAME;
         $this->set_geo_object();
         $this->set_browser_object();
-        $current_date = User_Login_History_Date_Time_Helper::get_current_date_time();
+        $current_date = Faulh_Date_Time_Helper::get_current_date_time();
         $user_id = isset($user->ID) ? $user->ID : FALSE;
         $old_roles = isset($user->roles) && !empty($user->roles) ? implode(",", $user->roles) : "";
         $geo_location = $this->geo_object->get_geo_location();
-        $country_name = isset($geo_location->geoplugin_countryName) ? $geo_location->geoplugin_countryName : "";
         $country_code = isset($geo_location->geoplugin_countryCode) ? $geo_location->geoplugin_countryCode : "";
         $lat = isset($geo_location->geoplugin_latitude) ? $geo_location->geoplugin_latitude : 0;
         $long = isset($geo_location->geoplugin_longitude) ? $geo_location->geoplugin_longitude : 0;
 
         if ($lat != 0 && $long != 0 && $country_code) {
-            $user_timezone = User_Login_History_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
+            $user_timezone = Faulh_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
         }
         //now insert for new login
         $data = array(
@@ -146,8 +154,8 @@ class User_Login_History_User_Tracker {
             'time_last_seen' => $current_date,
             'browser' => $this->browser_object->getBrowser(),
             'operating_system' => $this->browser_object->getPlatform(),
-            'country_name' => $country_name,
-            'country_code' => $country_code,
+            'country_name' => !empty($geo_location->geoplugin_countryName)?$geo_location->geoplugin_countryName:$unknown,
+            'country_code' => !empty($country_code)?$country_code:$unknown,
             'old_role' => $old_roles,
             'timezone' => !empty($user_timezone) ? $user_timezone : $unknown,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
@@ -162,7 +170,7 @@ class User_Login_History_User_Tracker {
         }
         $wpdb->insert($table, $data);
         if ($wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             return;
         }
 
@@ -171,10 +179,10 @@ class User_Login_History_User_Tracker {
         }
 
         if ($wpdb->insert_id) {
-            User_Login_History_Session_Helper::set_last_insert_id($wpdb->insert_id);
-            User_Login_History_Session_Helper::set_current_login_blog_id();
+            Faulh_Session_Helper::set_last_insert_id($wpdb->insert_id);
+            Faulh_Session_Helper::set_current_login_blog_id();
             if (!empty($user_timezone)) {
-                $UserProfile = new User_Login_History_User_Profile($this->plugin_name, $user_id);
+                $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version ,$user_id);
                 $UserProfile->add_timezone($user_timezone);
             }
         }
@@ -202,10 +210,10 @@ class User_Login_History_User_Tracker {
     public function update_time_last_seen() {
         global $wpdb;
         $current_user = wp_get_current_user();
-        $table = $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_current_login_blog_id()) . USER_LOGIN_HISTORY_TABLE_NAME;
-        $current_date = User_Login_History_Date_Time_Helper::get_current_date_time();
+        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . USER_LOGIN_HISTORY_TABLE_NAME;
+        $current_date = Faulh_Date_Time_Helper::get_current_date_time();
         $user_id = $current_user->ID;
-        $last_id = User_Login_History_Session_Helper::get_last_insert_id();
+        $last_id = Faulh_Session_Helper::get_last_insert_id();
 
         if (!$user_id || !$last_id) {
             return;
@@ -216,7 +224,7 @@ class User_Login_History_User_Tracker {
         $status = $wpdb->query($sql);
 
         if ($wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
 
         return $status;
@@ -240,22 +248,22 @@ class User_Login_History_User_Tracker {
      */
     public function user_logout() {
         global $wpdb;
-        $time_logout = User_Login_History_Date_Time_Helper::get_current_date_time();
-        $last_id = User_Login_History_Session_Helper::get_last_insert_id();
+        $time_logout = Faulh_Date_Time_Helper::get_current_date_time();
+        $last_id = Faulh_Session_Helper::get_last_insert_id();
         $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
 
         if (!$last_id) {
             return;
         }
-        $table = $wpdb->get_blog_prefix(User_Login_History_Session_Helper::get_current_login_blog_id()) . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . USER_LOGIN_HISTORY_TABLE_NAME;
         ;
         $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where id = '$last_id' ";
         $wpdb->query($sql);
 
         if ($wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
-        User_Login_History_Session_Helper::destroy();
+        Faulh_Session_Helper::destroy();
     }
 
     /**

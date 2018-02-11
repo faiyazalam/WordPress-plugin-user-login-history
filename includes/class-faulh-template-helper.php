@@ -4,12 +4,12 @@
  * This class contains all the template related functions.
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Template_Helper {
+class Faulh_Template_Helper {
 
     /**
      * Print out option html elements for all the blogs of the current network.
@@ -60,9 +60,9 @@ class User_Login_History_Template_Helper {
     static public function dropdown_time_field_types($selected = '') {
         $r = '';
         $types = array(
-            'login' => __("Login", "user-login-history"),
-            'logout' => __("Logout", "user-login-history"),
-            'last_seen' => __("Last Seen", "user-login-history"),
+            'login' => __("Login", "faulh"),
+            'logout' => __("Logout", "faulh"),
+            'last_seen' => __("Last Seen", "faulh"),
         );
         foreach ($types as $key => $type) {
             $name = $type;
@@ -83,13 +83,13 @@ class User_Login_History_Template_Helper {
     static public function dropdown_login_statuses($selected = '') {
         $r = '';
         $types = array(
-            User_Login_History_User_Tracker::LOGIN_STATUS_LOGIN => __("Login", "user-login-history"),
-            User_Login_History_User_Tracker::LOGIN_STATUS_LOGOUT => __("Logout", "user-login-history"),
-            User_Login_History_User_Tracker::LOGIN_STATUS_FAIL => __("Fail", "user-login-history"),
+            Faulh_User_Tracker::LOGIN_STATUS_LOGIN => __("Login", "faulh"),
+            Faulh_User_Tracker::LOGIN_STATUS_LOGOUT => __("Logout", "faulh"),
+            Faulh_User_Tracker::LOGIN_STATUS_FAIL => __("Fail", "faulh"),
         );
 
         if (is_multisite()) {
-            $types[User_Login_History_User_Tracker::LOGIN_STATUS_BLOCK] = __("Block", "user-login-history");
+            $types[Faulh_User_Tracker::LOGIN_STATUS_BLOCK] = __("Block", "faulh");
         }
 
         foreach ($types as $key => $type) {
@@ -110,7 +110,7 @@ class User_Login_History_Template_Helper {
      */
     static public function dropdown_timezones($selected = '') {
         $r = '';
-        $timezones = User_Login_History_Date_Time_Helper::get_timezone_list();
+        $timezones = Faulh_Date_Time_Helper::get_timezone_list();
         foreach ($timezones as $timezone) {
             $key = $timezone['zone'];
             $name = $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")";

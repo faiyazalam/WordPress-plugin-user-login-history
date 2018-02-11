@@ -8,8 +8,8 @@
  *
  * @link       https://github.com/faiyazalam
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @access private
  */
 
@@ -19,11 +19,11 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  */
-class User_Login_History_i18n {
+class Faulh_i18n {
 
 
 	/**
@@ -33,7 +33,7 @@ class User_Login_History_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'user-login-history',
+			'faulh',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

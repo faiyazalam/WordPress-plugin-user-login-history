@@ -5,12 +5,12 @@
  * 
  * @link       https://github.com/faiyazalam
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/admin
+ * @package    Faulh
+ * @subpackage Faulh/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abstract_List_Table {
+class Faulh_Network_Admin_List_Table extends Faulh_Abstract_List_Table {
 
     /**
      * Initialize the class and set its properties.
@@ -23,8 +23,8 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
      */
     public function __construct($args = array(), $plugin_name, $table_name, $table_timezone = '') {
         $defaults = array(
-            'singular' => __('network_admin_user', 'user-login-history'), //singular name of the listed records
-            'plural' => __('network_admin_users', 'user-login-history'), //plural name of the listed records
+            'singular' => __('network_admin_user', 'faulh'), //singular name of the listed records
+            'plural' => __('network_admin_users', 'faulh'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
         );
         parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
@@ -38,7 +38,7 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
      * @return array
      */
     private function get_current_network_blog_ids() {
-        return User_Login_History_DB_Helper::get_blog_by_id_and_network_id(!empty($_GET['blog_id']) ? $_GET['blog_id'] : NULL, get_current_network_id());
+        return Faulh_DB_Helper::get_blog_by_id_and_network_id(!empty($_GET['blog_id']) ? $_GET['blog_id'] : NULL, get_current_network_id());
     }
 
     /**
@@ -111,7 +111,7 @@ class User_Login_History_Network_Admin_List_Table extends User_Login_History_Abs
         $result = $wpdb->get_results($sql, 'ARRAY_A');
 
         if ("" != $wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
         return $result;
     }

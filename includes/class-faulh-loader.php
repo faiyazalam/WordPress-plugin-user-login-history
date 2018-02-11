@@ -4,8 +4,8 @@
  * Register all actions and filters for the plugin
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @access private
  */
 
@@ -16,11 +16,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  */
-class User_Login_History_Loader {
+class Faulh_Loader {
 
     /**
      * The array of actions registered with WordPress.

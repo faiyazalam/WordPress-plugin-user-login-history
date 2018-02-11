@@ -1,6 +1,6 @@
 <?php
 
-class User_Login_History_Public_List_Table {
+class Faulh_Public_List_Table {
 
     const DEFALUT_LIMIT = 20;
     const DEFALUT_PAGE_NUMBER = 1;
@@ -41,8 +41,8 @@ class User_Login_History_Public_List_Table {
         $this->pagination_links = paginate_links(array(
             'base' => add_query_arg(self::DEFALUT_QUERY_ARG_PAGE_NUMBER, '%#%'),
             'format' => '',
-            'prev_text' => __('&laquo;', 'user-login-history'),
-            'next_text' => __('&raquo;', 'user-login-history'),
+            'prev_text' => __('&laquo;', 'faulh'),
+            'next_text' => __('&raquo;', 'faulh'),
             'total' => ceil($this->record_count() / $this->limit), //total pages
             'current' => $this->page_number
         ));
@@ -148,7 +148,7 @@ class User_Login_History_Public_List_Table {
         $result = $wpdb->get_results($sql, 'ARRAY_A');
         if ("" != $wpdb->last_error) {
            
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
         
         return $result;
@@ -175,28 +175,28 @@ class User_Login_History_Public_List_Table {
       //  $sql .= ' GROUP BY FaUserLogin.id';
         $result = $wpdb->get_var($sql);
         if ("" != $wpdb->last_error) {
-            User_Login_History_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
         return $result;
     }
 
     public function get_columns() {
         $columns = array(
-            'user_id' => __('User Id', 'user-login-history'),
-            'username' => __('Username', 'user-login-history'),
-            'role' => __('Current Role', 'user-login-history'),
-            'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'user-login-history'),
-            'ip_address' => __('IP Address', 'user-login-history'),
-            'browser' => __('Browser', 'user-login-history'),
-            'operating_system' => __('Platform', 'user-login-history'),
-            'country_name' => __('Country', 'user-login-history'),
-            'duration' => __('Duration', 'user-login-history'),
-            'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'user-login-history'),
-            'timezone' => __('Timezone', 'user-login-history'),
-            'time_login' => __('Login', 'user-login-history'),
-            'time_logout' => __('Logout', 'user-login-history'),
-            'user_agent' => __('User Agent', 'user-login-history'),
-            'login_status' => __('Login Status', 'user-login-history'),
+            'user_id' => __('User Id', 'faulh'),
+            'username' => __('Username', 'faulh'),
+            'role' => __('Current Role', 'faulh'),
+            'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'faulh'),
+            'ip_address' => __('IP Address', 'faulh'),
+            'browser' => __('Browser', 'faulh'),
+            'operating_system' => __('Platform', 'faulh'),
+            'country_name' => __('Country', 'faulh'),
+            'duration' => __('Duration', 'faulh'),
+            'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'faulh'),
+            'timezone' => __('Timezone', 'faulh'),
+            'time_login' => __('Login', 'faulh'),
+            'time_logout' => __('Logout', 'faulh'),
+            'user_agent' => __('User Agent', 'faulh'),
+            'login_status' => __('Login Status', 'faulh'),
         );
 
         $columns = apply_filters('user_login_history_public_get_columns', $columns);
@@ -247,7 +247,7 @@ class User_Login_History_Public_List_Table {
         $allowed_columns = $this->get_allowed_columns();
         //log the exception
         if (empty($allowed_columns)) {
-            User_Login_History_Error_Handler::error_log("No columns is selected for frontend listing table.", __LINE__, __FILE__);
+            Faulh_Error_Handler::error_log("No columns is selected for frontend listing table.", __LINE__, __FILE__);
             $this->pagination_links = ""; //disable pagination link.
             return;
         }
@@ -371,7 +371,7 @@ class User_Login_History_Public_List_Table {
     
     public function column_default($item, $column_name) {
         $timezone = $this->get_table_timezone();
-        $unknown = __('Unknown', 'user-login-history');
+        $unknown = __('Unknown', 'faulh');
         $new_column_data = apply_filters('manage_user_login_history_public_custom_column', '', $item, $column_name);
         switch ($column_name) {
             case 'user_id':
@@ -396,12 +396,12 @@ class User_Login_History_Public_List_Table {
             case 'browser':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'time_login':
-                return User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
+                return Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
             case 'time_logout':
                 if (!$item['user_id']) {
                     return $unknown;
                 }
-                return strtotime($item[$column_name]) > 0 ? User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone) : __('Logged In', 'user-login-history');
+                return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone) : __('Logged In', 'faulh');
             case 'ip_address':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'timezone':
@@ -415,13 +415,13 @@ class User_Login_History_Public_List_Table {
                 if (!$item['user_id']) {
                     return $unknown;
                 }
-                $time_last_seen = User_Login_History_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
+                $time_last_seen = Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone);
                 $human_time_diff = human_time_diff(strtotime($item[$column_name]));
-                return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'user-login-history') . '</span>';
+                return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'faulh') . '</span>';
             case 'user_agent':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'duration':
-                $duration = human_time_diff(strtotime($item['time_login']), User_Login_History_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen']));
+                $duration = human_time_diff(strtotime($item['time_login']), Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen']));
                 return $duration ? $duration : $unknown;
             case 'login_status':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
@@ -430,7 +430,7 @@ class User_Login_History_Public_List_Table {
             case 'blog_id':
                 return $item[$column_name] ? $item[$column_name] : $unknown;
             case 'is_super_admin':
-                return $item[$column_name] ? __('Yes', 'user-login-history') : __('No', 'user-login-history');
+                return $item[$column_name] ? __('Yes', 'faulh') : __('No', 'faulh');
             default:
                 if ($new_column_data) {
                     echo $new_column_data;

@@ -5,8 +5,8 @@
  *
  * @link       https://github.com/faiyazalam
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/admin
+ * @package    Faulh
+ * @subpackage Faulh/admin
  */
 
 /**
@@ -18,7 +18,7 @@
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Admin {
+class Faulh_Admin {
 
     /**
      * The ID of this plugin.
@@ -66,7 +66,7 @@ class User_Login_History_Admin {
         //Check if download was initiated
         if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
             if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
-                $List_Table = is_network_admin() ? new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new User_Login_History_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
+                $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
                 $List_Table->export_to_CSV();
             }
         }
@@ -98,7 +98,7 @@ class User_Login_History_Admin {
             wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
             wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
             wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
-                'delete_confirm_message' => __('Are your sure?', 'user-login-history'),
+                'delete_confirm_message' => __('Are your sure?', 'faulh'),
                 'admin_url' => admin_url(),
                 'plugin_name' => $this->plugin_name,
             ));
@@ -123,15 +123,15 @@ class User_Login_History_Admin {
      */
     public function process_bulk_action() {
         $status = FALSE;
-        $List_Table = is_network_admin() ? new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new User_Login_History_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
+        $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
 
         if ($List_Table->process_bulk_action()) {
-            $this->add_admin_notice(__('Record(s) has been deleted.', 'user-login-history'));
+            $this->add_admin_notice(__('Record(s) has been deleted.', 'faulh'));
             $status = TRUE;
         }
 
         if ($List_Table->delete_single_row()) {
-            $this->add_admin_notice(__('Record has been deleted.', 'user-login-history'));
+            $this->add_admin_notice(__('Record has been deleted.', 'faulh'));
             $status = TRUE;
         }
 
@@ -180,15 +180,13 @@ class User_Login_History_Admin {
         if (!current_user_can('administrator')) {
             return;
         }
-
+        $this->check_update_version();
+ 
         global $pagenow;
         if ($pagenow == 'admin.php') {
-            if (!empty($_GET['page'])) {
-
-                if ($this->plugin_name . '-admin-listing' == $_GET['page']) {
+            if (!empty($_GET['page']) && $this->plugin_name . '-admin-listing' == $_GET['page']) {
                     $this->init_csv_export();
                     $this->process_bulk_action();
-                }
             }
         }
     }
@@ -199,12 +197,37 @@ class User_Login_History_Admin {
      * @access public
      */
     public function update_network_setting() {
-        $obj = new User_Login_History_Network_Admin_Setting($this->plugin_name);
+        $obj = new Faulh_Network_Admin_Setting($this->plugin_name);
         if ($obj->update()) {
-            $this->add_admin_notice(__('Settings updated successfully.', 'user-login-history'));
+            $this->add_admin_notice(__('Settings updated successfully.', 'faulh'));
             wp_safe_redirect(network_admin_url("settings.php?page=" . $_GET['page']));
             exit;
         }
     }
-
+    
+        public function check_update_version() {
+        // Current version
+        $current_version = get_option(USER_LOGIN_HISTORY_OPTION_NAME_VERSION);
+        //If the version is older
+        if ($current_version && version_compare($current_version, $this->version, '<')) {
+            $this->add_admin_notice(__("Please update your timezone by clicking ", 'faulh')."<a class='' href='".get_edit_user_link()."?#$this->plugin_name'>".__('here', 'faulh')."</a>");
+            require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
+            if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
+                $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
+                foreach ($blog_ids as $blog_id) {
+                    switch_to_blog($blog_id);
+                    Faulh_Activator::create_table();
+                    Faulh_Activator::update_options();
+                    delete_option('fa_userloginhostory_frontend_limit');
+                    delete_option('fa_userloginhostory_frontend_fields');
+                }
+                restore_current_blog();
+            } else {
+                Faulh_Activator::create_table();
+                Faulh_Activator::update_options();
+                delete_option('fa_userloginhostory_frontend_limit');
+                delete_option('fa_userloginhostory_frontend_fields');
+            }
+        }
+    }
 }

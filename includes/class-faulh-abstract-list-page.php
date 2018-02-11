@@ -5,12 +5,12 @@
  *
  * @link       https://github.com/faiyazalam
  * 
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-abstract class User_Login_History_Abstract_List_Page {
+abstract class Faulh_Abstract_List_Page {
 /**
  * Default limit.
  */
@@ -39,6 +39,14 @@ abstract class User_Login_History_Abstract_List_Page {
      * @var      string    $option_name
      */
     private $option_name;
+    
+     /**
+     * The version of this plugin.
+     *
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
+    protected $version;
 
     /**
      * Initialize the class and set its properties.
@@ -47,9 +55,10 @@ abstract class User_Login_History_Abstract_List_Page {
      * @param      string    $plugin_name       The name of this plugin.
      * 
      */
-    public function __construct($plugin_name = '') {
+    public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
-        $this->option_name = str_replace("-", "_", $this->plugin_name)."_rows_per_page";
+        $this->version = $version;
+        $this->option_name = $this->plugin_name."_rows_per_page";
     }
 
     /**
@@ -74,7 +83,7 @@ abstract class User_Login_History_Abstract_List_Page {
  */
     public function plugin_menu() {
         $hook = add_menu_page(
-                'User Login History', 'User Login History', 'manage_options', $this->plugin_name.'-admin-listing', [ $this, 'load_template']
+                __('User Login History', 'faulh'), __('User Login History', 'faulh'), 'manage_options', $this->plugin_name.'-admin-listing', [ $this, 'load_template']
         );
         add_action("load-$hook", [ $this, 'screen_option']);
     }
@@ -87,7 +96,7 @@ abstract class User_Login_History_Abstract_List_Page {
  */
     public function screen_option() {
         $args = array(
-            'label' => __('Records per page', 'user-login-history'),
+            'label' => __('Records per page', 'faulh'),
             'default' => self::DEFAULT_OPTION_VALUE,
             'option' => $this->option_name //option name should not contain hyphen. 
             //WP replaces hyphen with underscore while processing request. See the definition of set_screen_options()

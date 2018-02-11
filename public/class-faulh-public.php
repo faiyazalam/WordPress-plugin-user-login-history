@@ -19,7 +19,7 @@
  * @subpackage User_Login_History/public
  * @author     Er Faiyaz Alam
  */
-class User_Login_History_Public {
+class Faulh_Public {
 
     /**
      * The ID of this plugin.
@@ -50,7 +50,7 @@ class User_Login_History_Public {
     
     private function is_shortcode_called() {
         global $post;
-         if(!has_shortcode($post->post_content, 'user-login-history') && !has_shortcode($post->post_content, 'user_login_history'))
+         if(!has_shortcode($post->post_content, 'faulh') && !has_shortcode($post->post_content, 'user_login_history'))
         {
             return FALSE;
         }
@@ -67,8 +67,6 @@ class User_Login_History_Public {
            return;
        }
         wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
-   //  wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
-        
        }
 
     /**
@@ -96,8 +94,8 @@ class User_Login_History_Public {
             return;
         }
         global $current_user;
-        $Public_List_Table = new User_Login_History_Public_List_Table($this->plugin_name);
-        $UserProfile = new User_Login_History_User_Profile($this->plugin_name);
+        $Public_List_Table = new Faulh_Public_List_Table($this->plugin_name);
+        $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
         $Public_List_Table->set_table_timezone($UserProfile->get_current_user_timezone());
         $timezone = $Public_List_Table->get_table_timezone();
         $default_args = array(
@@ -113,8 +111,4 @@ class User_Login_History_Public {
         require_once(plugin_dir_path(__FILE__) . 'partials/listing.php');
         return ob_get_clean();
     }
-
-
-
-
 }

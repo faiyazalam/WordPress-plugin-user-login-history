@@ -4,12 +4,12 @@
  * The class is used for session management.
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Session_Helper {
+class Faulh_Session_Helper {
 
     /**
      * Holds the key for the last insert id.
@@ -26,7 +26,7 @@ class User_Login_History_Session_Helper {
      * @param int|string $id
      */
     static public function set_last_insert_id($id = NULL) {
-        $_SESSION[USER_LOGIN_HISTORY_NAME][self::LAST_INSERT_ID_KEY] = $id ? $id : FALSE;
+        $_SESSION[__CLASS__][self::LAST_INSERT_ID_KEY] = $id ? $id : FALSE;
     }
 
     /**
@@ -34,7 +34,7 @@ class User_Login_History_Session_Helper {
      * @param int|string $id
      */
     static public function set_current_login_blog_id($id = NULL) {
-        $_SESSION[USER_LOGIN_HISTORY_NAME][self::CURRENT_LOGIN_BLOG_ID_KEY] = $id ? $id : get_current_blog_id();
+        $_SESSION[__CLASS__][self::CURRENT_LOGIN_BLOG_ID_KEY] = $id ? $id : get_current_blog_id();
     }
 
     /**
@@ -42,7 +42,7 @@ class User_Login_History_Session_Helper {
      * @return int The blog id from which user gets loggedin.
      */
     static public function get_current_login_blog_id() {
-        return isset($_SESSION[USER_LOGIN_HISTORY_NAME][self::CURRENT_LOGIN_BLOG_ID_KEY]) ? $_SESSION[USER_LOGIN_HISTORY_NAME][self::CURRENT_LOGIN_BLOG_ID_KEY] : NULL;
+        return isset($_SESSION[__CLASS__][self::CURRENT_LOGIN_BLOG_ID_KEY]) ? $_SESSION[__CLASS__][self::CURRENT_LOGIN_BLOG_ID_KEY] : NULL;
     }
 
     /**
@@ -50,14 +50,14 @@ class User_Login_History_Session_Helper {
      * @return int The last insert id from the session.
      */
     static public function get_last_insert_id() {
-        return isset($_SESSION[USER_LOGIN_HISTORY_NAME][self::LAST_INSERT_ID_KEY]) ? $_SESSION[USER_LOGIN_HISTORY_NAME][self::LAST_INSERT_ID_KEY] : FALSE;
+        return isset($_SESSION[__CLASS__][self::LAST_INSERT_ID_KEY]) ? $_SESSION[__CLASS__][self::LAST_INSERT_ID_KEY] : FALSE;
     }
 
     /**
      * Destroys the session created by this class.
      */
     static public function destroy() {
-        unset($_SESSION[USER_LOGIN_HISTORY_NAME]);
+        unset($_SESSION[__CLASS__]);
     }
     
     }

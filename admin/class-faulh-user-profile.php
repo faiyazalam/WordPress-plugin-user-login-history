@@ -5,12 +5,12 @@
  * 
  * @link       https://github.com/faiyazalam
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/admin
+ * @package    Faulh
+ * @subpackage Faulh/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_User_Profile {
+class Faulh_User_Profile {
 
     /**
      * The unique identifier of this plugin.
@@ -21,14 +21,22 @@ class User_Login_History_User_Profile {
     private $plugin_name;
 
     /**
+     * The current version of the plugin.
+     *
+     * @access   protected
+     * @var      string    $version    The current version of the plugin.
+     */
+    private $version;
+
+    /**
      * The usermeta key.
      *
      * @access   private
      * @var      string    $usermeta_key_timezone
      */
     private $usermeta_key_timezone;
-    
-        /**
+
+    /**
      * The user id.
      *
      * @access   private
@@ -41,12 +49,13 @@ class User_Login_History_User_Profile {
      *
      * @var      string    $plugin_name       The name of this plugin.
      */
-    public function __construct($plugin_name, $user_id = NULL) {
+    public function __construct($plugin_name, $version, $user_id = NULL) {
+
         $this->plugin_name = $plugin_name;
+        $this->version = $version;
         $this->usermeta_key_timezone = $this->plugin_name . "_timezone";
         $this->user_id = $user_id;
     }
-
 
     /**
      * The callback function for the action hook - show_user_profile.
@@ -54,16 +63,16 @@ class User_Login_History_User_Profile {
     function show_extra_profile_fields($user) {
         $user_timezone = get_user_meta($user->ID, $this->usermeta_key_timezone, TRUE);
         ?>
-        <h3><?php _e('User Login History', 'user-login-history'); ?></h3>
+        <h3 id="<?php echo $this->plugin_name ?>"><?php echo Faulh_Template_Helper::plugin_name(); ?></h3>
 
         <table>
             <tr>
-                <th><label for="<?php echo $this->plugin_name . "-timezone" ?>"><?php _e('Timezone', 'user-login-history'); ?></label></th>
+                <th><label for="<?php echo $this->plugin_name . "-timezone" ?>"><?php _e('Timezone', 'faulh'); ?></label></th>
                 <td>
                     <select required="required" name="<?php echo $this->plugin_name . '-timezone' ?>">
-                        <option value=""><?php _e('Select Timezone', 'user-login-history') ?></option>
+                        <option value=""><?php _e('Select Timezone', 'faulh') ?></option>
                         <?php
-                        User_Login_History_Template_Helper::dropdown_timezones($user_timezone);
+                        Faulh_Template_Helper::dropdown_timezones($user_timezone);
                         ?>
                     </select>
                 </td>
@@ -82,7 +91,7 @@ class User_Login_History_User_Profile {
         }
 
         if (empty($_POST[$this->plugin_name . '-timezone'])) {
-            $errors->add('user_timezone_error', __('<strong>ERROR</strong>: Please select a timezone.', 'user-login-history'));
+            // $errors->add('user_timezone_error', __('<strong>ERROR</strong>: Please select a timezone.', 'faulh'));
         }
     }
 
@@ -95,7 +104,10 @@ class User_Login_History_User_Profile {
         }
         if (!empty($_POST[$this->plugin_name . '-timezone'])) {
             update_user_meta($user_id, $this->usermeta_key_timezone, $_POST[$this->plugin_name . '-timezone']);
+        } else {
+            delete_user_meta($user_id, $this->usermeta_key_timezone);
         }
+        $this->delete_old_meta_by_user_id($user_id);
     }
 
     /**
@@ -106,7 +118,7 @@ class User_Login_History_User_Profile {
      * @return int|false Meta ID on success, false on failure.
      */
     function add_timezone($timezone) {
-             return add_user_meta($this->user_id, $this->usermeta_key_timezone, $timezone, true);
+        return add_user_meta($this->user_id, $this->usermeta_key_timezone, $timezone, true);
     }
 
     /**
@@ -116,38 +128,58 @@ class User_Login_History_User_Profile {
      * @return boolean|string False on failure, timezone on success.
      */
     public function get_current_user_timezone() {
-            global $current_user;
-           if(empty($current_user->ID) )
-           {
-               return FALSE;
-           }
+        global $current_user;
+        if (empty($current_user->ID)) {
+            return FALSE;
+        }
+
         $timezone = get_user_meta($current_user->ID, $this->usermeta_key_timezone, TRUE);
         return $timezone && "unknown" != strtolower($timezone) ? $timezone : FALSE;
     }
+
     /**
      * Check form submission and nonce and then update user timezone.
-     * This is used to handle request of front-end.
+     * This is used to handle request from front-end.
      * After processing request, it redirects to current page.
      * 
      * @access public
-     * 
      */
-        public function update_user_timezone() {
-           
+    public function update_user_timezone() {
+        if (!is_user_logged_in()) {
+            return;
+        }
+
         if (!isset($_POST[$this->plugin_name . "_update_user_timezone"]) || empty($_POST['_wpnonce'])) {
             return;
         }
-        
+
         if (!wp_verify_nonce($_POST['_wpnonce'], $this->plugin_name . "_update_user_timezone")) {
             return;
         }
-       
-        
+
         global $current_user;
-        update_user_meta($current_user->ID, $this->usermeta_key_timezone, $_POST[$this->plugin_name . "-timezone"]);
+        if (!current_user_can('edit_user', $current_user->ID)) {
+            return false;
+        }
+        if (!empty($_POST[$this->plugin_name . "-timezone"])) {
+            update_user_meta($current_user->ID, $this->usermeta_key_timezone, $_POST[$this->plugin_name . "-timezone"]);
+        } else {
+            delete_user_meta($current_user->ID, $this->usermeta_key_timezone);
+        }
+
+        $this->delete_old_meta_by_user_id($current_user->ID);
         wp_safe_redirect(esc_url_raw(add_query_arg()));
         exit;
     }
-    
-    
+
+    private function delete_old_meta_by_user_id($user_id = NULL) {
+        if (empty($user_id)) {
+            return;
+        }
+        //delete the old usermeta key
+        if (version_compare($this->version, '1.7.0', '<=')) {
+            delete_user_meta($user_id, 'fa_userloginhostory_user_timezone');
+        }
+    }
+
 }

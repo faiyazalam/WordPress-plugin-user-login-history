@@ -7,16 +7,16 @@
  * 
  * @link       https://github.com/faiyazalam
  * 
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Activator {
+class Faulh_Activator {
 
     /**
      *
-     *Fired on plugin activation.
+     * Fired on plugin activation.
      * 
      * @access public
      */
@@ -25,23 +25,17 @@ class User_Login_History_Activator {
         if (is_multisite() && $network_wide) {
             // Get all blogs from current network the network and activate plugin on each one
             $site_id = get_current_network_id();
-            $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs where site_id = $site_id");
+             $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
             foreach ($blog_ids as $blog_id) {
                 switch_to_blog($blog_id);
-                self:: on_plugin_activate();
+                self::create_table();
+                self::update_options();
             }
             restore_current_blog();
         } else {
-            self:: on_plugin_activate();
+            self::create_table();
+            self::update_options();
         }
-    }
-
-    /**
-     * Creates plugin table and options 
-     */
-    public static function on_plugin_activate() {
-        self::create_table();
-        self::update_options();
     }
 
     /**
@@ -86,7 +80,7 @@ KEY `session_token` (`session_token`)
      * @access public
      */
     public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
-        if (is_plugin_active_for_network('WordPress-plugin-user-login-history/user-login-history.php')) {
+        if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
             switch_to_blog($blog_id);
             self:: create_table();
             self::update_options();
@@ -100,7 +94,9 @@ KEY `session_token` (`session_token`)
      * @access public
      */
     public static function update_options() {
-        update_option(USER_LOGIN_HISTORY_OPTION_PREFIX . 'version', USER_LOGIN_HISTORY_VERSION);
+        update_option(USER_LOGIN_HISTORY_OPTION_NAME_VERSION, USER_LOGIN_HISTORY_VERSION);
     }
+
+
 
 }

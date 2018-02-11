@@ -1,15 +1,15 @@
 <?php
 
 /**
- * User_Login_History_Network_Admin_Setting
+ * Faulh_Network_Admin_Setting
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/admin
+ * @package    Faulh
+ * @subpackage Faulh/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Network_Admin_Setting {
+class Faulh_Network_Admin_Setting {
 
     /**
      * The unique identifier of this plugin.
@@ -35,7 +35,7 @@ class User_Login_History_Network_Admin_Setting {
      */
     public function add_setting_menu() {
         add_submenu_page(
-                'settings.php', __('User Login History', 'user-login-history'), __('User Login History'), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
+                'settings.php', __('User Login History', 'faulh'), __('User Login History', 'faulh'), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
         );
     }
 

@@ -4,12 +4,12 @@
  * The class saves error log in the plugin log file.
  *
  * @link       https://github.com/faiyazalam
- * @package    User_Login_History
- * @subpackage User_Login_History/includes
+ * @package    Faulh
+ * @subpackage Faulh/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class User_Login_History_Error_Handler {
+class Faulh_Error_Handler {
 
     const ERROR_LOG_FILE = '/user-login-history.log';
 

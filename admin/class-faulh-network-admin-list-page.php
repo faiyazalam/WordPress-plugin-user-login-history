@@ -5,13 +5,13 @@
  * 
  * @link       https://github.com/faiyazalam
  *
- * @package    User_Login_History
- * @subpackage User_Login_History/admin
+ * @package    Faulh
+ * @subpackage Faulh/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
 
-class User_Login_History_Network_Admin_List_Page extends User_Login_History_Abstract_List_Page {
+class Faulh_Network_Admin_List_Page extends Faulh_Abstract_List_Page {
 
         /**
      * Loads the listing template file.
@@ -28,8 +28,8 @@ class User_Login_History_Network_Admin_List_Page extends User_Login_History_Abst
      * @return The object of listing table class.
      */
     function get_list_table_object() {
-        $UserProfile = new User_Login_History_User_Profile($this->plugin_name);
-        return new User_Login_History_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME, $UserProfile->get_current_user_timezone());
+        $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
+        return new Faulh_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME, $UserProfile->get_current_user_timezone());
     }
 
 
