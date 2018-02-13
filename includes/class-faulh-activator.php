@@ -7,12 +7,14 @@
  * 
  * @link       https://github.com/faiyazalam
  * 
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Activator {
+if(!class_exists('Faulh_Activator'))
+{
+    class Faulh_Activator {
 
     /**
      *
@@ -46,7 +48,7 @@ class Faulh_Activator {
     public static function create_table() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
-        $table = $wpdb->prefix . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->prefix . FAULH_TABLE_NAME;
 
         $sql = "CREATE TABLE $table (
 `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -94,9 +96,11 @@ KEY `session_token` (`session_token`)
      * @access public
      */
     public static function update_options() {
-        update_option(USER_LOGIN_HISTORY_OPTION_NAME_VERSION, USER_LOGIN_HISTORY_VERSION);
+        update_option(FAULH_OPTION_NAME_VERSION, FAULH_VERSION);
     }
 
 
 
 }
+}
+

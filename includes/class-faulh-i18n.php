@@ -8,8 +8,8 @@
  *
  * @link       https://github.com/faiyazalam
  *
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @access private
  */
 
@@ -19,11 +19,13 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  */
-class Faulh_i18n {
+if(!class_exists('Faulh_i18n'))
+{
+  class Faulh_i18n {
 
 
 	/**
@@ -42,4 +44,6 @@ class Faulh_i18n {
 
 
 
+}  
 }
+

@@ -5,12 +5,14 @@
  * 
  * @link       https://github.com/faiyazalam
  *
- * @package    Faulh
- * @subpackage Faulh/admin
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Network_Admin_List_Table extends Faulh_Abstract_List_Table {
+if(!class_exists('Faulh_Network_Admin_List_Table'))
+{
+  class Faulh_Network_Admin_List_Table extends Faulh_Abstract_List_Table {
 
     /**
      * Initialize the class and set its properties.
@@ -246,4 +248,6 @@ class Faulh_Network_Admin_List_Table extends Faulh_Abstract_List_Table {
         return $status;
     }
 
+}  
 }
+

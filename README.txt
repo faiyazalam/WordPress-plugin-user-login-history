@@ -1,114 +1,88 @@
-=== Plugin Name ===
-Contributors: (this should be a list of wordpress.org userid's)
-Donate link: https://github.com/faiyazalam
-Tags: comments, spam
+=== User Login History ===
+Contributors: faiyazalam,w3reign
+Donate link: http://wordpress.org/
+Tags: login, last seen, history, active login, last login, ip, browser, country, track, admin, member, members, profile, role, roles, shortcode, user, users, time zone
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 4.3
+Tested up to: 4.8
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
+Version: 1.7
 
 == Description ==
+By this plugin you can track any visitor's login details with the following attributes:
+1. **Login Date-Time**
+1. **Logout Date-Time**
+1. **Last Seen Date-Time**
+1. **Login Status** - Success/Logout/Fail
+1. **Session Duration** - How long the user stayed on your website per session.
+1. **User ID**
+1. **Username**
+1. **IP Address**
+1. **Browser**
+1. **Operating System**
+1. **Current Role**
+1. **Old Role** - The role while user gets logged-in into your website.
+1. **Country Name**
+1. **Country Code**
+1. **Time Zone**
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+Other Useful Features:
+1. "Editable Time Zone" - You can select your preferred time zone to be used for the listing table.
+1. "Shortcode" - To see the listing table on front-end for the current logged-in user, you can use this shortcode `<?php do_shortcode['user-login-history'] ?>` in your php template file.
+1. "Multisite Network (Since version 1.7)" - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
+1. "Advance Search Filter"
+1. "CSV Export"
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
 
-A few notes about the sections above:
+= Translations =
 
-*   "Contributors" is a comma separated list of wp.org/wp-plugins.org usernames
-*   "Tags" is a comma separated list of tags that apply to the plugin
-*   "Requires at least" is the lowest version that the plugin will work on
-*   "Tested up to" is the highest version that you've *successfully used to test the plugin*. Note that it might work on
-higher versions... this is just the highest one you've verified.
-*   Stable tag should indicate the Subversion "tag" of the latest stable version, or "trunk," if you use `/trunk/` for
-stable.
+Currently, this plugin is available in the following two languages i.e. 
+1. **English**
+1. **Italian** (translated by [Leonardo Gandini](https://wordpress.org/support/users/nekokun/))
 
-    Note that the `readme.txt` of the stable tag is the one that is considered the defining one for the plugin, so
-if the `/trunk/readme.txt` file says that the stable tag is `4.3`, then it is `/tags/4.3/readme.txt` that'll be used
-for displaying information about the plugin.  In this situation, the only thing considered from the trunk `readme.txt`
-is the stable tag pointer.  Thus, if you develop in trunk, you can update the trunk `readme.txt` to reflect changes in
-your in-development version, without having that information incorrectly disclosed about the current stable version
-that lacks those changes -- as long as the trunk's `readme.txt` points to the correct stable tag.
+You can download the language files from [here](https://translate.wordpress.org/projects/wp-plugins/user-login-history "Click here to download the language file for the plugin."). 
 
-    If no stable tag is provided, it is assumed that trunk is stable, but you should specify "trunk" if that's where
-you put the stable version, in order to eliminate any doubt.
+= Bug Fixes =
+
+If you find any bug, please create a topic with a step by step description to reproduce the bug.
+Please search the forum before creating a new topic.
 
 == Installation ==
 
-This section describes how to install the plugin and get it working.
-
-e.g.
-
-1. Upload `user-login-history.php` to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
+1. Upload the plugin files to the `/wp-content/plugins/user-login-history` directory, or install the plugin through the WordPress plugins screen directly.
+1. Activate the plugin through the 'Plugins' screen in WordPress.
+1. Use the Settings->User Login History screen to configure the plugin.
 
 == Frequently Asked Questions ==
 
-= A question that someone might have =
+= Can this plugin track the info of guest users? =
+No.
 
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
+= Is it compatible with WordPress multisite network? =
+Yes.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. User List with login details for backend.
+2. Screen Options
+3. Settings - Backend Options
+4. Settings - Frontend Options
+5. Shortcode - User List with login details for frontend.
 
 == Changelog ==
 
-= 1.0 =
-* A change since the previous version.
-* Another change.
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
+= 1.7(release date) =
+* Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
+* Added the column **Login Status** - This is used to check whether the user is logged-in, logged-out, login-failed or blocked.
+* Added the option **Last Seen Time** to filter the results.
+* Added the column **Super Admin** - This is used only for multisite network.
+* Added **Hooks** to extend its functionality easily.
 
 == Upgrade Notice ==
 
-= 1.0 =
-Upgrade notices describe the reason a user should upgrade.  No more than 300 characters.
-
-= 0.5 =
-This version fixes a security related bug.  Upgrade immediately.
-
-== Arbitrary section ==
-
-You may provide arbitrary sections, in the same format as the ones above.  This may be of use for extremely complicated
-plugins where more information needs to be conveyed that doesn't fit into the categories of "description" or
-"installation."  Arbitrary sections will be shown below the built-in sections outlined above.
-
-== A brief Markdown Example ==
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Here's a link to [WordPress](http://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax].
-Titles are optional, naturally.
-
-[markdown syntax]: http://daringfireball.net/projects/markdown/syntax
-            "Markdown is what the parser uses to process much of the readme file"
-
-Markdown uses email style notation for blockquotes and I've been told:
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-`<?php code(); // goes in backticks ?>`
+= 1.* <= 1.7 =
+After upgrading, you have to do the following changes:
+1. Update your time zone from your profile edit page.
+1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]

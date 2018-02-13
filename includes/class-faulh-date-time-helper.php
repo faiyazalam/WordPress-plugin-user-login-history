@@ -5,12 +5,14 @@
  *
  * @link       https://github.com/faiyazalam
  *
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Date_Time_Helper {
+if(!class_exists('Faulh_Date_Time_Helper'))
+{
+    class Faulh_Date_Time_Helper {
 
     /**
      * Defalult timizone.
@@ -31,8 +33,8 @@ class Faulh_Date_Time_Helper {
      * @param string $format The date format in which the date is to be converted.
      * @return string|int|bool Formatted date string or Unix timestamp. False if $date is empty.
      */
-    static public function convert_format($date, $format = "") {
-        $format = $format ? $format : self::DEFAULT_FORMAT;
+ static public function convert_format($date, $format = "") {
+        $format = empty($format) ? get_option('date_format')." ".get_option('time_format') : $format;
         return mysql2date($format, $date);
     }
 
@@ -80,7 +82,7 @@ class Faulh_Date_Time_Helper {
     }
 
     /**
-     * Gets nearest time zone of the user.
+     * Gets nearest timezone of the user.
      *
      * @param string $cur_lat current lattitude
      * @param string $cur_long current longitude
@@ -131,4 +133,5 @@ class Faulh_Date_Time_Helper {
         return $time_one_str > $time_two_str ? $time_one : $time_two;
     }
 
+}
 }

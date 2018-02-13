@@ -5,12 +5,14 @@
  * 
  * @link       https://github.com/faiyazalam
  *
- * @package    Faulh
- * @subpackage Faulh/admin
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_User_Profile {
+if(!class_exists('Faulh_User_Profile'))
+{
+  class Faulh_User_Profile {
 
     /**
      * The unique identifier of this plugin.
@@ -182,4 +184,6 @@ class Faulh_User_Profile {
         }
     }
 
+}  
 }
+

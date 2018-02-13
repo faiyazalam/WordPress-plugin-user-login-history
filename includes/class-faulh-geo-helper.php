@@ -4,12 +4,14 @@
  * This is used to detect ip address and geo location.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Geo_Helper {
+if(!class_exists('Faulh_Geo_Helper'))
+{
+    class Faulh_Geo_Helper {
 
     private $api_geo_url;
 
@@ -51,3 +53,5 @@ class Faulh_Geo_Helper {
     }
 
 }
+}
+

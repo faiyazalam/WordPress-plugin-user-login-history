@@ -10,7 +10,7 @@
  */
 ?>
 <div class="wrap">
-    <h2><?php echo Faulh_Template_Helper::plugin_name() ?> <?php _e('- Network Settings', 'faulh') ?></h2>
+    <h2><?php _e('Network Settings', 'faulh') ?> - <?php echo Faulh_Template_Helper::plugin_name() ?></h2>
     <form method="post">
         <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_setting_submit' ?>" >
         <fieldset>

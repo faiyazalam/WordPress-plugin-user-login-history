@@ -4,12 +4,14 @@
  * The class is used for session management.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Session_Helper {
+if(!class_exists('Faulh_Session_Helper'))
+{
+  class Faulh_Session_Helper {
 
     /**
      * Holds the key for the last insert id.
@@ -60,4 +62,6 @@ class Faulh_Session_Helper {
         unset($_SESSION[__CLASS__]);
     }
     
-    }
+    }  
+}
+

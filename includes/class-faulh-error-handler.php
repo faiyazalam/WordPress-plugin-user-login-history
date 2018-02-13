@@ -4,12 +4,14 @@
  * The class saves error log in the plugin log file.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Error_Handler {
+if(!class_exists('Faulh_Error_Handler'))
+{
+  class Faulh_Error_Handler {
 
     const ERROR_LOG_FILE = '/user-login-history.log';
 
@@ -18,4 +20,5 @@ class Faulh_Error_Handler {
         error_log("$message at line:" . $line . " file:" . $file);
     }
 
+}  
 }

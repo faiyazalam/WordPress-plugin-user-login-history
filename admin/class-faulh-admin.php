@@ -5,8 +5,8 @@
  *
  * @link       https://github.com/faiyazalam
  *
- * @package    Faulh
- * @subpackage Faulh/admin
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
  */
 
 /**
@@ -18,7 +18,9 @@
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Admin {
+if(!class_exists('Faulh_Admin'))
+{
+   class Faulh_Admin {
 
     /**
      * The ID of this plugin.
@@ -66,7 +68,7 @@ class Faulh_Admin {
         //Check if download was initiated
         if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
             if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
-                $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
+                $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
                 $List_Table->export_to_CSV();
             }
         }
@@ -123,7 +125,7 @@ class Faulh_Admin {
      */
     public function process_bulk_action() {
         $status = FALSE;
-        $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME);
+        $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
 
         if ($List_Table->process_bulk_action()) {
             $this->add_admin_notice(__('Record(s) has been deleted.', 'faulh'));
@@ -207,10 +209,10 @@ class Faulh_Admin {
     
         public function check_update_version() {
         // Current version
-        $current_version = get_option(USER_LOGIN_HISTORY_OPTION_NAME_VERSION);
+        $current_version = get_option(FAULH_OPTION_NAME_VERSION);
         //If the version is older
         if ($current_version && version_compare($current_version, $this->version, '<')) {
-            $this->add_admin_notice(__("Please update your timezone by clicking ", 'faulh')."<a class='' href='".get_edit_user_link()."?#$this->plugin_name'>".__('here', 'faulh')."</a>");
+            $this->add_admin_notice(__("We have done some major changes in the version 1.7.0. Please checkout the help page under the plugin menu.", 'faulh'));
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
             if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
                 $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
@@ -230,4 +232,6 @@ class Faulh_Admin {
             }
         }
     }
+} 
 }
+

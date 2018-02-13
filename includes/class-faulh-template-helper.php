@@ -4,12 +4,14 @@
  * This class contains all the template related functions.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Template_Helper {
+if(!class_exists('Faulh_Template_Helper'))
+{
+   class Faulh_Template_Helper {
 
     /**
      * Print out option html elements for all the blogs of the current network.
@@ -130,5 +132,14 @@ class Faulh_Template_Helper {
     static public function plugin_name() {
         return "User Login History";
     }
-
+    
+    static public function head($page = '') {
+        $h = "<h1>".self::plugin_name()." ".FAULH_VERSION.__('(Basic Version)', 'faulh')."</h1>";
+        if(!empty($page))
+        {
+            $h .= "<h2>$page</h2>";
+        }
+        echo $h;      
+    }
+} 
 }

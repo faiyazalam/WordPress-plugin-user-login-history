@@ -19,7 +19,7 @@
             ?>
         </select>
     </fieldset>
-    <?php do_action('user_login_history_public_listing_search_form'); ?>
+    <?php do_action('faulh_public_listing_search_form'); ?>
 <?php if($reset_URL) {?>
     <a class=""  href="<?php echo $reset_URL ?>" ><?php _e('RESET', 'faulh'); ?></a>
 <?php }?>
@@ -40,7 +40,9 @@
         <input type="submit" name="<?php echo $this->plugin_name . "_update_user_timezone" ?>" value="<?php echo __("Apply", 'faulh') ?>">
     </form>
 </div>
+<div><?php do_action('faulh_public_before_listing_table') ?></div>
 <?php
 $Public_List_Table->prepare_items();
 $Public_List_Table->display();
 ?>
+<div><?php do_action('faulh_public_after_listing_table') ?></div>

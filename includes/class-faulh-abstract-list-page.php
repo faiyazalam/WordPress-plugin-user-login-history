@@ -5,12 +5,14 @@
  *
  * @link       https://github.com/faiyazalam
  * 
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-abstract class Faulh_Abstract_List_Page {
+if(!class_exists('Faulh_Abstract_List_Page'))
+{
+ abstract class Faulh_Abstract_List_Page {
 /**
  * Default limit.
  */
@@ -82,10 +84,28 @@ abstract class Faulh_Abstract_List_Page {
  * @access public
  */
     public function plugin_menu() {
+        $menu_slug = $this->plugin_name."-admin-listing";
         $hook = add_menu_page(
-                __('User Login History', 'faulh'), __('User Login History', 'faulh'), 'manage_options', $this->plugin_name.'-admin-listing', [ $this, 'load_template']
+                __('User Login History', 'faulh'), __('User Login History', 'faulh'), 'manage_options', $menu_slug, [ $this, 'load_template']
         );
         add_action("load-$hook", [ $this, 'screen_option']);
+        
+                add_submenu_page($menu_slug, __('Premium Benefits', 'faulh'), __('Premium Benefits', 'faulh'), 'manage_options', $this->plugin_name.'-get-premium', array($this, 'render_get_premium_page'));
+        add_submenu_page($menu_slug, 'About', 'About', 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
+        add_submenu_page($menu_slug, 'Help', 'Help', 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
+    
+    }
+    
+
+    public function render_about_page() {
+        require_once   plugin_dir_path(dirname(__FILE__)) . 'admin/partials/about.php';
+    }
+    
+    public function render_help_page() {
+         require_once   plugin_dir_path(dirname(__FILE__)) . 'admin/partials/help.php';
+    }
+    public function render_get_premium_page() {
+                 require_once   plugin_dir_path(dirname(__FILE__)) . 'admin/partials/premium.php';
     }
 
 /**
@@ -119,4 +139,6 @@ abstract class Faulh_Abstract_List_Page {
      * This function will return object of list table class e.g. new WP_List_Table().
      */
     abstract function get_list_table_object();
+}   
 }
+

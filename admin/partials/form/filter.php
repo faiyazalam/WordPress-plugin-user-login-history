@@ -72,7 +72,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     <?php Faulh_Template_Helper::dropdown_login_statuses(isset($_GET['login_status']) ? $_GET['login_status'] : ""); ?>
                 </select>
             </fieldset>
-            <?php do_action('user_login_history_network_admin_listing_search_form'); ?>
+            <?php do_action('faulh_admin_listing_search_form'); ?>
             <a class="" id="download_csv_link"><?php _e('DOWNLOAD CSV', 'faulh'); ?></a> 
             <a class=""  href="<?php echo $reset_URL ?>" ><?php _e('RESET', 'faulh'); ?></a>
             <input type="hidden" name="<?php echo $this->plugin_name?>_export_csv" id="export-csv" value="">

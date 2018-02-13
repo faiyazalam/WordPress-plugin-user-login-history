@@ -5,12 +5,13 @@
  * 
  * @link       https://github.com/faiyazalam
  *
- * @package    Faulh
- * @subpackage Faulh/admin
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-
+if(!class_exists('Faulh_Network_Admin_List_Page'))
+{
 class Faulh_Network_Admin_List_Page extends Faulh_Abstract_List_Page {
 
         /**
@@ -29,9 +30,11 @@ class Faulh_Network_Admin_List_Page extends Faulh_Abstract_List_Page {
      */
     function get_list_table_object() {
         $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
-        return new Faulh_Network_Admin_List_Table(null, $this->plugin_name, USER_LOGIN_HISTORY_TABLE_NAME, $UserProfile->get_current_user_timezone());
+        return new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
     }
 
 
 
+}
+    
 }

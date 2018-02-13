@@ -4,12 +4,14 @@
  * Faulh_Network_Admin_Setting
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/admin
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_Network_Admin_Setting {
+if(!class_exists('Faulh_Network_Admin_Setting'))
+{
+   class Faulh_Network_Admin_Setting {
 
     /**
      * The unique identifier of this plugin.
@@ -125,4 +127,6 @@ class Faulh_Network_Admin_Setting {
         return $settings;
     }
 
+} 
 }
+

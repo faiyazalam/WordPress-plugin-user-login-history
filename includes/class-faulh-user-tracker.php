@@ -4,12 +4,14 @@
  * The class that saves user's login detail.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_User_Tracker {
+if(!class_exists('Faulh_User_Tracker'))
+{
+  class Faulh_User_Tracker {
 
     /**
      * Login Status Constants.
@@ -130,7 +132,7 @@ class Faulh_User_Tracker {
     private function save_login($user_login, $user, $status = '') {
         global $wpdb;
         $unknown = 'unknown';
-        $table = $wpdb->get_blog_prefix() . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->get_blog_prefix() . FAULH_TABLE_NAME;
         $this->set_geo_object();
         $this->set_browser_object();
         $current_date = Faulh_Date_Time_Helper::get_current_date_time();
@@ -163,7 +165,7 @@ class Faulh_User_Tracker {
             'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
         );
         //this is used to modify data before saving in db.
-        $filtered_data = apply_filters('user_login_history_save_user_login', $data, $lat, $long);
+        $filtered_data = apply_filters('faulh_before_save_login', $data, $lat, $long);
 
         if (is_array($filtered_data) && !empty($filtered_data)) {
             $data = array_merge($data, $filtered_data);
@@ -187,7 +189,7 @@ class Faulh_User_Tracker {
             }
         }
         $this->is_blocked_user_on_this_blog($user_id);
-        do_action('user_login_history_after_save_user_login_detail', $data);
+        do_action('faulh_after_save_login', $data);
     }
 
     /**
@@ -210,7 +212,7 @@ class Faulh_User_Tracker {
     public function update_time_last_seen() {
         global $wpdb;
         $current_user = wp_get_current_user();
-        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . FAULH_TABLE_NAME;
         $current_date = Faulh_Date_Time_Helper::get_current_date_time();
         $user_id = $current_user->ID;
         $last_id = Faulh_Session_Helper::get_last_insert_id();
@@ -255,7 +257,7 @@ class Faulh_User_Tracker {
         if (!$last_id) {
             return;
         }
-        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . USER_LOGIN_HISTORY_TABLE_NAME;
+        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . FAULH_TABLE_NAME;
         ;
         $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where id = '$last_id' ";
         $wpdb->query($sql);
@@ -289,4 +291,6 @@ class Faulh_User_Tracker {
         return $this->session_token ? $this->session_token : "";
     }
 
+}  
 }
+

@@ -11,12 +11,14 @@
  * version of the plugin.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh {
+if(!class_exists('Faulh'))
+{
+  class Faulh {
 
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
@@ -52,8 +54,8 @@ class Faulh {
      *
      */
     public function __construct() {
-        if (defined('USER_LOGIN_HISTORY_VERSION')) {
-            $this->version = USER_LOGIN_HISTORY_VERSION;
+        if (defined('FAULH_VERSION')) {
+            $this->version = FAULH_VERSION;
         } else {
             $this->version = '1.0.0';
         }
@@ -177,7 +179,7 @@ class Faulh {
 
         if (is_network_admin()) {
             //hooks for network admin only
-            $Network_Admin_List_Page = new Faulh_Network_Admin_List_Page($this->get_plugin_name());
+            $Network_Admin_List_Page = new Faulh_Network_Admin_List_Page($this->get_plugin_name(), $this->get_version());
             $this->loader->add_filter('set-screen-option', $Network_Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('network_admin_menu', $Network_Admin_List_Page, 'plugin_menu');
             $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
@@ -192,6 +194,7 @@ class Faulh {
             $Admin_List_Page = new Faulh_Admin_List_Page($this->get_plugin_name(), $this->get_version());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('admin_menu', $Admin_List_Page, 'plugin_menu');
+           // $this->loader->add_action('admin_menu', $Admin_List_Page, 'sub_menu');
         }
 //hooks for admin, network and public
         $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
@@ -260,4 +263,6 @@ class Faulh {
         return $this->version;
     }
 
+}  
 }
+

@@ -30,9 +30,9 @@ if (!defined('WPINC')) {
 /**
  * Plugin Constants.
  */
-define('USER_LOGIN_HISTORY_VERSION', '1.7.0');
-define('USER_LOGIN_HISTORY_TABLE_NAME', 'fa_user_logins');
-define('USER_LOGIN_HISTORY_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
+define('FAULH_VERSION', '1.7.0');
+define('FAULH_TABLE_NAME', 'fa_user_logins');
+define('FAULH_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
 
 /**
  * The code that runs during plugin activation.

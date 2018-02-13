@@ -4,12 +4,14 @@
  * Faulh_DB_Helper.
  *
  * @link       https://github.com/faiyazalam
- * @package    Faulh
- * @subpackage Faulh/includes
+ * @package    User_Login_History
+ * @subpackage User_Login_History/includes
  * @author     Er Faiyaz Alam
  * @access private
  */
-class Faulh_DB_Helper {
+if(!class_exists('Faulh_DB_Helper'))
+{
+  class Faulh_DB_Helper {
 
     /**
      * Retrieve the blog name by blog id.
@@ -56,4 +58,6 @@ class Faulh_DB_Helper {
         return $result;
     }
 
+}  
 }
+
