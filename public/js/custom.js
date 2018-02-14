@@ -11,6 +11,22 @@
             minValue.setDate(minValue.getDate() + 0);
             $("#date_to").datepicker("option", "minDate", minValue);
         });
+        
+        
+  
+//table sorting
+                $(".sorting_hover").css("display", "none");
+    $(".sorting_link").hover(function(){
+        $(this).children(".sorting_hover").css("display", "block").next().css("display", "none");
+        }, function(){
+       $(this).children(".sorting_hover").css("display", "none").next().css("display", "block");
     });
+
+    });
+    
+
+
+
+
 })(jQuery);
 
