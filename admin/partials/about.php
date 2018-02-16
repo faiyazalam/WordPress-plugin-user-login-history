@@ -34,15 +34,11 @@
         <h4><?php _e('Other Useful Features:', 'user-login-history'); ?></h4>
         <ol>
             <li><?php _e('Editable Timezone - You can select your preferred timezone to be used for the listing table.', 'user-login-history'); ?></li>
-
             <li><?php _e('Shortcode - To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'user-login-history'); ?><br> <pre><code>&lt;?php do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
             <li><?php _e('Multisite Network (Since version 1.7) - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'user-login-history'); ?><br> <pre><code>&lt;?php do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
             <li><?php _e('Advance Search Filter', 'user-login-history'); ?></li>
             <li><?php _e('CSV Export', 'user-login-history'); ?></li>
         </ol>
-        <p><?php _e('On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
-', 'user-login-history') ?></p>
-
         <h4><?php _e('Translations', 'user-login-history'); ?></h4>
         <p><?php _e('Currently, this plugin is available in two languages i.e. English and Italian.', 'user-login-history') ?></p>
         <p><a href="https://translate.wordpress.org/projects/wp-plugins/user-login-history" class="button-secondary" target="_blank">

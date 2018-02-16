@@ -292,12 +292,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
 
         public function print_column_headers() {
             $allowed_columns = $this->get_allowed_columns();
-            //log the exception
-            if (empty($allowed_columns)) {
-                Faulh_Error_Handler::error_log("No columns is selected for frontend listing table.", __LINE__, __FILE__);
-                $this->pagination_links = ""; //disable pagination link.
-                return;
-            }
             $columns = $this->get_columns();
             $sortable_columns = $this->get_sortable_columns();
 
@@ -332,6 +326,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
         }
 
         public function display() {
+            if(empty($this->get_allowed_columns()))
+            {
+                _e('No columns is selected to display.', 'faulh');
+                return;
+            }
             ?>
             <table>
                 <thead>
@@ -387,12 +386,9 @@ if (!class_exists('Faulh_Public_List_Table')) {
         }
 
         public function single_row_columns($item) {
-            $columns = $this->get_columns();
             $allowed_columns = $this->get_allowed_columns();
-            foreach ($columns as $column_name => $value) {
-                if (in_array($column_name, $allowed_columns)) {
-                    echo "<td>" . $this->column_default($item, $column_name) . "</td>";
-                }
+            foreach ($allowed_columns as $column_name) {
+            echo "<td>" . $this->column_default($item, $column_name) . "</td>";
             }
         }
 
