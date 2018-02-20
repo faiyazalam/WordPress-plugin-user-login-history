@@ -9,6 +9,7 @@
  * @subpackage User_Login_History/admin/partials
  */
 ?>
+
 <div class="wrap">
     <?php Faulh_Template_Helper::head(); ?>
 <div><p><?php echo $this->list_table->table_timezone_edit()?></p></div>

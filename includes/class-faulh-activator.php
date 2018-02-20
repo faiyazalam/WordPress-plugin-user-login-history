@@ -60,6 +60,7 @@ if(!class_exists('Faulh_Activator'))
 `time_last_seen` datetime NOT NULL,
 `ip_address` varchar(200) NOT NULL,
 `browser` varchar(200) NOT NULL,
+`browser_version` varchar(100) NOT NULL,
 `operating_system` varchar(200) NOT NULL,
 `country_name` varchar(200) NOT NULL,
 `country_code` varchar(200) NOT NULL,

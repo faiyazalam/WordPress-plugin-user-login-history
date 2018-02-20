@@ -9,288 +9,250 @@
  * @author     Er Faiyaz Alam
  * @access private
  */
-if(!class_exists('Faulh_User_Tracker'))
-{
-  class Faulh_User_Tracker {
+if (!class_exists('Faulh_User_Tracker')) {
 
-    /**
-     * Login Status Constants.
-     * 
-     */
-    const LOGIN_STATUS_LOGIN = 'login';
-    const LOGIN_STATUS_FAIL = 'fail';
-    const LOGIN_STATUS_LOGOUT = 'logout';
+    class Faulh_User_Tracker {
 
-    /**
-     * LOGIN_STATUS_BLOCK
-     * This will be saved in db if user is not allowed to login on another blog.
-     * This is for network enabled mode only.
-     */
-    const LOGIN_STATUS_BLOCK = 'block';
+        /**
+         * Login Status Constants.
+         * 
+         */
+        const LOGIN_STATUS_LOGIN = 'login';
+        const LOGIN_STATUS_FAIL = 'fail';
+        const LOGIN_STATUS_LOGOUT = 'logout';
 
-    /**
-     * The unique identifier of this plugin.
-     *
-     * @access   protected
-     * @var      string    $plugin_name    The string used to uniquely identify this plugin.
-     */
-    protected $plugin_name;
-    
-     /**
-     * The version of this plugin.
-     *
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
-     */
-    private $version;
+        /**
+         * LOGIN_STATUS_BLOCK
+         * This will be saved in db if user is not allowed to login on another blog.
+         * This is for network enabled mode only.
+         */
+        const LOGIN_STATUS_BLOCK = 'block';
 
-    /**
-     * Stores user session token.
-     * 
-     * @access private
-     * @var string $session_token The session token of user.
-     */
-    private $session_token;
+        /**
+         * The unique identifier of this plugin.
+         *
+         * @access   protected
+         * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+         */
+        protected $plugin_name;
 
-    /**
-     * Stores the status of login.
-     * 
-     * @access private
-     * @var string|bool $login_status The login status of user.
-     */
-    private $login_status = false;
+        /**
+         * The version of this plugin.
+         *
+         * @access   private
+         * @var      string    $version    The current version of this plugin.
+         */
+        private $version;
 
-    /**
-     * Stores instance of geo helper class.
-     * 
-     * @access   private
-     * @var      string    $geo_object
-     */
-    private $geo_object;
+        /**
+         * Stores user session token.
+         * 
+         * @access private
+         * @var string $session_token The session token of user.
+         */
+        private $session_token;
 
-    /**
-     * Stores instance of browser helper class.
-     * 
-     * @access   private
-     * @var      string    $browser_object
-     */
-    private $browser_object;
+        /**
+         * Stores the status of login.
+         * 
+         * @access private
+         * @var string|bool $login_status The login status of user.
+         */
+        private $login_status = false;
 
-    /**
-     * Initialize the class and set its properties.
-     *
-     * @var      string    $plugin_name       The name of this plugin.
-     */
-    public function __construct($plugin_name, $version) {
-        $this->plugin_name = $plugin_name;
-        $this->version = $version;
-    }
+        /**
+         * Stores instance of geo helper class.
+         * 
+         * @access   private
+         * @var      string    $geo_object
+         */
+        private $geo_object;
 
-    /**
-     * Blocks user if the user is not allowed to 
-     * login on another blog on the network.
-     * 
-     * @access private
-     */
-    private function is_blocked_user_on_this_blog($user_id) {
-        if (is_multisite() && !is_user_member_of_blog($user_id) && !is_super_admin($user_id)) {
-            $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
-            if ($Network_Admin_Setting->get_settings('block_user')) {
-                $this->login_status = self::LOGIN_STATUS_BLOCK;
-                wp_logout();
-                wp_die($Network_Admin_Setting->get_settings('block_user_message'));
+        /**
+         * Initialize the class and set its properties.
+         *
+         * @var      string    $plugin_name       The name of this plugin.
+         */
+        public function __construct($plugin_name, $version) {
+            $this->plugin_name = $plugin_name;
+            $this->version = $version;
+        }
+
+        /**
+         * Blocks user if the user is not allowed to 
+         * login on another blog on the network.
+         * 
+         * @access private
+         */
+        private function is_blocked_user_on_this_blog($user_id) {
+            if (is_multisite() && !is_user_member_of_blog($user_id) && !is_super_admin($user_id)) {
+                $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
+                if ($Network_Admin_Setting->get_settings('block_user')) {
+                    $this->login_status = self::LOGIN_STATUS_BLOCK;
+                    wp_logout();
+                    wp_die($Network_Admin_Setting->get_settings('block_user_message'));
+                }
             }
         }
-    }
 
-    /**
-     * Set object for Geo Helper.
-     * @access private
-     */
-    private function set_geo_object() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-geo-helper.php';
-        $this->geo_object = new Faulh_Geo_Helper();
-    }
+        /**
+         * Saves user login details.
+         * 
+         * @access private
+         * @param string $user_login username
+         * @param object $user WP_User object
+         * @param string $status success, fail, logout, block etc.
+         */
+        private function save_login($user_login, $user, $status = '') {
+            require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-browser-helper.php';
+            require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-geo-helper.php';
+            global $wpdb;
+            $unknown = 'unknown';
+            $table = $wpdb->get_blog_prefix() . FAULH_TABLE_NAME;
+            $current_date = Faulh_Date_Time_Helper::get_current_date_time();
+            $user_id = !empty($user->ID) ? $user->ID : FALSE;
+            $BrowserHelper = new Faulh_Browser_Helper();
 
-    /**
-     * Set object for Browser Helper.
-     * @access private
-     */
-    private function set_browser_object() {
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-browser-helper.php';
-        $this->browser_object = new Faulh_Browser_Helper();
-    }
+            //now insert for new login
+            $data = array(
+                'user_id' => $user_id,
+                'session_token' => $this->get_session_token(),
+                'username' => $user_login,
+                'time_login' => $current_date,
+                'ip_address' => Faulh_Geo_Helper::get_ip(),
+                'time_last_seen' => $current_date,
+                'browser' => $BrowserHelper->getBrowser(),
+                'browser_version' => $BrowserHelper->getVersion(),
+                'operating_system' => $BrowserHelper->getPlatform(),
+                'old_role' => !empty($user->roles) ? implode(",", $user->roles) : "",
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'login_status' => $status,
+                'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
+            );
+            //this is used to modify data before saving in db.
+            $filtered_data = apply_filters('faulh_before_save_login', $data);
 
-    /**
-     * Saves user login details.
-     * 
-     * @access private
-     * @param string $user_login username
-     * @param object $user WP_User object
-     * @param string $status success, fail, logout, block etc.
-     */
-    private function save_login($user_login, $user, $status = '') {
-        global $wpdb;
-        $unknown = 'unknown';
-        $table = $wpdb->get_blog_prefix() . FAULH_TABLE_NAME;
-        $this->set_geo_object();
-        $this->set_browser_object();
-        $current_date = Faulh_Date_Time_Helper::get_current_date_time();
-        $user_id = isset($user->ID) ? $user->ID : FALSE;
-        $old_roles = isset($user->roles) && !empty($user->roles) ? implode(",", $user->roles) : "";
-        $geo_location = $this->geo_object->get_geo_location();
-        $country_code = isset($geo_location->geoplugin_countryCode) ? $geo_location->geoplugin_countryCode : "";
-        $lat = isset($geo_location->geoplugin_latitude) ? $geo_location->geoplugin_latitude : 0;
-        $long = isset($geo_location->geoplugin_longitude) ? $geo_location->geoplugin_longitude : 0;
+            if (is_array($filtered_data) && !empty($filtered_data)) {
+                $data = array_merge($data, $filtered_data);
+            }
 
-        if ($lat != 0 && $long != 0 && $country_code) {
-            $user_timezone = Faulh_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
-        }
-        //now insert for new login
-        $data = array(
-            'user_id' => $user_id,
-            'session_token' => $this->get_session_token(),
-            'username' => $user_login,
-            'time_login' => $current_date,
-            'ip_address' => $this->geo_object->get_ip(),
-            'time_last_seen' => $current_date,
-            'browser' => $this->browser_object->getBrowser(),
-            'operating_system' => $this->browser_object->getPlatform(),
-            'country_name' => !empty($geo_location->geoplugin_countryName)?$geo_location->geoplugin_countryName:$unknown,
-            'country_code' => !empty($country_code)?$country_code:$unknown,
-            'old_role' => $old_roles,
-            'timezone' => !empty($user_timezone) ? $user_timezone : $unknown,
-            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-            'login_status' => $status,
-            'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
-        );
-        //this is used to modify data before saving in db.
-        $filtered_data = apply_filters('faulh_before_save_login', $data, $lat, $long);
+            $wpdb->insert($table, $data);
 
-        if (is_array($filtered_data) && !empty($filtered_data)) {
-            $data = array_merge($data, $filtered_data);
-        }
-        $wpdb->insert($table, $data);
-        if ($wpdb->last_error) {
-            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
-            return;
-        }
+            if ($wpdb->last_error || !$wpdb->insert_id) {
+                Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+                return;
+            }
 
-        if (self::LOGIN_STATUS_FAIL == $status) {
-            return;
-        }
+            if (self::LOGIN_STATUS_FAIL == $status) {
+                return;
+            }
 
-        if ($wpdb->insert_id) {
             Faulh_Session_Helper::set_last_insert_id($wpdb->insert_id);
             Faulh_Session_Helper::set_current_login_blog_id();
-            if (!empty($user_timezone)) {
-                $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version ,$user_id);
-                $UserProfile->add_timezone($user_timezone);
+
+            $this->is_blocked_user_on_this_blog($user_id);
+            do_action('faulh_after_save_login', $data);
+        }
+
+        /**
+         * Fires if login success.
+         * @access  public
+         * @param string $user_login username
+         * @param object $user wp user object
+         */
+        public function user_login($user_login, $user) {
+            $this->save_login($user_login, $user, self::LOGIN_STATUS_LOGIN);
+        }
+
+        /**
+         * Update last seen time for the current user.
+         * 
+         * @access  public
+         * @global object $wpdb
+         * @return bool|int The number of records updated.
+         */
+        public function update_time_last_seen() {
+            global $wpdb;
+            $current_user = wp_get_current_user();
+            $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . FAULH_TABLE_NAME;
+            $current_date = Faulh_Date_Time_Helper::get_current_date_time();
+            $user_id = $current_user->ID;
+            $last_id = Faulh_Session_Helper::get_last_insert_id();
+           
+            if (!$user_id || !$last_id) {
+                return;
             }
-        }
-        $this->is_blocked_user_on_this_blog($user_id);
-        do_action('faulh_after_save_login', $data);
-    }
 
-    /**
-     * Fires if login success.
-     * @access  public
-     * @param string $user_login username
-     * @param object $user wp user object
-     */
-    public function user_login($user_login, $user) {
-        $this->save_login($user_login, $user, self::LOGIN_STATUS_LOGIN);
-    }
+            $sql = "update $table set time_last_seen='$current_date' where id = '$last_id' and user_id = '$user_id'";
 
-    /**
-     * Update last seen time for the current user.
-     * 
-     * @access  public
-     * @global object $wpdb
-     * @return bool|int The number of records updated.
-     */
-    public function update_time_last_seen() {
-        global $wpdb;
-        $current_user = wp_get_current_user();
-        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . FAULH_TABLE_NAME;
-        $current_date = Faulh_Date_Time_Helper::get_current_date_time();
-        $user_id = $current_user->ID;
-        $last_id = Faulh_Session_Helper::get_last_insert_id();
+            $status = $wpdb->query($sql);
 
-        if (!$user_id || !$last_id) {
-            return;
+            if ($wpdb->last_error) {
+                Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            }
+
+            return $status;
         }
 
-        $sql = "update $table set time_last_seen='$current_date' where id = '$last_id' and user_id = '$user_id'";
-
-        $status = $wpdb->query($sql);
-
-        if ($wpdb->last_error) {
-            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+        /**
+         * Fires if login failed.
+         * 
+         * @access public
+         * @param string $user_login username
+         */
+        public function user_login_failed($user_login) {
+            $this->save_login($user_login, NULL, self::LOGIN_STATUS_FAIL);
         }
 
-        return $status;
-    }
+        /**
+         * Fires on logout.
+         * Save logout time of current user.
+         * 
+         * @access public
+         */
+        public function user_logout() {
+            global $wpdb;
+            $time_logout = Faulh_Date_Time_Helper::get_current_date_time();
+            $last_id = Faulh_Session_Helper::get_last_insert_id();
+            $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
 
-    /**
-     * Fires if login failed.
-     * 
-     * @access public
-     * @param string $user_login username
-     */
-    public function user_login_failed($user_login) {
-        $this->save_login($user_login, NULL, self::LOGIN_STATUS_FAIL);
-    }
+            if (!$last_id) {
+                return;
+            }
+            $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . FAULH_TABLE_NAME;
+            ;
+            $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where id = '$last_id' ";
+            $wpdb->query($sql);
 
-    /**
-     * Fires on logout.
-     * Save logout time of current user.
-     * 
-     * @access public
-     */
-    public function user_logout() {
-        global $wpdb;
-        $time_logout = Faulh_Date_Time_Helper::get_current_date_time();
-        $last_id = Faulh_Session_Helper::get_last_insert_id();
-        $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
-
-        if (!$last_id) {
-            return;
+            if ($wpdb->last_error) {
+                Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            }
+            Faulh_Session_Helper::destroy();
         }
-        $table = $wpdb->get_blog_prefix(Faulh_Session_Helper::get_current_login_blog_id()) . FAULH_TABLE_NAME;
-        ;
-        $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where id = '$last_id' ";
-        $wpdb->query($sql);
 
-        if ($wpdb->last_error) {
-            Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+        /**
+         * Sets session token.
+         * 
+         * @param string $logged_in_cookie
+         * @param string $expire
+         * @param string $expiration
+         * @param string|int $user_id
+         * @param string $logged_in_text
+         * @param string $token The session token.
+         */
+        public function set_session_token($logged_in_cookie, $expire, $expiration, $user_id, $logged_in_text, $token) {
+            $this->session_token = $token;
         }
-        Faulh_Session_Helper::destroy();
+
+        /**
+         * Gets session token.
+         * 
+         * @return string The session token.
+         */
+        public function get_session_token() {
+            return $this->session_token ? $this->session_token : "";
+        }
+
     }
 
-    /**
-     * Sets session token.
-     * 
-     * @param string $logged_in_cookie
-     * @param string $expire
-     * @param string $expiration
-     * @param string|int $user_id
-     * @param string $logged_in_text
-     * @param string $token The session token.
-     */
-    public function set_session_token($logged_in_cookie, $expire, $expiration, $user_id, $logged_in_text, $token) {
-        $this->session_token = $token;
-    }
-
-    /**
-     * Gets session token.
-     * 
-     * @return string The session token.
-     */
-    public function get_session_token() {
-        return $this->session_token ? $this->session_token : "";
-    }
-
-}  
 }
-

@@ -33,6 +33,8 @@ if (!defined('WPINC')) {
 define('FAULH_VERSION', '1.7.0');
 define('FAULH_TABLE_NAME', 'fa_user_logins');
 define('FAULH_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
+define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
+define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
 
 /**
  * The code that runs during plugin activation.
@@ -66,6 +68,7 @@ require plugin_dir_path(__FILE__) . 'includes/class-faulh.php';
  * not affect the page life cycle.
  */
 function run_faulh() {
+
     $plugin = new Faulh();
     $plugin->run();
 }

@@ -192,7 +192,7 @@ if(!class_exists('Faulh_Admin_List_Table'))
         $nonce = $_GET['_wpnonce'];
 
         if (!wp_verify_nonce($nonce, $this->plugin_name . 'delete_row_by_' . $this->_args['singular'])) {
-            wp_die('invalid nonce');
+            return FALSE;
         }
 
         return $this->delete_rows($_GET['record_id']);

@@ -227,21 +227,33 @@ if (!class_exists('Faulh_Abstract_List_table')) {
                     return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : __('Logged In', 'faulh');
                 case 'ip_address':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
-                case 'timezone':
+                case 'browser_version':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'operating_system':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
-                case 'country_name':
-                    return in_array(strtolower($item[$column_name]), array("", strtolower($unknown))) ? $unknown : $item[$column_name] . "(" . $country_code . ")";
-                case 'country_code':
-                    return $country_code;
+               
                 case 'time_last_seen':
                     if (!$item['user_id']) {
                         return $unknown;
                     }
+                    $time_last_seen_unix = strtotime($item[$column_name]);
                     $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                    $human_time_diff = human_time_diff(strtotime($item[$column_name]));
-                    return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'faulh') . '</span>';
+                    $human_time_diff = human_time_diff($time_last_seen_unix);
+                    $minutes = ((time() - $time_last_seen_unix)/60);
+                    $settings = get_option($this->plugin_name."_basics");
+                    $minute_online = !empty($settings['is_status_online'])?$settings['is_status_online']:FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
+                    $minute_idle = !empty($settings['is_status_idle'])?$settings['is_status_idle']:FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
+                    if($minutes <= $minute_online)
+                    {
+                        $is_online_str = 'online';
+                    }elseif ($minutes <= $minute_idle) {
+                        $is_online_str = 'idle';
+                    }
+                    else{
+                        $is_online_str = 'offline';
+                    }
+ 
+                    return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'faulh') . '</div>';
                 case 'user_agent':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'duration':
@@ -282,11 +294,12 @@ if (!class_exists('Faulh_Abstract_List_table')) {
                 'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'faulh'),
                 'ip_address' => __('IP Address', 'faulh'),
                 'browser' => __('Browser', 'faulh'),
+                'browser_version' => __('Browser Version', 'faulh'),
                 'operating_system' => __('Platform', 'faulh'),
-                'country_name' => __('Country', 'faulh'),
+              
                 'duration' => __('Duration', 'faulh'),
                 'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'faulh'),
-                'timezone' => __('Timezone', 'faulh'),
+              
                 'time_login' => __('Login', 'faulh'),
                 'time_logout' => __('Logout', 'faulh'),
                 'user_agent' => __('User Agent', 'faulh'),
@@ -412,9 +425,6 @@ if (!class_exists('Faulh_Abstract_List_table')) {
                 $record['ip_address'] = $this->column_default($row, 'ip_address');
                 $record['browser'] = $this->column_default($row, 'browser');
                 $record['operating_system'] = $this->column_default($row, 'operating_system');
-                $record['country_code'] = $this->column_default($row, 'country_code');
-                $record['country_name'] = $this->column_default($row, 'country_name');
-                $record['timezone'] = $this->column_default($row, 'timezone');
                 $record['duration'] = $this->column_default($row, 'duration');
                 $time_last_seen = $row['time_last_seen'];
                 $human_time_diff = human_time_diff(strtotime($time_last_seen));

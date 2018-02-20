@@ -1,3 +1,13 @@
 /*
 admin css for the plugin - user login history
 */
+
+.is_status_online{
+    background-color:  #b3ffb3
+}
+.is_status_offline{
+    background-color:   #ff8566
+}
+.is_status_idle{
+    background-color:   #ffffb3
+}

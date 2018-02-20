@@ -119,6 +119,7 @@ if(!class_exists('Faulh'))
 
         if (is_admin() && !is_network_admin()) {
             //required files for admin only
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-setting.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-list-table.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-list-page.php';
         }
@@ -194,7 +195,9 @@ if(!class_exists('Faulh'))
             $Admin_List_Page = new Faulh_Admin_List_Page($this->get_plugin_name(), $this->get_version());
             $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
             $this->loader->add_action('admin_menu', $Admin_List_Page, 'plugin_menu');
-           // $this->loader->add_action('admin_menu', $Admin_List_Page, 'sub_menu');
+            $Admin_Setting = new Faulh_Admin_Setting($this->get_plugin_name(), $this->get_version());
+            $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
+            $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
         }
 //hooks for admin, network and public
         $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
