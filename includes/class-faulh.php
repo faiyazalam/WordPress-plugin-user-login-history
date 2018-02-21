@@ -200,13 +200,16 @@ if(!class_exists('Faulh'))
             $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
         }
 //hooks for admin, network and public
-        $this->loader->add_action('init', $plugin_admin, 'session_start', 0);
-        $User_Tracker = new Faulh_User_Tracker($this->get_plugin_name(), $this->get_version());
+          $Session_Helper = new Faulh_Session_Helper($this->get_plugin_name());
+      
+        $User_Tracker = new Faulh_User_Tracker($this->get_plugin_name(), $this->get_version(), $Session_Helper->get_current_login_blog_id());
         $this->loader->add_action('init', $User_Tracker, 'update_time_last_seen');
-        $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_session_token', 10, 6);
+        $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_logged_in_cookie', 10, 6);
         $this->loader->add_action('wp_login', $User_Tracker, 'user_login', 10, 2);
         $this->loader->add_action('wp_logout', $User_Tracker, 'user_logout');
         $this->loader->add_action('wp_login_failed', $User_Tracker, 'user_login_failed');
+      
+        $this->loader->add_filter('attach_session_information', $Session_Helper, 'attach_session_information', 10, 2);
     }
 
     /**

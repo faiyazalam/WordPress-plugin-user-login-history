@@ -108,17 +108,6 @@ if(!class_exists('Faulh_Admin'))
     }
 
     /**
-     * Just to start session.
-     * 
-     * @access public
-     */
-    public function session_start() {
-        if ("" == session_id()) {
-            session_start();
-        }
-    }
-
-    /**
      * Process the bulk operation for the listing tables.
      * 
      * @access public

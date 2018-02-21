@@ -73,5 +73,5 @@ function run_faulh() {
     $plugin->run();
 }
 
-run_faulh();
+run_faulh();    
 ?>

@@ -85,7 +85,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $fields = array(
                 'user_id',
                 'username',
-                'country_name',
                 'browser',
                 'ip_address',
                 'timezone',

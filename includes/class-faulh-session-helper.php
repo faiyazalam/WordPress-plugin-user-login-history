@@ -9,59 +9,43 @@
  * @author     Er Faiyaz Alam
  * @access private
  */
-if(!class_exists('Faulh_Session_Helper'))
-{
-  class Faulh_Session_Helper {
+if (!class_exists('Faulh_Session_Helper')) {
 
-    /**
-     * Holds the key for the last insert id.
-     */
-    const LAST_INSERT_ID_KEY = 'last_insert_id';
+    class Faulh_Session_Helper {
 
-    /**
-     * Holds the key for the current blog id on which user gets loggedin.
-     */
-    const CURRENT_LOGIN_BLOG_ID_KEY = 'current_login_blog_id';
+        private $plugin_name;
 
-    /**
-     * Sets last insert id in the session.
-     * @param int|string $id
-     */
-    static public function set_last_insert_id($id = NULL) {
-        $_SESSION[__CLASS__][self::LAST_INSERT_ID_KEY] = $id ? $id : FALSE;
+        public function __construct($plugin_name) {
+            $this->plugin_name = $plugin_name;
+        }
+
+        /**
+         * Holds the key for the current blog id on which user gets loggedin.
+         */
+        const LOGIN_BLOG_ID_KEY = 'login_blog_id';
+
+        /**
+         * Gets the blog id from the session.
+         * @return int The blog id from which user gets loggedin.
+         */
+        public function get_current_login_blog_id() {
+            $user_id = get_current_user_id();
+            if (!$user_id) {
+                return FALSE;
+            }
+
+            $WP_Session_Tokens = WP_Session_Tokens::get_instance($user_id);
+            $session = $WP_Session_Tokens->get(wp_get_session_token());
+            return !empty($session[$this->plugin_name][self::LOGIN_BLOG_ID_KEY]) ? (int) $session[$this->plugin_name][self::LOGIN_BLOG_ID_KEY] : FALSE;
+        }
+
+        public function attach_session_information($array, $user_id) {
+            return array($this->plugin_name => array(
+                    self::LOGIN_BLOG_ID_KEY => get_current_blog_id(),
+            ));
+        }
+
     }
 
-    /**
-     * Sets the blog id in the session.
-     * @param int|string $id
-     */
-    static public function set_current_login_blog_id($id = NULL) {
-        $_SESSION[__CLASS__][self::CURRENT_LOGIN_BLOG_ID_KEY] = $id ? $id : get_current_blog_id();
-    }
-
-    /**
-     * Gets the blog id from the session.
-     * @return int The blog id from which user gets loggedin.
-     */
-    static public function get_current_login_blog_id() {
-        return isset($_SESSION[__CLASS__][self::CURRENT_LOGIN_BLOG_ID_KEY]) ? $_SESSION[__CLASS__][self::CURRENT_LOGIN_BLOG_ID_KEY] : NULL;
-    }
-
-    /**
-     * Gets the last insert id from the session.
-     * @return int The last insert id from the session.
-     */
-    static public function get_last_insert_id() {
-        return isset($_SESSION[__CLASS__][self::LAST_INSERT_ID_KEY]) ? $_SESSION[__CLASS__][self::LAST_INSERT_ID_KEY] : FALSE;
-    }
-
-    /**
-     * Destroys the session created by this class.
-     */
-    static public function destroy() {
-        unset($_SESSION[__CLASS__]);
-    }
-    
-    }  
 }
 

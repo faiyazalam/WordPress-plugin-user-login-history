@@ -57,7 +57,11 @@ class Faulh_Admin_Setting {
         $sections = array(
             array(
                 'id'    => $this->plugin_name.'_basics',
-                'title' => __( 'Settings', 'faulh' ),
+                'title' => __( 'Basic Settings', 'faulh' ),
+            ),
+            array(
+                'id'    => $this->plugin_name.'_advance',
+                'title' => __( 'Advance Settings', 'faulh' ),
             )
            
         );
@@ -96,6 +100,16 @@ class Faulh_Admin_Setting {
                     'default'           => FAULH_DEFAULT_IS_STATUS_IDLE_MIN,
                     'sanitize_callback' => 'floatval'
                 ),
+            ),
+             $this->plugin_name.'_advance' => array(
+                array(
+                    'name'              => 'is_geo_tracker_enabled',
+                    'label'             => __( 'Enable Geo Traker', 'faulh' ),
+                    'desc'              => __( 'Enable tracking of country and timezone.', 'faulh' ),
+                    'type'              => 'checkbox',
+                    'default'           => FALSE,
+                ),
+                
             ),
             
         );
