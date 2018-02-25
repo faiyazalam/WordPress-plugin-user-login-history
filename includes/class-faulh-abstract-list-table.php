@@ -14,9 +14,9 @@ if (!class_exists('WP_List_Table')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-if (!class_exists('Faulh_Abstract_List_table')) {
+if (!class_exists('Faulh_Abstract_List_Table')) {
 
-    abstract class Faulh_Abstract_List_table extends WP_List_Table {
+    abstract class Faulh_Abstract_List_Table extends WP_List_Table {
 
         /**
          * Default timezone for the table.
@@ -117,7 +117,6 @@ if (!class_exists('Faulh_Abstract_List_table')) {
                 'ip_address',
                 'timezone',
                 'country_name',
-                'browser',
                 'login_status',
             );
 
@@ -212,7 +211,7 @@ if (!class_exists('Faulh_Abstract_List_table')) {
                         return $unknown;
                     }
                     $user_data = get_userdata($item['user_id']);
-                    return isset($user_data->roles) && !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
+                    return !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
                 case 'old_role':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'browser':
@@ -432,6 +431,9 @@ if (!class_exists('Faulh_Abstract_List_table')) {
                 $record['ip_address'] = $this->column_default($row, 'ip_address');
                 $record['browser'] = $this->column_default($row, 'browser');
                 $record['operating_system'] = $this->column_default($row, 'operating_system');
+                $record['country_code'] = $this->column_default($row, 'country_code');
+                $record['country_name'] = $this->column_default($row, 'country_name');
+                $record['timezone'] = $this->column_default($row, 'timezone');
                 $record['duration'] = $this->column_default($row, 'duration');
                 $time_last_seen = $row['time_last_seen'];
                 $human_time_diff = human_time_diff(strtotime($time_last_seen));

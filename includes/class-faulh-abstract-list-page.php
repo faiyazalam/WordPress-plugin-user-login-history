@@ -90,7 +90,7 @@ if(!class_exists('Faulh_Abstract_List_Page'))
         );
         add_action("load-$hook", [ $this, 'screen_option']);
         
-                add_submenu_page($menu_slug, __('Premium Benefits', 'faulh'), __('Premium Benefits', 'faulh'), 'manage_options', $this->plugin_name.'-get-premium', array($this, 'render_get_premium_page'));
+              //  add_submenu_page($menu_slug, __('Premium Benefits', 'faulh'), __('Premium Benefits', 'faulh'), 'manage_options', $this->plugin_name.'-get-premium', array($this, 'render_get_premium_page'));
         add_submenu_page($menu_slug, 'About', 'About', 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
         add_submenu_page($menu_slug, 'Help', 'Help', 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
     

@@ -49,13 +49,7 @@ if (!class_exists('Faulh_Public')) {
             $this->version = $version;
         }
 
-        private function is_shortcode_called() {
-            global $post;
-            if (has_shortcode($post->post_content, 'user-login-history') || has_shortcode($post->post_content, 'user_login_history')) {
-                return TRUE;
-            }
-            return FALSE;
-        }
+
 
         /**
          * Register the stylesheets for the public-facing side of the site.
@@ -63,22 +57,16 @@ if (!class_exists('Faulh_Public')) {
          * @access public
          */
         public function enqueue_styles() {
-            if (!$this->is_shortcode_called()) {
-                return;
+            wp_register_style($this->plugin_name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
             }
-            wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
-        }
 
         /**
          * Register the stylesheets for the public-facing side of the site.
          *
          */
         public function enqueue_scripts() {
-            if (!$this->is_shortcode_called()) {
-                return;
-            }
-            wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
-            wp_enqueue_script($this->plugin_name . '-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+            wp_register_script($this->plugin_name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+            wp_register_script($this->plugin_name . '-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
             wp_localize_script($this->plugin_name . '-custom.js', 'custom_object', array(
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'plugin_name' => $this->plugin_name,
@@ -124,6 +112,10 @@ if (!class_exists('Faulh_Public')) {
 
             $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
             $_GET['user_id'] = $current_user->ID;
+            
+            wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
+            wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
+            wp_enqueue_script($this->plugin_name . '-custom.js');
             ob_start();
             require_once(plugin_dir_path(__FILE__) . 'partials/listing.php');
             return ob_get_clean();

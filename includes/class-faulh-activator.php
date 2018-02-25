@@ -69,8 +69,7 @@ if(!class_exists('Faulh_Activator'))
 `user_agent` text NOT NULL, 
 `login_status` varchar(50) NOT NULL, 
 `is_super_admin` INT(1) NOT NULL, 
-PRIMARY KEY (`id`),
-KEY `session_token` (`session_token`)
+PRIMARY KEY (`id`)
 ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

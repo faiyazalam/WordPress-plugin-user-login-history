@@ -89,7 +89,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 'ip_address',
                 'timezone',
                 'country_name',
-                'browser',
                 'operating_system',
                 'login_status',
             );
@@ -421,7 +420,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                         return $unknown;
                     }
                     $user_data = get_userdata($item['user_id']);
-                    return isset($user_data->roles) && !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
+                    return !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
                 case 'old_role':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'browser':
