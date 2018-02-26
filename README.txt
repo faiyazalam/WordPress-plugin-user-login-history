@@ -24,15 +24,15 @@ By this plugin you can track any visitor's login details with the following attr
 1. **Operating System**
 1. **Current Role**
 1. **Old Role** - The role while user gets logged-in into your website.
-1. **Country Name**
-1. **Country Code**
-1. **Time Zone**
+1. **Country Name (Based on IP Address)**
+1. **Country Code (Based on IP Address)**
+1. **Timezone (Based on IP Address)**
 
 Other Useful Features:
-1. "Editable Time Zone" - You can select your preferred time zone to be used for the listing table.
-1. "Shortcode" - To see the listing table on front-end for the current logged-in user, you can use this shortcode `<?php do_shortcode['user-login-history'] ?>` in your php template file.
+1. "Editable Timezone" - You can select your preferred time zone to be used for the listing table.
+1. "Shortcode" - To see the listing table on front-end for the current logged-in user, you can use this shortcode `<?php echo do_shortcode['user-login-history'] ?>` in your php template file.
 1. "Multisite Network (Since version 1.7)" - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
-1. "Advance Search Filter"
+1. "Advanced Search Filter"
 1. "CSV Export"
 
 

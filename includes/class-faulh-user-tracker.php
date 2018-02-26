@@ -96,9 +96,6 @@ if (!class_exists('Faulh_User_Tracker')) {
                 }
             }
         }
-       
-                
-
 
         /**
          * Saves user login details.
@@ -109,11 +106,10 @@ if (!class_exists('Faulh_User_Tracker')) {
          * @param string $status success, fail, logout, block etc.
          */
         private function save_login($user_login, $user, $status = '') {
-            if(empty($user_login))
-            {
+            if (empty($user_login)) {
                 return FALSE;
             }
-            
+
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-browser-helper.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-geo-helper.php';
             global $wpdb;
@@ -123,15 +119,14 @@ if (!class_exists('Faulh_User_Tracker')) {
             $user_id = !empty($user->ID) ? $user->ID : FALSE;
             $BrowserHelper = new Faulh_Browser_Helper();
             $GeoHelper = new Faulh_Geo_Helper($this->plugin_name);
-             $geo_location = $GeoHelper->get_geo_location();
-        $country_code = isset($geo_location->geoplugin_countryCode) ? $geo_location->geoplugin_countryCode : "";
-        $lat = isset($geo_location->geoplugin_latitude) ? $geo_location->geoplugin_latitude : 0;
-        $long = isset($geo_location->geoplugin_longitude) ? $geo_location->geoplugin_longitude : 0;
+            $geo_location = $GeoHelper->get_geo_location();
+            $country_code = isset($geo_location->geoplugin_countryCode) ? $geo_location->geoplugin_countryCode : "";
+            $lat = isset($geo_location->geoplugin_latitude) ? $geo_location->geoplugin_latitude : 0;
+            $long = isset($geo_location->geoplugin_longitude) ? $geo_location->geoplugin_longitude : 0;
 
-        if ($lat != 0 && $long != 0 && $country_code) {
-            $user_timezone = Faulh_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
-        }
-
+            if ($lat != 0 && $long != 0 && $country_code) {
+                $user_timezone = Faulh_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
+            }
             //now insert for new login
             $data = array(
                 'user_id' => $user_id,
@@ -139,10 +134,9 @@ if (!class_exists('Faulh_User_Tracker')) {
                 'username' => $user_login,
                 'time_login' => $current_date,
                 'ip_address' => $GeoHelper->get_ip(),
-             'country_name' => !empty($geo_location->geoplugin_countryName)?$geo_location->geoplugin_countryName:$unknown,
-            'country_code' => !empty($country_code)?$country_code:$unknown,
-            'old_role' => $old_roles,
-            'timezone' => !empty($user_timezone) ? $user_timezone : $unknown,
+                'country_name' => !empty($geo_location->geoplugin_countryName) ? $geo_location->geoplugin_countryName : $unknown,
+                'country_code' => !empty($country_code) ? $country_code : $unknown,
+                'timezone' => !empty($user_timezone) ? $user_timezone : $unknown,
                 'time_last_seen' => $current_date,
                 'browser' => $BrowserHelper->getBrowser(),
                 'browser_version' => $BrowserHelper->getVersion(),
@@ -197,13 +191,13 @@ if (!class_exists('Faulh_User_Tracker')) {
             $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . FAULH_TABLE_NAME;
             $current_date = Faulh_Date_Time_Helper::get_current_date_time();
             $user_id = $current_user->ID;
-            
-           
+
+
             if (!$user_id) {
                 return;
             }
-          
-            $sql = "update $table set time_last_seen='$current_date' where session_token = '".wp_get_session_token()."' and user_id = '$user_id' and login_status = '".  self::LOGIN_STATUS_LOGIN."'";
+
+            $sql = "update $table set time_last_seen='$current_date' where session_token = '" . wp_get_session_token() . "' and user_id = '$user_id' and login_status = '" . self::LOGIN_STATUS_LOGIN . "'";
             $status = $wpdb->query($sql);
 
             if ($wpdb->last_error) {
@@ -232,27 +226,34 @@ if (!class_exists('Faulh_User_Tracker')) {
         public function user_logout() {
             //use get_session_token just after login.
             //use wp_get_session_token() after successful login redirect.
-                $session_token = wp_get_session_token() ? wp_get_session_token() : $this->get_session_token();
-                if(!$session_token)
-                {
-                    return;
-                }
-                
+            $session_token = wp_get_session_token() ? wp_get_session_token() : $this->get_session_token();
+            if (!$session_token) {
+                return;
+            }
+
             global $wpdb;
             $time_logout = Faulh_Date_Time_Helper::get_current_date_time();
             $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
             $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . FAULH_TABLE_NAME;
-            $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '".$session_token."' and login_status <> '".$login_status."'";
-           // var_dump($sql);exit;
+            $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' and login_status <> '" . $login_status . "'";
+            // var_dump($sql);exit;
             $wpdb->query($sql);
             if ($wpdb->last_error) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             }
-          
         }
 
         /**
          * Sets session token.
+         * 
+         * @param string $token The session token.
+         */
+        private function set_session_token($token) {
+            $this->session_token = $token;
+        }
+
+        /**
+         * Callback function for the action hook - set_logged_in_cookie
          * 
          * @param string $logged_in_cookie
          * @param string $expire
@@ -261,10 +262,6 @@ if (!class_exists('Faulh_User_Tracker')) {
          * @param string $logged_in_text
          * @param string $token The session token.
          */
-        private function set_session_token($token) {
-            $this->session_token = $token;
-        }
- 
         public function set_logged_in_cookie($logged_in_cookie, $expire, $expiration, $user_id, $logged_in_text, $token) {
             $this->set_session_token($token);
         }

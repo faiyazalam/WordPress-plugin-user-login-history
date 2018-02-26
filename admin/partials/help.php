@@ -23,7 +23,7 @@
                 </p>
             </li>
             <li>
-                <p><?php _e('Advance Usage of shortcode:', 'user-login-history'); ?> 
+                <p><?php _e('Advanced Usage of shortcode:', 'user-login-history'); ?> 
 <pre><code>&lt;?php echo do_shortcode("[user-login-history limit='20' reset_link='my-logins' columns='ip_address,time_login' date_format='Y-m-d' time_format='H:i:s']"); ?&gt;</code></pre>
                 </p>
             </li>
