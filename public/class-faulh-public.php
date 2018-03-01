@@ -49,28 +49,23 @@ if (!class_exists('Faulh_Public')) {
             $this->version = $version;
         }
 
-
-
         /**
          * Register the stylesheets for the public-facing side of the site.
          *
          * @access public
          */
         public function enqueue_styles() {
-            wp_register_style($this->plugin_name . '-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
-            }
+            wp_register_style($this->plugin_name . '-public-jquery-ui.min', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+            wp_register_style($this->plugin_name . '-public-custom', plugin_dir_url(__FILE__) . 'css/custom.css');
+        }
 
         /**
          * Register the stylesheets for the public-facing side of the site.
          *
          */
         public function enqueue_scripts() {
-            wp_register_script($this->plugin_name . '-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
-            wp_register_script($this->plugin_name . '-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
-            wp_localize_script($this->plugin_name . '-custom.js', 'custom_object', array(
-                'ajax_url' => admin_url('admin-ajax.php'),
-                'plugin_name' => $this->plugin_name,
-            ));
+            wp_register_script($this->plugin_name . '-public-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+            wp_register_script($this->plugin_name . '-public-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
         }
 
         /**
@@ -112,10 +107,11 @@ if (!class_exists('Faulh_Public')) {
 
             $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
             $_GET['user_id'] = $current_user->ID;
-            
-            wp_enqueue_style($this->plugin_name . '-jquery-ui.min.css');
-            wp_enqueue_script($this->plugin_name . '-jquery-ui.min.js');
-            wp_enqueue_script($this->plugin_name . '-custom.js');
+
+            wp_enqueue_style($this->plugin_name . '-public-jquery-ui.min');
+            wp_enqueue_script($this->plugin_name . '-public-jquery-ui.min.js');
+            wp_enqueue_script($this->plugin_name . '-public-custom.js');
+            wp_enqueue_style($this->plugin_name . '-public-custom');
             ob_start();
             require_once(plugin_dir_path(__FILE__) . 'partials/listing.php');
             return ob_get_clean();
