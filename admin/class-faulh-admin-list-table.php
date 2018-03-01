@@ -24,10 +24,10 @@ if(!class_exists('Faulh_Admin_List_Table'))
      * @param      string    $table_timezone   The timezone for table.
      */
     public function __construct($args = array(), $plugin_name, $table_name, $table_timezone='') {
-
+     
         $defaults = array(
-            'singular' => __('admin_user', 'faulh'), //singular name of the listed records
-            'plural' => __('admin_users', 'faulh'), //plural name of the listed records
+            'singular' => esc_html__('admin_user', 'faulh'), //singular name of the listed records
+            'plural' => esc_html__('admin_users', 'faulh'), //plural name of the listed records
             'ajax' => false //does this table support ajax?
         );
         parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);

@@ -69,10 +69,10 @@ if(!class_exists('Faulh_User_Profile'))
 
         <table>
             <tr>
-                <th><label for="<?php echo $this->plugin_name . "-timezone" ?>"><?php _e('Timezone', 'faulh'); ?></label></th>
+                <th><label for="<?php echo $this->plugin_name . "-timezone" ?>"><?php esc_html_e('Timezone', 'faulh'); ?></label></th>
                 <td>
                     <select required="required" name="<?php echo $this->plugin_name . '-timezone' ?>">
-                        <option value=""><?php _e('Select Timezone', 'faulh') ?></option>
+                        <option value=""><?php esc_html_e('Select Timezone', 'faulh') ?></option>
                         <?php
                         Faulh_Template_Helper::dropdown_timezones($user_timezone);
                         ?>
@@ -93,7 +93,7 @@ if(!class_exists('Faulh_User_Profile'))
         }
 
         if (empty($_POST[$this->plugin_name . '-timezone'])) {
-            // $errors->add('user_timezone_error', __('<strong>ERROR</strong>: Please select a timezone.', 'faulh'));
+            // $errors->add('user_timezone_error', esc_html__('<strong>ERROR</strong>: Please select a timezone.', 'faulh'));
         }
     }
 

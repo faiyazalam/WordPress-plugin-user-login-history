@@ -10,43 +10,43 @@
  */
 ?>
 <div class="wrap">
-    <?php Faulh_Template_Helper::head(__('About The Plugin', 'faulh')); ?>
+    <?php Faulh_Template_Helper::head(esc_html__('About The Plugin', 'faulh')); ?>
     <div class="clearfix">
         <div class="faulh-submenu-page-<?php echo !empty($_GET['page'])?$_GET['page']:""?>">
-        <h4><?php _e('By this plugin you can track any visitor\'s login details with the following attributes:', 'user-login-history'); ?></h4>
+        <h4><?php esc_html_e('By this plugin you can track any visitor\'s login details with the following attributes:', 'user-login-history'); ?></h4>
         <ol>
-            <li><?php _e('Login Date-Time', 'user-login-history'); ?></li>
-            <li><?php _e('Logout Date-Time', 'user-login-history'); ?></li>
-            <li><?php _e('Last Seen Date-Time', 'user-login-history'); ?></li>
-            <li><?php _e('Login Status - Success/Logout/Fail', 'user-login-history'); ?></li>
-            <li><?php _e('Session Duration - How long the user stayed on your website per session.', 'user-login-history'); ?></li>
-            <li><?php _e('User ID', 'user-login-history'); ?></li>
-            <li><?php _e('Username', 'user-login-history'); ?></li>
-            <li><?php _e('IP Address', 'user-login-history'); ?></li>
-            <li><?php _e('Browser', 'user-login-history'); ?></li>
-            <li><?php _e('Operating System', 'user-login-history'); ?></li>
-            <li><?php _e('Current Role', 'user-login-history'); ?></li>
-            <li><?php _e('Old Role - The role while user gets logged-in into your website.', 'user-login-history'); ?></li>
-            <li><?php _e('Country Name (Based on IP Address)', 'user-login-history'); ?></li>
-            <li><?php _e('Country Code (Based on IP Address)', 'user-login-history'); ?></li>
-            <li><?php _e('Timezone (Based on IP Address)', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Login Date-Time', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Logout Date-Time', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Last Seen Date-Time', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Login Status - Success/Logout/Fail', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Session Duration - How long the user stayed on your website per session.', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('User ID', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Username', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('IP Address', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Browser', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Operating System', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Current Role', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Old Role - The role while user gets logged-in into your website.', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Country Name (Based on IP Address)', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Country Code (Based on IP Address)', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Timezone (Based on IP Address)', 'user-login-history'); ?></li>
         </ol>
-        <h4><?php _e('Other Useful Features:', 'user-login-history'); ?></h4>
+        <h4><?php esc_html_e('Other Useful Features:', 'user-login-history'); ?></h4>
         <ol>
-            <li><?php _e('Editable Timezone - You can select your preferred timezone to be used for the listing table.', 'user-login-history'); ?></li>
-            <li><?php _e('Shortcode - To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'user-login-history'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
-            <li><?php _e('Multisite Network (Since version 1.7) - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'user-login-history'); ?><br> 
+            <li><?php esc_html_e('Editable Timezone - You can select your preferred timezone to be used for the listing table.', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Shortcode - To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'user-login-history'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
+            <li><?php esc_html_e('Multisite Network (Since version 1.7) - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'user-login-history'); ?><br> 
             </li>
-            <li><?php _e('Advanced Search Filter', 'user-login-history'); ?></li>
-            <li><?php _e('CSV Export', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Advanced Search Filter', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('CSV Export', 'user-login-history'); ?></li>
         </ol>
-        <h4><?php _e('Translations', 'user-login-history'); ?></h4>
-        <p><?php _e('Currently, this plugin is available in two languages i.e. English and Italian.', 'user-login-history') ?></p>
+        <h4><?php esc_html_e('Translations', 'user-login-history'); ?></h4>
+        <p><?php esc_html_e('Currently, this plugin is available in two languages i.e. English and Italian.', 'user-login-history') ?></p>
         <p><a href="https://translate.wordpress.org/projects/wp-plugins/user-login-history" class="button-secondary" target="_blank">
-                <?php _e('Click here to download the language files.', 'user-login-history'); ?>
+                <?php esc_html_e('Click here to download the language files.', 'user-login-history'); ?>
             </a></p>
-        <h3><?php _e('I am here!', 'user-login-history'); ?></h3>
-        <p><strong><?php _e('You can reach me through the following links:', 'user-login-history'); ?></strong></p>
+        <h3><?php esc_html_e('I am here!', 'user-login-history'); ?></h3>
+        <p><strong><?php esc_html_e('You can reach me through the following links:', 'user-login-history'); ?></strong></p>
         <p>
             <a href="https://profiles.wordpress.org/faiyazalam" class="button-secondary" target="_blank">WordPress</a>
             <a href="https://github.com/faiyazalam" class="button-secondary" target="_blank">Github</a>

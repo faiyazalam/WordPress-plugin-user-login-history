@@ -62,9 +62,9 @@ if(!class_exists('Faulh_Template_Helper'))
     static public function dropdown_time_field_types($selected = '') {
         $r = '';
         $types = array(
-            'login' => __("Login", "faulh"),
-            'logout' => __("Logout", "faulh"),
-            'last_seen' => __("Last Seen", "faulh"),
+            'login' => esc_html__("Login", "faulh"),
+            'logout' => esc_html__("Logout", "faulh"),
+            'last_seen' => esc_html__("Last Seen", "faulh"),
         );
         foreach ($types as $key => $type) {
             $name = $type;
@@ -85,13 +85,13 @@ if(!class_exists('Faulh_Template_Helper'))
     static public function dropdown_login_statuses($selected = '') {
         $r = '';
         $types = array(
-            Faulh_User_Tracker::LOGIN_STATUS_LOGIN => __("Login", "faulh"),
-            Faulh_User_Tracker::LOGIN_STATUS_LOGOUT => __("Logout", "faulh"),
-            Faulh_User_Tracker::LOGIN_STATUS_FAIL => __("Fail", "faulh"),
+            Faulh_User_Tracker::LOGIN_STATUS_LOGIN => esc_html__("Login", "faulh"),
+            Faulh_User_Tracker::LOGIN_STATUS_LOGOUT => esc_html__("Logout", "faulh"),
+            Faulh_User_Tracker::LOGIN_STATUS_FAIL => esc_html__("Fail", "faulh"),
         );
 
         if (is_multisite()) {
-            $types[Faulh_User_Tracker::LOGIN_STATUS_BLOCK] = __("Block", "faulh");
+            $types[Faulh_User_Tracker::LOGIN_STATUS_BLOCK] = esc_html__("Block", "faulh");
         }
 
         foreach ($types as $key => $type) {
@@ -134,7 +134,7 @@ if(!class_exists('Faulh_Template_Helper'))
     }
     
     static public function head($page = '') {
-        $h = "<h1>".self::plugin_name()." ".FAULH_VERSION.__('(Basic Version)', 'faulh')."</h1>";
+        $h = "<h1>".self::plugin_name()." ".FAULH_VERSION.esc_html__('(Basic Version)', 'faulh')."</h1>";
         if(!empty($page))
         {
             $h .= "<h2>$page</h2>";

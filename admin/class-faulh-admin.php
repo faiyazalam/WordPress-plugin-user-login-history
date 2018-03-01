@@ -100,7 +100,7 @@ if(!class_exists('Faulh_Admin'))
             wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
             wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
             wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
-                'delete_confirm_message' => __('Are your sure?', 'faulh'),
+                'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
                 'admin_url' => admin_url(),
                 'plugin_name' => $this->plugin_name,
             ));
@@ -117,12 +117,12 @@ if(!class_exists('Faulh_Admin'))
         $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
 
         if ($List_Table->process_bulk_action()) {
-            $this->add_admin_notice(__('Record(s) has been deleted.', 'faulh'));
+            $this->add_admin_notice(esc_html__('Record(s) has been deleted.', 'faulh'));
             $status = TRUE;
         }
 
         if ($List_Table->delete_single_row()) {
-            $this->add_admin_notice(__('Record has been deleted.', 'faulh'));
+            $this->add_admin_notice(esc_html__('Record has been deleted.', 'faulh'));
             $status = TRUE;
         }
 
@@ -190,7 +190,7 @@ if(!class_exists('Faulh_Admin'))
     public function update_network_setting() {
         $obj = new Faulh_Network_Admin_Setting($this->plugin_name);
         if ($obj->update()) {
-            $this->add_admin_notice(__('Settings updated successfully.', 'faulh'));
+            $this->add_admin_notice(esc_html__('Settings updated successfully.', 'faulh'));
             wp_safe_redirect(network_admin_url("settings.php?page=" . $_GET['page']));
             exit;
         }
@@ -201,7 +201,7 @@ if(!class_exists('Faulh_Admin'))
         $current_version = get_option(FAULH_OPTION_NAME_VERSION);
         //If the version is older
         if ($current_version && version_compare($current_version, $this->version, '<')) {
-            $this->add_admin_notice(__("We have done some major changes in the version 1.7.0. Please checkout the help page under the plugin menu.", 'faulh'));
+            $this->add_admin_notice(esc_html__("We have done some major changes in the version 1.7.0. Please checkout the help page under the plugin menu.", 'faulh'));
             require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
             if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
                 $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());

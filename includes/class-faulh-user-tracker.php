@@ -60,13 +60,6 @@ if (!class_exists('Faulh_User_Tracker')) {
          */
         private $login_status = false;
 
-        /**
-         * Stores instance of geo helper class.
-         * 
-         * @access   private
-         * @var      string    $geo_object
-         */
-        private $geo_object;
         private $current_loggedin_blog_id;
 
         /**
@@ -192,7 +185,6 @@ if (!class_exists('Faulh_User_Tracker')) {
             $current_date = Faulh_Date_Time_Helper::get_current_date_time();
             $user_id = $current_user->ID;
 
-
             if (!$user_id) {
                 return;
             }
@@ -236,8 +228,9 @@ if (!class_exists('Faulh_User_Tracker')) {
             $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
             $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . FAULH_TABLE_NAME;
             $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' and login_status <> '" . $login_status . "'";
-            // var_dump($sql);exit;
+            
             $wpdb->query($sql);
+            
             if ($wpdb->last_error) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             }

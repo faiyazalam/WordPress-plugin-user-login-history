@@ -72,8 +72,8 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $this->pagination_links = paginate_links(array(
                 'base' => add_query_arg(self::DEFALUT_QUERY_ARG_PAGE_NUMBER, '%#%'),
                 'format' => '',
-                'prev_text' => __('&laquo;', 'faulh'),
-                'next_text' => __('&raquo;', 'faulh'),
+                'prev_text' => esc_html__('&laquo;', 'faulh'),
+                'next_text' => esc_html__('&raquo;', 'faulh'),
                 'total' => ceil($this->record_count() / $this->limit), //total pages
                 'current' => $this->page_number
             ));
@@ -211,21 +211,21 @@ if (!class_exists('Faulh_Public_List_Table')) {
 
         public function get_columns() {
             $columns = array(
-                'user_id' => __('User Id', 'faulh'),
-                'username' => __('Username', 'faulh'),
-                'role' => __('Current Role', 'faulh'),
-                'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'faulh'),
-                'ip_address' => __('IP Address', 'faulh'),
-                'browser' => __('Browser', 'faulh'),
-                'operating_system' => __('Platform', 'faulh'),
-                'country_name' => __('Country', 'faulh'),
-                'duration' => __('Duration', 'faulh'),
-                'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'faulh'),
-                'timezone' => __('Timezone', 'faulh'),
-                'time_login' => __('Login', 'faulh'),
-                'time_logout' => __('Logout', 'faulh'),
-                'user_agent' => __('User Agent', 'faulh'),
-                'login_status' => __('Login Status', 'faulh'),
+                'user_id' => esc_html__('User Id', 'faulh'),
+                'username' => esc_html__('Username', 'faulh'),
+                'role' => esc_html__('Current Role', 'faulh'),
+                'old_role' => esc_html__('<span title="Role while user gets loggedin">Old Role(?)</span>', 'faulh'),
+                'ip_address' => esc_html__('IP Address', 'faulh'),
+                'browser' => esc_html__('Browser', 'faulh'),
+                'operating_system' => esc_html__('Platform', 'faulh'),
+                'country_name' => esc_html__('Country', 'faulh'),
+                'duration' => esc_html__('Duration', 'faulh'),
+                'time_last_seen' => esc_html__('<span title="Last seen time in the session">Last Seen(?)</span>', 'faulh'),
+                'timezone' => esc_html__('Timezone', 'faulh'),
+                'time_login' => esc_html__('Login', 'faulh'),
+                'time_logout' => esc_html__('Logout', 'faulh'),
+                'user_agent' => esc_html__('User Agent', 'faulh'),
+                'login_status' => esc_html__('Login Status', 'faulh'),
             );
 
             $columns = apply_filters('faulh_public_get_columns', $columns);
@@ -326,7 +326,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
         public function display() {
             if(empty($this->get_allowed_columns()))
             {
-                _e('No columns is selected to display.', 'faulh');
+                esc_html_e('No columns is selected to display.', 'faulh');
                 return;
             }
             ?>
@@ -374,7 +374,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * @since 3.1.0
          */
         public function no_items() {
-            _e('No items found.');
+            esc_html_e('No items found.');
         }
 
         public function single_row($item) {
@@ -431,7 +431,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     if (!$item['user_id']) {
                         return $unknown;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format()) : __('Logged In', 'faulh');
+                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format()) : esc_html__('Logged In', 'faulh');
                 case 'ip_address':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'timezone':
@@ -447,7 +447,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     }
                     $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format());
                     $human_time_diff = human_time_diff(strtotime($item[$column_name]));
-                    return "<span title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'faulh') . '</span>';
+                    return "<span title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</span>';
                 case 'user_agent':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'duration':
@@ -460,7 +460,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 case 'blog_id':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'is_super_admin':
-                    return $item[$column_name] ? __('Yes', 'faulh') : __('No', 'faulh');
+                    return $item[$column_name] ? esc_html__('Yes', 'faulh') : esc_html__('No', 'faulh');
                 default:
                     if ($new_column_data) {
                         return $new_column_data;

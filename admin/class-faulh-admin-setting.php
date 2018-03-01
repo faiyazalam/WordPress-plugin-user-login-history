@@ -50,7 +50,7 @@ class Faulh_Admin_Setting {
     }
 
     function admin_menu() {
-        add_options_page( __('User Login History', 'faulh'), __('User Login History', 'faulh'), 'manage_options', 'faulh-admin-setting', array($this, 'plugin_page') );
+        add_options_page( 'User Login History', 'User Login History', 'manage_options', 'faulh-admin-setting', array($this, 'plugin_page') );
     }
 
     function get_settings_sections() {

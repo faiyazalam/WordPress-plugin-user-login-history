@@ -69,7 +69,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @access public
          */
         public function no_items() {
-            _e('No records avaliable.', 'faulh');
+            esc_html_e('No records avaliable.', 'faulh');
         }
 
         /**
@@ -97,7 +97,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @return type
          */
         public function table_timezone_edit() {
-            return __('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_table_timezone() . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . __('Edit', 'faulh') . "</a></span>";
+            return esc_html__('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_table_timezone() . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
         }
 
         /**
@@ -222,7 +222,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     if (!$item['user_id']) {
                         return $unknown;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : __('Logged In', 'faulh');
+                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : esc_html__('Logged In', 'faulh');
                 case 'ip_address':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
 
@@ -259,7 +259,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         }
                     }
 
-                    return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . __('ago', 'faulh') . '</div>';
+                    return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
                 case 'user_agent':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'duration':
@@ -275,7 +275,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return $item[$column_name] ? $item[$column_name] : $unknown;
 
                 case 'is_super_admin':
-                    return $item[$column_name] ? __('Yes', 'faulh') : __('No', 'faulh');
+                    return $item[$column_name] ? esc_html__('Yes', 'faulh') : esc_html__('No', 'faulh');
 
                 default:
                     if ($new_column_data) {
@@ -294,27 +294,27 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
         public function get_columns() {
             $columns = array(
                 'cb' => '<input type="checkbox" />',
-                'user_id' => __('User Id', 'faulh'),
-                'username' => __('Username', 'faulh'),
-                'role' => __('Current Role', 'faulh'),
-                'old_role' => __('<span title="Role while user gets loggedin">Old Role(?)</span>', 'faulh'),
-                'ip_address' => __('IP Address', 'faulh'),
-                'country_name' => __('Country', 'faulh'),
-                'browser' => __('Browser', 'faulh'),
-                'browser_version' => __('Browser Version', 'faulh'),
-                'operating_system' => __('Platform', 'faulh'),
-                'duration' => __('Duration', 'faulh'),
-                'timezone' => __('Timezone', 'faulh'),
-                'time_last_seen' => __('<span title="Last seen time in the session">Last Seen(?)</span>', 'faulh'),
-                'time_login' => __('Login', 'faulh'),
-                'time_logout' => __('Logout', 'faulh'),
-                'user_agent' => __('User Agent', 'faulh'),
-                'login_status' => __('Login Status', 'faulh'),
+                'user_id' => esc_html__('User Id', 'faulh'),
+                'username' => esc_html__('Username', 'faulh'),
+                'role' => esc_html__('Current Role', 'faulh'),
+                'old_role' => "<span title='".  esc_attr__('Role while user gets loggedin', 'faulh')."'>".esc_html__('Old Role(?)', 'faulh')."</span>",
+                'ip_address' => esc_html__('IP Address', 'faulh'),
+                'country_name' => esc_html__('Country', 'faulh'),
+                'browser' => esc_html__('Browser', 'faulh'),
+                'browser_version' => esc_html__('Browser Version', 'faulh'),
+                'operating_system' => esc_html__('Platform', 'faulh'),
+                'duration' => esc_html__('Duration', 'faulh'),
+                'timezone' => esc_html__('Timezone', 'faulh'),
+                'time_last_seen' => "<span title='".  esc_attr__('Last seen time in the session', 'faulh')."'>".esc_html__('Last Seen(?)', 'faulh')."</span>",
+                'time_login' => esc_html__('Login', 'faulh'),
+                'time_logout' => esc_html__('Logout', 'faulh'),
+                'user_agent' => esc_html__('User Agent', 'faulh'),
+                'login_status' => esc_html__('Login Status', 'faulh'),
             );
 
             if (is_network_admin()) {
-                $columns['blog_id'] = __('Blog ID', 'faulh');
-                $columns['is_super_admin'] = __('Super Admin', 'faulh');
+                $columns['blog_id'] = esc_html__('Blog ID', 'faulh');
+                $columns['is_super_admin'] = esc_html__('Super Admin', 'faulh');
             }
             $columns = apply_filters('faulh_admin_get_columns', $columns);
             return $columns;
@@ -359,8 +359,8 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function get_bulk_actions() {
             $actions = array(
-                'bulk-delete' => __('Delete Selected Records', 'faulh'),
-                'bulk-delete-all-admin' => __('Delete All Records', 'faulh'),
+                'bulk-delete' => esc_html__('Delete Selected Records', 'faulh'),
+                'bulk-delete-all-admin' => esc_html__('Delete All Records', 'faulh'),
             );
 
             return $actions;
@@ -438,7 +438,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 $time_last_seen = $row['time_last_seen'];
                 $human_time_diff = human_time_diff(strtotime($time_last_seen));
                 $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone));
-                $record['time_last_seen'] = $human_time_diff . " " . __('ago', 'faulh') . " ($time_last_seen)";
+                $record['time_last_seen'] = $human_time_diff . " " . esc_html__('ago', 'faulh') . " ($time_last_seen)";
                 $record['time_login'] = $this->column_default($row, 'time_login');
                 $record['time_logout'] = $this->column_default($row, 'time_logout');
                 $record['login_status'] = $this->column_default($row, 'login_status');
