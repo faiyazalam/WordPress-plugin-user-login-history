@@ -37,7 +37,7 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
      */
     public function add_setting_menu() {
         add_submenu_page(
-                'settings.php', __('User Login History', 'faulh'), __('User Login History', 'faulh'), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
+                'settings.php', Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
         );
     }
 

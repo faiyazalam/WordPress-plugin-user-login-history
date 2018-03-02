@@ -71,6 +71,7 @@ if (!class_exists('Faulh_Public')) {
         /**
          * Shortcode to show listing table for frontend user.
          *
+         * @access public
          */
         public function shortcode_user_table($attr) {
             if (!is_user_logged_in()) {
@@ -80,7 +81,6 @@ if (!class_exists('Faulh_Public')) {
             $Public_List_Table = new Faulh_Public_List_Table($this->plugin_name);
             $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
             $Public_List_Table->set_table_timezone($UserProfile->get_current_user_timezone());
-            $timezone = $Public_List_Table->get_table_timezone();
             $default_args = array(
                 'reset_link' => '',
                 'limit' => 20,
@@ -106,7 +106,7 @@ if (!class_exists('Faulh_Public')) {
             }
 
             $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
-            $_GET['user_id'] = $current_user->ID;
+            $_GET['user_id'] = $current_user->ID;//to fetch records of current loggedin user only.
 
             wp_enqueue_style($this->plugin_name . '-public-jquery-ui.min');
             wp_enqueue_script($this->plugin_name . '-public-jquery-ui.min.js');

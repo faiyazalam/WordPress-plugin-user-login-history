@@ -18,18 +18,91 @@ if (!class_exists('Faulh_Public_List_Table')) {
         const DEFALUT_QUERY_ARG_PAGE_NUMBER = 'pagenum';
         const DEFAULT_TABLE_TIMEZONE = 'UTC';
 
-        private $limit;
-        private $page_number;
-        private $pagination_links;
-        private $items;
-        private $table;
+        /**
+         * The ID of this plugin.
+         *
+         * @access   private
+         * @var      string    $plugin_name
+         */
         private $plugin_name;
-        private $options;
+
+        /**
+         * Number of records to be fetched from table.
+         *
+         * @access   private
+         * @var      string|int $limit
+         */
+        private $limit;
+
+        /**
+         * Page number
+         *
+         * @access   private
+         * @var      string|int $page_number
+         */
+        private $page_number;
+
+        /**
+         * Holds the link of pagination.
+         *
+         * @access   private
+         * @var      string $pagination_links
+         */
+        private $pagination_links;
+
+        /**
+         * Holds the records.
+         *
+         * @access   private
+         * @var      mixed $items
+         */
+        private $items;
+
+        /**
+         * Holds the main table name.
+         *
+         * @access   private
+         * @var      string $table
+         */
+        private $table;
+
+        /**
+         * Holds the list of printable column names.
+         *
+         * @access   private
+         * @var      array $allowed_columns
+         */
         private $allowed_columns;
+
+        /**
+         * Holds the timezone to be used in table.
+         *
+         * @access   private
+         * @var      string    $plugin_name    The ID of this plugin.
+         */
         private $table_timezone;
+
+        /**
+         * Holds the date format to be used in table.
+         *
+         * @access   private
+         * @var      string    $table_date_format
+         */
         private $table_date_format;
+
+        /**
+         * Holds the time format to be used in table.
+         *
+         * @access   private
+         * @var      string    $table_time_format
+         */
         private $table_time_format;
 
+        /**
+         * Initialize the class and set its properties.
+         *
+         * @param      string    $plugin_name       The name of this plugin.
+         */
         public function __construct($plugin_name) {
             $this->plugin_name = $plugin_name;
             $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? absint($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
@@ -37,35 +110,73 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $this->set_table_timezone();
         }
 
+        /**
+         * Get date-time format
+         * 
+         * @return string
+         */
         public function get_table_date_time_format() {
             return $this->get_table_date_format() . " " . $this->get_table_time_format();
         }
 
+        /**
+         * Set date format.
+         * 
+         * @param string $format The date format.
+         */
         public function set_table_date_format($format = "") {
             $this->table_date_format = $format;
         }
 
+        /**
+         * Get date format.
+         * 
+         * @return string
+         */
         public function get_table_date_format() {
             return !empty($this->table_date_format) ? $this->table_date_format : "";
         }
 
+        /**
+         * Set time format.
+         * 
+         * @param type $format The time format.
+         */
         public function set_table_time_format($format = "") {
             $this->table_time_format = $format;
         }
 
+        /**
+         * Get time format.
+         * 
+         * @return string
+         */
         public function get_table_time_format() {
             return !empty($this->table_time_format) ? $this->table_time_format : "";
         }
 
+        /**
+         * Set table name.
+         * 
+         */
         private function set_table_name() {
             global $wpdb;
             $this->table = $wpdb->prefix . FAULH_TABLE_NAME;
         }
 
+        /**
+         * Set limit
+         * 
+         * @param type $limit
+         */
         public function set_limit($limit = false) {
             $this->limit = $limit ? absint($limit) : self::DEFALUT_LIMIT;
         }
 
+        /**
+         * Prepare the items.
+         * 
+         */
         public function prepare_items() {
             $this->items = $this->get_rows();
 
@@ -79,6 +190,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
             ));
         }
 
+        /**
+         * Prepare the where query.
+         * 
+         * @return string
+         */
         public function prepare_where_query() {
             $where_query = '';
 
@@ -163,7 +279,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
 
             if (!empty($_REQUEST['orderby'])) {
                 $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-                $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+                $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
             } else {
                 $sql .= ' ORDER BY FaUserLogin.time_login DESC';
             }
@@ -209,18 +325,24 @@ if (!class_exists('Faulh_Public_List_Table')) {
             return $result;
         }
 
+        /**
+         *  Associative array of columns
+         *
+         * @access public
+         * @return array
+         */
         public function get_columns() {
             $columns = array(
                 'user_id' => esc_html__('User Id', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='".  esc_attr__('Role while user gets loggedin', 'faulh')."'>".esc_html__('Old Role(?)', 'faulh')."</span>",
+                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
                 'ip_address' => esc_html__('IP Address', 'faulh'),
                 'browser' => esc_html__('Browser', 'faulh'),
                 'operating_system' => esc_html__('Platform', 'faulh'),
                 'country_name' => esc_html__('Country', 'faulh'),
                 'duration' => esc_html__('Duration', 'faulh'),
-                'time_last_seen' => "<span title='".  esc_attr__('Last seen time in the session', 'faulh')."'>".esc_html__('Last Seen(?)', 'faulh')."</span>",
+                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
                 'timezone' => esc_html__('Timezone', 'faulh'),
                 'time_login' => esc_html__('Login', 'faulh'),
                 'time_logout' => esc_html__('Logout', 'faulh'),
@@ -235,6 +357,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
         /**
          * Columns to make sortable.
          *
+         * @access public
          * @return array
          */
         public function get_sortable_columns() {
@@ -258,10 +381,21 @@ if (!class_exists('Faulh_Public_List_Table')) {
             return $sortable_columns;
         }
 
+        /**
+         * Display the pagination link.
+         * 
+         * @access private
+         */
         private function display_pagination() {
             echo $this->pagination_links;
         }
 
+        /**
+         * Get the list of printable columns.
+         * 
+         * @access public
+         * @return type
+         */
         public function get_allowed_columns() {
             return empty($this->allowed_columns) ? FALSE : $this->allowed_columns;
         }
@@ -270,24 +404,27 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * Set the columns to print on table.
          * This is used in shortcode.
          * 
+         * @access public
          * @param type $columns
          * @return type
          */
         public function set_allowed_columns($columns = array()) {
             $columns = is_array($columns) ? $columns : (is_string($columns) ? explode(',', $columns) : array());
             $all_columns = $this->get_columns();
-            
+
             foreach ($columns as $column) {
                 $column = trim($column);
-                if(isset($all_columns[$column]))
-                {
-                   $this->allowed_columns[] = $column;  
+                if (isset($all_columns[$column])) {
+                    $this->allowed_columns[] = $column;
                 }
             }
-    
-           
         }
 
+        /**
+         * Print the column headers.
+         * 
+         * @access public
+         */
         public function print_column_headers() {
             $allowed_columns = $this->get_allowed_columns();
             $columns = $this->get_columns();
@@ -323,9 +460,13 @@ if (!class_exists('Faulh_Public_List_Table')) {
             }
         }
 
+        /**
+         * Display the listing table.
+         * 
+         * @access public
+         */
         public function display() {
-            if(empty($this->get_allowed_columns()))
-            {
+            if (empty($this->get_allowed_columns())) {
                 esc_html_e('No columns is selected to display.', 'faulh');
                 return;
             }
@@ -344,6 +485,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $this->display_pagination();
         }
 
+        /**
+         * Display rows or placeholder
+         * 
+         * @access public
+         */
         public function display_rows_or_placeholder() {
             if ($this->has_items()) {
                 $this->display_rows();
@@ -357,52 +503,88 @@ if (!class_exists('Faulh_Public_List_Table')) {
         /**
          * Generate the table rows
          *
-         * @since 3.1.0
+         * @access public
          */
         public function display_rows() {
             foreach ($this->items as $item)
                 $this->single_row($item);
         }
 
+        /**
+         * Checks if record found.
+         * 
+         * @return bool
+         */
         public function has_items() {
             return !empty($this->items);
         }
 
         /**
          * Message to be displayed when there are no items
-         *
-         * @since 3.1.0
+         * 
+         * @access public
          */
         public function no_items() {
             esc_html_e('No items found.');
         }
 
+        /**
+         * Prints single row.
+         * 
+         * @access public
+         * 
+         * @param array $item
+         */
         public function single_row($item) {
             echo '<tr>';
             $this->single_row_columns($item);
             echo '</tr>';
         }
 
+        /**
+         * Prints the column value.
+         * 
+         * @access public
+         * @param array $item
+         */
         public function single_row_columns($item) {
             $allowed_columns = $this->get_allowed_columns();
             foreach ($allowed_columns as $column_name) {
-            echo "<td>" . $this->column_default($item, $column_name) . "</td>";
+                echo "<td>" . $this->column_default($item, $column_name) . "</td>";
             }
         }
 
+        /**
+         * Set the timezone to be used for table.
+         * @access public
+         * @param string $timezone
+         */
         public function set_table_timezone($timezone = '') {
             $this->table_timezone = $timezone;
         }
 
+        /**
+         * Get the timezone to be used for table.
+         * @access public
+         * @param string $timezone
+         */
         public function get_table_timezone() {
             return $this->table_timezone ? $this->table_timezone : self::DEFAULT_TABLE_TIMEZONE;
         }
 
+        /**
+         * Render a column.
+         *
+         * @access public
+         * @param array $item
+         * @param string $column_name
+         *
+         * @return mixed
+         */
         public function column_default($item, $column_name) {
             $timezone = $this->get_table_timezone();
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_public_custom_column', '', $item, $column_name);
-
             switch ($column_name) {
                 case 'user_id':
                     if (!$item[$column_name]) {
@@ -411,7 +593,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'username':
                     if (!$item['user_id']) {
-                        return $item[$column_name];
+                        return esc_html($item[$column_name]);
                     }
                     $profile_link = get_edit_user_link($item['user_id']);
                     return "<a href= '$profile_link'>$item[$column_name]</a>";
@@ -433,23 +615,42 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     }
                     return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format()) : esc_html__('Logged In', 'faulh');
                 case 'ip_address':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
                 case 'timezone':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
                 case 'operating_system':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
+
                 case 'country_name':
-                    $item['country_code'] = isset($item['country_code']) && "" != $item['country_code'] ? $item['country_code'] : $unknown;
-                    return in_array(strtolower($item[$column_name]), array("", strtolower($unknown))) ? $unknown : $item[$column_name] . "(" . $item['country_code'] . ")";
+                    $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
+                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
+                case 'country_code':
+                    return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
+
                 case 'time_last_seen':
                     if (!$item['user_id']) {
                         return $unknown;
                     }
-                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format());
-                    $human_time_diff = human_time_diff(strtotime($item[$column_name]));
-                    return "<span title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</span>';
+                    $time_last_seen_unix = strtotime($item[$column_name]);
+                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    $human_time_diff = human_time_diff($time_last_seen_unix);
+                    $is_online_str = 'offline';
+                    if (Faulh_User_Tracker::LOGIN_STATUS_LOGIN == $item['login_status']) {
+                        $minutes = ((time() - $time_last_seen_unix) / 60);
+                        $settings = get_option($this->plugin_name . "_basics");
+                        $minute_online = !empty($settings['is_status_online']) ? $settings['is_status_online'] : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
+                        $minute_idle = !empty($settings['is_status_idle']) ? $settings['is_status_idle'] : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
+                        if ($minutes <= $minute_online) {
+                            $is_online_str = 'online';
+                        } elseif ($minutes <= $minute_idle) {
+                            $is_online_str = 'idle';
+                        }
+                    }
+
+                    return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+
                 case 'user_agent':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
                 case 'duration':
                     $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                     return $duration ? $duration : $unknown;

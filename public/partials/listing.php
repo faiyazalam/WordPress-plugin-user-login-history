@@ -27,7 +27,7 @@
 </form>
 <div>
     <p>
-<?php esc_html_e('This table is showing time in the timezone', 'faulh') ?> - <?php echo $timezone ?>
+<?php esc_html_e('This table is showing time in the timezone', 'faulh') ?> - <?php echo $Public_List_Table->get_table_timezone() ?>
     </p>
     <form method="post" id="<?php echo $this->plugin_name ?>_update_user_timezone">
         <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce($this->plugin_name . "_update_user_timezone") ?>">

@@ -187,12 +187,10 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @return mixed
          */
         public function column_default($item, $column_name) {
-            global $current_user;
             $timezone = $this->get_table_timezone();
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
 
-            $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
             switch ($column_name) {
                 case 'user_id':
                     if (!$item[$column_name]) {
@@ -201,7 +199,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'username':
                     if (!$item['user_id']) {
-                        return $item[$column_name];
+                        return esc_html($item[$column_name]);
                     }
 
                     $profile_link = get_edit_user_link($item['user_id']);
@@ -224,15 +222,16 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     }
                     return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : esc_html__('Logged In', 'faulh');
                 case 'ip_address':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
 
                 case 'timezone':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
 
                 case 'country_name':
-                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : $item[$column_name] . "(" . $country_code . ")";
+                    $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
+                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
                 case 'country_code':
-                    return $country_code;
+                    return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
 
                 case 'browser_version':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
@@ -261,7 +260,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
                 case 'user_agent':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
                 case 'duration':
                     $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                     return $duration ? $duration : $unknown;
@@ -297,7 +296,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 'user_id' => esc_html__('User Id', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='".  esc_attr__('Role while user gets loggedin', 'faulh')."'>".esc_html__('Old Role(?)', 'faulh')."</span>",
+                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
                 'ip_address' => esc_html__('IP Address', 'faulh'),
                 'country_name' => esc_html__('Country', 'faulh'),
                 'browser' => esc_html__('Browser', 'faulh'),
@@ -305,7 +304,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 'operating_system' => esc_html__('Platform', 'faulh'),
                 'duration' => esc_html__('Duration', 'faulh'),
                 'timezone' => esc_html__('Timezone', 'faulh'),
-                'time_last_seen' => "<span title='".  esc_attr__('Last seen time in the session', 'faulh')."'>".esc_html__('Last Seen(?)', 'faulh')."</span>",
+                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
                 'time_login' => esc_html__('Login', 'faulh'),
                 'time_logout' => esc_html__('Logout', 'faulh'),
                 'user_agent' => esc_html__('User Agent', 'faulh'),
@@ -407,17 +406,15 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
         public function export_to_CSV() {
             global $current_user;
             $timezone = $this->get_table_timezone();
-            $unknown = 'unknown';
-
             $data = $this->get_rows(0); // pass zero to get all the records
             //date string to suffix the file nanme: month - day - year - hour - minute
-            $suffix = "user_login_history_" . date('n-j-y_H-i');
+            $suffix = $this->plugin_name."_". date('n-j-y_H-i');
             // send response headers to the browser
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment;filename=' . $suffix . '.csv');
 
             if (!$data) {
-                echo 'No record.';
+                $this->no_items();
                 exit;
             }
 
