@@ -466,7 +466,8 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * @access public
          */
         public function display() {
-            if (empty($this->get_allowed_columns())) {
+            $allowed_columns = $this->get_allowed_columns();
+            if (empty($allowed_columns)) {
                 esc_html_e('No columns is selected to display.', 'faulh');
                 return;
             }
