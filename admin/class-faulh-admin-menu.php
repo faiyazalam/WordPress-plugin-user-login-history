@@ -95,12 +95,11 @@ if(!class_exists('Faulh_Admin_Menu'))
            $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
            if(is_network_admin()){
          $this->list_table =   new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
-  require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/network-listing.php';
            }
  else {
              $this->list_table =   new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
-        require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/listing.php';
  }
+        require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/listing.php';
 
     }
     

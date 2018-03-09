@@ -21,35 +21,11 @@ admin css for the plugin - user login history
 }
 
 
-
-.faulh-search-filter{
-	
-}
-
-.faulh-search-filter .firstRow,
-.faulh-search-filter .secondRow,
-.faulh-search-filter .thirdRow
-{background-color: #fff; padding:10px ;  display: block; margin-bottom: 1px;}
-
-
-
-.faulh-search-filter .firstRow input, .faulh-search-filter .firstRow select
-{display: inline; background-color: #FFF; border: solid 1px #e0e0e0; min-height: 30px;
-vertical-align: middle;     width: 32.30%; float: left; margin-right: 1.33%}
-.faulh-search-filter .firstRow select{margin-right: 0px; float: right;}
-
-
-.faulh-search-filter .secondRow input
-{display: inline; background-color: #FFF; border: solid 1px #e0e0e0; min-height: 30px;
-vertical-align: middle;    width: 15.4%; float: left; margin-right: 1.33%}
-
-.faulh-search-filter .secondRow input:last-child{margin-right: 0px; float: right;}
-
-.faulh-search-filter .thirdRow select
-{display: inline; background-color: #FFF; border: solid 1px #e0e0e0; min-height: 30px;
-vertical-align: middle;        width: 23.9%; float: left; margin-right: 1.33%}
-
-.faulh-search-filter .thirdRow select:last-child{margin-right: 0px; float: right;}
+.faulh-search-filter .secondRow{background-color: #fff; padding:10px ;  display: block; margin-bottom: 1px;}
+.faulh-search-filter .secondRow input{background-color: #FFF; border: solid 1px #e0e0e0; min-height: 30px;}
+.secondRow{display: flex !important; width: 100%; box-sizing: border-box; }
+.secondRow > div {flex: 1;  padding: 0px 5px;}
+.secondRow > div input, .secondRow > div select{width: 100%;}
 .submitAction{margin-top: 10px;}
 
 .faulhbtn,
@@ -166,30 +142,15 @@ p .faulhbtn {
 	bottom: 0
 }
 
+.aboutAuthor{float: right;  margin-top: -20px; font-size: 16px; }
 
-@media  (max-width: 1024px) and (min-width: 768px){
 
-.faulh-search-filter .firstRow input, .faulh-search-filter .firstRow select{
-	width: 31%; margin:1% !important;
-}
-
-.faulh-search-filter .secondRow input,
-.faulh-search-filter .thirdRow input,
-.faulh-search-filter .secondRow select,
-.faulh-search-filter .thirdRow select{
-	width: 48%; margin:1% !important;
-}
-
-}
+.listingOuter th, .listingOuter td{vertical-align: top; text-align: left;}
+.faulhSettingPage textarea{ width: 400px; height: 100px; vertical-align: top; margin-left:10px;  }
+.mt20{margin-top: 20px;}
+.infoBlockUser{width: 160px; display: inline-block;}
 
 @media  (max-width: 767px){
-.faulh-search-filter .firstRow input,
-.faulh-search-filter .secondRow input,
-.faulh-search-filter .thirdRow input,
-.faulh-search-filter .firstRow select,
-.faulh-search-filter .secondRow select,
-.faulh-search-filter .thirdRow select{
-	width: 100%; margin:5px 0px;
-}
-
+.secondRow{display: block !important;}
+.listingOuter { padding: 50px 0;}
 }

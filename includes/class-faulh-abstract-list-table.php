@@ -158,6 +158,16 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     }
                 }
             }
+            
+             if (!empty($_GET['is_super_admin'])) {
+$is_super_admin = $_GET['is_super_admin'];
+                if ('yes' == $is_super_admin) {
+                    $where_query .= " AND `FaUserLogin`.`is_super_admin` = '1'";
+                } elseif('no' == $is_super_admin) {
+                    $where_query .= " AND `FaUserLogin`.`is_super_admin` = '0'";
+                }
+            }
+            
             $where_query = apply_filters('faulh_admin_prepare_where_query', $where_query);
             return $where_query;
         }
@@ -296,19 +306,19 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 'user_id' => esc_html__('User Id', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
-                'ip_address' => esc_html__('IP Address', 'faulh'),
-                'country_name' => esc_html__('Country', 'faulh'),
+               // 'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
+                //'ip_address' => esc_html__('IP Address', 'faulh'),
+                //'country_name' => esc_html__('Country', 'faulh'),
                 'browser' => esc_html__('Browser', 'faulh'),
              //   'browser_version' => esc_html__('Browser Version', 'faulh'),
-                'operating_system' => esc_html__('Platform', 'faulh'),
-                'duration' => esc_html__('Duration', 'faulh'),
-                'timezone' => esc_html__('Timezone', 'faulh'),
-                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
+                //'operating_system' => esc_html__('Platform', 'faulh'),
+                //'duration' => esc_html__('Duration', 'faulh'),
+                //'timezone' => esc_html__('Timezone', 'faulh'),
+                //'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
                 'time_login' => esc_html__('Login', 'faulh'),
                 'time_logout' => esc_html__('Logout', 'faulh'),
-                'user_agent' => esc_html__('User Agent', 'faulh'),
-                'login_status' => esc_html__('Login Status', 'faulh'),
+              //  'user_agent' => esc_html__('User Agent', 'faulh'),
+               // 'login_status' => esc_html__('Login Status', 'faulh'),
             );
 
             if (is_network_admin()) {

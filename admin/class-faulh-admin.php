@@ -81,8 +81,8 @@ if(!class_exists('Faulh_Admin'))
      */
     public function enqueue_styles() {
         global $pagenow;
-
-        if ('admin.php' == $pagenow && isset($_GET['page']) && $_GET['page'] == $this->plugin_name . '-admin-listing') {
+        if (in_array($pagenow, array('admin.php', 'settings.php'))  && isset($_GET['page']) && in_array($_GET['page'], array($this->plugin_name."-setting", $this->plugin_name . '-admin-listing', $this->plugin_name . '-help', $this->plugin_name . '-about'))
+                        ) {
             wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
             wp_enqueue_style($this->plugin_name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
         }

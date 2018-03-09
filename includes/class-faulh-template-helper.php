@@ -135,11 +135,29 @@ if(!class_exists('Faulh_Template_Helper'))
     
     static public function head($page = '') {
         $h = "<h1>".self::plugin_name()." ".FAULH_VERSION.esc_html__('(Basic Version)', 'faulh')."</h1>";
+        $h .= "<span class='aboutAuthor'> <a href='#' title='About Author' target='new'> Faiyaz Alam </span></a>";
         if(!empty($page))
         {
             $h .= "<h2>$page</h2>";
         }
         echo $h;      
+    }
+    
+      static public function dropdown_is_super_admin($selected = '') {
+        $r = '';
+        $types = array(
+            'yes' => esc_html__("Yes", "faulh"),
+            'no' => esc_html__("No", "faulh"),
+        );
+        foreach ($types as $key => $type) {
+            $name = $type;
+            if ($selected == $key) {
+                $r .= "\n\t<option selected='selected' value='" . $key . "'>$name</option>";
+            } else {
+                $r .= "\n\t<option value='" . $key . "'>$name</option>";
+            }
+        }
+        echo $r;
     }
 } 
 }
