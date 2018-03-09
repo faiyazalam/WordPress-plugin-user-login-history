@@ -17,7 +17,7 @@
         <br class="clear">
     </div>
        <div><?php do_action('faulh_admin_before_listing_table') ?></div>
-    <div>
+ <div class="listingOuter">
         <form method="post">
             <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_listing_table' ?>" value="">
             <?php

@@ -17,7 +17,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
             <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']) ?>" />
             <input type="hidden" name="order" value="<?php echo !empty($_GET['order']) ? esc_attr($_GET['order']) : "" ?>" />
             <input type="hidden" name="orderby" value="<?php echo !empty($_GET['orderby']) ? esc_attr($_GET['orderby']) : "" ?>" />
-            <fieldset> 
+            <fieldset class="firstRow"> 
                 <input readonly autocomplete="off" placeholder="<?php esc_html_e("From", "faulh") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
                 <input readonly autocomplete="off" placeholder="<?php esc_html_e("To", "faulh") ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" >
                 <select  name="date_type" >
@@ -26,7 +26,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     ?>
                 </select>
             </fieldset>
-            <fieldset>
+            <fieldset class="secondRow">
                 <input placeholder="<?php esc_html_e("Enter User Id", "faulh") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? esc_attr($_GET['user_id']) : "" ?>" >
                 <input placeholder="<?php esc_html_e("Enter Username", "faulh") ?>" name="username" value="<?php echo isset($_GET['username']) ? esc_attr($_GET['username']) : "" ?>" >
                 <input placeholder="<?php esc_html_e("Enter Country", "faulh") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? esc_attr($_GET['country_name']) : "" ?>" >
@@ -39,7 +39,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
          }
                 ?>
             </fieldset>
-            <fieldset>
+            <fieldset class="thirdRow">
                 <select  name="timezone">
                     <?php $selected_timezone = isset($_GET['timezone']) ? $_GET['timezone'] : "" ?>
                     <option value=""><?php esc_html_e('Select Timezone', 'faulh') ?></option>
@@ -73,11 +73,16 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                 </select>
             </fieldset>
             <?php do_action('faulh_admin_listing_search_form'); ?>
-            <a class="" id="download_csv_link"><?php esc_html_e('DOWNLOAD CSV', 'faulh'); ?></a> 
-            <a class=""  href="<?php echo $reset_URL ?>" ><?php esc_html_e('RESET', 'faulh'); ?></a>
+            <div class="submitAction" >
+            <a class="faulhbtn faulhbtn-primary" id="download_csv_link"><?php esc_html_e('DOWNLOAD CSV', 'faulh'); ?></a> 
+           
+           <div id="publishing-action">
+ <a class="faulhbtn action"  href="<?php echo $reset_URL ?>" ><?php esc_html_e('RESET', 'faulh'); ?></a>
             <input type="hidden" name="<?php echo $this->plugin_name?>_export_csv" id="export-csv" value="">
            <input type="hidden" name="<?php echo $this->plugin_name?>_export_nonce" id="<?php echo $this->plugin_name?>_export_nonce" value="<?php echo wp_create_nonce($this->plugin_name . '_export_csv') ?>">
-            <input class="" id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', 'faulh') ?>" />
+           <input class="faulhbtn faulhbtn-primary" id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', 'faulh') ?>" />
+            </div>
+            </div>
         </form>
         <br class="clear">
-    </div>
+    </div> 

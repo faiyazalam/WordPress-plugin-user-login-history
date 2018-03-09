@@ -25,9 +25,8 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
      */
     public function __construct($args = array(), $plugin_name, $table_name, $table_timezone = '') {
         $defaults = array(
-            'singular' => esc_html__('network_admin_user', 'faulh'), //singular name of the listed records
-            'plural' => esc_html__('network_admin_users', 'faulh'), //plural name of the listed records
-            'ajax' => false //does this table support ajax?
+            'singular' => $plugin_name.'_admin_user', //singular name of the listed records
+            'plural' => $plugin_name.'_admin_users', //plural name of the listed records
         );
         parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
     }

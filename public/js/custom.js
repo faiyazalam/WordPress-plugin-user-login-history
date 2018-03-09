@@ -13,20 +13,14 @@
         });
         
         
-  
+ 
 //table sorting
-                $(".sorting_hover").css("display", "none");
-    $(".sorting_link").hover(function(){
-        $(this).children(".sorting_hover").css("display", "block").next().css("display", "none");
+$(".sorting_hover").css("opacity", "0");
+$(".sorting_link").hover(function(){
+        $(this).children(".sorting_hover").css("opacity", "1").next().css("opacity", "0");
         }, function(){
-       $(this).children(".sorting_hover").css("display", "none").next().css("display", "block");
+       $(this).children(".sorting_hover").css("opacity", "0").next().css("opacity", "1");
     });
-
-    });
-    
-
-
-
-
+});
 })(jQuery);
 
