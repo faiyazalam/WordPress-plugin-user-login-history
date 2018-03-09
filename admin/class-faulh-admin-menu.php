@@ -10,13 +10,10 @@
  * @author     Er Faiyaz Alam
  * @access private
  */
-if(!class_exists('Faulh_Abstract_List_Page'))
+if(!class_exists('Faulh_Admin_Menu'))
 {
- abstract class Faulh_Abstract_List_Page {
-/**
- * Default limit.
- */
-    const DEFAULT_OPTION_VALUE = 20;
+ class Faulh_Admin_Menu {
+
     
 /**
  *Holds the object for the listing table class.
@@ -34,13 +31,7 @@ if(!class_exists('Faulh_Abstract_List_Page'))
      */
     protected $plugin_name;
     
-    /**
-     * Holds the option name for the limit.
-     *
-     * @access   private
-     * @var      string    $option_name
-     */
-    private $option_name;
+ 
     
      /**
      * The version of this plugin.
@@ -58,25 +49,12 @@ if(!class_exists('Faulh_Abstract_List_Page'))
      * 
      */
     public function __construct($plugin_name, $version) {
+        
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->option_name = $this->plugin_name."_rows_per_page";
     }
 
-    /**
-     * The callback function for the filter hook - set-screen-option.
-     * 
-     * @access public
-     * @param type $status
-     * @param type $option
-     * @param string $value
-     * @return string
-     */
-    public function set_screen($status, $option, $value) {
-        if ($option == $this->option_name) {
-            return $value;
-        }
-    }
+    
     
 /**
  * The callback function for the action hook - admin menu.
@@ -88,8 +66,6 @@ if(!class_exists('Faulh_Abstract_List_Page'))
         $hook = add_menu_page(
         Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $menu_slug, [ $this, 'load_template']
         );
-        add_action("load-$hook", [ $this, 'screen_option']);
-        
               //  add_submenu_page($menu_slug, __('Premium Benefits', 'faulh'), __('Premium Benefits', 'faulh'), 'manage_options', $this->plugin_name.'-get-premium', array($this, 'render_get_premium_page'));
         add_submenu_page($menu_slug, __('About', 'faulh'), __('About', 'faulh'), 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
         add_submenu_page($menu_slug, __('Help', 'faulh'), __('Help', 'faulh'), 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
@@ -108,23 +84,7 @@ if(!class_exists('Faulh_Abstract_List_Page'))
                  require_once   plugin_dir_path(dirname(__FILE__)) . 'admin/partials/premium.php';
     }
 
-/**
- * The callback function for the action hook -  load-customHook.
- * It sets screen options for the current loaded hook i.e. when listing page loaded.
- * 
- * @access public
- */
-    public function screen_option() {
-        $args = array(
-            'label' => __('Records per page', 'faulh'),
-            'default' => self::DEFAULT_OPTION_VALUE,
-            'option' => $this->option_name //option name should not contain hyphen. 
-            //WP replaces hyphen with underscore while processing request. See the definition of set_screen_options()
-        );
 
-        add_screen_option('per_page', $args);
-        $this->list_table = $this->get_list_table_object();
-    }
 
     /**
      * Loads the listing template file.
@@ -132,13 +92,18 @@ if(!class_exists('Faulh_Abstract_List_Page'))
      *@access public
      */
   public function load_template() {
+           $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
+           if(is_network_admin()){
+         $this->list_table =   new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
+  require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/network-listing.php';
+           }
+ else {
+             $this->list_table =   new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
         require  plugin_dir_path(dirname(__FILE__)) . 'admin/partials/listing.php';
+ }
+
     }
     
- /**
-     * This function will return object of list table class e.g. new WP_List_Table().
-     */
-    abstract function get_list_table_object();
 }   
 }
 

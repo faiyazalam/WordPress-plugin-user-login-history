@@ -213,7 +213,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 case 'old_role':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'browser':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return $item[$column_name] ? $item[$column_name]."<br>(".$item['browser_version'].")" : $unknown;
                 case 'time_login':
                     return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
                 case 'time_logout':
@@ -300,7 +300,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 'ip_address' => esc_html__('IP Address', 'faulh'),
                 'country_name' => esc_html__('Country', 'faulh'),
                 'browser' => esc_html__('Browser', 'faulh'),
-                'browser_version' => esc_html__('Browser Version', 'faulh'),
+             //   'browser_version' => esc_html__('Browser Version', 'faulh'),
                 'operating_system' => esc_html__('Platform', 'faulh'),
                 'duration' => esc_html__('Duration', 'faulh'),
                 'timezone' => esc_html__('Timezone', 'faulh'),
@@ -371,7 +371,12 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @access public
          */
         public function prepare_items() {
-            $this->_column_headers = $this->get_column_info();
+  $columns = $this->get_columns();
+        $hidden = array();
+        $sortable = $this->get_sortable_columns();
+
+        // here we configure table headers, defined in our methods
+        $this->_column_headers = array($columns, $hidden, $sortable);
             $per_page = $this->get_items_per_page($this->plugin_name . "_rows_per_page");
             $current_page = $this->get_pagenum();
             $total_items = $this->record_count();

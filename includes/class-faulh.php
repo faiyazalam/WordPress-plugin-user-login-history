@@ -109,19 +109,24 @@ if(!class_exists('Faulh'))
          * Include all the common abstract or base classes.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-abstract-list-table.php';
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-abstract-list-page.php';
+     
+         if(is_admin()){
+        //required files for admin and network admin
+            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-menu.php';
+        }
+        
 
         if (is_network_admin()) {
             //required files for network admin only
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-network-admin-list-table.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-network-admin-list-page.php';
         }
+        
+       
 
         if (is_admin() && !is_network_admin()) {
             //required files for admin only
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-setting.php';
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-list-table.php';
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-list-page.php';
         }
 
         //required files for admin as well as public
@@ -176,15 +181,15 @@ if(!class_exists('Faulh'))
             $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
             $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
             $this->loader->add_action('network_admin_menu', $plugin_admin, 'update_network_setting');
+              $List_Pages = new Faulh_Admin_Menu($this->get_plugin_name(), $this->get_version());
+            $this->loader->add_action('admin_menu', $List_Pages, 'plugin_menu');
+            $this->loader->add_action('network_admin_menu', $List_Pages, 'plugin_menu');
+          
         }
 
         if (is_network_admin()) {
             //hooks for network admin only
-            $Network_Admin_List_Page = new Faulh_Network_Admin_List_Page($this->get_plugin_name(), $this->get_version());
-            $this->loader->add_filter('set-screen-option', $Network_Admin_List_Page, 'set_screen', 10, 3);
-            $this->loader->add_action('network_admin_menu', $Network_Admin_List_Page, 'plugin_menu');
             $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
-
             $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
             $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
         }
@@ -192,9 +197,6 @@ if(!class_exists('Faulh'))
         if (is_admin() && !is_network_admin()) {
             //hooks for admin only
             $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-            $Admin_List_Page = new Faulh_Admin_List_Page($this->get_plugin_name(), $this->get_version());
-            $this->loader->add_filter('set-screen-option', $Admin_List_Page, 'set_screen', 10, 3);
-            $this->loader->add_action('admin_menu', $Admin_List_Page, 'plugin_menu');
             $Admin_Setting = new Faulh_Admin_Setting($this->get_plugin_name(), $this->get_version());
             $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
             $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
