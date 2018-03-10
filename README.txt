@@ -79,10 +79,12 @@ Yes.
 * Added the option **Last Seen Time** to filter the results.
 * Added the column **Super Admin** - This is used only for multisite network.
 * Added **Hooks** to extend its functionality easily.
+* Removed the 'Screen Options' from admin listing table.
+* Deprecated the shortcode [user-login-history].
 
 == Upgrade Notice ==
 
 = 1.* <= 1.7 =
 After upgrading, you have to do the following changes:
 1. Update your time zone from your profile edit page.
-1. Replaced the old shortcode [user-login-history] with new shortcode [user_login_history]
+1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]

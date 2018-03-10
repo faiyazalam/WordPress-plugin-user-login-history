@@ -597,7 +597,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
                         return esc_html($item[$column_name]);
                     }
                     $profile_link = get_edit_user_link($item['user_id']);
-                    return "<a href= '$profile_link'>$item[$column_name]</a>";
+                    if($profile_link)
+                    {
+                          return "<a href= '$profile_link'>$item[$column_name]</a>"; 
+                    }
+                     return esc_html($item[$column_name]);
                 case 'role':
                     if (!$item['user_id']) {
                         return $unknown;

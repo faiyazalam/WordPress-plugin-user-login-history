@@ -207,13 +207,6 @@ $is_super_admin = $_GET['is_super_admin'];
                         return $unknown;
                     }
                     return $item[$column_name] ? $item[$column_name] : $unknown;
-                case 'username':
-                    if (!$item['user_id']) {
-                        return esc_html($item[$column_name]);
-                    }
-
-                    $profile_link = get_edit_user_link($item['user_id']);
-                    return "<a href= '$profile_link'>$item[$column_name]</a>";
                 case 'role':
                     if (!$item['user_id']) {
                         return $unknown;
@@ -243,8 +236,7 @@ $is_super_admin = $_GET['is_super_admin'];
                 case 'country_code':
                     return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
 
-                case 'browser_version':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+  
                 case 'operating_system':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
 
@@ -306,19 +298,18 @@ $is_super_admin = $_GET['is_super_admin'];
                 'user_id' => esc_html__('User Id', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
-               // 'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
-                //'ip_address' => esc_html__('IP Address', 'faulh'),
-                //'country_name' => esc_html__('Country', 'faulh'),
+                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
+                'ip_address' => esc_html__('IP Address', 'faulh'),
+                'country_name' => esc_html__('Country', 'faulh'),
                 'browser' => esc_html__('Browser', 'faulh'),
-             //   'browser_version' => esc_html__('Browser Version', 'faulh'),
-                //'operating_system' => esc_html__('Platform', 'faulh'),
-                //'duration' => esc_html__('Duration', 'faulh'),
-                //'timezone' => esc_html__('Timezone', 'faulh'),
-                //'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
+                'operating_system' => esc_html__('Platform', 'faulh'),
+                'duration' => esc_html__('Duration', 'faulh'),
+                'timezone' => esc_html__('Timezone', 'faulh'),
+                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
                 'time_login' => esc_html__('Login', 'faulh'),
                 'time_logout' => esc_html__('Logout', 'faulh'),
-              //  'user_agent' => esc_html__('User Agent', 'faulh'),
-               // 'login_status' => esc_html__('Login Status', 'faulh'),
+                'user_agent' => esc_html__('User Agent', 'faulh'),
+               'login_status' => esc_html__('Login Status', 'faulh'),
             );
 
             if (is_network_admin()) {

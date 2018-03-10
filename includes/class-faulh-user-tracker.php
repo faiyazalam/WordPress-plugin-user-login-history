@@ -67,10 +67,15 @@ if (!class_exists('Faulh_User_Tracker')) {
          *
          * @var      string    $plugin_name       The name of this plugin.
          */
-        public function __construct($plugin_name, $version, $current_loggedin_blog_id) {
+        public function __construct($plugin_name, $version) {
             $this->plugin_name = $plugin_name;
             $this->version = $version;
-            $this->current_loggedin_blog_id = $current_loggedin_blog_id;
+           
+        }
+        
+        public function set_current_loggedin_blog_id($param) {
+            $Session_Helper = new Faulh_Session_Helper($this->plugin_name);
+             $this->current_loggedin_blog_id = $Session_Helper->get_current_login_blog_id();
         }
 
         /**
@@ -190,6 +195,7 @@ if (!class_exists('Faulh_User_Tracker')) {
             }
 
             $sql = "update $table set time_last_seen='$current_date' where session_token = '" . wp_get_session_token() . "' and user_id = '$user_id' and login_status = '" . self::LOGIN_STATUS_LOGIN . "'";
+            $user_id = get_current_user_id();
             $status = $wpdb->query($sql);
 
             if ($wpdb->last_error) {

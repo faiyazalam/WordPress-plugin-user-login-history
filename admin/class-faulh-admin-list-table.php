@@ -127,7 +127,9 @@ if(!class_exists('Faulh_Admin_List_Table'))
      * @return string
      */
     function column_username($item) {
-        $title = $item['user_id'] ? "<a href='".get_edit_user_link($item['user_id'])."'>".esc_html($item['username'])."</a>" : '<strong>' . $item['username'] . '</strong>';
+        $user_link = get_edit_user_link($item['user_id']);
+      
+        $title = $item['user_id'] && $user_link ? "<a href='".get_edit_user_link($item['user_id'])."'>".esc_html($item['username'])."</a>" : '<strong>' . $item['username'] . '</strong>';
         $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
       //  $title = '<strong>' . $item['username'] . '</strong>';
         $actions = array(

@@ -204,7 +204,8 @@ if(!class_exists('Faulh'))
 //hooks for admin, network and public
           $Session_Helper = new Faulh_Session_Helper($this->get_plugin_name());
       
-        $User_Tracker = new Faulh_User_Tracker($this->get_plugin_name(), $this->get_version(), $Session_Helper->get_current_login_blog_id());
+        $User_Tracker = new Faulh_User_Tracker($this->get_plugin_name(), $this->get_version());
+        $this->loader->add_action('init', $User_Tracker, 'set_current_loggedin_blog_id');
         $this->loader->add_action('init', $User_Tracker, 'update_time_last_seen');
         $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_logged_in_cookie', 10, 6);
         $this->loader->add_action('wp_login', $User_Tracker, 'user_login', 10, 2);
