@@ -28,7 +28,7 @@
                 </p>
             </li>
             <li>
-                <p><strong><?php esc_html_e('List of all the colums to be used in shortcode:', 'faulh') ?></strong><br><span>user_id, username, role, old_role, ip_address, browser, operating_system, country_name, duration, time_last_seen, timezone, time_login, time_logout, user_agent, login_status</span></p>
+                <p><strong><?php esc_html_e('List of all the columns to be used in shortcode:', 'faulh') ?></strong><br><span>user_id, username, role, old_role, ip_address, browser, operating_system, country_name, duration, time_last_seen, timezone, time_login, time_logout, user_agent, login_status</span></p>
             </li>
         </ol>
         <h3><?php esc_html_e('Bug Fixes:', 'user-login-history'); ?></h3>
