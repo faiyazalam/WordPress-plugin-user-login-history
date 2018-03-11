@@ -82,13 +82,13 @@ wp_dropdown_roles($selected_old_role);
         </div>
 <?php do_action('faulh_admin_listing_search_form'); ?>
         <div class="submitAction" >
-            <a class="faulhbtn faulhbtn-primary" id="download_csv_link"><?php esc_html_e('DOWNLOAD CSV', 'faulh'); ?></a> 
+            <a class="faulhbtn faulh-btn-primary" id="download_csv_link"><?php esc_html_e('DOWNLOAD CSV', 'faulh'); ?></a> 
 
             <div id="publishing-action">
                 <a class="faulhbtn action"  href="<?php echo $reset_URL ?>" ><?php esc_html_e('RESET', 'faulh'); ?></a>
                 <input type="hidden" name="<?php echo $this->plugin_name ?>_export_csv" id="export-csv" value="">
                 <input type="hidden" name="<?php echo $this->plugin_name ?>_export_nonce" id="<?php echo $this->plugin_name ?>_export_nonce" value="<?php echo wp_create_nonce($this->plugin_name . '_export_csv') ?>">
-                <input class="faulhbtn faulhbtn-primary" id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', 'faulh') ?>" />
+                <input class="faulhbtn faulh-btn-primary" id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', 'faulh') ?>" />
             </div>
         </div>
     </form>

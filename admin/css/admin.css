@@ -1,7 +1,7 @@
 /*
 admin css for the plugin - user login history
 */
- 
+
 .is_status_online,  .is_status_offline, .is_status_idle{min-width: 80px;}
 
 .is_status_online:before{
@@ -29,7 +29,7 @@ admin css for the plugin - user login history
 .submitAction{margin-top: 10px;}
 
 .faulhbtn,
-.faulhbtn-primary,
+.faulh-btn-primary,
 .faulhbtn-secondary {
     display: inline-block;
     text-decoration: none;
@@ -88,7 +88,7 @@ p .faulhbtn {
     box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
 }
 
-.faulhbtn-primary {
+.faulh-btn-primary {
     background: #2ea2cc;
     border-color: #0074a2;
     -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.5), 0 1px 0 rgba(0,0,0,.15);
@@ -97,8 +97,8 @@ p .faulhbtn {
     text-decoration: none;
 }
 
-.faulhbtn-primary:hover,
-.faulhbtn-primary:focus {
+.faulh-btn-primary:hover,
+.faulh-btn-primary:focus {
     background: #1e8cbe;
     border-color: #0074a2;
     -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.6);
@@ -106,13 +106,13 @@ p .faulhbtn {
     color: #fff;
 }
 
-.faulhbtn-primary:focus {
+.faulh-btn-primary:focus {
     border-color: #0e3950;
     -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.6), 1px 1px 2px rgba(0,0,0,0.4);
     box-shadow: inset 0 1px 0 rgba(120,200,230,0.6), 1px 1px 2px rgba(0,0,0,0.4);
 }
 
-.faulhbtn-primary:active {
+.faulh-btn-primary:active {
     background: #1b7aa6;
     border-color: #005684;
     color: rgba(255,255,255,0.95);
@@ -122,9 +122,9 @@ p .faulhbtn {
 }
 
 .listingOuter .faulh_admin_users{
-	margin-top: 20px;
-	width: auto;
-	min-width: 100%;	
+    margin-top: 20px;
+    width: auto;
+    min-width: 100%;	
 }
 
 .listingOuter form{overflow: auto; max-width: 100%;}
@@ -132,14 +132,14 @@ p .faulhbtn {
 .tablenav{
     left: 0;
     right: 0;
-        position: absolute;
+    position: absolute;
 }
 
 .top{
-	top: 0
+    top: 0
 }
 .bottom{
-	bottom: 0
+    bottom: 0
 }
 
 .aboutAuthor{float: right;  margin-top: -20px; font-size: 16px; }
@@ -150,7 +150,12 @@ p .faulhbtn {
 .mt20{margin-top: 20px;}
 .infoBlockUser{width: 160px; display: inline-block;}
 
+
+
+
+
+
 @media  (max-width: 767px){
-.secondRow{display: block !important;}
-.listingOuter { padding: 50px 0;}
+    .secondRow{display: block !important;}
+    .listingOuter { padding: 50px 0;}
 }

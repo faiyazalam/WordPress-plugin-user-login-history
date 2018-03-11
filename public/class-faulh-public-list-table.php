@@ -349,7 +349,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 'user_agent' => esc_html__('User Agent', 'faulh'),
                 'login_status' => esc_html__('Login Status', 'faulh'),
             );
-
             $columns = apply_filters('faulh_public_get_columns', $columns);
             return $columns;
         }
@@ -367,7 +366,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 'old_role' => array('old_role', true),
                 'time_login' => array('time_login', TRUE),
                 'time_logout' => array('time_logout', false),
-                //  'ip_address' => array('ip_address', false),
                 'browser' => array('browser', true),
                 'operating_system' => array('operating_system', false),
                 'country_name' => array('country_name', false),

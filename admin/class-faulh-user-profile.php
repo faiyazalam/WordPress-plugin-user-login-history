@@ -65,10 +65,14 @@ if(!class_exists('Faulh_User_Profile'))
     function show_extra_profile_fields($user) {
         $user_timezone = get_user_meta($user->ID, $this->usermeta_key_timezone, TRUE);
         ?>
+<style>
+  
+
+</style>
         <h3 id="<?php echo $this->plugin_name ?>"><?php echo Faulh_Template_Helper::plugin_name(); ?></h3>
 
-        <table>
-            <tr>
+        <table class="faulh-form-table">
+            <tr class="user-<?php echo $this->plugin_name . "-timezone" ?>-wrap">
                 <th><label for="<?php echo $this->plugin_name . "-timezone" ?>"><?php esc_html_e('Timezone', 'faulh'); ?></label></th>
                 <td>
                     <select required="required" name="<?php echo $this->plugin_name . '-timezone' ?>">
@@ -77,6 +81,7 @@ if(!class_exists('Faulh_User_Profile'))
                         Faulh_Template_Helper::dropdown_timezones($user_timezone);
                         ?>
                     </select>
+                    <div><?php esc_html_e('This is used to convert date-time (e.g. login time, last seen time etc.) on the listing table.', 'faulh') ?></div>
                 </td>
             </tr>
 

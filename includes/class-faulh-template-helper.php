@@ -13,46 +13,6 @@ if(!class_exists('Faulh_Template_Helper'))
 {
    class Faulh_Template_Helper {
 
-    /**
-     * Print out option html elements for all the blogs of the current network.
-     * @global object $wpdb
-     * @param string $selected
-     */
-    static public function dropdown_blogs($selected = '') {
-        global $wpdb;
-        $r = '';
-        $site_id = get_current_network_id();
-        $blogs = $wpdb->get_results("SELECT blog_id, domain, path FROM $wpdb->blogs where site_id = $site_id", 'ARRAY_A');
-        foreach ($blogs as $blog) {
-            $name = $blog['domain'] . $blog['path'];
-            if ($selected == $blog['blog_id']) {
-                $r .= "\n\t<option selected='selected' value='" . esc_attr($blog['blog_id']) . "'>$name</option>";
-            } else {
-                $r .= "\n\t<option value='" . esc_attr($blog['blog_id']) . "'>$name</option>";
-            }
-        }
-        echo $r;
-    }
-
-    /**
-     * Print out option html elements for all the networks.
-     * @global object $wpdb
-     * @param string $selected
-     */
-    static public function dropdown_sites($selected = '') {
-        global $wpdb;
-        $r = '';
-        $sites = $wpdb->get_results("SELECT id, domain, path FROM $wpdb->site", 'ARRAY_A');
-        foreach ($sites as $site) {
-            $name = $site['domain'] . $site['path'];
-            if ($selected == $site['id']) {
-                $r .= "\n\t<option selected='selected' value='" . esc_attr($site['id']) . "'>$name</option>";
-            } else {
-                $r .= "\n\t<option value='" . esc_attr($site['id']) . "'>$name</option>";
-            }
-        }
-        echo $r;
-    }
 
     /**
      * Print out option html elements for all the time field types.
