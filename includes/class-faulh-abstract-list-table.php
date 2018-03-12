@@ -93,8 +93,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
         }
 
         /**
+         * Timezone edit link
          * 
-         * @return type
+         * @return string
          */
         public function table_timezone_edit() {
             return esc_html__('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_table_timezone() . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
@@ -333,7 +334,6 @@ $is_super_admin = $_GET['is_super_admin'];
                 'old_role' => array('old_role', true),
                 'time_login' => array('time_login', false),
                 'time_logout' => array('time_logout', false),
-                //    'ip_address' => array('ip_address', false),
                 'browser' => array('browser', false),
                 'operating_system' => array('operating_system', false),
                 'country_name' => array('country_name', false),
@@ -378,7 +378,7 @@ $is_super_admin = $_GET['is_super_admin'];
 
         // here we configure table headers, defined in our methods
         $this->_column_headers = array($columns, $hidden, $sortable);
-            $per_page = $this->get_items_per_page($this->plugin_name . "_rows_per_page");
+            $per_page = 20; //$this->get_items_per_page();
             $current_page = $this->get_pagenum();
             $total_items = $this->record_count();
 
