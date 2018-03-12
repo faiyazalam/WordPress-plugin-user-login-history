@@ -83,7 +83,7 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
 
             $sql .= " SELECT"
                     . " FaUserLogin.*,"
-                    . " UserMeta.meta_value,"
+                    . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
                     . " $blog_id as blog_id"
                     . " FROM $table  AS FaUserLogin"
                     . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"

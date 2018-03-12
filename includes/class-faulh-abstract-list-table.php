@@ -342,6 +342,7 @@ $is_super_admin = $_GET['is_super_admin'];
                 'user_agent' => array('user_agent', false),
                 'login_status' => array('login_status', false),
                 'is_super_admin' => array('is_super_admin', false),
+                'duration' => array('duration', false),
             );
             if (is_multisite()) {
                 $sortable_columns['is_super_admin'] = array('is_super_admin', false);

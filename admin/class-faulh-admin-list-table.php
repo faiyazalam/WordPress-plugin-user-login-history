@@ -58,7 +58,7 @@ if(!class_exists('Faulh_Admin_List_Table'))
         $table = $wpdb->prefix . $this->table_name;
         $sql = " SELECT"
                 . " FaUserLogin.*, "
-                . " UserMeta.meta_value "
+                . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                 . " FROM " . $table . "  AS FaUserLogin"
                 . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
                 . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"

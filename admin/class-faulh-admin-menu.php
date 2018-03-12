@@ -64,9 +64,10 @@ if(!class_exists('Faulh_Admin_Menu'))
     public function plugin_menu() {
         $menu_slug = $this->plugin_name."-admin-listing";
         $hook = add_menu_page(
-        Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $menu_slug, [ $this, 'load_template']
+        Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $menu_slug, array($this, 'render_list_table'),plugin_dir_url(__FILE__) . 'images/icon.png',
+                30
         );
-              //  add_submenu_page($menu_slug, __('Premium Benefits', 'faulh'), __('Premium Benefits', 'faulh'), 'manage_options', $this->plugin_name.'-get-premium', array($this, 'render_get_premium_page'));
+        add_submenu_page($menu_slug, __('Login List', 'faulh'), __('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_list_table'));
         add_submenu_page($menu_slug, __('About', 'faulh'), __('About', 'faulh'), 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
         add_submenu_page($menu_slug, __('Help', 'faulh'), __('Help', 'faulh'), 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
     
@@ -80,9 +81,7 @@ if(!class_exists('Faulh_Admin_Menu'))
     public function render_help_page() {
          require_once   plugin_dir_path(dirname(__FILE__)) . 'admin/partials/help.php';
     }
-    public function render_get_premium_page() {
-                 require_once   plugin_dir_path(dirname(__FILE__)) . 'admin/partials/premium.php';
-    }
+  
 
 
 
@@ -91,7 +90,7 @@ if(!class_exists('Faulh_Admin_Menu'))
      * 
      *@access public
      */
-  public function load_template() {
+  public function render_list_table() {
            $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
            if(is_network_admin()){
          $this->list_table =   new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
