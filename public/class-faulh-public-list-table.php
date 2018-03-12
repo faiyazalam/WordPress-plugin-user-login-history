@@ -265,7 +265,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
             global $wpdb;
             $sql = " SELECT"
                     . " FaUserLogin.*, "
-                    . " UserMeta.meta_value "
+                    . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
                     . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
@@ -373,6 +373,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 'timezone' => array('timezone', false),
                 'user_agent' => array('user_agent', false),
                 'login_status' => array('login_status', false),
+                'duration' => array('duration', false),
             );
 
             $sortable_columns = apply_filters('faulh_public_get_sortable_columns', $sortable_columns);

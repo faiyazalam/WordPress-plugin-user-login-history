@@ -40,7 +40,6 @@ if(!class_exists('Faulh_Geo_Helper'))
      * @return string The IP address of user.
      */
     public function get_ip() {
-      //  return '163.47.142.27';
         $ip_address = $_SERVER['REMOTE_ADDR'];
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {

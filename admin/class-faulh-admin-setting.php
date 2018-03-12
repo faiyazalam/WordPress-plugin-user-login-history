@@ -50,18 +50,18 @@ class Faulh_Admin_Setting {
     }
 
     function admin_menu() {
-        add_options_page( 'User Login History', 'User Login History', 'manage_options', 'faulh-admin-setting', array($this, 'plugin_page') );
+        add_options_page( Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $this->plugin_name.'-admin-setting', array($this, 'render_setting_page') );
     }
 
     function get_settings_sections() {
         $sections = array(
             array(
                 'id'    => $this->plugin_name.'_basics',
-                'title' => __( 'Basic Settings', 'faulh' ),
+                'title' => esc_html__( 'Basic Settings', 'faulh' ),
             ),
             array(
                 'id'    => $this->plugin_name.'_advance',
-                'title' => __( 'Advance Settings', 'faulh' ),
+                'title' => esc_html__( 'Advance Settings', 'faulh' ),
             )
            
         );
@@ -78,9 +78,9 @@ class Faulh_Admin_Setting {
             $this->plugin_name.'_basics' => array(
                 array(
                     'name'              => 'is_status_online',
-                    'label'             => __( 'Online', 'faulh' ),
-                    'desc'              => __( 'Maximum number of minutes for online users.', 'faulh' ),
-                    'placeholder'       => __( '1.99', 'faulh' ),
+                    'label'             => esc_html__( 'Online', 'faulh' ),
+                    'desc'              => esc_html__( 'Maximum number of minutes for online users.', 'faulh' ),
+                    'placeholder'       => esc_attr__( '1.99', 'faulh' ),
                     'min'               => 0,
                     'max'               => 100,
                     'step'              => '0.01',
@@ -90,9 +90,9 @@ class Faulh_Admin_Setting {
                 ),
                  array(
                     'name'              => 'is_status_idle',
-                    'label'             => __( 'Idle', 'faulh' ),
-                    'desc'              => __( 'Maximum number of minutes for idle users.', 'faulh' ),
-                    'placeholder'       => __( '1.99', 'faulh' ),
+                    'label'             => esc_html__( 'Idle', 'faulh' ),
+                    'desc'              => esc_html__( 'Maximum number of minutes for idle users.', 'faulh' ),
+                    'placeholder'       => esc_attr__( '1.99', 'faulh' ),
                     'min'               => 0,
                     'max'               => 100,
                     'step'              => '0.01',
@@ -104,8 +104,8 @@ class Faulh_Admin_Setting {
              $this->plugin_name.'_advance' => array(
                 array(
                     'name'              => 'is_geo_tracker_enabled',
-                    'label'             => __( 'Enable Geo Traker', 'faulh' ),
-                    'desc'              => __( 'Enable tracking of country and timezone.', 'faulh' ),
+                    'label'             => esc_html__( 'Enable Geo Traker', 'faulh' )."<br>".esc_html__( '(Not Recommended)', 'faulh' ),
+                    'desc'              => esc_html__( 'Enable tracking of country and timezone. This functionality is dependent on a third-party service, hence not recommended.', 'faulh' ),
                     'type'              => 'checkbox',
                     'default'           => FALSE,
                 ),
@@ -117,7 +117,7 @@ class Faulh_Admin_Setting {
         return $settings_fields;
     }
 
-    function plugin_page() {
+    function render_setting_page() {
         echo '<div class="wrap">';
 echo Faulh_Template_Helper::head();
         $this->settings_api->show_navigation();

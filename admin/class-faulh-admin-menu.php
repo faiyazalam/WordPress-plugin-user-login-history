@@ -67,9 +67,9 @@ if(!class_exists('Faulh_Admin_Menu'))
         Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $menu_slug, array($this, 'render_list_table'),plugin_dir_url(__FILE__) . 'images/icon.png',
                 30
         );
-        add_submenu_page($menu_slug, __('Login List', 'faulh'), __('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_list_table'));
-        add_submenu_page($menu_slug, __('About', 'faulh'), __('About', 'faulh'), 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
-        add_submenu_page($menu_slug, __('Help', 'faulh'), __('Help', 'faulh'), 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
+        add_submenu_page($menu_slug, esc_html__('Login List', 'faulh'), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_list_table'));
+        add_submenu_page($menu_slug, esc_html__('About', 'faulh'), esc_html__('About', 'faulh'), 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
+        add_submenu_page($menu_slug, esc_html__('Help', 'faulh'), esc_html__('Help', 'faulh'), 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
     
     }
     
