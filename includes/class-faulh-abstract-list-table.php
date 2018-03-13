@@ -449,6 +449,7 @@ $is_super_admin = $_GET['is_super_admin'];
                 $record['user_agent'] = $this->column_default($row, 'user_agent');
                 if (is_multisite()) {
                     $record['is_super_admin'] = $this->column_default($row, 'is_super_admin');
+                    $record['blog_id'] = $this->column_default($row, 'blog_id');
                 }
                 //output header row
                 if (0 == $i) {

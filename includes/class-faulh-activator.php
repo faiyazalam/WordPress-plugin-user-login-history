@@ -67,6 +67,7 @@ if(!class_exists('Faulh_Activator'))
 `timezone` varchar(200) NOT NULL,
 `old_role` varchar(200) NOT NULL, 
 `user_agent` text NOT NULL, 
+`geo_response` text NOT NULL, 
 `login_status` varchar(50) NOT NULL, 
 `is_super_admin` INT(1) NOT NULL, 
 PRIMARY KEY (`id`)

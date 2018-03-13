@@ -118,13 +118,6 @@ if (!class_exists('Faulh_User_Tracker')) {
             $BrowserHelper = new Faulh_Browser_Helper();
             $GeoHelper = new Faulh_Geo_Helper($this->plugin_name);
             $geo_location = $GeoHelper->get_geo_location();
-            $country_code = isset($geo_location->geoplugin_countryCode) ? $geo_location->geoplugin_countryCode : "";
-            $lat = isset($geo_location->geoplugin_latitude) ? $geo_location->geoplugin_latitude : 0;
-            $long = isset($geo_location->geoplugin_longitude) ? $geo_location->geoplugin_longitude : 0;
-
-            if ($lat != 0 && $long != 0 && $country_code) {
-                $user_timezone = Faulh_Date_Time_Helper::get_nearest_timezone($lat, $long, $country_code);
-            }
             //now insert for new login
             $data = array(
                 'user_id' => $user_id,
@@ -132,17 +125,18 @@ if (!class_exists('Faulh_User_Tracker')) {
                 'username' => $user_login,
                 'time_login' => $current_date,
                 'ip_address' => $GeoHelper->get_ip(),
-                'country_name' => !empty($geo_location->geoplugin_countryName) ? $geo_location->geoplugin_countryName : $unknown,
-                'country_code' => !empty($country_code) ? $country_code : $unknown,
-                'timezone' => !empty($user_timezone) ? $user_timezone : $unknown,
+                'country_name' => !empty($geo_location['country_name']) ? $geo_location['country_name'] : $unknown,
+                'country_code' => !empty($geo_location['country_code']) ? $geo_location['country_code'] : $unknown,
+                'timezone' => !empty($geo_location['timezone']) ? $geo_location['timezone'] : $unknown,
                 'time_last_seen' => $current_date,
                 'browser' => $BrowserHelper->getBrowser(),
                 'browser_version' => $BrowserHelper->getVersion(),
                 'operating_system' => $BrowserHelper->getPlatform(),
                 'old_role' => !empty($user->roles) ? implode(",", $user->roles) : "",
-                'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                'user_agent' => isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:$unknown,
                 'login_status' => $status,
                 'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
+                'geo_response' => maybe_serialize($geo_location),
             );
             //this is used to modify data before saving in db.
             $filtered_data = apply_filters('faulh_before_save_login', $data);

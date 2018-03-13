@@ -19,7 +19,7 @@
     <div><p><?php echo $this->list_table->table_timezone_edit() ?></p></div>
     <div class="listingOuter">
         <form method="post">
-            <input type="hidden" name="<?php echo $this->plugin_name . '_admin_listing_table' ?>" value="">
+            <input type="hidden" name="<?php echo $this->plugin_name.(is_network_admin()?'_network_admin_listing_table':'_admin_listing_table')?>" value="">
             <?php
             $this->list_table->prepare_items();
             $this->list_table->display();
