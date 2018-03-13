@@ -104,7 +104,7 @@ class Faulh_Admin_Setting {
              $this->plugin_name.'_advance' => array(
                 array(
                     'name'              => 'is_geo_tracker_enabled',
-                    'label'             => esc_html__( 'Enable Geo Traker', 'faulh' )."<br>".esc_html__( '(Not Recommended)', 'faulh' ),
+                    'label'             => esc_html__( 'Enable Geo Tracker', 'faulh' )."<br>".esc_html__( '(Not Recommended)', 'faulh' ),
                     'desc'              => esc_html__( 'Enable tracking of country and timezone. This functionality is dependent on a third-party service, hence not recommended.', 'faulh' ),
                     'type'              => 'checkbox',
                     'default'           => FALSE,
