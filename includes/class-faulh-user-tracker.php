@@ -152,12 +152,14 @@ if (!class_exists('Faulh_User_Tracker')) {
                 return;
             }
 
+            do_action('faulh_after_save_login', $data);
+            
             if (self::LOGIN_STATUS_FAIL == $status) {
                 return;
             }
 
             $this->is_blocked_user_on_current_blog($user_id);
-            do_action('faulh_after_save_login', $data);
+            
         }
 
         /**
@@ -183,12 +185,13 @@ if (!class_exists('Faulh_User_Tracker')) {
             $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . FAULH_TABLE_NAME;
             $current_date = Faulh_Date_Time_Helper::get_current_date_time();
             $user_id = $current_user->ID;
+            $session_token = wp_get_session_token();
 
             if (!$user_id) {
                 return;
             }
 
-            $sql = "update $table set time_last_seen='$current_date' where session_token = '" . wp_get_session_token() . "' and user_id = '$user_id' and login_status = '" . self::LOGIN_STATUS_LOGIN . "'";
+            $sql = "update $table set time_last_seen='$current_date' where session_token = '$session_token' and user_id = '$user_id' and login_status = '" . self::LOGIN_STATUS_LOGIN . "'";
             $user_id = get_current_user_id();
             $status = $wpdb->query($sql);
 
@@ -196,7 +199,12 @@ if (!class_exists('Faulh_User_Tracker')) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             }
 
-            return $status;
+             $data =array(
+            'time_last_seen'=>$current_date,
+            'session_token'=>$session_token,
+        );
+         do_action('faulh_update_time_last_seen', $data);
+         
         }
 
         /**
@@ -234,6 +242,14 @@ if (!class_exists('Faulh_User_Tracker')) {
             if ($wpdb->last_error) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             }
+            
+              $data =array(
+            'time_logout'=>$time_logout,
+            'time_last_seen'=>$time_logout,
+            'session_token'=>$session_token,
+        );
+       do_action('faulh_logout', $data);
+
         }
 
         /**
