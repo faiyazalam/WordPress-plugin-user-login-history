@@ -307,8 +307,8 @@ $is_super_admin = $_GET['is_super_admin'];
                 'duration' => esc_html__('Duration', 'faulh'),
                 'timezone' => esc_html__('Timezone', 'faulh'),
                 'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
-                'time_login' => esc_html__('Login', 'faulh'),
-                'time_logout' => esc_html__('Logout', 'faulh'),
+                'time_login' => "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".esc_html__('Login', 'faulh')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+                'time_logout' => "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".esc_html__('Logout', 'faulh')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
                 'user_agent' => esc_html__('User Agent', 'faulh'),
                'login_status' => esc_html__('Login Status', 'faulh'),
             );
