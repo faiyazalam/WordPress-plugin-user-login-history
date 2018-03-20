@@ -108,6 +108,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @return string
          */
         public function prepare_where_query() {
+            
             $where_query = '';
 
             $fields = array(
@@ -159,16 +160,17 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     }
                 }
             }
-            
-             if (!empty($_GET['is_super_admin'])) {
-$is_super_admin = $_GET['is_super_admin'];
-                if ('yes' == $is_super_admin) {
+
+            if (isset($_GET['is_super_admin'])) {
+                $is_super_admin = $_GET['is_super_admin'];
+               
+                if ('1' == $is_super_admin) {
                     $where_query .= " AND `FaUserLogin`.`is_super_admin` = '1'";
-                } elseif('no' == $is_super_admin) {
+                } elseif ('0' == $is_super_admin) {
                     $where_query .= " AND `FaUserLogin`.`is_super_admin` = '0'";
                 }
             }
-            
+
             $where_query = apply_filters('faulh_admin_prepare_where_query', $where_query);
             return $where_query;
         }
@@ -217,7 +219,7 @@ $is_super_admin = $_GET['is_super_admin'];
                 case 'old_role':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'browser':
-                    return $item[$column_name] ? $item[$column_name]."<br>(".$item['browser_version'].")" : $unknown;
+                    return $item[$column_name] ? $item[$column_name] . "<br>(" . $item['browser_version'] . ")" : $unknown;
                 case 'time_login':
                     return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
                 case 'time_logout':
@@ -237,7 +239,7 @@ $is_super_admin = $_GET['is_super_admin'];
                 case 'country_code':
                     return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
 
-  
+
                 case 'operating_system':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
 
@@ -268,7 +270,8 @@ $is_super_admin = $_GET['is_super_admin'];
                     $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                     return $duration ? $duration : $unknown;
                 case 'login_status':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    $login_statuses = Faulh_Template_Helper::login_statuses();
+                    return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
 
                 case 'site_id':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
@@ -277,7 +280,8 @@ $is_super_admin = $_GET['is_super_admin'];
                     return $item[$column_name] ? $item[$column_name] : $unknown;
 
                 case 'is_super_admin':
-                    return $item[$column_name] ? esc_html__('Yes', 'faulh') : esc_html__('No', 'faulh');
+                    $super_admin_statuses = Faulh_Template_Helper::super_admin_statuses();
+                    return !empty($super_admin_statuses[$item[$column_name]]) ? $super_admin_statuses[$item[$column_name]] : $unknown;
 
                 default:
                     if ($new_column_data) {
@@ -299,18 +303,18 @@ $is_super_admin = $_GET['is_super_admin'];
                 'user_id' => esc_html__('User Id', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
-                'ip_address' => esc_html__('IP Address', 'faulh'),
-                'country_name' => esc_html__('Country', 'faulh'),
+                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role (?)', 'faulh') . "</span>",
+                'ip_address' => "<span title='" . esc_attr__('To track IP Address, Geo Tracker setting must be enabled.', 'faulh') . "'>" . esc_html__('IP Address (?)', 'faulh') . "</span>",
+                'country_name' => "<span title='" . esc_attr__('To track country name, Geo Tracker setting must be enabled.', 'faulh') . "'>" . esc_html__('Country (?)', 'faulh') . "</span>",
                 'browser' => esc_html__('Browser', 'faulh'),
                 'operating_system' => esc_html__('Platform', 'faulh'),
-                'duration' => esc_html__('Duration', 'faulh'),
                 'timezone' => esc_html__('Timezone', 'faulh'),
-                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
-                'time_login' => "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".esc_html__('Login', 'faulh')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
-                'time_logout' => "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".esc_html__('Logout', 'faulh')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
                 'user_agent' => esc_html__('User Agent', 'faulh'),
-               'login_status' => esc_html__('Login Status', 'faulh'),
+                'duration' => esc_html__('Duration', 'faulh'),
+                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen (?)', 'faulh') . "</span>",
+                'time_login' => esc_html__('Login', 'faulh'),
+                'time_logout' => esc_html__('Logout', 'faulh'),
+                'login_status' => esc_html__('Login Status', 'faulh'),
             );
 
             if (is_network_admin()) {
@@ -373,12 +377,12 @@ $is_super_admin = $_GET['is_super_admin'];
          * @access public
          */
         public function prepare_items() {
-  $columns = $this->get_columns();
-        $hidden = array();
-        $sortable = $this->get_sortable_columns();
+            $columns = $this->get_columns();
+            $hidden = array();
+            $sortable = $this->get_sortable_columns();
 
-        // here we configure table headers, defined in our methods
-        $this->_column_headers = array($columns, $hidden, $sortable);
+            // here we configure table headers, defined in our methods
+            $this->_column_headers = array($columns, $hidden, $sortable);
             $per_page = 20; //$this->get_items_per_page();
             $current_page = $this->get_pagenum();
             $total_items = $this->record_count();
@@ -415,7 +419,7 @@ $is_super_admin = $_GET['is_super_admin'];
             $timezone = $this->get_table_timezone();
             $data = $this->get_rows(0); // pass zero to get all the records
             //date string to suffix the file nanme: month - day - year - hour - minute
-            $suffix = $this->plugin_name."_". date('n-j-y_H-i');
+            $suffix = $this->plugin_name . "_" . date('n-j-y_H-i');
             // send response headers to the browser
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment;filename=' . $suffix . '.csv');

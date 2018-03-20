@@ -19,7 +19,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
             <div><input readonly autocomplete="off" placeholder="<?php esc_html_e("From", "faulh") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" ></div>
             <div><input readonly autocomplete="off" placeholder="<?php esc_html_e("To", "faulh") ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" ></div>
             <div> <select  name="date_type" >
-<?php Faulh_Template_Helper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL); ?>
+                    <?php Faulh_Template_Helper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL); ?>
                 </select></div>
         </div>
         <div class="secondRow">
@@ -29,58 +29,58 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
             <div><input placeholder="<?php esc_html_e("Enter Browser", "faulh") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? esc_attr($_GET['browser']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Operating System", "faulh") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? esc_attr($_GET['operating_system']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter IP Address", "faulh") ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? esc_attr($_GET['ip_address']) : "" ?>" ></div>
-<?php if (is_network_admin()) { ?>
+            <?php if (is_network_admin()) { ?>
                 <div><input placeholder="<?php esc_html_e("Blog ID", "faulh") ?>" name="blog_id" value="<?php echo isset($_GET['blog_id']) ? esc_attr($_GET['blog_id']) : "" ?>" ></div>
 
-    <?php
-}
-?>
+                <?php
+            }
+            ?>
         </div>
 
         <div class="secondRow">
             <div> <select  name="timezone">
-<?php $selected_timezone = isset($_GET['timezone']) ? $_GET['timezone'] : "" ?>
+                    <?php $selected_timezone = isset($_GET['timezone']) ? $_GET['timezone'] : "" ?>
                     <option value=""><?php esc_html_e('Select Timezone', 'faulh') ?></option>
                     <option value="unknown" <?php selected($selected_timezone, "unknown"); ?> ><?php esc_html_e('Unknown', 'faulh') ?></option>
-<?php Faulh_Template_Helper::dropdown_timezones($selected_timezone); ?>
+                    <?php Faulh_Template_Helper::dropdown_timezones($selected_timezone); ?>
                 </select></div>
             <div><select  name="role">
                     <option value=""><?php esc_html_e("Select Current Role", "faulh") ?></option>
-<?php
-$selected_role = isset($_GET['role']) ? $_GET['role'] : NULL;
-wp_dropdown_roles($selected_role);
-?>
+                    <?php
+                    $selected_role = isset($_GET['role']) ? $_GET['role'] : NULL;
+                    wp_dropdown_roles($selected_role);
+                    ?>
                     <?php if (is_multisite()) { ?>
                         <option value="superadmin" <?php selected($selected_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", "faulh") ?></option>
                     <?php } ?>
                 </select></div>
             <div> <select   name="old_role">
                     <option value=""><?php esc_html_e("Select Old Role", "faulh") ?></option>
-<?php
-$selected_old_role = isset($_GET['old_role']) ? $_GET['old_role'] : NULL;
-wp_dropdown_roles($selected_old_role);
-?>
+                    <?php
+                    $selected_old_role = isset($_GET['old_role']) ? $_GET['old_role'] : NULL;
+                    wp_dropdown_roles($selected_old_role);
+                    ?>
                     <?php if (is_multisite()) { ?>
                         <option value="superadmin" <?php selected($selected_old_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", "faulh") ?></option>  <?php } ?>
                 </select></div>
             <div> <select  name="login_status">
                     <option value=""><?php esc_html_e('Select Login Status', 'faulh') ?></option>
-<?php Faulh_Template_Helper::dropdown_login_statuses(isset($_GET['login_status']) ? $_GET['login_status'] : ""); ?>
+                    <?php Faulh_Template_Helper::dropdown_login_statuses(isset($_GET['login_status']) ? $_GET['login_status'] : ""); ?>
                 </select></div>
-                    <?php if (is_network_admin()) { ?>
+            <?php if (is_network_admin()) { ?>
                 <div>
                     <select  name="is_super_admin" >
                         <option value=""><?php esc_html_e('Select Super Admin', 'faulh') ?></option>
 
-    <?php
-    Faulh_Template_Helper::dropdown_is_super_admin(isset($_GET['is_super_admin']) ? $_GET['is_super_admin'] : NULL);
-    ?>
+                        <?php
+                        Faulh_Template_Helper::dropdown_is_super_admin(isset($_GET['is_super_admin']) ? $_GET['is_super_admin'] : NULL);
+                        ?>
                     </select>
                 </div>
-<?php } ?>
+            <?php } ?>
 
         </div>
-<?php do_action('faulh_admin_listing_search_form'); ?>
+        <?php do_action('faulh_admin_listing_search_form'); ?>
         <div class="submitAction" >
             <a class="faulhbtn faulh-btn-primary" id="download_csv_link"><?php esc_html_e('DOWNLOAD CSV', 'faulh'); ?></a> 
 

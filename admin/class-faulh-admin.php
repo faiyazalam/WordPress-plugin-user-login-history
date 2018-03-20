@@ -122,12 +122,12 @@ if (!class_exists('Faulh_Admin')) {
             $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
 
             if ($List_Table->process_bulk_action()) {
-                $this->add_admin_notice(esc_html__('Record(s) has been deleted.', 'faulh'));
+                $this->add_admin_notice(esc_html__('Record(s) deleted.', 'faulh'));
                 $status = TRUE;
             }
 
             if ($List_Table->delete_single_row()) {
-                $this->add_admin_notice(esc_html__('Record has been deleted.', 'faulh'));
+                $this->add_admin_notice(esc_html__('Record deleted.', 'faulh'));
                 $status = TRUE;
             }
 
