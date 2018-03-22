@@ -51,26 +51,26 @@ if(!class_exists('Faulh_Activator'))
         $table = $wpdb->prefix . FAULH_TABLE_NAME;
 
         $sql = "CREATE TABLE $table (
-`id` int(11) NOT NULL AUTO_INCREMENT,
-`session_token` varchar(200) NOT NULL,
-`user_id` int(11) NOT NULL,
-`username` varchar(200) NOT NULL,
-`time_login` datetime NOT NULL,
-`time_logout` datetime NULL,
-`time_last_seen` datetime NOT NULL,
-`ip_address` varchar(200) NOT NULL,
-`browser` varchar(200) NOT NULL,
-`browser_version` varchar(100) NOT NULL,
-`operating_system` varchar(200) NOT NULL,
-`country_name` varchar(200) NOT NULL,
-`country_code` varchar(200) NOT NULL,
-`timezone` varchar(200) NOT NULL,
-`old_role` varchar(200) NOT NULL, 
-`user_agent` text NOT NULL, 
-`geo_response` text NOT NULL, 
-`login_status` varchar(50) NOT NULL, 
-`is_super_admin` INT(1) NOT NULL, 
-PRIMARY KEY (`id`)
+id int(11) NOT NULL AUTO_INCREMENT,
+session_token varchar(200) NOT NULL,
+user_id int(11) NOT NULL,
+username varchar(200) NOT NULL,
+time_login datetime NOT NULL,
+time_logout datetime NULL,
+time_last_seen datetime NOT NULL,
+ip_address varchar(200) NOT NULL,
+browser varchar(200) NOT NULL,
+browser_version varchar(100) NOT NULL,
+operating_system varchar(200) NOT NULL,
+country_name varchar(200) NOT NULL,
+country_code varchar(200) NOT NULL,
+timezone varchar(200) NOT NULL,
+old_role varchar(200) NOT NULL, 
+user_agent text NOT NULL, 
+geo_response text NOT NULL, 
+login_status varchar(50) NOT NULL, 
+is_super_admin INT(1) NOT NULL, 
+PRIMARY KEY  (id)
 ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

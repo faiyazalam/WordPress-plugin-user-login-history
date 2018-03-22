@@ -86,7 +86,7 @@ if (!class_exists('Faulh_Template_Helper')) {
 
         static public function head($page = '') {
             $h = "<h1>" . self::plugin_name() . " " . FAULH_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
-            $h .= "<span class='aboutAuthor'> <a href='https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/' title='" . esc_attr__('Click here to visit author profile', 'faulh') . "' target='_blank'> " . esc_html__('About Author', 'faulh') . " </span></a>";
+            $h .= "<span class='aboutAuthor'> <a href='https://profiles.wordpress.org/faiyazalam' title='" . esc_attr__('Click here to visit author profile', 'faulh') . "' target='_blank'> " . esc_html__('About Author', 'faulh') . " </span></a>";
             if (!empty($page)) {
                 $h .= "<h2>$page</h2>";
             }
