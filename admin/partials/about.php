@@ -27,8 +27,7 @@
             <li><?php esc_html_e('Operating System', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Current Role', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Old Role - The role while user gets logged-in into your website.', 'user-login-history'); ?></li>
-            <li><?php esc_html_e('Country Name (Based on IP Address)', 'user-login-history'); ?></li>
-            <li><?php esc_html_e('Country Code (Based on IP Address)', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Country Name and Country Code (Based on IP Address)', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Timezone (Based on IP Address)', 'user-login-history'); ?></li>
         </ol>
         <h4><?php esc_html_e('Other Useful Features:', 'user-login-history'); ?></h4>

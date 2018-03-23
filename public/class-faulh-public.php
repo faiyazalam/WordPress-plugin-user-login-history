@@ -106,7 +106,7 @@ if (!class_exists('Faulh_Public')) {
             }
 
             $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
-            $_GET['user_id'] = $current_user->ID;//to fetch records of current loggedin user only.
+            $_GET['user_id'] = $current_user->ID;//to fetch records of current logged in user only.
 
             wp_enqueue_style($this->plugin_name . '-public-jquery-ui.min');
             wp_enqueue_script($this->plugin_name . '-public-jquery-ui.min.js');

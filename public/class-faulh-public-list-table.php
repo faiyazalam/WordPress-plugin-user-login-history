@@ -336,7 +336,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 'user_id' => esc_html__('User Id', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='" . esc_attr__('Role while user gets loggedin', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
+                'old_role' => "<span title='" . esc_attr__('Role while user gets logged in', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
                 'ip_address' => esc_html__('IP Address', 'faulh'),
                 'browser' => esc_html__('Browser', 'faulh'),
                 'operating_system' => esc_html__('Platform', 'faulh'),

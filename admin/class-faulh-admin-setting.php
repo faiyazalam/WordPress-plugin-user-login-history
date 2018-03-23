@@ -61,7 +61,7 @@ class Faulh_Admin_Setting {
             ),
             array(
                 'id'    => $this->plugin_name.'_advance',
-                'title' => esc_html__( 'Advance Settings', 'faulh' ),
+                'title' => esc_html__( 'Advanced Settings', 'faulh' ),
             )
            
         );

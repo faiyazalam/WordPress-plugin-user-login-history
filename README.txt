@@ -24,8 +24,7 @@ By this plugin you can track any visitor's login details with the following attr
 1. **Operating System**
 1. **Current Role**
 1. **Old Role** - The role while user gets logged-in into your website.
-1. **Country Name (Based on IP Address)**
-1. **Country Code (Based on IP Address)**
+1. **Country Name and Country Code (Based on IP Address)**
 1. **Timezone (Based on IP Address)**
 
 Other Useful Features:

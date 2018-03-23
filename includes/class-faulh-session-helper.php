@@ -20,13 +20,13 @@ if (!class_exists('Faulh_Session_Helper')) {
         }
 
         /**
-         * Holds the key for the current blog id on which user gets loggedin.
+         * Holds the key for the current blog id on which user gets logged in.
          */
         const LOGIN_BLOG_ID_KEY = 'login_blog_id';
 
         /**
          * Gets the blog id from the session.
-         * @return int The blog id from which user gets loggedin.
+         * @return int The blog id from which user gets logged in.
          */
         public function get_current_login_blog_id() {
             $user_id = get_current_user_id();
