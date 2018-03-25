@@ -8,6 +8,7 @@
  * @package    User_Login_History
  * @subpackage User_Login_History/admin/partials/settings
  */
+
 ?>
 <div class="wrap faulhSettingPage">
     <h2><?php esc_html_e('Network Settings', 'faulh') ?> - <?php echo Faulh_Template_Helper::plugin_name() ?></h2>
@@ -28,6 +29,14 @@
                 </label>
                 <textarea id="block_user_message" name="block_user_message"><?php echo esc_attr($this->get_settings('block_user_message')); ?></textarea>
             </div>
+        </fieldset>
+          <fieldset>
+            <div class="mt20">
+                <div class="infoBlockUser"> <strong><?php esc_html_e('Columns', 'faulh') ?></strong></div>
+                <div> <?php Faulh_Template_Helper::checkbox_all_columns($this->get_settings('columns'), 'columns[]') ?>
+                    <?php esc_html_e('Select the columns to be shown on the listing table.', 'faulh'); ?></div>
+            </div>
+            
         </fieldset>
         <?php wp_nonce_field($this->plugin_name . '_network_admin_setting_nonce', $this->plugin_name . '_network_admin_setting_nonce'); ?>
         <?php submit_button(); ?>

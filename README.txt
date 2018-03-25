@@ -15,7 +15,7 @@ By this plugin you can track any visitor's login details with the following attr
 1. **Login Date-Time**
 1. **Logout Date-Time**
 1. **Last Seen Date-Time**
-1. **Login Status** - Success/Logout/Fail
+1. **Login Status** - Logged in/Logged out/Failed/Blocked
 1. **Session Duration** - How long the user stayed on your website per session.
 1. **User ID**
 1. **Username**
@@ -28,7 +28,7 @@ By this plugin you can track any visitor's login details with the following attr
 1. **Timezone (Based on IP Address)**
 
 Other Useful Features:
-1. "Editable Timezone" - You can select your preferred time zone to be used for the listing table.
+1. "Preferable Timezone" - You can select your preferred time zone to be used for the listing table.
 1. "Shortcode" - To see the listing table on front-end for the current logged-in user, you can use this shortcode `<?php echo do_shortcode['user-login-history'] ?>` in your php template file.
 1. "Multisite Network (Since version 1.7)" - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
 1. "Advanced Search Filter"

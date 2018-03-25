@@ -17,13 +17,7 @@ class Faulh_Admin_Setting {
      */
     private $plugin_name;
 
-    /**
-     * The version of this plugin.
-     *
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
-     */
-    private $version;
+  
 
     /**
      * The transient for admin notice purpose.
@@ -32,10 +26,9 @@ class Faulh_Admin_Setting {
      * @var      string    $admin_notice_transient
      */
 
-    function __construct($plugin_name, $version) {
+    function __construct($plugin_name) {
         require_once  plugin_dir_path(dirname(__FILE__)).'vendors/tareq1988/class.settings-api.php';
         $this->plugin_name = $plugin_name;
-        $this->version = $version;
         $this->settings_api = new WeDevs_Settings_API();
     }
 
@@ -60,7 +53,7 @@ class Faulh_Admin_Setting {
                 'title' => esc_html__( 'Basic Settings', 'faulh' ),
             ),
             array(
-                'id'    => $this->plugin_name.'_advance',
+                'id'    => $this->plugin_name.'_advanced',
                 'title' => esc_html__( 'Advanced Settings', 'faulh' ),
             )
            
@@ -101,13 +94,21 @@ class Faulh_Admin_Setting {
                     'sanitize_callback' => 'floatval'
                 ),
             ),
-             $this->plugin_name.'_advance' => array(
+             $this->plugin_name.'_advanced' => array(
                 array(
                     'name'              => 'is_geo_tracker_enabled',
                     'label'             => esc_html__( 'Enable Geo Tracker', 'faulh' )."<br>".esc_html__( '(Not Recommended)', 'faulh' ),
                     'desc'              => esc_html__( 'Enable tracking of country and timezone. This functionality is dependent on a third-party service, hence not recommended.', 'faulh' ),
                     'type'              => 'checkbox',
                     'default'           => FALSE,
+                ),
+                 array(
+                    'name'    => 'columns',
+                    'label'   => __( 'Columns', 'faulh' ),
+                    'desc'    => __( 'Select the columns to be shown on the listing table.', 'faulh' ),
+                    'type'    => 'multicheck',
+                    'default' => array('ip_address' => 'ip_address', 'country_name' => 'country_name'),
+                    'options' => Faulh_DB_Helper::all_columns()
                 ),
                 
             ),
@@ -125,6 +126,23 @@ echo Faulh_Template_Helper::head();
 
         echo '</div>';
     } 
+    
+    public function get_options($name = '') {
+        if($name)
+        {
+             return get_option($this->plugin_name."_$name"); 
+        }
+       
+         
+        $sections = $this->get_settings_sections();
+        $options = array();
+        
+        foreach ($sections as $key => $value) {
+            $options[$value['id']] =  get_option($value['id']);
+        }
+      
+        return $options;
+    }
 
 }
 endif;

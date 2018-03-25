@@ -57,7 +57,32 @@ if(!class_exists('Faulh_DB_Helper'))
         }
         return $result;
     }
+    
+    static public function all_columns(){
+        $columns = array(
+                'user_id' => esc_html__('User Id', 'faulh'),
+                'username' => esc_html__('Username', 'faulh'),
+                'role' => esc_html__('Current Role', 'faulh'),
+                'old_role' => "<span title='" . esc_attr__('Role while user gets logged in', 'faulh') . "'>" . esc_html__('Old Role (?)', 'faulh') . "</span>",
+                'ip_address' => esc_html__('IP Address', 'faulh'),
+                'country_name' => "<span title='" . esc_attr__('To track country name, "Geo Tracker" setting must be enabled.', 'faulh') . "'>" . esc_html__('Country (?)', 'faulh') . "</span>",
+                'browser' => esc_html__('Browser', 'faulh'),
+                'operating_system' => esc_html__('Operating System', 'faulh'),
+                'timezone' => "<span title='" . esc_attr__('To track timezone, "Geo Tracker" setting must be enabled.', 'faulh') . "'>" . esc_html__('Timezone (?)', 'faulh') . "</span>",
+                'user_agent' => esc_html__('User Agent', 'faulh'),
+                'duration' => esc_html__('Duration', 'faulh'),
+                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen (?)', 'faulh') . "</span>",
+                'time_login' => esc_html__('Login', 'faulh'),
+                'time_logout' => esc_html__('Logout', 'faulh'),
+                'login_status' => "<span title='" . esc_attr__('It may show "Logged in", if user does not logout properly.', 'faulh') . "'>" . esc_html__('Login Status (?)', 'faulh') . "</span>",
 
+            );
+            if (is_network_admin()) {
+                $columns['blog_id'] = esc_html__('Blog ID', 'faulh');
+                $columns['is_super_admin'] = esc_html__('Super Admin', 'faulh');
+            }
+            return $columns;
+    }
 }  
 }
 

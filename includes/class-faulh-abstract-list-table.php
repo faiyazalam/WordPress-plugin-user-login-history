@@ -148,15 +148,22 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             }
 
             if (!empty($_GET['date_type'])) {
-                $date_type = esc_sql($_GET['date_type']);
+                $UserProfile = new Faulh_User_Profile($this->plugin_name, NULL);
+                $input_timezone = $UserProfile->get_current_user_timezone();
+                $date_type = $_GET['date_type'];
 
                 if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
+                      $date_type = esc_sql($date_type);
                     if (!empty($_GET['date_from'])) {
-                        $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($_GET['date_from']) . " 00:00:00'";
+                        //convert date into UTC
+                        $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'], $input_timezone);
+                        $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . " 00:00:00'";
                     }
 
                     if (!empty($_GET['date_to'])) {
-                        $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($_GET['date_to']) . " 23:59:59'";
+                     //convert date into UTC
+                     $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'], $input_timezone);
+                     $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . " 23:59:59'";
                     }
                 }
             }
@@ -201,6 +208,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function column_default($item, $column_name) {
             $timezone = $this->get_table_timezone();
+            $unknown_symbol = '<span class="unknown_symbol">—</span>';
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
 
@@ -224,9 +232,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
                 case 'time_logout':
                     if (!$item['user_id']) {
-                        return $unknown;
+                        return $unknown_symbol;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : esc_html__('Logged In', 'faulh');
+                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : $unknown_symbol;
                 case 'ip_address':
                     return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
 
@@ -281,7 +289,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                 case 'is_super_admin':
                     $super_admin_statuses = Faulh_Template_Helper::super_admin_statuses();
-                    return !empty($super_admin_statuses[$item[$column_name]]) ? $super_admin_statuses[$item[$column_name]] : $unknown;
+                    return $super_admin_statuses[(bool)$item[$column_name]];
 
                 default:
                     if ($new_column_data) {
@@ -298,31 +306,49 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @return array
          */
         public function get_columns() {
-            $columns = array(
+            $printable_columns = array();
+            $all_columns = Faulh_DB_Helper::all_columns();
+            $column_checkbox = array(
                 'cb' => '<input type="checkbox" />',
-                'user_id' => esc_html__('User Id', 'faulh'),
-                'username' => esc_html__('Username', 'faulh'),
-                'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='" . esc_attr__('Role while user gets logged in', 'faulh') . "'>" . esc_html__('Old Role (?)', 'faulh') . "</span>",
-                'ip_address' => esc_html__('IP Address', 'faulh'),
-                'country_name' => "<span title='" . esc_attr__('To track country name, Geo Tracker setting must be enabled.', 'faulh') . "'>" . esc_html__('Country (?)', 'faulh') . "</span>",
-                'browser' => esc_html__('Browser', 'faulh'),
-                'operating_system' => esc_html__('Operating System', 'faulh'),
-                'timezone' => "<span title='" . esc_attr__('To track timezone, "Geo Tracker" setting must be enabled.', 'faulh') . "'>" . esc_html__('IP Address (?)', 'faulh') . "</span>",
-                'user_agent' => esc_html__('User Agent', 'faulh'),
-                'duration' => esc_html__('Duration', 'faulh'),
-                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen (?)', 'faulh') . "</span>",
-                'time_login' => esc_html__('Login', 'faulh'),
-                'time_logout' => esc_html__('Logout', 'faulh'),
-                'login_status' => esc_html__('Login Status', 'faulh'),
             );
-
-            if (is_network_admin()) {
-                $columns['blog_id'] = esc_html__('Blog ID', 'faulh');
-                $columns['is_super_admin'] = esc_html__('Super Admin', 'faulh');
+            
+           
+              $selected_columns = $this->get_selected_columns();
+                if(!empty($selected_columns) && is_array($selected_columns))
+                {
+                    foreach ($selected_columns as $key) {
+                        if(isset($all_columns[$key]))
+                        {
+                            $printable_columns[$key] = $all_columns[$key]; 
+                        }
+                    }
+                }
+                else{
+                    $printable_columns = array_merge($column_checkbox, $all_columns);
+                }
+          
+            
+            $printable_columns = apply_filters('faulh_admin_get_columns', $printable_columns);
+            $printable_columns = array_merge($column_checkbox, $printable_columns);
+            return $printable_columns;
+        }
+        
+        private function get_selected_columns() {
+             if(is_network_admin())
+            {
+                  $network_setting = new Faulh_Network_Admin_Setting($this->plugin_name);
+                 return $network_setting->get_settings('columns');
+              
             }
-            $columns = apply_filters('faulh_admin_get_columns', $columns);
-            return $columns;
+            else{
+                 $Setting = new Faulh_Admin_Setting($this->plugin_name);
+                $options = $Setting->get_options('advanced');
+                if(!empty($options['columns']) && is_array($options['columns']))
+                {
+                    return $options['columns'];
+                } 
+            }
+            return FALSE;
         }
 
         /**

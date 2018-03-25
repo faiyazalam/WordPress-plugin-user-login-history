@@ -18,7 +18,7 @@
             <li><?php esc_html_e('Login Date-Time', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Logout Date-Time', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Last Seen Date-Time', 'user-login-history'); ?></li>
-            <li><?php esc_html_e('Login Status - Success/Logout/Fail', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Login Status - Logged in/Logged out/Failed/Blocked', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Session Duration - How long the user stayed on your website per session.', 'user-login-history'); ?></li>
             <li><?php esc_html_e('User ID', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Username', 'user-login-history'); ?></li>
@@ -32,7 +32,7 @@
         </ol>
         <h4><?php esc_html_e('Other Useful Features:', 'user-login-history'); ?></h4>
         <ol>
-            <li><?php esc_html_e('Editable Timezone - You can select your preferred timezone to be used for the listing table.', 'user-login-history'); ?></li>
+            <li><?php esc_html_e('Preferable Timezone - You can select your preferred timezone to be used for the listing table.', 'user-login-history'); ?></li>
             <li><?php esc_html_e('Shortcode - To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'user-login-history'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
             <li><?php esc_html_e('Multisite Network (Since version 1.7) - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'user-login-history'); ?><br> 
             </li>

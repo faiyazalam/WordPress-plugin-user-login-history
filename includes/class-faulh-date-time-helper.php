@@ -42,8 +42,9 @@ if(!class_exists('Faulh_Date_Time_Helper'))
      * This is used to get the current date to be saved in DB.
      * @return string The current date.
      */
-    static public function get_current_date_time() {
-        return date(self::DEFAULT_FORMAT);
+    static public function get_current_date_time($format = '', $timezone = '') {
+        date_default_timezone_set($timezone?$timezone:self::DEFAULT_TIMEZONE);
+        return date($format?$format:self::DEFAULT_FORMAT);
     }
 
     /**
@@ -52,6 +53,7 @@ if(!class_exists('Faulh_Date_Time_Helper'))
      * @return array The array containing all the timezones.
      */
     static public function get_timezone_list() {
+        $current_default_timezone = date_default_timezone_get();
         $zones_array = array();
         $timestamp = time();
         foreach (timezone_identifiers_list() as $key => $zone) {
@@ -59,6 +61,8 @@ if(!class_exists('Faulh_Date_Time_Helper'))
             $zones_array[$key]['zone'] = $zone;
             $zones_array[$key]['diff_from_GMT'] = 'UTC/GMT ' . date('P', $timestamp);
         }
+        //reset the timezone for the script
+        date_default_timezone_set($current_default_timezone?$current_default_timezone:self::DEFAULT_TIMEZONE);
         return $zones_array;
     }
 

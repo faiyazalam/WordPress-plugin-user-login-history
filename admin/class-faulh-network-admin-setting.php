@@ -79,13 +79,16 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
      */
     private function update_settings() {
         $settings = array();
-
+      
 
         if (isset($_POST['block_user'])) {
             $settings['block_user'] = 1;
         }
         if (isset($_POST['block_user_message'])) {
             $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
+        }
+        if (isset($_POST['columns'])) {
+            $settings['columns'] = maybe_serialize($_POST['columns']);
         }
 
 
@@ -111,7 +114,7 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
 
         if (isset($settings)) {
             if ($setting) {
-                return isset($settings[$setting]) ? $settings[$setting] : null;
+                return isset($settings[$setting]) ? maybe_unserialize($settings[$setting]) : null;
             }
             return $settings;
         }
@@ -122,7 +125,7 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
         ));
 
         if ($setting) {
-            return isset($settings[$setting]) ? $settings[$setting] : null;
+            return isset($settings[$setting]) ?maybe_unserialize($settings[$setting]) : null;
         }
         return $settings;
     }
