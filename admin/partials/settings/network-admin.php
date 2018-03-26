@@ -11,7 +11,7 @@
 
 ?>
 <div class="wrap faulhSettingPage">
-    <h2><?php esc_html_e('Network Settings', 'faulh') ?> - <?php echo Faulh_Template_Helper::plugin_name() ?></h2>
+    <h2><?php echo Faulh_Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?></h2>
     <form method="post">
         <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_setting_submit' ?>" >
         <fieldset>
@@ -34,7 +34,7 @@
             <div class="mt20">
                 <div class="infoBlockUser"> <strong><?php esc_html_e('Columns', 'faulh') ?></strong></div>
                 <div> <?php Faulh_Template_Helper::checkbox_all_columns($this->get_settings('columns'), 'columns[]') ?>
-                    <?php esc_html_e('Select the columns to be shown on the listing table.', 'faulh'); ?></div>
+                    <?php esc_html_e('Select the columns to be shown on the listing table. Default: All Columns', 'faulh'); ?></div>
             </div>
             
         </fieldset>

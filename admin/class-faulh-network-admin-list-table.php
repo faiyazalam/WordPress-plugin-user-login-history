@@ -151,10 +151,6 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
             if ($where_query) {
                 $sql .= $where_query;
             }
-
-           // $sql .= ' GROUP BY FaUserLogin.id) AS FaUserLoginSubCount';
-           // $sql .= ' ) AS FaUserLoginSubCount';
-
             $i++;
         }
         $sql_count = "SELECT SUM(count) as total FROM ($sql) AS FaUserLoginCount";

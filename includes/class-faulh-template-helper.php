@@ -86,7 +86,7 @@ if (!class_exists('Faulh_Template_Helper')) {
 
         static public function head($page = '') {
             $h = "<h1>" . self::plugin_name() . " " . FAULH_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
-            $h .= "<span class='aboutAuthor'> <a href='https://profiles.wordpress.org/faiyazalam' title='" . esc_attr__('Click here to visit author profile', 'faulh') . "' target='_blank'> " . esc_html__('About Author', 'faulh') . " </span></a>";
+            $h .= "<p> <a href='https://profiles.wordpress.org/faiyazalam' title='" . esc_attr__('Click here to visit author profile', 'faulh') . "' target='_blank'> " . esc_html__('About Author', 'faulh') . "</a></p>";
             if (!empty($page)) {
                 $h .= "<h2>$page</h2>";
             }
@@ -109,8 +109,8 @@ if (!class_exists('Faulh_Template_Helper')) {
 
         static public function super_admin_statuses() {
             return array(
-                '1' => esc_html__("Yes", "faulh"),
-                '0' => esc_html__("No", "faulh"),
+                'yes' => esc_html__("Yes", "faulh"),
+                'no' => esc_html__("No", "faulh"),
             );
         }
 
@@ -138,7 +138,8 @@ if (!class_exists('Faulh_Template_Helper')) {
                         $r = '';
           
             foreach ($all_columns as $key => $option_name) {
-                $checked = in_array($key, $selected) ? 'checked' : '';
+               
+                $checked = is_array($selected) && in_array($key, $selected) ? 'checked' : '';
          $r .= "<lable for='column_$key'><input id='column_$key' $checked type='checkbox' name='$field_name' value='" . $key . "'>$option_name</lable><br>";
 
             }

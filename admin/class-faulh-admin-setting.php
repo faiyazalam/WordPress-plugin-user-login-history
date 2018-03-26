@@ -97,17 +97,17 @@ class Faulh_Admin_Setting {
              $this->plugin_name.'_advanced' => array(
                 array(
                     'name'              => 'is_geo_tracker_enabled',
-                    'label'             => esc_html__( 'Enable Geo Tracker', 'faulh' )."<br>".esc_html__( '(Not Recommended)', 'faulh' ),
-                    'desc'              => esc_html__( 'Enable tracking of country and timezone. This functionality is dependent on a third-party service, hence not recommended.', 'faulh' ),
+                    'label'             => esc_html__( 'Geo Tracker', 'faulh' )."<br>".esc_html__( '(Not Recommended)', 'faulh' ),
+                    'desc'              => esc_html__( 'Enable tracking of country and timezone. This functionality is dependent on a free third-party API service, hence not recommended. For more info, see the "Help" page under the plugin menu.', 'faulh' ),
                     'type'              => 'checkbox',
                     'default'           => FALSE,
                 ),
                  array(
                     'name'    => 'columns',
                     'label'   => __( 'Columns', 'faulh' ),
-                    'desc'    => __( 'Select the columns to be shown on the listing table.', 'faulh' ),
+                    'desc'    => __( 'Select the columns to be shown on the listing table. Default: All Columns.', 'faulh' ),
                     'type'    => 'multicheck',
-                    'default' => array('ip_address' => 'ip_address', 'country_name' => 'country_name'),
+                    //'default' => array('ip_address' => 'ip_address', 'country_name' => 'country_name'),
                     'options' => Faulh_DB_Helper::all_columns()
                 ),
                 

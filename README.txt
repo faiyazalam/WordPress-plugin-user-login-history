@@ -16,6 +16,7 @@ By this plugin you can track any visitor's login details with the following attr
 1. **Logout Date-Time**
 1. **Last Seen Date-Time**
 1. **Login Status** - Logged in/Logged out/Failed/Blocked
+1. **Online Status** - Online/Offline/Idle
 1. **Session Duration** - How long the user stayed on your website per session.
 1. **User ID**
 1. **Username**
