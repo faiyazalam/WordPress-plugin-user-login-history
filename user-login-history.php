@@ -35,6 +35,7 @@ define('FAULH_TABLE_NAME', 'fa_user_logins');
 define('FAULH_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
 define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
 define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
+define('FAULH_BOOTSTRAP_FILE_PATH', basename(__DIR__) . "/" . basename(__FILE__));
 
 /**
  * The code that runs during plugin activation.
@@ -43,6 +44,7 @@ function activate_faulh($network_wide) {
     require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
     Faulh_Activator::activate($network_wide);
 }
+
 register_activation_hook(__FILE__, 'activate_faulh');
 
 if (is_multisite() && is_network_admin()) {

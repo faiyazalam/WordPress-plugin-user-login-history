@@ -206,9 +206,9 @@ if (!class_exists('Faulh_Admin')) {
             $current_version = get_option(FAULH_OPTION_NAME_VERSION);
             //If the version is older
             if ($current_version && version_compare($current_version, $this->version, '<')) {
-                $this->add_admin_notice(esc_html__("We have done some major changes in the version 1.7.0. Please checkout the help page under the plugin menu.", 'faulh'));
+             $this->add_admin_notice( sprintf(esc_html__('We have done some major changes in the version 1.7.0. Please see the %1$sHelp%2$s page under the plugin menu.', 'faulh'), "<a href='". admin_url("admin.php?page={$this->plugin_name}-help")."'>", "</a>"));
                 require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
-                if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
+                if (is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH)) {
                     $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
                     foreach ($blog_ids as $blog_id) {
                         switch_to_blog($blog_id);

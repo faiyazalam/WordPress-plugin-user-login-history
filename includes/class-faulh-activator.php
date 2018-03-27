@@ -75,6 +75,10 @@ PRIMARY KEY  (id)
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta($sql);
+        if($wpdb->last_error)
+        {
+            Faulh_Error_Handler::error_log("Error while creating or updatiing tables-".$wpdb->last_error, __LINE__, __FILE__);
+        }
     }
 
     /**
@@ -83,7 +87,7 @@ PRIMARY KEY  (id)
      * @access public
      */
     public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
-        if (is_plugin_active_for_network('user-login-history/user-login-history.php')) {
+        if (is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH)) {
             switch_to_blog($blog_id);
             self:: create_table();
             self::update_options();

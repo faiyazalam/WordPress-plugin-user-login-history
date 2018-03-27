@@ -88,7 +88,7 @@ if (!class_exists('Faulh_Template_Helper')) {
             $h = "<h1>" . self::plugin_name() . " " . FAULH_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
             $h .= "<p> <a href='https://profiles.wordpress.org/faiyazalam' title='" . esc_attr__('Click here to visit author profile', 'faulh') . "' target='_blank'> " . esc_html__('About Author', 'faulh') . "</a></p>";
             if (!empty($page)) {
-                $h .= "<h2>$page</h2>";
+                $h .= "<h2 TEST>$page</h2>";
             }
             echo $h;
         }

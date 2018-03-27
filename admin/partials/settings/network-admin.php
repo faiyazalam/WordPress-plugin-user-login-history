@@ -11,7 +11,7 @@
 
 ?>
 <div class="wrap faulhSettingPage">
-    <h2><?php echo Faulh_Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?></h2>
+    <?php echo Faulh_Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?>
     <form method="post">
         <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_setting_submit' ?>" >
         <fieldset>
