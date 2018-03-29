@@ -67,7 +67,7 @@ if(!class_exists('Faulh_DB_Helper'))
                 'ip_address' => esc_html__('IP Address', 'faulh'),
                 'country_name' => "<span title='" . esc_attr__('To track country name, "Geo Tracker" setting must be enabled.', 'faulh') . "'>" . esc_html__('Country (?)', 'faulh') . "</span>",
                 'browser' => esc_html__('Browser', 'faulh'),
-                'operating_system' => esc_html__('Operating System', 'faulh'),
+                'operating_system' => esc_html__('Platform', 'faulh'),
                 'timezone' => "<span title='" . esc_attr__('To track timezone, "Geo Tracker" setting must be enabled.', 'faulh') . "'>" . esc_html__('Timezone (?)', 'faulh') . "</span>",
                 'user_agent' => esc_html__('User Agent', 'faulh'),
                 'duration' => esc_html__('Duration', 'faulh'),

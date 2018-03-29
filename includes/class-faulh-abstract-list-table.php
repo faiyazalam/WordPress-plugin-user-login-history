@@ -154,16 +154,15 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                 if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
                     $date_type = esc_sql($date_type);
+
                     if (!empty($_GET['date_from'])) {
-                        //convert date into UTC
-                        $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'], $input_timezone);
-                        $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . " 00:00:00'";
+                        $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                        $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
                     }
 
                     if (!empty($_GET['date_to'])) {
-                        //convert date into UTC
-                        $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'], $input_timezone);
-                        $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . " 23:59:59'";
+                        $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                        $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
                     }
                 }
             }
@@ -208,7 +207,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function column_default($item, $column_name) {
             $timezone = $this->get_table_timezone();
-            $unknown_symbol = '<span class="unknown_symbol">—</span>';
+            $unknown_symbol = '—';
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
 
@@ -296,7 +295,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                 case 'is_super_admin':
                     $super_admin_statuses = Faulh_Template_Helper::super_admin_statuses();
-                    return $super_admin_statuses[$item[$column_name]?'yes':'no'];
+                    return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
 
                 default:
                     if ($new_column_data) {
@@ -442,7 +441,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function export_to_CSV() {
             global $current_user;
-             $unknown_symbol = '—';
+            $unknown_symbol = '—';
             $timezone = $this->get_table_timezone();
             $data = $this->get_rows(0); // pass zero to get all the records
             //date string to suffix the file name: month - day - year - hour - minute
@@ -460,21 +459,19 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $i = 0;
             $record = array();
             foreach ($data as $row) {
-                
-                 if(empty($row['user_id']))
-                {
-                  $time_last_seen_str = $time_logout_str = $unknown_symbol;  
+
+                if (empty($row['user_id'])) {
+                    $time_last_seen_str = $time_logout_str = $unknown_symbol;
+                } else {
+                    $time_last_seen = $row['time_last_seen'];
+                    $human_time_diff = human_time_diff(strtotime($time_last_seen));
+                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone));
+                    $time_last_seen_str = $human_time_diff . " " . esc_html__('ago', 'faulh') . " ($time_last_seen)";
+
+                    $time_logout_str = strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
                 }
-                else{
-                $time_last_seen = $row['time_last_seen'];
-                $human_time_diff = human_time_diff(strtotime($time_last_seen));
-                $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone));
-                $time_last_seen_str = $human_time_diff . " " . esc_html__('ago', 'faulh') . " ($time_last_seen)";
-                
-                $time_logout_str = strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
-                }
-                
-                
+
+
                 $record['user_id'] = $this->column_default($row, 'user_id');
                 $record['current_role'] = $this->column_default($row, 'role');
                 $record['old_role'] = $this->column_default($row, 'old_role');
@@ -491,8 +488,8 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 $record['login_status'] = $this->column_default($row, 'login_status');
                 $record['user_agent'] = $this->column_default($row, 'user_agent');
                 if (is_network_admin()) {
-                 $record['is_super_admin'] = $this->column_default($row, 'is_super_admin');
-                 $record['blog_id'] = $this->column_default($row, 'blog_id');
+                    $record['is_super_admin'] = $this->column_default($row, 'is_super_admin');
+                    $record['blog_id'] = $this->column_default($row, 'blog_id');
                 }
                 //output header row
                 if (0 == $i) {

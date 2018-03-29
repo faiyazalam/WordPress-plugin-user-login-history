@@ -9,6 +9,12 @@
  * @subpackage User_Login_History/admin/partials
  */
 ?>
+<?php 
+$author_links  = Faulh_Template_Helper::plugin_author_links();
+$paypal_key = 'paypal';
+$paypal_link = $author_links[$paypal_key];
+unset($author_links[$paypal_key]);
+?>
 <div class="wrap">
     <?php Faulh_Template_Helper::head(esc_html__('About The Plugin', 'faulh')); ?>
     <div class="clearfix">
@@ -48,13 +54,23 @@
         <h3><?php esc_html_e('I am here!', 'faulh'); ?></h3>
         <p><strong><?php esc_html_e('You can reach me through the following links:', 'faulh'); ?></strong></p>
         <p>
-            <a href="https://profiles.wordpress.org/faiyazalam" class="button-secondary" target="_blank">WordPress</a>
-            <a href="https://github.com/faiyazalam" class="button-secondary" target="_blank">Github</a>
-            <a href="http://stackoverflow.com/users/4380588/faiyaz-alam" class="button-secondary" target="_blank">StackOverFlow</a>
-            <a href="https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/" class="button-secondary" target="_blank">UpWork</a>
-            <a href="https://www.peopleperhour.com/freelancer/er-faiyaz/php-cakephp-zend-magento-moodle-tot/1016456" class="button-secondary" target="_blank">PeoplePerHour</a>
-            <a href="https://www.linkedin.com/in/er-faiyaz-alam-0704219a" class="button-secondary" target="_blank">LinkedIn</a>
+            <?php foreach ($author_links as $key => $link) {
+                if(empty($link['url']) || empty($link['label']))
+                {
+                    continue;
+                }
+                ?>
+<?php Faulh_Template_Helper::create_button($link['url'], $link['label']) ?> 
+            <?php
+            }?>
         </p>
+        <?php if(!empty($paypal_link['url']) && !empty($paypal_link['label'])) {?>
+         <h3><?php esc_html_e('Like My Work?', 'faulh'); ?></h3>
+        <p><strong><?php esc_html_e('', 'faulh'); ?></strong></p>
+        <p>
+       <?php Faulh_Template_Helper::create_button($paypal_link['url'], esc_html__('Donate', 'faulh')) ?> 
+        </p>
+        <?php } ?>
        
     </div>
 </div>

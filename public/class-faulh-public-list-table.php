@@ -237,19 +237,21 @@ if (!class_exists('Faulh_Public_List_Table')) {
                if (!empty($_GET['date_type'])) {
                 $UserProfile = new Faulh_User_Profile($this->plugin_name, NULL);
                 $input_timezone = $UserProfile->get_current_user_timezone();
+                $input_timezone =NULL;
                 $date_type = $_GET['date_type'];
 
                 if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
                       $date_type = esc_sql($date_type);
+                      $format = 'Y-m-d';
                     if (!empty($_GET['date_from'])) {
                         //convert date into UTC
-                        $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'], $input_timezone);
+                        $date_from = date($format, strtotime(Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'], $input_timezone)));
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . " 00:00:00'";
                     }
 
                     if (!empty($_GET['date_to'])) {
                      //convert date into UTC
-                     $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'], $input_timezone);
+                        $date_to = date($format, strtotime(Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'], $input_timezone)));
                      $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . " 23:59:59'";
                     }
                 }
@@ -339,23 +341,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * @return array
          */
         public function get_columns() {
-            $columns = array(
-                'user_id' => esc_html__('User Id', 'faulh'),
-                'username' => esc_html__('Username', 'faulh'),
-                'role' => esc_html__('Current Role', 'faulh'),
-                'old_role' => "<span title='" . esc_attr__('Role while user gets logged in', 'faulh') . "'>" . esc_html__('Old Role(?)', 'faulh') . "</span>",
-                'ip_address' => esc_html__('IP Address', 'faulh'),
-                'browser' => esc_html__('Browser', 'faulh'),
-                'operating_system' => esc_html__('Platform', 'faulh'),
-                'country_name' => esc_html__('Country', 'faulh'),
-                'duration' => esc_html__('Duration', 'faulh'),
-                'time_last_seen' => "<span title='" . esc_attr__('Last seen time in the session', 'faulh') . "'>" . esc_html__('Last Seen(?)', 'faulh') . "</span>",
-                'timezone' => esc_html__('Timezone', 'faulh'),
-                'time_login' => esc_html__('Login', 'faulh'),
-                'time_logout' => esc_html__('Logout', 'faulh'),
-                'user_agent' => esc_html__('User Agent', 'faulh'),
-                'login_status' => esc_html__('Login Status', 'faulh'),
-            );
+           $columns = Faulh_DB_Helper::all_columns();
+           unset($columns['blog_id']);
+           unset($columns['is_super_admin']);
+           $columns['timezone'] = esc_html__('Timezone', 'faulh');
+           $columns['country_name'] = esc_html__('Country', 'faulh');
             $columns = apply_filters('faulh_public_get_columns', $columns);
             return $columns;
         }
@@ -591,6 +581,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
         public function column_default($item, $column_name) {
             $timezone = $this->get_table_timezone();
             $unknown = 'unknown';
+             $unknown_symbol = '—';
             $new_column_data = apply_filters('manage_faulh_public_custom_column', '', $item, $column_name);
             switch ($column_name) {
                 case 'user_id':
@@ -622,9 +613,9 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format());
                 case 'time_logout':
                     if (!$item['user_id']) {
-                        return $unknown;
+                        return $unknown_symbol;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format()) : esc_html__('Logged In', 'faulh');
+                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format()) : $unknown_symbol;
                 case 'ip_address':
                     return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
                 case 'timezone':
@@ -660,19 +651,15 @@ if (!class_exists('Faulh_Public_List_Table')) {
 
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
-                case 'user_agent':
-                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
+                
                 case 'duration':
                     $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                     return $duration ? $duration : $unknown;
                 case 'login_status':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
-                case 'site_id':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
-                case 'blog_id':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
-                case 'is_super_admin':
-                    return $item[$column_name] ? esc_html__('Yes', 'faulh') : esc_html__('No', 'faulh');
+                    $login_statuses = Faulh_Template_Helper::login_statuses();
+                    return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
+
+               
                 default:
                     if ($new_column_data) {
                         return $new_column_data;

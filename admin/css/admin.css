@@ -125,6 +125,7 @@ p .faulhbtn {
     margin-top: 20px;
     width: auto;
     min-width: 100%;	
+    white-space: nowrap;	
 }
 
 .listingOuter form{overflow: auto; max-width: 100%;}
@@ -148,7 +149,12 @@ p .faulhbtn {
 .listingOuter th, .listingOuter td{vertical-align: top; text-align: left;}
 .faulhSettingPage textarea{ width: 400px; height: 100px; vertical-align: top; margin-left:10px;  }
 .mt20{margin-top: 20px;}
-.infoBlockUser{width: 160px; display: inline-block;}
+
+
+
+.infoBlockUser, label[for="block_user_message"]
+{width: 200px; float: left; margin-right: 10px;font-size: 14px}
+.infoBlockUser + div{float: left;  line-height: 26px;}
 
 
 

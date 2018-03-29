@@ -32,7 +32,7 @@
         </fieldset>
           <fieldset>
             <div class="mt20">
-                <div class="infoBlockUser"> <strong><?php esc_html_e('Columns', 'faulh') ?></strong></div>
+                <label class="infoBlockUser"> <strong><?php esc_html_e('Columns', 'faulh') ?></strong></label>
                 <div> <?php Faulh_Template_Helper::checkbox_all_columns($this->get_settings('columns'), 'columns[]') ?>
                     <?php esc_html_e('Select the columns to be shown on the listing table. Default: All Columns', 'faulh'); ?></div>
             </div>

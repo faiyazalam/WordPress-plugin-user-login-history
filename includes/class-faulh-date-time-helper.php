@@ -82,7 +82,7 @@ if(!class_exists('Faulh_Date_Time_Helper'))
         $output_timezone = $output_timezone ? $output_timezone : self::DEFAULT_TIMEZONE;
         $date = new DateTime($input_datetime, new DateTimeZone($input_timezone));
         $date->setTimezone(new DateTimeZone($output_timezone));
-        return $date->format(self::DEFAULT_FORMAT); // do not convert format here, use get_convert_date_time().
+        return $date->format(self::DEFAULT_FORMAT);
     }
 
     /**
