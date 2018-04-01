@@ -118,6 +118,7 @@ if (!class_exists('Faulh_Admin')) {
          * @access public
          */
         public function process_bulk_action() {
+          
             $status = FALSE;
             $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
 
@@ -132,8 +133,7 @@ if (!class_exists('Faulh_Admin')) {
             }
 
             if ($status) {
-                //redirect to current url
-                wp_safe_redirect(esc_url(add_query_arg(NULL, NULL)));
+                wp_safe_redirect(esc_url(admin_url()."admin.php?page=". $_GET['page']));
                 exit;
             }
         }

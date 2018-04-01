@@ -1,7 +1,7 @@
 === User Login History ===
-Contributors: faiyazalam,w3reign
+Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: http://wordpress.org/
-Tags: login, last seen, history, active login, last login, ip, browser, country, track, admin, member, members, profile, role, roles, shortcode, user, users, time zone
+Tags: login,log,online,duration,detect,failed,user,history,track
 Requires at least: 3.0.1
 Tested up to: 4.8
 Stable tag: 1.6
@@ -40,7 +40,7 @@ Other Useful Features:
 
 Currently, this plugin is available in the following two languages i.e. 
 1. **English**
-1. **Italian** (translated by [Leonardo Gandini](https://wordpress.org/support/users/nekokun/))
+1. **Italian**
 
 You can download the language files from [here](https://translate.wordpress.org/projects/wp-plugins/user-login-history "Click here to download the language file for the plugin."). 
 

@@ -58,7 +58,7 @@ You can prevent this behavior by using the plugin setting.', 'faulh') ?></p>
             <p><strong><?php esc_html_e('Note', 'faulh') ?></strong> - <?php esc_html_e('In case a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status "Logged in".', 'faulh') ?></p>
 
             <h2><?php esc_html_e('Deprecated Shortcode (Since 1.7)', 'faulh'); ?>: </h2>
-            <p><?php esc_html_e('Please do not use the following shortcode as it is deprecated and will be removed in future.', 'faulh') ?></p>
+            <p><?php esc_html_e('Do not use the following shortcode as it is deprecated and will be removed in future.', 'faulh') ?></p>
             <pre><code>&lt;?php echo do_shortcode('[user-login-history]'); ?&gt;</code></pre>
 
 

@@ -85,10 +85,27 @@ if (!class_exists('Faulh_Template_Helper')) {
         }
 
         static public function head($page = '') {
+            $author_urls = self::plugin_author_links();
             $h = "<h1>" . self::plugin_name() . " " . FAULH_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
-            $h .= "<p> <a href='https://profiles.wordpress.org/faiyazalam' title='" . esc_attr__('Click here to visit author profile', 'faulh') . "' target='_blank'> " . esc_html__('About Author', 'faulh') . "</a></p>";
+            $h .= "<div>";
+
+            if(!empty($author_urls['wordpress']))
+            {
+                $h .= "<a href='" . $author_urls['wordpress']['url'] . "' target='_blank'> " . esc_html__('About Me', 'faulh') . "</a>"; 
+                
+                 if(!empty($author_urls['paypal']))
+            {
+                $h .= " | <a href='" . $author_urls['paypal']['url'] . "' target='_blank'> " . $author_urls['paypal']['label'] . "</a>"; 
+            }
+            
+            }
+           
+            
+  
+            $h .= "</div>";
+
             if (!empty($page)) {
-                $h .= "<h2 TEST>$page</h2>";
+                $h .= "<h2>$page</h2>";
             }
             echo $h;
         }
@@ -126,44 +143,40 @@ if (!class_exists('Faulh_Template_Helper')) {
             }
             return $types;
         }
-        
+
         static function checkbox_all_columns($selected = array(), $field_name = 'test') {
-            if(is_string($selected))
-            {
+            if (is_string($selected)) {
                 $selected = explode(',', $selected);
                 $selected = array_map('trim', $selected);
             }
             $all_columns = Faulh_DB_Helper::all_columns();
-            
-                        $r = '';
-          
-            foreach ($all_columns as $key => $option_name) {
-               
-                $checked = is_array($selected) && in_array($key, $selected) ? 'checked' : '';
-         $r .= "<label for='column_$key'><input id='column_$key' $checked type='checkbox' name='$field_name' value='" . $key . "'>$option_name</label><br>";
 
+            $r = '';
+
+            foreach ($all_columns as $key => $option_name) {
+
+                $checked = is_array($selected) && in_array($key, $selected) ? 'checked' : '';
+                $r .= "<label for='column_$key'><input id='column_$key' $checked type='checkbox' name='$field_name' value='" . $key . "'>$option_name</label><br>";
             }
             echo $r;
-            
-            
         }
-        
+
         static public function plugin_author_links() {
             return array(
-                'paypal'=>array('url'=>'https://www.paypal.me/erfaiyazalam/', 'label'=>'Paypal'),
-                'stackoverflow'=>array('url'=>'http://stackoverflow.com/users/4380588/faiyaz-alam', 'label'=>'Stack Overflow'),
-                'wordpress'=>array('url'=>'https://profiles.wordpress.org/faiyazalam', 'label'=>'WordPress'),
-                'github'=>array('url'=>'https://github.com/faiyazalam', 'label'=>'GitHub'),
-                'linkedin'=>array('url'=>'https://www.linkedin.com/in/er-faiyaz-alam-0704219a', 'label'=>'Linkedin'),
-                'upwork'=>array('url'=>'https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/', 'label'=>'Upwork'),
-                'peopleperhour'=>array('url'=>'https://www.peopleperhour.com/freelancer/er-faiyaz/php-cakephp-zend-magento-moodle-tot/1016456', 'label'=>'People Per Hour'),
-                
-                );
+                'stackoverflow' => array('url' => 'http://stackoverflow.com/users/4380588/faiyaz-alam', 'label' => 'Stack Overflow'),
+                'wordpress' => array('url' => 'https://profiles.wordpress.org/faiyazalam', 'label' => 'WordPress'),
+                'github' => array('url' => 'https://github.com/faiyazalam', 'label' => 'GitHub'),
+                'linkedin' => array('url' => 'https://www.linkedin.com/in/er-faiyaz-alam-0704219a', 'label' => 'Linkedin'),
+                'upwork' => array('url' => 'https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/', 'label' => 'Upwork'),
+                'peopleperhour' => array('url' => 'https://www.peopleperhour.com/freelancer/er-faiyaz/php-cakephp-zend-magento-moodle-tot/1016456', 'label' => 'People Per Hour'),
+                'paypal' => array('url' => 'https://www.paypal.me/erfaiyazalam/', 'label' => esc_html__('Donate', 'faulh')),
+            );
         }
-        
+
         static public function create_button($url = '', $label = '') {
-            echo "<a href='$url' class='button-secondary' target='_blank'>$label</a>";     
+            echo "<a href='$url' class='button-secondary' target='_blank'>$label</a>";
         }
+
     }
 
 }
