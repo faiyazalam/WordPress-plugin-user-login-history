@@ -78,8 +78,10 @@ if(!class_exists('Faulh_Date_Time_Helper'))
         if (!$input_datetime) {
             return FALSE;
         }
-        $input_timezone = $input_timezone ? $input_timezone : self::DEFAULT_TIMEZONE;
-        $output_timezone = $output_timezone ? $output_timezone : self::DEFAULT_TIMEZONE;
+        //timezone is compared with 'unknown' for backward compatibility.
+        $input_timezone = !empty($input_timezone) && "unknown" != strtolower($input_timezone) ? $input_timezone : self::DEFAULT_TIMEZONE;
+        $output_timezone = !empty($output_timezone) && "unknown" != strtolower($output_timezone) ? $output_timezone : self::DEFAULT_TIMEZONE;
+       
         $date = new DateTime($input_datetime, new DateTimeZone($input_timezone));
         $date->setTimezone(new DateTimeZone($output_timezone));
         return $date->format(self::DEFAULT_FORMAT);

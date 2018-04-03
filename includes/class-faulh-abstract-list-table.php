@@ -156,12 +156,12 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $date_type = esc_sql($date_type);
 
                     if (!empty($_GET['date_from'])) {
-                        $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                        $date_from = $_GET['date_from'] . " 00:00:00";
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
                     }
 
                     if (!empty($_GET['date_to'])) {
-                        $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                        $date_to = $_GET['date_to'] . " 23:59:59";
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
                     }
                 }
@@ -463,12 +463,8 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 if (empty($row['user_id'])) {
                     $time_last_seen_str = $time_logout_str = $unknown_symbol;
                 } else {
-                    $time_last_seen = $row['time_last_seen'];
-                    $human_time_diff = human_time_diff(strtotime($time_last_seen));
-                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($time_last_seen, '', $timezone));
-                    $time_last_seen_str = $human_time_diff . " " . esc_html__('ago', 'faulh') . " ($time_last_seen)";
-
-                    $time_logout_str = strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
+                    $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $unknown_symbol;
+                    $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
                 }
 
 
