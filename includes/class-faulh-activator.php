@@ -52,7 +52,7 @@ if(!class_exists('Faulh_Activator'))
 
         $sql = "CREATE TABLE $table (
 id int(11) NOT NULL AUTO_INCREMENT,
-session_token varchar(200) NOT NULL,
+session_token varchar(100) NOT NULL,
 user_id int(11) NOT NULL,
 username varchar(200) NOT NULL,
 time_login datetime NOT NULL,
@@ -70,14 +70,17 @@ user_agent text NOT NULL,
 geo_response text NOT NULL, 
 login_status varchar(50) NOT NULL, 
 is_super_admin INT(1) NOT NULL, 
-PRIMARY KEY  (id)
+PRIMARY KEY  (id),
+INDEX faulh_user_traker_index (session_token,login_status,user_id)
 ) $charset_collate;";
 
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
         dbDelta($sql);
-        if($wpdb->last_error)
+     
+        if(!empty($wpdb->last_error))
         {
             Faulh_Error_Handler::error_log("Error while creating or updatiing tables-".$wpdb->last_error, __LINE__, __FILE__);
+            wp_die($wpdb->last_error);
         }
     }
 
