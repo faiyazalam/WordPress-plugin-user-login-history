@@ -24,13 +24,13 @@ By this plugin you can track any visitor's login details with the following attr
 1. **Browser**
 1. **Operating System**
 1. **Current Role**
-1. **Old Role** - The role while user gets logged-in into your website.
+1. **Old Role** - The role while user gets loggedin into your website.
 1. **Country Name and Country Code (Based on IP Address)**
 1. **Timezone (Based on IP Address)**
 
 Other Useful Features:
-1. "Preferable Timezone" - You can select your preferred time zone to be used for the listing table.
-1. "Shortcode" - To see the listing table on front-end for the current logged-in user, you can use this shortcode `<?php echo do_shortcode['user-login-history'] ?>` in your php template file.
+1. "Preferable Timezone" - You can select your preferred timezone to be used for the listing table.
+1. "Shortcode" - To see the listing table on front-end for the current loggedin user, you can use this shortcode `<?php echo do_shortcode['user-login-history'] ?>` in your php template file.
 1. "Multisite Network (Since version 1.7)" - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
 1. "Advanced Search Filter"
 1. "CSV Export"
@@ -75,7 +75,7 @@ Yes.
 
 = 1.7(release date) =
 * Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
-* Added the column **Login Status** - This is used to check whether the user is logged-in, logged-out, login-failed or blocked.
+* Added the column **Login Status** - This is used to check whether the user is loggedin, loggedout, login-failed or blocked.
 * Added the option **Last Seen Time** to filter the results.
 * Added the column **Super Admin** - This is used only for multisite network.
 * Added **Hooks** to extend its functionality easily.
@@ -86,5 +86,5 @@ Yes.
 
 = 1.* <= 1.7 =
 After upgrading, you have to do the following changes:
-1. Update your time zone from your profile edit page.
+1. Update your timezone from your profile edit page.
 1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]

@@ -33,14 +33,14 @@ unset($author_links[$paypal_key]);
             <li><?php esc_html_e('Browser', 'faulh'); ?></li>
             <li><?php esc_html_e('Operating System', 'faulh'); ?></li>
             <li><?php esc_html_e('Current Role', 'faulh'); ?></li>
-            <li><?php esc_html_e('Old Role - The role while user gets logged-in into your website.', 'faulh'); ?></li>
+            <li><?php esc_html_e('Old Role - The role while user gets loggedin into your website.', 'faulh'); ?></li>
             <li><?php esc_html_e('Country Name and Country Code (Based on IP Address)', 'faulh'); ?></li>
             <li><?php esc_html_e('Timezone (Based on IP Address)', 'faulh'); ?></li>
         </ol>
         <h4><?php esc_html_e('Other Useful Features:', 'faulh'); ?></h4>
         <ol>
             <li><?php esc_html_e('Preferable Timezone - You can select your preferred timezone to be used for the listing table.', 'faulh'); ?></li>
-            <li><?php esc_html_e('Shortcode - To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'faulh'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
+            <li><?php esc_html_e('Shortcode - To see the listing table on front-end for the current loggedin user, you can use the following shortcode in your template file.', 'faulh'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
             <li><?php esc_html_e('Multisite Network (Since version 1.7) - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'faulh'); ?><br> 
             </li>
             <li><?php esc_html_e('Advanced Search Filter', 'faulh'); ?></li>
