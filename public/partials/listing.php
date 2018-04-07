@@ -34,7 +34,7 @@
         <select required="required"  id="select_timezone" name="<?php echo $this->plugin_name . '-timezone' ?>">
             <option value=""><?php esc_html_e('Select Timezone', 'faulh') ?></option>
             <?php
-            Faulh_Template_Helper::dropdown_timezones($timezone);
+            Faulh_Template_Helper::dropdown_timezones($Public_List_Table->get_table_timezone());
             ?>
         </select>
         <input type="submit" name="<?php echo $this->plugin_name . "_update_user_timezone" ?>" value="<?php echo esc_html__("Apply", 'faulh') ?>">

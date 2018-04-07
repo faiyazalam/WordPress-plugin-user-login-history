@@ -81,7 +81,7 @@ if(!class_exists('Faulh_Date_Time_Helper'))
         //timezone is compared with 'unknown' for backward compatibility.
         $input_timezone = !empty($input_timezone) && "unknown" != strtolower($input_timezone) ? $input_timezone : self::DEFAULT_TIMEZONE;
         $output_timezone = !empty($output_timezone) && "unknown" != strtolower($output_timezone) ? $output_timezone : self::DEFAULT_TIMEZONE;
-       
+        Faulh_Error_Handler::error_log("input timezone: $input_timezone output_timezone: $output_timezone input_datetime: $input_datetime", __LINE__, __FILE__);
         $date = new DateTime($input_datetime, new DateTimeZone($input_timezone));
         $date->setTimezone(new DateTimeZone($output_timezone));
         return $date->format(self::DEFAULT_FORMAT);
@@ -98,46 +98,5 @@ if(!class_exists('Faulh_Date_Time_Helper'))
         $time_two_str = strtotime($time_two);
         return $time_one_str > $time_two_str ? $time_one : $time_two;
     }
-    
-    /**
-     * Gets nearest timezone of the user.
-     *
-     * @param string $cur_lat current lattitude
-     * @param string $cur_long current longitude
-     * @param string $country_code country code
-     * @return boolean|string
-     */
-    static public function get_nearest_timezone($cur_lat, $cur_long, $country_code = '') {
-        $timezone_ids = ($country_code) ? DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, $country_code) : DateTimeZone::listIdentifiers();
-
-        if ($timezone_ids && is_array($timezone_ids) && isset($timezone_ids[0])) {
-            $time_zone = '';
-            $tz_distance = 0;
-
-            //only one identifier?
-            if (count($timezone_ids) == 1) {
-                $time_zone = $timezone_ids[0];
-            } else {
-                foreach ($timezone_ids as $timezone_id) {
-                    $timezone = new DateTimeZone($timezone_id);
-                    $location = $timezone->getLocation();
-                    $tz_lat = $location['latitude'];
-                    $tz_long = $location['longitude'];
-                    $theta = $cur_long - $tz_long;
-                    $distance = (sin(deg2rad($cur_lat)) * sin(deg2rad($tz_lat))) + (cos(deg2rad($cur_lat)) * cos(deg2rad($tz_lat)) * cos(deg2rad($theta)));
-                    $distance = acos($distance);
-                    $distance = abs(rad2deg($distance));
-
-                    if (!$time_zone || $tz_distance > $distance) {
-                        $time_zone = $timezone_id;
-                        $tz_distance = $distance;
-                    }
-                }
-            }
-            return $time_zone;
-        }
-        return FALSE;
-    }
-
 }
 }

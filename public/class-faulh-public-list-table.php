@@ -577,6 +577,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
          */
         public function column_default($item, $column_name) {
             $timezone = $this->get_table_timezone();
+            $date_time_format = $this->get_table_date_time_format();
             $unknown = 'unknown';
              $unknown_symbol = '—';
             $new_column_data = apply_filters('manage_faulh_public_custom_column', '', $item, $column_name);
@@ -607,12 +608,12 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 case 'browser':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
                 case 'time_login':
-                    return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format());
+                    return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
                 case 'time_logout':
                     if (!$item['user_id']) {
                         return $unknown_symbol;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $this->get_table_date_time_format()) : $unknown_symbol;
+                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format) : $unknown_symbol;
                 case 'ip_address':
                     return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
                 case 'timezone':
@@ -630,25 +631,9 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     if (!$item['user_id']) {
                         return $unknown;
                     }
-                    $time_last_seen_unix = strtotime($item[$column_name]);
-                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                    $human_time_diff = human_time_diff($time_last_seen_unix);
-                    $is_online_str = 'offline';
-                    if (Faulh_User_Tracker::LOGIN_STATUS_LOGIN == $item['login_status']) {
-                        $minutes = ((time() - $time_last_seen_unix) / 60);
-                        $settings = get_option($this->plugin_name . "_basics");
-                        $minute_online = !empty($settings['is_status_online']) ? $settings['is_status_online'] : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
-                        $minute_idle = !empty($settings['is_status_idle']) ? $settings['is_status_idle'] : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
-                        if ($minutes <= $minute_online) {
-                            $is_online_str = 'online';
-                        } elseif ($minutes <= $minute_idle) {
-                            $is_online_str = 'idle';
-                        }
-                    }
-
-                    return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
-
-                
+                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
+                    $human_time_diff = human_time_diff(strtotime($item[$column_name]));
+                    return "<div title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
                 case 'duration':
                     $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
                     return $duration ? $duration : $unknown;
