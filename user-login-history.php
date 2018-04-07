@@ -30,30 +30,56 @@ if (!defined('WPINC')) {
 /**
  * Plugin Constants.
  */
-define('FAULH_VERSION', '1.7.0');
-define('FAULH_TABLE_NAME', 'fa_user_logins');
-define('FAULH_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
-define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
-define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
-define('FAULH_BOOTSTRAP_FILE_PATH', basename(__DIR__) . "/" . basename(__FILE__));
+if (!defined('FAULH_VERSION')) {
+    define('FAULH_VERSION', '1.7.0');
+}
+
+if (!defined('FAULH_TABLE_NAME')) {
+    define('FAULH_TABLE_NAME', 'fa_user_logins');
+}
+
+if (!defined('FAULH_OPTION_NAME_VERSION')) {
+    define('FAULH_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
+}
+
+if (!defined('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN')) {
+    define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
+}
+if (!defined('FAULH_DEFAULT_IS_STATUS_IDLE_MIN')) {
+    define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
+}
+
+if (!defined('FAULH_BOOTSTRAP_FILE_PATH')) {
+    define('FAULH_BOOTSTRAP_FILE_PATH', basename(__DIR__) . "/" . basename(__FILE__));
+}
+
+
 
 /**
  * The code that runs during plugin activation.
  */
-function activate_faulh($network_wide) {
-    require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
-    Faulh_Activator::activate($network_wide);
-}
+if (!function_exists('activate_faulh')) {
 
+    function activate_faulh($network_wide) {
+        require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
+        Faulh_Activator::activate($network_wide);
+    }
+
+}
 register_activation_hook(__FILE__, 'activate_faulh');
+
 
 if (is_multisite() && is_network_admin()) {
     add_action('wpmu_new_blog', 'on_create_blog', 10, 6);
 }
 
-function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
-    require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
-    Faulh_Activator::on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta);
+if (!function_exists('on_create_blog')) {
+
+    function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
+        require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
+        Faulh_Activator::on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta);
+    }
+
 }
 
 /**
@@ -69,11 +95,13 @@ require plugin_dir_path(__FILE__) . 'includes/class-faulh.php';
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
  */
-function run_faulh() {
+if (!function_exists('run_faulh')) {
 
-    $plugin = new Faulh();
-    $plugin->run();
+    function run_faulh() {
+        $plugin = new Faulh();
+        $plugin->run();
+    }
+
 }
-
 run_faulh();
 ?>
