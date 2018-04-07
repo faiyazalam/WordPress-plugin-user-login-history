@@ -1,28 +1,34 @@
-jQuery(function () {
+(function ($) {
+    'use strict';
+
+    $(function () {
+
 //date picker
-    jQuery(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
-    jQuery("#date_to").datepicker({dateFormat: 'yy-mm-dd'});
-    jQuery("#date_from").datepicker({dateFormat: 'yy-mm-dd'}).bind("change", function () {
-        var minValue = jQuery(this).val();
-        minValue = jQuery.datepicker.parseDate("yy-mm-dd", minValue);
-        minValue.setDate(minValue.getDate() + 0);
-        jQuery("#date_to").datepicker("option", "minDate", minValue);
-    });
+        $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#date_to").datepicker({dateFormat: 'yy-mm-dd'});
+        $("#date_from").datepicker({dateFormat: 'yy-mm-dd'}).bind("change", function () {
+            var minValue = $(this).val();
+            minValue = $.datepicker.parseDate("yy-mm-dd", minValue);
+            minValue.setDate(minValue.getDate() + 0);
+            $("#date_to").datepicker("option", "minDate", minValue);
+        });
 
 //csv
-    jQuery("#download_csv_button").click(function () {
-        var export_user_login_history = jQuery("#export-user-login-history");
-        export_user_login_history.val('csv');
-                jQuery("#submit").trigger('click');
-        export_user_login_history.val('');
+        $("#download_csv_link").click(function () {
+            var export_csv = $("#export-csv");
+            export_csv.val('csv');
+            $("#submit").trigger('click');
+            export_csv.val('');
+        });
+        //delete all records
+        $("#doaction, #doaction2, .delete").click(function (e) {
+            if (confirm(admin_custom_object.delete_confirm_message))
+            {
+                return true;
+            }
+            return false; 
+        });
     });
-    jQuery("#delete_all_user_login_history").click(function (e) {
-        e.preventDefault();
-        if (confirm(ulh_admin_custom_object.delete_confirm_message))
-        {
-            window.location.href = ulh_admin_custom_object.admin_url+'admin.php?page=user-login-history&delete_all_user_login_history=1';
-        }
-        return false;
-    });
-    jQuery(".userloginhistories").attr("border", "");
-});
+
+})(jQuery);
+

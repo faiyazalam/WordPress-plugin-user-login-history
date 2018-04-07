@@ -1,57 +1,66 @@
 <?php
+
 /**
  * The plugin bootstrap file
  *
  * This file is read by WordPress to generate the plugin information in the plugin
- * Dashboard. This file also includes all of the dependencies used by the plugin,
+ * admin area. This file also includes all of the dependencies used by the plugin,
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
  * @link              https://github.com/faiyazalam
- * @package           User_Login_History
+ * @package    Faulh
  *
  * @wordpress-plugin
  * Plugin Name:       User Login History
- * Plugin URI:        https://github.com/faiyazalam
+ * Plugin URI:        www.userloginhistory.com
  * Description:       Easily tracks user login with a set of multiple attributes like ip, login/logout/last-seen time, country, username, user role, browser, OS etc.
- * Version:           1.5
+ * Version:           1.7
  * Author:            Er Faiyaz Alam
  * Author URI:        https://github.com/faiyazalam
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       user-login-history
+ * Text Domain:       faulh
  * Domain Path:       /languages
  */
 // If this file is called directly, abort.
 if (!defined('WPINC')) {
     die;
 }
-require_once plugin_dir_path(__FILE__) . 'includes/user-login-history-config.php';
+/**
+ * Plugin Constants.
+ */
+define('FAULH_VERSION', '1.7.0');
+define('FAULH_TABLE_NAME', 'fa_user_logins');
+define('FAULH_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
+define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
+define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
+define('FAULH_BOOTSTRAP_FILE_PATH', basename(__DIR__) . "/" . basename(__FILE__));
 
 /**
  * The code that runs during plugin activation.
  */
-require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history-activator.php';
+function activate_faulh($network_wide) {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
+    Faulh_Activator::activate($network_wide);
+}
 
-/**
- * The code that runs during plugin deactivation.
- */
-require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history-deactivator.php';
+register_activation_hook(__FILE__, 'activate_faulh');
 
-/** This action is documented in includes/class-user-login-history-activator.php */
-register_activation_hook(__FILE__, array('User_Login_History_Activator', 'activate'));
+if (is_multisite() && is_network_admin()) {
+    add_action('wpmu_new_blog', 'on_create_blog', 10, 6);
+}
 
-/** This action is documented in includes/class-user-login-history-deactivator.php */
-register_deactivation_hook(__FILE__, array('User_Login_History_Deactivator', 'deactivate'));
-
-/** The template tags accessible for public use */
-//require_once plugin_dir_path( __FILE__ ) . 'public/user-login-history-functions.php';
+function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-activator.php';
+    Faulh_Activator::on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta);
+}
 
 /**
  * The core plugin class that is used to define internationalization,
- * dashboard-specific hooks, and public-facing site hooks.
+ * admin-specific hooks, and public-facing site hooks.
  */
-require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history.php';
+require plugin_dir_path(__FILE__) . 'includes/class-faulh.php';
 
 /**
  * Begins execution of the plugin.
@@ -59,11 +68,12 @@ require_once plugin_dir_path(__FILE__) . 'includes/class-user-login-history.php'
  * Since everything within the plugin is registered via hooks,
  * then kicking off the plugin from this point in the file does
  * not affect the page life cycle.
- *
- * @since    1.4.1
  */
-function run_User_Login_History() {
-    $plugin = new User_Login_History();
+function run_faulh() {
+
+    $plugin = new Faulh();
     $plugin->run();
 }
-run_User_Login_History();
+
+run_faulh();
+?>
