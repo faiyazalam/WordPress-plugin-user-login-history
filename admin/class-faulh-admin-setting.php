@@ -72,26 +72,24 @@ class Faulh_Admin_Setting {
                 array(
                     'name'              => 'is_status_online',
                     'label'             => esc_html__( 'Online', 'faulh' ),
-                    'desc'              => esc_html__( 'Maximum number of minutes for online users.', 'faulh' ),
-                    'placeholder'       => esc_attr__( '1.99', 'faulh' ),
+                    'desc'              => esc_html__( 'Maximum number of minutes for online users. Default is', 'faulh' )." ".FAULH_DEFAULT_IS_STATUS_ONLINE_MIN,
                     'min'               => 0,
                     'max'               => 100,
-                    'step'              => '0.01',
+                    'step'              => '1',
                     'type'              => 'number',
                     'default'           => FAULH_DEFAULT_IS_STATUS_ONLINE_MIN,
-                    'sanitize_callback' => 'floatval'
+                    'sanitize_callback' => 'absint'
                 ),
                  array(
                     'name'              => 'is_status_idle',
                     'label'             => esc_html__( 'Idle', 'faulh' ),
-                    'desc'              => esc_html__( 'Maximum number of minutes for idle users.', 'faulh' ),
-                    'placeholder'       => esc_attr__( '1.99', 'faulh' ),
+                    'desc'              => esc_html__( 'Maximum number of minutes for idle users. Default is', 'faulh' )." ".FAULH_DEFAULT_IS_STATUS_IDLE_MIN,
                     'min'               => 0,
                     'max'               => 100,
-                    'step'              => '0.01',
+                    'step'              => '1',
                     'type'              => 'number',
                     'default'           => FAULH_DEFAULT_IS_STATUS_IDLE_MIN,
-                    'sanitize_callback' => 'floatval'
+                    'sanitize_callback' => 'absint'
                 ),
             ),
              $this->plugin_name.'_advanced' => array(
