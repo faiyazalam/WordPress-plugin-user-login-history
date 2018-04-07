@@ -54,12 +54,8 @@ if(!class_exists('Faulh'))
      *
      */
     public function __construct() {
-        if (defined('FAULH_VERSION')) {
-            $this->version = FAULH_VERSION;
-        } else {
-            $this->version = '1.0.0';
-        }
-        $this->plugin_name = 'faulh';
+        $this->version = defined('FAULH_VERSION') ? FAULH_VERSION : '1.0.0';
+        $this->plugin_name = defined('FAULH_PLUGIN_NAME') ? FAULH_PLUGIN_NAME : 'faulh';
 
         $this->load_dependencies();
         $this->set_locale();
