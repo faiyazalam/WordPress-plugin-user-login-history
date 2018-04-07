@@ -181,14 +181,16 @@ if(!class_exists('Faulh'))
             $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
             $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
             $this->loader->add_action('network_admin_menu', $plugin_admin, 'update_network_setting');
-              $List_Pages = new Faulh_Admin_Menu($this->get_plugin_name(), $this->get_version());
-            $this->loader->add_action('admin_menu', $List_Pages, 'plugin_menu');
-            $this->loader->add_action('network_admin_menu', $List_Pages, 'plugin_menu');
+            
+            $this->loader->add_action('admin_menu', $plugin_admin, 'plugin_menu');
+            $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
+
           
         }
 
         if (is_network_admin()) {
             //hooks for network admin only
+            $this->loader->add_action('network_admin_menu', $plugin_admin, 'plugin_menu');
             $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
             $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
             $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');

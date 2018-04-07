@@ -317,36 +317,13 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 'cb' => '<input type="checkbox" />',
             );
 
-
-            $selected_columns = $this->get_selected_columns();
-            if (!empty($selected_columns) && is_array($selected_columns)) {
-                foreach ($selected_columns as $key) {
-                    if (isset($all_columns[$key])) {
-                        $printable_columns[$key] = $all_columns[$key];
-                    }
-                }
-            } else {
+            if (!empty($all_columns) && is_array($all_columns)) {
                 $printable_columns = array_merge($column_checkbox, $all_columns);
             }
 
-
             $printable_columns = apply_filters('faulh_admin_get_columns', $printable_columns);
-            $printable_columns = array_merge($column_checkbox, $printable_columns);
-            return $printable_columns;
-        }
 
-        private function get_selected_columns() {
-            if (is_network_admin()) {
-                $network_setting = new Faulh_Network_Admin_Setting($this->plugin_name);
-                return $network_setting->get_settings('columns');
-            } else {
-                $Setting = new Faulh_Admin_Setting($this->plugin_name);
-                $options = $Setting->get_options('advanced');
-                if (!empty($options['columns']) && is_array($options['columns'])) {
-                    return $options['columns'];
-                }
-            }
-            return FALSE;
+            return $printable_columns;
         }
 
         /**
@@ -401,13 +378,8 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          * @access public
          */
         public function prepare_items() {
-            $columns = $this->get_columns();
-            $hidden = array();
-            $sortable = $this->get_sortable_columns();
-
-            // here we configure table headers, defined in our methods
-            $this->_column_headers = array($columns, $hidden, $sortable);
-            $per_page = 20; //$this->get_items_per_page();
+            $this->_column_headers = $this->get_column_info();
+            $per_page = $this->get_items_per_page($this->plugin_name . '_rows_per_page');
             $current_page = $this->get_pagenum();
             $total_items = $this->record_count();
 
