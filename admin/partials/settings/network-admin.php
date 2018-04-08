@@ -30,14 +30,7 @@
                 <textarea id="block_user_message" name="block_user_message"><?php echo esc_attr($this->get_settings('block_user_message')); ?></textarea>
             </div>
         </fieldset>
-          <fieldset>
-            <div class="mt20">
-                <label class="infoBlockUser"> <strong><?php esc_html_e('Columns', 'faulh') ?></strong></label>
-                <div> <?php Faulh_Template_Helper::checkbox_all_columns($this->get_settings('columns'), 'columns[]') ?>
-                    <?php esc_html_e('Select the columns to be shown on the listing table. Default: All Columns', 'faulh'); ?></div>
-            </div>
-            
-        </fieldset>
+         
         <?php wp_nonce_field($this->plugin_name . '_network_admin_setting_nonce', $this->plugin_name . '_network_admin_setting_nonce'); ?>
         <?php submit_button(); ?>
     </form>

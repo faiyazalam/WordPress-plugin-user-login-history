@@ -100,15 +100,6 @@ class Faulh_Admin_Setting {
                     'type'              => 'checkbox',
                     'default'           => FALSE,
                 ),
-                 array(
-                    'name'    => 'columns',
-                    'label'   => __( 'Columns', 'faulh' ),
-                    'desc'    => __( 'Select the columns to be shown on the listing table. Default: All Columns.', 'faulh' ),
-                    'type'    => 'multicheck',
-                    //'default' => array('ip_address' => 'ip_address', 'country_name' => 'country_name'),
-                    'options' => Faulh_DB_Helper::all_columns()
-                ),
-                
             ),
             
         );

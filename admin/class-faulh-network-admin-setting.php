@@ -87,10 +87,7 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
         if (isset($_POST['block_user_message'])) {
             $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
         }
-        if (isset($_POST['columns'])) {
-            $settings['columns'] = maybe_serialize($_POST['columns']);
-        }
-
+       
 
         if ($settings) {
             // update new settings

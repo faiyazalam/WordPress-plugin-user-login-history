@@ -144,22 +144,7 @@ if (!class_exists('Faulh_Template_Helper')) {
             return $types;
         }
 
-        static function checkbox_all_columns($selected = array(), $field_name = 'test') {
-            if (is_string($selected)) {
-                $selected = explode(',', $selected);
-                $selected = array_map('trim', $selected);
-            }
-            $all_columns = Faulh_DB_Helper::all_columns();
-
-            $r = '';
-
-            foreach ($all_columns as $key => $option_name) {
-
-                $checked = is_array($selected) && in_array($key, $selected) ? 'checked' : '';
-                $r .= "<label for='column_$key'><input id='column_$key' $checked type='checkbox' name='$field_name' value='" . $key . "'>$option_name</label><br>";
-            }
-            echo $r;
-        }
+        
 
         static public function plugin_author_links() {
             return array(

@@ -412,14 +412,15 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function export_to_CSV() {
             global $current_user;
-            $unknown_symbol = '—';
+           
+            $unknown_symbol = '-';
             $timezone = $this->get_table_timezone();
             $data = $this->get_rows(0); // pass zero to get all the records
             //date string to suffix the file name: month - day - year - hour - minute
             $suffix = $this->plugin_name . "_" . date('n-j-y_H-i');
             // send response headers to the browser
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment;filename=' . $suffix . '.csv');
+           header('Content-Type: text/csv');
+           header('Content-Disposition: attachment;filename=' . $suffix . '.csv');
 
             if (!$data) {
                 $this->no_items();
@@ -437,7 +438,6 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $unknown_symbol;
                     $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
                 }
-
 
                 $record['user_id'] = $this->column_default($row, 'user_id');
                 $record['current_role'] = $this->column_default($row, 'role');
@@ -460,9 +460,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 }
                 //output header row
                 if (0 == $i) {
-                    fputcsv($fp, array_keys($record), ';');
+                    fputcsv($fp, array_keys($record));
                 }
-                fputcsv($fp, $record, ';');
+                fputcsv($fp, $record);
                 $i++;
             }
             fclose($fp);

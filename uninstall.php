@@ -76,7 +76,7 @@ if (!function_exists('faulh_uninstall_plugin')) {
             faulh_delete_plugin_options();
         }
 
-        $wpdb->query("DELETE FROM $wpdb->usermeta WHERE meta_key = '" . FAULH_PLUGIN_NAME . "_timezone" . "'");
+        $wpdb->query("DELETE FROM $wpdb->usermeta WHERE meta_key IN ('".FAULH_PLUGIN_NAME."_timezone', '".FAULH_PLUGIN_NAME."_rows_per_page', 'managetoplevel_page_".FAULH_PLUGIN_NAME."-admin-listing-networkcolumnshidden', 'managetoplevel_page_".FAULH_PLUGIN_NAME."-admin-listingcolumnshidden')");
     }
 
 }
