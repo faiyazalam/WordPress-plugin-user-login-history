@@ -30,6 +30,9 @@ if (!defined('WPINC')) {
 /**
  * Plugin Constants.
  */
+if (!defined('FAULH_PLUGIN_NAME')) {
+    define('FAULH_PLUGIN_NAME', 'faulh');
+}
 if (!defined('FAULH_VERSION')) {
     define('FAULH_VERSION', '1.7.0');
 }

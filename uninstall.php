@@ -24,8 +24,62 @@
  *
  * @package    User_Login_History
  */
-
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit;
+if (!defined('WP_UNINSTALL_PLUGIN')) {
+    exit;
 }
+
+if (!defined('FAULH_PLUGIN_NAME')) {
+    define('FAULH_PLUGIN_NAME', 'faulh');
+}
+
+if (!defined('FAULH_TABLE_NAME')) {
+    define('FAULH_TABLE_NAME', 'fa_user_logins');
+}
+
+require_once plugin_dir_path(__FILE__) . 'includes/class-faulh-db-helper.php';
+
+
+if (!function_exists('faulh_delete_plugin_options')) {
+
+    function faulh_delete_plugin_options() {
+        $options = array(
+            'fa_userloginhostory_version',
+            FAULH_PLUGIN_NAME . "_basics",
+            FAULH_PLUGIN_NAME . "_advanced",
+        );
+
+        foreach ($options as $option) {
+            delete_option($option);
+        }
+    }
+
+}
+
+
+
+if (!function_exists('faulh_uninstall_plugin')) {
+
+    function faulh_uninstall_plugin() {
+     
+        global $wpdb;
+        if (is_multisite()) {
+            $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
+                $wpdb->query("DROP TABLE IF EXISTS " . $wpdb->prefix . FAULH_TABLE_NAME);
+                faulh_delete_plugin_options();
+            }
+            restore_current_blog();
+        } else {
+            $wpdb->query("DROP TABLE " . $wpdb->prefix . FAULH_TABLE_NAME);
+            faulh_delete_plugin_options();
+        }
+
+        $wpdb->query("DELETE FROM $wpdb->usermeta WHERE meta_key IN ('".FAULH_PLUGIN_NAME."_timezone', '".FAULH_PLUGIN_NAME."_rows_per_page', 'managetoplevel_page_".FAULH_PLUGIN_NAME."-admin-listing-networkcolumnshidden', 'managetoplevel_page_".FAULH_PLUGIN_NAME."-admin-listingcolumnshidden')");
+    }
+
+}
+
+faulh_uninstall_plugin();
+?>
