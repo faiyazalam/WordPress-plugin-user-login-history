@@ -82,7 +82,7 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
             }
 
             $sql .= " SELECT"
-                    . " FaUserLogin.*,"
+                    . " DISTINCT(FaUserLogin.id) as row_id, FaUserLogin.*,"
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
                     . " $blog_id as blog_id"
                     . " FROM $table  AS FaUserLogin"
@@ -94,10 +94,11 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
                 $sql .= $where_query;
             }
 
-            //   $sql .= ' GROUP BY FaUserLogin.id ';
             $i++;
         }
 
+        $sql_all = "SELECT * FROM ($sql) as FaUserLoginOuter";
+        
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
             $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
@@ -110,7 +111,7 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
         $result = $wpdb->get_results($sql, 'ARRAY_A');
-
+      
         if ("" != $wpdb->last_error) {
             Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
@@ -142,7 +143,7 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
 
 
             $sql .= " SELECT"
-                    . " COUNT(FaUserLogin.id) AS count"
+                    . " COUNT(DISTINCT(FaUserLogin.id)) AS count"
                     . " FROM $table  AS FaUserLogin"
                     . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
                     . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"

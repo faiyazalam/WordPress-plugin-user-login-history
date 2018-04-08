@@ -57,7 +57,7 @@ if(!class_exists('Faulh_Admin_List_Table'))
         global $wpdb;
         $table = $wpdb->prefix . $this->table_name;
         $sql = " SELECT"
-                . " FaUserLogin.*, "
+                . " DISTINCT(FaUserLogin.id) as row_id, FaUserLogin.*, "
                 . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                 . " FROM " . $table . "  AS FaUserLogin"
                 . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
@@ -68,7 +68,6 @@ if(!class_exists('Faulh_Admin_List_Table'))
         if ($where_query) {
             $sql .= $where_query;
         }
-      //  $sql .= ' GROUP BY FaUserLogin.id';
         if (!empty($_REQUEST['orderby'])) {
             $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
             $sql .=!empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
@@ -98,7 +97,7 @@ if(!class_exists('Faulh_Admin_List_Table'))
         global $wpdb;
         $table = $wpdb->prefix . $this->table_name;
         $sql = " SELECT"
-                . " COUNT(FaUserLogin.id) AS total"
+                . " COUNT(DISTINCT(FaUserLogin.id)) AS total"
                 . " FROM " . $table . " AS FaUserLogin"
                 . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
                 . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
@@ -109,8 +108,6 @@ if(!class_exists('Faulh_Admin_List_Table'))
         if ($where_query) {
             $sql .= $where_query;
         }
-      //  $sql .= ' GROUP BY FaUserLogin.id';
-//        $sql_count = "SELECT COUNT(*) as total FROM ($sql) AS FaUserLoginCount ";
 
         $result = $wpdb->get_var($sql);
         if ("" != $wpdb->last_error) {

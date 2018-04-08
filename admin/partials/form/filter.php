@@ -27,7 +27,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
             <div><input placeholder="<?php esc_html_e("Enter Username", "faulh") ?>" name="username" value="<?php echo isset($_GET['username']) ? esc_attr($_GET['username']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Country", "faulh") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? esc_attr($_GET['country_name']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Browser", "faulh") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? esc_attr($_GET['browser']) : "" ?>" ></div>
-            <div><input placeholder="<?php esc_html_e("Enter Platform", "faulh") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? esc_attr($_GET['operating_system']) : "" ?>" ></div>
+            <div><input placeholder="<?php esc_html_e("Enter Operating System", "faulh") ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? esc_attr($_GET['operating_system']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter IP Address", "faulh") ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? esc_attr($_GET['ip_address']) : "" ?>" ></div>
             <?php if (is_network_admin()) { ?>
                 <div><input placeholder="<?php esc_html_e("Blog ID", "faulh") ?>" name="blog_id" value="<?php echo isset($_GET['blog_id']) ? esc_attr($_GET['blog_id']) : "" ?>" ></div>
