@@ -86,7 +86,7 @@ if (!class_exists('Faulh_Public')) {
                 'limit' => 20,
                 'date_format' => 'Y-m-d',
                 'time_format' => 'H:i:s',
-                'columns' => 'operating_system,ip_address,browser,time_login,time_logout');
+                'columns' => 'operating_system,browser,time_login,time_logout');
             $attributes = shortcode_atts($default_args, $attr);
 
             if (!empty($attributes['columns'])) {
