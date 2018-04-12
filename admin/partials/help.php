@@ -38,11 +38,12 @@ $columns_str = (implode(',', array_keys($columns)));
 
                     <p><strong><?php esc_html_e('Shortcode Parameters:', 'faulh') ?></strong></p>
                     <ol>
+                        <li><strong>title</strong> - <?php esc_html_e('Title of the listing table.', 'faulh'); ?></li>
                   <li><strong>limit</strong> - <?php esc_html_e('Number of records per page. Default is:', 'faulh'); ?><pre><code>20</code></pre></li>
                         <li><strong>reset_link</strong> - <?php esc_html_e('Custom URI of listing page. e.g. my-login-history. It will render a reset link with the following URL:', 'faulh'); ?><span><pre><code>www.mywebsite.com/my-login-history</code></pre></span></li>
                         <li><strong>date_format</strong> - <?php esc_html_e('A valid date format. Default is:', 'faulh'); ?><pre><code>Y-m-d</code></pre></li>
                         <li><strong>time_format</strong> - <?php esc_html_e('A valid time format. Default is:', 'faulh'); ?><pre><code>H:i:s</code></pre></li>
-                        <li><strong>columns</strong> - <?php esc_html_e('List of column keys used to render column on the listing table. Default keys are:', 'faulh'); ?>
+                        <li><strong>columns</strong> - <?php esc_html_e('List of column keys used to render columns on the listing table. Default keys are:', 'faulh'); ?>
                             <span><pre><code>operating_system,ip_address,browser,time_login,time_logout</code></pre></span>
                             <p><?php esc_html_e('Available Column Keys:', 'faulh') ?></p>
                             <span><pre><code><?php echo $columns_str?></code></pre></span>

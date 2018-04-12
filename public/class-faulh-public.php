@@ -82,6 +82,7 @@ if (!class_exists('Faulh_Public')) {
             $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
             $Public_List_Table->set_table_timezone($UserProfile->get_current_user_timezone());
             $default_args = array(
+                'title' => '',
                 'reset_link' => '',
                 'limit' => 20,
                 'date_format' => 'Y-m-d',
