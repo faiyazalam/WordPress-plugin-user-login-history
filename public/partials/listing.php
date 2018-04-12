@@ -9,6 +9,13 @@
  * @subpackage User_Login_History/admin/partials
  */
 ?>
+<div>
+    <?php
+     if (!empty($attributes['title'])) {
+        echo  "<h1>".esc_html($attributes['title'])."</h2>";
+     }
+    ?>
+</div>
 <form name="<?php echo $this->plugin_name . '-search-form'; ?>" method="get" action="" id="<?php echo $this->plugin_name . '-search-form'; ?>">
     <fieldset> 
         <input readonly autocomplete="off" placeholder="<?php esc_html_e("From", "faulh") ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
