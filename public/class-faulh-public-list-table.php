@@ -270,7 +270,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
         public function get_rows() {
             global $wpdb;
             $sql = " SELECT"
-                    . " FaUserLogin.*, "
+                    . " DISTINCT(FaUserLogin.id) as row_id, FaUserLogin.*, "
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
@@ -313,7 +313,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
         public function record_count() {
             global $wpdb;
             $sql = " SELECT"
-                    . " COUNT(FaUserLogin.id) as total "
+                    . " COUNT(DISTINCT(FaUserLogin.id)) as total "
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
                     . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
@@ -323,7 +323,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
             if ($where_query) {
                 $sql .= $where_query;
             }
-            //  $sql .= ' GROUP BY FaUserLogin.id';
             $result = $wpdb->get_var($sql);
             if ("" != $wpdb->last_error) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
