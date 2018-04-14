@@ -212,19 +212,23 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
 
             switch ($column_name) {
+
                 case 'user_id':
                     if (empty($item[$column_name])) {
                         return $unknown;
                     }
                     return (int) $item[$column_name];
+
                 case 'role':
                     if (empty($item['user_id'])) {
                         return $unknown;
                     }
                     $user_data = get_userdata($item['user_id']);
                     return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown;
+
                 case 'old_role':
                     return !empty($item[$column_name]) ? $item[$column_name] : $unknown;
+
                 case 'browser':
                     if (empty($item[$column_name])) {
                         return $unknown;
@@ -234,13 +238,20 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     }
 
                     return esc_html($item[$column_name] . " (" . $item['browser_version'] . ")");
+
                 case 'time_login':
-                    return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                case 'time_logout':
-                    if (empty($item['user_id'])) {
+                    if (!(strtotime($item[$column_name]) > 0)) {
                         return $unknown_symbol;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone)) : $unknown_symbol;
+                    $time_login = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    return $time_login ? $time_login : $unknown_symbol;
+
+                case 'time_logout':
+                    if (empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
+                        return $unknown_symbol;
+                    }
+                    $time_logout = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    return $time_logout ? $time_logout : $unknown_symbol;
                 case 'ip_address':
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
 
@@ -250,19 +261,26 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 case 'country_name':
                     $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
+
                 case 'country_code':
                     return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
-
 
                 case 'operating_system':
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
 
                 case 'time_last_seen':
-                    if (empty($item['user_id'])) {
+
+                    $time_last_seen_unix = strtotime($item[$column_name]);
+                    if (empty($item['user_id']) || !($time_last_seen_unix > 0)) {
                         return $unknown_symbol;
                     }
-                    $time_last_seen_unix = strtotime($item[$column_name]);
+
                     $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+
+                    if (!$time_last_seen) {
+                        return $unknown_symbol;
+                    }
+
                     $human_time_diff = human_time_diff($time_last_seen_unix);
                     $is_online_str = 'offline';
                     if (Faulh_User_Tracker::LOGIN_STATUS_LOGIN == $item['login_status']) {
@@ -277,11 +295,13 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         }
                     }
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+
                 case 'user_agent':
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
+
                 case 'duration':
-                    $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
-                    return $duration ? $duration : $unknown;
+                    return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
+
                 case 'login_status':
                     $login_statuses = Faulh_Template_Helper::login_statuses();
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
@@ -412,15 +432,15 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function export_to_CSV() {
             global $current_user;
-           
+
             $unknown_symbol = '-';
             $timezone = $this->get_table_timezone();
             $data = $this->get_rows(0); // pass zero to get all the records
             //date string to suffix the file name: month - day - year - hour - minute
             $suffix = $this->plugin_name . "_" . date('n-j-y_H-i');
             // send response headers to the browser
-           header('Content-Type: text/csv');
-           header('Content-Disposition: attachment;filename=' . $suffix . '.csv');
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment;filename=' . $suffix . '.csv');
 
             if (!$data) {
                 $this->no_items();

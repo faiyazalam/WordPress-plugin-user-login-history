@@ -15,7 +15,6 @@ if (!class_exists('Faulh_Template_Helper')) {
 
         /**
          * Print out option html elements for all the time field types.
-         * @global object $wpdb
          * @param string $selected
          */
         static public function dropdown_time_field_types($selected = '') {
@@ -38,7 +37,6 @@ if (!class_exists('Faulh_Template_Helper')) {
 
         /**
          * Print out option html elements for all the login statuses.
-         * @global object $wpdb
          * @param string $selected
          */
         static public function dropdown_login_statuses($selected = '') {
@@ -84,24 +82,22 @@ if (!class_exists('Faulh_Template_Helper')) {
             return "User Login History";
         }
 
+        /**
+         * Print the head section.
+         * @param string $page
+         */
         static public function head($page = '') {
             $author_urls = self::plugin_author_links();
             $h = "<h1>" . self::plugin_name() . " " . FAULH_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
             $h .= "<div>";
 
-            if(!empty($author_urls['wordpress']))
-            {
-                $h .= "<a href='" . $author_urls['wordpress']['url'] . "' target='_blank'> " . esc_html__('About Me', 'faulh') . "</a>"; 
-                
-                 if(!empty($author_urls['paypal']))
-            {
-                $h .= " | <a href='" . $author_urls['paypal']['url'] . "' target='_blank'> " . $author_urls['paypal']['label'] . "</a>"; 
+            if (!empty($author_urls['wordpress'])) {
+                $h .= "<a href='" . $author_urls['wordpress']['url'] . "' target='_blank'> " . esc_html__('About Author', 'faulh') . "</a>";
+
+                if (!empty($author_urls['paypal'])) {
+                    $h .= " | <a href='" . $author_urls['paypal']['url'] . "' target='_blank'> " . $author_urls['paypal']['label'] . "</a>";
+                }
             }
-            
-            }
-           
-            
-  
             $h .= "</div>";
 
             if (!empty($page)) {
@@ -110,6 +106,10 @@ if (!class_exists('Faulh_Template_Helper')) {
             echo $h;
         }
 
+        /**
+         * Print out option html elements for super admin.
+         * @param type $selected
+         */
         static public function dropdown_is_super_admin($selected = '') {
             $r = '';
             $types = self::super_admin_statuses();
@@ -124,6 +124,10 @@ if (!class_exists('Faulh_Template_Helper')) {
             echo $r;
         }
 
+        /**
+         * Return options for super admin statuses.
+         * @return array
+         */
         static public function super_admin_statuses() {
             return array(
                 'yes' => esc_html__("Yes", "faulh"),
@@ -131,6 +135,10 @@ if (!class_exists('Faulh_Template_Helper')) {
             );
         }
 
+        /**
+         * Return options for login statuses.
+         * @return array
+         */
         static public function login_statuses() {
             $types = array(
                 Faulh_User_Tracker::LOGIN_STATUS_LOGIN => esc_html__("Logged in", "faulh"),
@@ -144,8 +152,10 @@ if (!class_exists('Faulh_Template_Helper')) {
             return $types;
         }
 
-        
-
+        /**
+         * Return options for author links.
+         * @return array
+         */
         static public function plugin_author_links() {
             return array(
                 'stackoverflow' => array('url' => 'http://stackoverflow.com/users/4380588/faiyaz-alam', 'label' => 'Stack Overflow'),
@@ -158,6 +168,9 @@ if (!class_exists('Faulh_Template_Helper')) {
             );
         }
 
+        /**
+         * Print html link in button style.
+         */
         static public function create_button($url = '', $label = '') {
             echo "<a href='$url' class='button-secondary' target='_blank'>$label</a>";
         }
