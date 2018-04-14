@@ -67,7 +67,8 @@ if (!class_exists('Faulh_Admin')) {
             //Check if download was initiated
             if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
                 if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
-                    $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
+                      $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
+                    $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone()) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
                     $List_Table->export_to_CSV();
                 }
             }
@@ -262,6 +263,7 @@ if (!class_exists('Faulh_Admin')) {
             add_screen_option($option, $args);
 
             $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
+           
             if (is_network_admin()) {
                 $this->list_table = new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
             } else {

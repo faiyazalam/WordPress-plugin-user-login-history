@@ -60,6 +60,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             parent::__construct($args);
             $this->plugin_name = $plugin_name;
             $this->table_name = $table_name; //main table of the plugin
+         
             $this->set_table_timezone($table_timezone);
         }
 
