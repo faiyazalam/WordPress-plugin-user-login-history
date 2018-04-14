@@ -337,11 +337,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * @return array
          */
         public function get_columns() {
-           $columns = Faulh_DB_Helper::all_columns();
-           unset($columns['blog_id']);
-           unset($columns['is_super_admin']);
-           $columns['timezone'] = esc_html__('Timezone', 'faulh');
-           $columns['country_name'] = esc_html__('Country', 'faulh');
+            $columns = Faulh_DB_Helper::all_columns();
+            unset($columns['blog_id']);
+            unset($columns['is_super_admin']);
+            $columns['timezone'] = esc_html__('Timezone', 'faulh');
+            $columns['country_name'] = esc_html__('Country', 'faulh');
             $columns = apply_filters('faulh_public_get_columns', $columns);
             return $columns;
         }
@@ -467,11 +467,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
             <table>
                 <thead>
                     <tr>
-            <?php $this->print_column_headers(); ?>
+                        <?php $this->print_column_headers(); ?>
                     </tr>
                 </thead>
                 <tbody>
-            <?php $this->display_rows_or_placeholder(); ?>
+                    <?php $this->display_rows_or_placeholder(); ?>
                 </tbody>
             </table>
             <?php
@@ -578,51 +578,67 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $timezone = $this->get_table_timezone();
             $date_time_format = $this->get_table_date_time_format();
             $unknown = 'unknown';
-             $unknown_symbol = '—';
+            $unknown_symbol = '—';
             $new_column_data = apply_filters('manage_faulh_public_custom_column', '', $item, $column_name);
             switch ($column_name) {
+
                 case 'user_id':
                     if (!$item[$column_name]) {
                         return $unknown;
                     }
                     return $item[$column_name] ? $item[$column_name] : $unknown;
+
                 case 'username':
                     if (!$item['user_id']) {
                         return esc_html($item[$column_name]);
                     }
                     $profile_link = get_edit_user_link($item['user_id']);
-                    if($profile_link)
-                    {
-                          return "<a href= '$profile_link'>$item[$column_name]</a>"; 
+                    if ($profile_link) {
+                        return "<a href= '$profile_link'>$item[$column_name]</a>";
                     }
-                     return esc_html($item[$column_name]);
+                    return esc_html($item[$column_name]);
+
                 case 'role':
                     if (!$item['user_id']) {
                         return $unknown;
                     }
                     $user_data = get_userdata($item['user_id']);
                     return !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
+
                 case 'old_role':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
+
                 case 'browser':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
+
                 case 'time_login':
-                    return Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
-                case 'time_logout':
-                    if (!$item['user_id']) {
+                    if (!(strtotime($item[$column_name]) > 0)) {
                         return $unknown_symbol;
                     }
-                    return strtotime($item[$column_name]) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format) : $unknown_symbol;
+                    $time_login = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    return $time_login ? $time_login : $unknown_symbol;
+
+                case 'time_logout':
+                    if (empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
+                        return $unknown_symbol;
+                    }
+                    $time_logout = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    return $time_logout ? $time_logout : $unknown_symbol;
+
                 case 'ip_address':
                     return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
+
                 case 'timezone':
                     return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
+
                 case 'operating_system':
                     return $item[$column_name] ? $item[$column_name] : $unknown;
+
 
                 case 'country_name':
                     $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
+
                 case 'country_code':
                     return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
 
@@ -631,16 +647,19 @@ if (!class_exists('Faulh_Public_List_Table')) {
                         return $unknown;
                     }
                     $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
+                    if (!$time_last_seen) {
+                        return $unknown_symbol;
+                    }
                     $human_time_diff = human_time_diff(strtotime($item[$column_name]));
                     return "<div title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+
                 case 'duration':
-                    $duration = human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
-                    return $duration ? $duration : $unknown;
+                    return human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
+
                 case 'login_status':
                     $login_statuses = Faulh_Template_Helper::login_statuses();
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
 
-               
                 default:
                     if ($new_column_data) {
                         return $new_column_data;

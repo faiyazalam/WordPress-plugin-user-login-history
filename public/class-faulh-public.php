@@ -91,7 +91,8 @@ if (!class_exists('Faulh_Public')) {
                 'columns' => 'operating_system,browser,time_login,time_logout');
             $attributes = shortcode_atts($default_args, $attr);
             
-
+            $attributes = array_map('trim', $attributes);
+            
             if (!empty($attributes['columns'])) {
                 $Public_List_Table->set_allowed_columns($attributes['columns']);
             }

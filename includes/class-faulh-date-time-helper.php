@@ -72,10 +72,10 @@ if(!class_exists('Faulh_Date_Time_Helper'))
      * @param type $input_datetime
      * @param type $input_timezone default is UTC
      * @param type $output_timezone default is UTC
-     * @return string returns converted datetime in default format i.e. Y-m-d H:i:s.
+     * @return string If success, returns converted datetime in default format i.e. Y-m-d H:i:s, otherwise false.
      */
     static public function convert_timezone($input_datetime = "", $input_timezone = "", $output_timezone = "") {
-        if (!$input_datetime) {
+        if ( empty($input_datetime) ||  !(strtotime($input_datetime) > 0) ) {
             return FALSE;
         }
         //timezone is compared with 'unknown' for backward compatibility.

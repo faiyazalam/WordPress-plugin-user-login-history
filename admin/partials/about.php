@@ -71,7 +71,6 @@ unset($author_links[$paypal_key]);
        <?php Faulh_Template_Helper::create_button($paypal_link['url'], esc_html__('Donate', 'faulh')) ?> 
         </p>
         <?php } ?>
-       
     </div>
 </div>
 </div>
