@@ -106,10 +106,7 @@ if(!class_exists('Faulh'))
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-abstract-list-table.php';
      
-         if(is_admin()){
-        //required files for admin and network admin
-            require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-faulh-admin-menu.php';
-        }
+       
         
 
         if (is_network_admin()) {

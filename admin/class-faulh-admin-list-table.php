@@ -24,13 +24,13 @@ if(!class_exists('Faulh_Admin_List_Table'))
      * @param      string    $table_timezone   The timezone for table.
      */
     public function __construct($args = array(), $plugin_name, $table_name, $table_timezone='') {
-     
         $defaults = array(
              'singular' => $plugin_name.'_admin_user', //singular name of the listed records
             'plural' => $plugin_name.'_admin_users', //plural name of the listed records
            
         );
         parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
+        
     }
 
     /**
