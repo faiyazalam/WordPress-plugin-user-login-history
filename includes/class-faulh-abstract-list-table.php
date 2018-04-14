@@ -337,7 +337,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $column_checkbox = array(
                 'cb' => '<input type="checkbox" />',
             );
-
+       
             if (!empty($all_columns) && is_array($all_columns)) {
                 $printable_columns = array_merge($column_checkbox, $all_columns);
             }

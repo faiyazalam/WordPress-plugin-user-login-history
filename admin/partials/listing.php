@@ -9,7 +9,7 @@
  */
 ?>
 <div class="wrap">
-    <?php Faulh_Template_Helper::head(); ?>
+    <?php Faulh_Template_Helper::head(esc_html__('Login List', 'faulh')); ?>
     <div class="mt20 <?php echo $this->plugin_name; ?>-search-filter">
         <?php require(plugin_dir_path(dirname(__FILE__)) . 'partials/form/filter.php'); ?>
         <br class="clear">
