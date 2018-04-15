@@ -24,7 +24,7 @@
         <br>
            <div>
  <?php if ($reset_URL) { ?>
-                    <a href="<?php echo $reset_URL ?>" ><button><?php esc_html_e('RESET', 'faulh'); ?></button></a>
+               <a class="primary-btn" href="<?php echo $reset_URL ?>" ><?php esc_html_e('RESET', 'faulh'); ?></a>
                 <?php } ?>
                 <input class="" id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', 'faulh') ?>" />
         </div>
@@ -59,7 +59,6 @@
 </div>
 <?php do_action('faulh_public_before_listing_table') ?>
 <?php
-$Public_List_Table->prepare_items();
 $Public_List_Table->display();
 ?>
 <?php do_action('faulh_public_after_listing_table') ?>

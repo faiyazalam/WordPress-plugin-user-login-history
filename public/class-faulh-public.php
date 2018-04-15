@@ -117,6 +117,7 @@ if (!class_exists('Faulh_Public')) {
             wp_enqueue_script($this->plugin_name . '-public-custom.js');
             wp_enqueue_style($this->plugin_name . '-public-custom');
             ob_start();
+            $Public_List_Table->prepare_items();
             require_once(plugin_dir_path(__FILE__) . 'partials/listing.php');
             return ob_get_clean();
         }

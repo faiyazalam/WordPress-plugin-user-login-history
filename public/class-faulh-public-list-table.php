@@ -238,18 +238,17 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 $UserProfile = new Faulh_User_Profile($this->plugin_name, NULL);
                 $input_timezone = $UserProfile->get_current_user_timezone();
                 $date_type = $_GET['date_type'];
-
                 if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
-                    $date_type = esc_sql($date_type);
 
-                    if (!empty($_GET['date_from'])) {
-                        $date_from = $_GET['date_from'] . " 00:00:00";
+                    if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
+                      $date_type = esc_sql($date_type);
+                        $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                         $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
-                    }
-
-                    if (!empty($_GET['date_to'])) {
-                        $date_to = $_GET['date_to'] . " 23:59:59";
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
+                    }else{
+                        unset($_GET['date_from']);
+                        unset($_GET['date_to']);
                     }
                 }
             }

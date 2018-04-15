@@ -276,6 +276,7 @@ if (!class_exists('Faulh_Admin')) {
             } else {
                 $this->list_table = new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
             }
+             $this->list_table->prepare_items();
         }
 
         public function render_about_page() {
