@@ -658,6 +658,9 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 case 'login_status':
                     $login_statuses = Faulh_Template_Helper::login_statuses();
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
+                    
+                    case 'user_agent':
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
 
                 default:
                     if ($new_column_data) {
