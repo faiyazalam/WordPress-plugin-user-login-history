@@ -65,7 +65,9 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                 </select></div>
             <div> <select  name="login_status">
                     <option value=""><?php esc_html_e('Select Login Status', 'faulh') ?></option>
-                    <?php Faulh_Template_Helper::dropdown_login_statuses(isset($_GET['login_status']) ? $_GET['login_status'] : ""); ?>
+                    <?php $selected_login_status = isset($_GET['login_status']) ? $_GET['login_status'] : "" ?>
+                       <option value="unknown" <?php selected($selected_login_status, "unknown"); ?> ><?php esc_html_e('Unknown', 'faulh') ?></option>
+                    <?php Faulh_Template_Helper::dropdown_login_statuses($selected_login_status); ?>
                 </select></div>
             <?php if (is_network_admin()) { ?>
                 <div>

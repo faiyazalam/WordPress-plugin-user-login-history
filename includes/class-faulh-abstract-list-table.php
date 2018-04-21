@@ -60,7 +60,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             parent::__construct($args);
             $this->plugin_name = $plugin_name;
             $this->table_name = $table_name; //main table of the plugin
-         
+
             $this->set_table_timezone($table_timezone);
         }
 
@@ -120,7 +120,6 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 'ip_address',
                 'timezone',
                 'country_name',
-                'login_status',
             );
 
             foreach ($fields as $field) {
@@ -129,8 +128,16 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 }
             }
 
-            if (!empty($_GET['role'])) {
+            if (!empty($_GET['login_status'])) {
 
+                if ("unknown" == $_GET['login_status']) {
+                    $where_query .= " AND `FaUserLogin`.`login_status` = '' ";
+                } else {
+                    $where_query .= " AND `FaUserLogin`.`login_status` = '" . esc_sql($_GET['login_status']) . "'";
+                }
+            }
+
+            if (!empty($_GET['role'])) {
                 if ('superadmin' == $_GET['role']) {
                     $site_admins = get_super_admins();
                     $site_admins_str = implode("', '", $site_admins);
@@ -155,12 +162,12 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
 
                     if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
-                      $date_type = esc_sql($date_type);
+                        $date_type = esc_sql($date_type);
                         $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
-                         $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                        $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
                         $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
-                    }else{
+                    } else {
                         unset($_GET['date_from']);
                         unset($_GET['date_to']);
                     }
@@ -336,7 +343,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $column_checkbox = array(
                 'cb' => '<input type="checkbox" />',
             );
-       
+
             if (!empty($all_columns) && is_array($all_columns)) {
                 $printable_columns = array_merge($column_checkbox, $all_columns);
             }
@@ -502,7 +509,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 if (!is_array($ids)) {
                     $ids = array($ids);
                 }
-                $ids = esc_sql(implode(',', array_map('absint', $ids)));
+                $ids = implode(',', array_map('absint', $ids));
                 $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
                 if ($wpdb->last_error) {
                     Faulh_Error_Handler::error_log($wpdb->last_error . " " . $wpdb->last_query, __LINE__, __FILE__);
