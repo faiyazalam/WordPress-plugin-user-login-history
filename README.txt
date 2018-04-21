@@ -84,9 +84,9 @@ Yes.
 * Added the option **Last Seen Time** to filter the results.
 * Added the column **Super Admin** - This is used only for multisite network.
 * Added **Hooks** to extend its functionality easily.
-* Removed the 'Screen Options' from admin listing table.
 * Deprecated the shortcode [user-login-history].
 * Date range validation on the filter form.
+* Improved design of the listing tables.
 
 == Upgrade Notice ==
 
