@@ -50,7 +50,7 @@ unset($author_links[$paypal_key]);
             <p><a href="https://translate.wordpress.org/projects/wp-plugins/user-login-history" class="button-secondary" target="_blank">
                     <?php esc_html_e('Download Language Files', 'faulh'); ?>
                 </a></p>
-            <h2><?php esc_html_e('I am here!', 'faulh'); ?></h2>
+            <h2><?php esc_html_e('I Am Here!', 'faulh'); ?></h2>
             <p><strong><?php esc_html_e('You can reach me through the following links:', 'faulh'); ?></strong></p>
             <p>
                 <?php
