@@ -1,44 +1,49 @@
 === User Login History ===
 Contributors: faiyazalam,w3reign,nekokun,harm10
-Donate link: http://wordpress.org/
-Tags: login,log,online,duration,detect,failed,user,history,track
+Donate link: https://www.paypal.me/erfaiyazalam/
+Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
 Requires at least: 3.0.1
-Tested up to: 4.8
+Requires PHP: 5.5
+Tested up to: 4.9.5
 Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
 Version: 1.7
 
+The plugin helps you to track login related data like IP address, login/logout/last-seen time, country, user role, browser and more.
+
 == Description ==
-By this plugin you can track any visitor's login details with the following attributes:
-1. **Login Date-Time**
-1. **Logout Date-Time**
-1. **Last Seen Date-Time**
+
+The plugin helps you to track any visitor\'s login details with the following attributes:
+
+1. **Login** - Login Date-Time
+1. **Logout** - Logout Date-Time
+1. **Last Seen** - Last Seen Date-Time
 1. **Login Status** - Logged in/Logged out/Failed/Blocked
 1. **Online Status** - Online/Offline/Idle
 1. **Session Duration** - How long the user stayed on your website per session.
 1. **User ID**
 1. **Username**
-1. **IP Address**
+1. **Current Role**
+1. **Old Role** - The role while user gets logged-in into your website.
 1. **Browser**
 1. **Operating System**
-1. **Current Role**
-1. **Old Role** - The role while user gets loggedin into your website.
-1. **Country Name and Country Code (Based on IP Address)**
-1. **Timezone (Based on IP Address)**
+1. **IP Address**
+1. **Country Name and Country Code** (Based on IP Address)
+1. **Timezone** (Based on IP Address)
 
-Other Useful Features:
-1. "Preferable Timezone" - You can select your preferred timezone to be used for the listing table.
-1. "Shortcode" - To see the listing table on front-end for the current loggedin user, you can use this shortcode `<?php echo do_shortcode['user-login-history'] ?>` in your php template file.
-1. "Multisite Network (Since version 1.7)" - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
-1. "Advanced Search Filter"
-1. "CSV Export"
+= Some More Useful Features =
 
+1. **Preferable Timezone** - You can select your preferred timezone to be used for the listing table.
+1. **Shortcode** - To see the listing table on front-end for the current logged-in user, you can use this shortcode `<?php echo do_shortcode['user-login-history'] ?>` in your php template file.
+1. **Multisite Network (Since version 1.7)** - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
+1. **Advanced Search Filter**
+1. **CSV Export**
 
 = Translations =
 
 Currently, this plugin is available in the following two languages i.e. 
+
 1. **English**
 1. **Italian**
 
@@ -75,12 +80,13 @@ Yes.
 
 = 1.7(release date) =
 * Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
-* Added the column **Login Status** - This is used to check whether the user is loggedin, loggedout, login-failed or blocked.
+* Added the column **Login Status** - This is used to check whether the user is logged-in, logged-out, login-failed or blocked.
 * Added the option **Last Seen Time** to filter the results.
 * Added the column **Super Admin** - This is used only for multisite network.
 * Added **Hooks** to extend its functionality easily.
 * Removed the 'Screen Options' from admin listing table.
 * Deprecated the shortcode [user-login-history].
+* Date range validation on the filter form.
 
 == Upgrade Notice ==
 

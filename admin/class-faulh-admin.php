@@ -67,7 +67,7 @@ if (!class_exists('Faulh_Admin')) {
             //Check if download was initiated
             if (isset($_GET[$this->plugin_name . '_export_csv']) && "csv" == $_GET[$this->plugin_name . '_export_csv']) {
                 if (check_admin_referer($this->plugin_name . '_export_csv', $this->plugin_name . '_export_nonce')) {
-                      $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
+                    $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
                     $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone()) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
                     $List_Table->export_to_CSV();
                 }
@@ -107,6 +107,7 @@ if (!class_exists('Faulh_Admin')) {
                 wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
                 wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
                     'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
+                    'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
                     'admin_url' => admin_url(),
                     'plugin_name' => $this->plugin_name,
                 ));
@@ -119,7 +120,7 @@ if (!class_exists('Faulh_Admin')) {
          * @access public
          */
         public function process_bulk_action() {
-          
+
             $status = FALSE;
             $List_Table = is_network_admin() ? new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME) : new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME);
 
@@ -128,13 +129,16 @@ if (!class_exists('Faulh_Admin')) {
                 $status = TRUE;
             }
 
-            if ($List_Table->delete_single_row()) {
-                $this->add_admin_notice(esc_html__('Record deleted.', 'faulh'));
-                $status = TRUE;
+            if (!$status) {
+                if ($List_Table->delete_single_row()) {
+                    $this->add_admin_notice(esc_html__('Record deleted.', 'faulh'));
+                    $status = TRUE;
+                }
             }
 
+
             if ($status) {
-                wp_safe_redirect(esc_url(admin_url()."admin.php?page=". $_GET['page']));
+                wp_safe_redirect(esc_url(admin_url() . "admin.php?page=" . $_GET['page']));
                 exit;
             }
         }
@@ -207,68 +211,73 @@ if (!class_exists('Faulh_Admin')) {
             $current_version = get_option(FAULH_OPTION_NAME_VERSION);
             //If the version is older
             if ($current_version && version_compare($current_version, $this->version, '<')) {
-             $this->add_admin_notice( sprintf(esc_html__('We have done some major changes in the version 1.7.0. Please see the %1$sHelp%2$s page under the plugin menu.', 'faulh'), "<a href='". admin_url("admin.php?page={$this->plugin_name}-help")."'>", "</a>"));
-                require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
-                if (is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH)) {
-                    $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
-                    foreach ($blog_ids as $blog_id) {
-                        switch_to_blog($blog_id);
-                        Faulh_Activator::create_table();
-                        Faulh_Activator::update_options();
-                        delete_option('fa_userloginhostory_frontend_limit');
-                        delete_option('fa_userloginhostory_frontend_fields');
-                    }
-                    restore_current_blog();
-                } else {
+                  require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
+                $this->add_admin_notice(sprintf(esc_html__('We have done some major changes in the version 1.7.0. Please see the %1$sHelp%2$s page under the plugin menu.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"));
+
+                if (version_compare($current_version, '1.7.0', '<')) {
                     Faulh_Activator::create_table();
-                    Faulh_Activator::update_options();
                     delete_option('fa_userloginhostory_frontend_limit');
                     delete_option('fa_userloginhostory_frontend_fields');
+                    Faulh_Activator::update_options();
+                    return;
+                }
+
+                if (version_compare($current_version, '1.7.0', '>=')) {
+                    if (is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH)) {
+                        $blog_ids = Faulh_DB_Helper::get_blog_by_id_and_network_id(null, get_current_network_id());
+                        foreach ($blog_ids as $blog_id) {
+                            switch_to_blog($blog_id);
+                            Faulh_Activator::create_table();
+                            Faulh_Activator::update_options();
+                        }
+                        restore_current_blog();
+                    } else {
+                        Faulh_Activator::create_table();
+                        Faulh_Activator::update_options();
+                    }
+                    return;
                 }
             }
         }
-        
-        
-         /**
+
+        /**
          * The callback function for the action hook - admin menu.
          * 
          * @access public
          */
-            public function plugin_menu() {
-        $menu_slug = $this->plugin_name."-admin-listing";
-        $hook = add_menu_page(
-        Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $menu_slug, array($this, 'render_list_table'),plugin_dir_url(__FILE__) . 'images/icon.png',
-                30
-        );
-        add_submenu_page($menu_slug, esc_html__('Login List', 'faulh'), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_list_table'));
-        add_submenu_page($menu_slug, esc_html__('About', 'faulh'), esc_html__('About', 'faulh'), 'manage_options', $this->plugin_name.'-about', array($this, 'render_about_page'));
-        add_submenu_page($menu_slug, esc_html__('Help', 'faulh'), esc_html__('Help', 'faulh'), 'manage_options', $this->plugin_name.'-help', array($this, 'render_help_page'));
-                add_action("load-$hook", array($this, 'screen_option'));
+        public function plugin_menu() {
+            $menu_slug = $this->plugin_name . "-admin-listing";
+            $hook = add_menu_page(
+                    Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $menu_slug, array($this, 'render_list_table'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
+            );
+            add_submenu_page($menu_slug, esc_html__('Login List', 'faulh'), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_list_table'));
+            add_submenu_page($menu_slug, esc_html__('About', 'faulh'), esc_html__('About', 'faulh'), 'manage_options', $this->plugin_name . '-about', array($this, 'render_about_page'));
+            add_submenu_page($menu_slug, esc_html__('Help', 'faulh'), esc_html__('Help', 'faulh'), 'manage_options', $this->plugin_name . '-help', array($this, 'render_help_page'));
+            add_action("load-$hook", array($this, 'screen_option'));
+        }
 
-    }
+        public static function set_screen($status, $option, $value) {
+            return $value;
+        }
 
-    
-     public static function set_screen($status, $option, $value) {
-        return $value;
-    }
-    
         public function screen_option() {
             $option = 'per_page';
             $args = array(
                 'label' => __('Show Records Per Page', 'user-login-history'),
                 'default' => 20,
-                'option' => $this->plugin_name.'_rows_per_page'
+                'option' => $this->plugin_name . '_rows_per_page'
             );
 
             add_screen_option($option, $args);
 
             $UserProfile = new Faulh_User_Profile($this->plugin_name, $this->version);
-           
+
             if (is_network_admin()) {
                 $this->list_table = new Faulh_Network_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
             } else {
                 $this->list_table = new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
             }
+             $this->list_table->prepare_items();
         }
 
         public function render_about_page() {
@@ -278,8 +287,6 @@ if (!class_exists('Faulh_Admin')) {
         public function render_help_page() {
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/help.php';
         }
-
-
 
         /**
          * Loads the listing template file.

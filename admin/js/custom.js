@@ -2,7 +2,6 @@
     'use strict';
 
     $(function () {
-
 //date picker
         $(".datepicker").datepicker({dateFormat: 'yy-mm-dd'});
         $("#date_to").datepicker({dateFormat: 'yy-mm-dd'});
@@ -11,6 +10,20 @@
             minValue = $.datepicker.parseDate("yy-mm-dd", minValue);
             minValue.setDate(minValue.getDate() + 0);
             $("#date_to").datepicker("option", "minDate", minValue);
+        });
+        
+        //validate date range
+        $("#submit").click(function(){
+           var date_to = $("#date_to").val();
+           var date_from = $("#date_from").val();
+           
+           if((date_to && date_from) || (!date_to && !date_from))
+           {
+               return true;
+           }
+           
+           alert(admin_custom_object.invalid_date_range_message);
+           return false;
         });
 
 //csv
