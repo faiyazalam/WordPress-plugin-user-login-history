@@ -107,6 +107,7 @@ if (!class_exists('Faulh_Admin')) {
                 wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
                 wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
                     'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
+                    'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
                     'admin_url' => admin_url(),
                     'plugin_name' => $this->plugin_name,
                 ));

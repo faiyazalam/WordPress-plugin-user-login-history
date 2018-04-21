@@ -66,6 +66,10 @@ if (!class_exists('Faulh_Public')) {
         public function enqueue_scripts() {
             wp_register_script($this->plugin_name . '-public-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
             wp_register_script($this->plugin_name . '-public-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+            wp_localize_script($this->plugin_name . '-public-custom.js', 'public_custom_object', array(
+                    'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
+                 
+                ));
         }
 
         /**
