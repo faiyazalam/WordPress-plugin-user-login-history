@@ -34,16 +34,16 @@ unset($author_links[$paypal_key]);
                 <li><strong><?php esc_html_e('Operating System', 'faulh'); ?></strong></li>
                 <li><strong><?php esc_html_e('IP Address', 'faulh'); ?></strong></li>
                 <li><strong><?php esc_html_e('Country Name and Country Code', 'faulh'); ?></strong> - <?php esc_html_e('(Based on IP Address)', 'faulh'); ?></li>
-                <li><strong><?php esc_html_e('Timezone (Based on IP Address)', 'faulh'); ?></strong> - <?php esc_html_e('(Based on IP Address)', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Timezone', 'faulh'); ?></strong> - <?php esc_html_e('(Based on IP Address)', 'faulh'); ?></li>
             </ol>
             <h2><?php esc_html_e('Some More Useful Features:', 'faulh'); ?></h2>
             <ol>
-                <li><?php esc_html_e('Preferable Timezone - You can select your preferred timezone to be used for the listing table.', 'faulh'); ?></li>
-                <li><?php esc_html_e('Shortcode - To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'faulh'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
-                <li><?php esc_html_e('Multisite Network (Since version 1.7) - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'faulh'); ?><br> 
+                <li><strong><?php esc_html_e('Preferable Timezone', 'faulh')?></strong> - <?php esc_html_e('You can select your preferred timezone to be used for the listing table.', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Shortcode', 'faulh')?></strong> - <?php esc_html_e('To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'faulh'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
+                <li><strong><?php esc_html_e('Multisite Network (Since version 1.7)', 'faulh')?></strong> - <?php esc_html_e('On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'faulh'); ?><br> 
                 </li>
-                <li><?php esc_html_e('Advanced Search Filter', 'faulh'); ?></li>
-                <li><?php esc_html_e('CSV Export', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Advanced Search Filter', 'faulh')?></strong></li>
+                <li><strong><?php esc_html_e('CSV Export', 'faulh')?></strong></li>
             </ol>
             <h2><?php esc_html_e('Translations', 'faulh'); ?></h2>
             <p><?php esc_html_e('Currently, this plugin is available in two languages i.e. English and Italian.', 'faulh') ?></p>
