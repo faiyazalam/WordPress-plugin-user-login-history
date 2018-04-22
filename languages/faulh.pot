@@ -1,0 +1,702 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: User Login History\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-22 16:47+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: public/class-faulh-public-list-table.php:201
+msgid "&laquo;"
+msgstr ""
+
+#: public/class-faulh-public-list-table.php:202
+msgid "&raquo;"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:91
+msgid "(Basic Version)"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:111
+msgid "(Not Recommended)"
+msgstr ""
+
+#: admin/partials/help.php:48
+msgid "A valid date format. Default is:"
+msgstr ""
+
+#: admin/partials/help.php:49
+msgid "A valid time format. Default is:"
+msgstr ""
+
+#: admin/class-faulh-admin-menu.php:71 admin/class-faulh-admin.php:262
+#: admin/class-faulh-admin.php:262
+msgid "About"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:95
+msgid "About Author"
+msgstr ""
+
+#: admin/partials/about.php:45
+msgid "Advanced Search Filter"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:70
+msgid "Advanced Settings"
+msgstr ""
+
+#: admin/partials/help.php:32
+msgid "Advanced Usage of Shortcode:"
+msgstr ""
+
+#: includes/class-faulh-abstract-list-table.php:304
+#: public/class-faulh-public-list-table.php:668
+msgid "ago"
+msgstr ""
+
+#: public/partials/listing.php:53
+msgid "Apply"
+msgstr ""
+
+#: admin/class-faulh-admin.php:109
+msgid "Are your sure?"
+msgstr ""
+
+#: admin/partials/help.php:53
+msgid "Available Column Keys:"
+msgstr ""
+
+#: admin/partials/about.php:36 admin/partials/about.php:37
+msgid "Based on IP Address"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:66
+msgid "Basic Settings"
+msgstr ""
+
+#: admin/partials/settings/network-admin.php:19
+msgid "Block User"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:150 admin/partials/help.php:80
+msgid "Blocked"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:84 admin/partials/form/filter.php:33
+msgid "Blog ID"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:73 admin/partials/about.php:33
+msgid "Browser"
+msgstr ""
+
+#: admin/partials/help.php:92
+msgid "Bug Fixes:"
+msgstr ""
+
+#: public/class-faulh-public-list-table.php:358
+msgid "Country"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:72
+msgid "Country (?)"
+msgstr ""
+
+#: admin/partials/about.php:36
+msgid "Country Name and Country Code"
+msgstr ""
+
+#: admin/partials/about.php:46
+msgid "CSV Export"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:69 admin/partials/about.php:31
+msgid "Current Role"
+msgstr ""
+
+#: admin/partials/about.php:49
+msgid ""
+"Currently, this plugin is available in two languages i.e. English and "
+"Italian."
+msgstr ""
+
+#: admin/partials/help.php:47
+msgid ""
+"Custom URI of listing page. e.g. my-login-history. It will render a reset "
+"link with the following URL:"
+msgstr ""
+
+#: includes/class-faulh-abstract-list-table.php:396
+msgid "Delete All Records"
+msgstr ""
+
+#: includes/class-faulh-abstract-list-table.php:395
+msgid "Delete Selected Records"
+msgstr ""
+
+#: admin/partials/help.php:57
+msgid "Deprecated Shortcode (Since 1.7)"
+msgstr ""
+
+#: admin/partials/help.php:58
+msgid ""
+"Do not use the following shortcode as it is deprecated and will be removed "
+"in future."
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:167 admin/partials/about.php:70
+msgid "Donate"
+msgstr ""
+
+#: admin/partials/form/filter.php:87
+msgid "DOWNLOAD CSV"
+msgstr ""
+
+#: admin/partials/about.php:51
+msgid "Download Language Files"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:77
+msgid "Duration"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Easily tracks user login with a set of multiple attributes like ip, "
+"login/logout/last-seen time, country, username, user role, browser, OS etc."
+msgstr ""
+
+#: includes/class-faulh-abstract-list-table.php:102
+msgid "Edit"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:112
+msgid ""
+"Enable tracking of country and timezone. This functionality is dependent on "
+"a free third-party API service, hence not recommended. For more info, see "
+"the \"Help\" page under the plugin menu."
+msgstr ""
+
+#: admin/partials/form/filter.php:29
+msgid "Enter Browser"
+msgstr ""
+
+#: admin/partials/form/filter.php:28
+msgid "Enter Country"
+msgstr ""
+
+#: admin/partials/form/filter.php:31
+msgid "Enter IP Address"
+msgstr ""
+
+#: admin/partials/form/filter.php:30
+msgid "Enter Operating System"
+msgstr ""
+
+#: admin/partials/form/filter.php:26
+msgid "Enter User Id"
+msgstr ""
+
+#: admin/partials/form/filter.php:27
+msgid "Enter Username"
+msgstr ""
+
+#. Author of the plugin
+msgid "Er Faiyaz Alam"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:146 admin/partials/help.php:77
+msgid "Failed"
+msgstr ""
+
+#: public/partials/listing.php:29 admin/partials/form/filter.php:93
+msgid "FILTER"
+msgstr ""
+
+#: public/partials/listing.php:17 admin/partials/form/filter.php:19
+msgid "From"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:111
+msgid "Geo Tracker"
+msgstr ""
+
+#: admin/partials/help.php:62
+msgid "Geo Tracking"
+msgstr ""
+
+#: admin/class-faulh-admin-menu.php:72 admin/class-faulh-admin.php:263
+#: admin/class-faulh-admin.php:263
+msgid "Help"
+msgstr ""
+
+#: admin/partials/help.php:43
+msgid ""
+"Here is the list of all the parameters that you can use in the shortcode. "
+"All the parameters are optional."
+msgstr ""
+
+#: admin/partials/about.php:28
+msgid "How long the user stayed on your website per session."
+msgstr ""
+
+#: admin/partials/help.php:18
+msgid "How to use the plugin?"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/faiyazalam"
+msgstr ""
+
+#: admin/partials/about.php:53
+msgid "I Am Here!"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:98
+msgid "Idle"
+msgstr ""
+
+#: admin/partials/help.php:74
+msgid "If user clicks on logout button and gets logged out successfully."
+msgstr ""
+
+#: admin/partials/help.php:77
+msgid "If user enters invalid credentials."
+msgstr ""
+
+#: admin/partials/help.php:71
+msgid "If user gets logged in successfully."
+msgstr ""
+
+#: admin/partials/help.php:93
+msgid ""
+"If you find any bug, please create a topic with a step by step description "
+"on how to reproduce the bug."
+msgstr ""
+
+#: admin/partials/help.php:63
+msgid "If you have a paid service, you can contact me to integrate it."
+msgstr ""
+
+#: admin/partials/help.php:89
+msgid ""
+"In case, a user logs in with \"Remember Me\" and then closes his browser "
+"without doing logout, it will show the login status \"Logged in\"."
+msgstr ""
+
+#: admin/partials/help.php:30 admin/partials/help.php:35
+msgid "In your content:"
+msgstr ""
+
+#: admin/partials/help.php:28 admin/partials/help.php:33
+msgid "In your template file:"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:71 admin/partials/about.php:35
+msgid "IP Address"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:81
+msgid "It may show \"Logged in\", if user does not logout properly."
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:25 admin/partials/about.php:25
+msgid "Last Seen"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:78
+msgid "Last Seen (?)"
+msgstr ""
+
+#: admin/partials/about.php:25
+msgid "Last Seen Date-Time"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:78
+msgid "Last seen time in the session"
+msgstr ""
+
+#: admin/partials/about.php:67
+msgid "Like My Work?"
+msgstr ""
+
+#: admin/partials/help.php:51
+msgid ""
+"List of column keys used to render columns on the listing table. Default "
+"keys are:"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:144
+msgid "Logged In"
+msgstr ""
+
+#: admin/partials/help.php:71
+msgid "Logged in"
+msgstr ""
+
+#: admin/partials/about.php:26
+msgid "Logged in/Logged out/Failed/Blocked"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:145
+msgid "Logged Out"
+msgstr ""
+
+#: admin/partials/help.php:74
+msgid "Logged out"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:79
+#: includes/class-faulh-template-helper.php:23 admin/partials/about.php:23
+msgid "Login"
+msgstr ""
+
+#: admin/partials/about.php:23
+msgid "Login Date-Time"
+msgstr ""
+
+#: admin/class-faulh-admin-menu.php:70 admin/class-faulh-admin.php:261
+#: admin/class-faulh-admin.php:261 admin/partials/listing.php:12
+msgid "Login List"
+msgstr ""
+
+#: admin/partials/about.php:26
+msgid "Login Status"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:81
+msgid "Login Status (?)"
+msgstr ""
+
+#: admin/partials/help.php:68
+msgid "Login Statuses"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:80
+#: includes/class-faulh-template-helper.php:24 admin/partials/about.php:24
+msgid "Logout"
+msgstr ""
+
+#: admin/partials/about.php:24
+msgid "Logout Date-Time"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:99
+msgid "Maximum number of minutes for idle users. Default is"
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:88
+msgid "Maximum number of minutes for online users. Default is"
+msgstr ""
+
+#: admin/partials/settings/network-admin.php:28
+msgid "Message for Blocked User"
+msgstr ""
+
+#: admin/partials/about.php:43
+msgid "Multisite Network (Since version 1.7)"
+msgstr ""
+
+#: admin/partials/help.php:47
+msgid "my-login-history"
+msgstr ""
+
+#: admin/partials/settings/network-admin.php:14
+msgid "Network Settings"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:134
+msgid "No"
+msgstr ""
+
+#: public/class-faulh-public-list-table.php:477
+msgid "No columns is selected to display."
+msgstr ""
+
+#: includes/class-faulh-abstract-list-table.php:73
+msgid "No records avaliable."
+msgstr ""
+
+#: admin/partials/help.php:27
+msgid "Normal Usage of Shortcode:"
+msgstr ""
+
+#: admin/partials/help.php:89
+msgid "Note"
+msgstr ""
+
+#: admin/partials/help.php:46
+msgid "Number of records per page. Default is:"
+msgstr ""
+
+#: admin/partials/about.php:32
+msgid "Old Role"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:70
+msgid "Old Role (?)"
+msgstr ""
+
+#: admin/partials/about.php:43
+msgid ""
+"On the network admin area, you can see the listing table which shows all the "
+"records fetched from all the blogs of the current network."
+msgstr ""
+
+#: admin/class-faulh-admin-setting.php:87
+msgid "Online"
+msgstr ""
+
+#: admin/partials/about.php:27
+msgid "Online Status"
+msgstr ""
+
+#: admin/partials/about.php:27
+msgid "Online/Offline/Idle"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:74 admin/partials/about.php:34
+msgid "Operating System"
+msgstr ""
+
+#: admin/class-faulh-admin.php:110 public/class-faulh-public.php:70
+msgid "Please provide a valid date range."
+msgstr ""
+
+#: admin/partials/help.php:94
+msgid "Please search the forum before creating a new topic."
+msgstr ""
+
+#: admin/partials/about.php:41
+msgid "Preferable Timezone"
+msgstr ""
+
+#: admin/class-faulh-admin.php:134
+msgid "Record deleted."
+msgstr ""
+
+#: admin/class-faulh-admin.php:128
+msgid "Record(s) deleted."
+msgstr ""
+
+#: public/partials/listing.php:27 admin/partials/form/filter.php:90
+msgid "RESET"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:70
+msgid "Role while user gets logged in"
+msgstr ""
+
+#: admin/partials/help.php:95
+msgid "Search The Forum"
+msgstr ""
+
+#: admin/partials/form/filter.php:48
+msgid "Select Current Role"
+msgstr ""
+
+#: admin/partials/form/filter.php:67
+msgid "Select Login Status"
+msgstr ""
+
+#: admin/partials/form/filter.php:58
+msgid "Select Old Role"
+msgstr ""
+
+#: admin/partials/form/filter.php:75
+msgid "Select Super Admin"
+msgstr ""
+
+#: admin/class-faulh-user-profile.php:78 public/partials/listing.php:48
+#: admin/partials/form/filter.php:43
+msgid "Select Timezone"
+msgstr ""
+
+#: admin/partials/about.php:28
+msgid "Session Duration"
+msgstr ""
+
+#: admin/class-faulh-admin.php:202
+msgid "Settings updated successfully."
+msgstr ""
+
+#: admin/partials/about.php:42
+msgid "Shortcode"
+msgstr ""
+
+#: admin/partials/help.php:42
+msgid "Shortcode Parameters:"
+msgstr ""
+
+#: admin/partials/help.php:86
+msgid ""
+"Since we have added a new column \"Login Status\" in the version 1.7, its "
+"value will be empty in the database table after upgrading to 1.7. To filter "
+"such records, you can use this status."
+msgstr ""
+
+#: admin/partials/about.php:39
+msgid "Some More Useful Features:"
+msgstr ""
+
+#: admin/partials/about.php:69
+msgid "Submit Your Review"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:85
+msgid "Super Admin"
+msgstr ""
+
+#: admin/partials/form/filter.php:54 admin/partials/form/filter.php:64
+msgid "Super Administrator"
+msgstr ""
+
+#: admin/partials/about.php:42
+#, php-format
+msgid ""
+"The plugin comes with a customizable shortcode that you can use in your "
+"template or content to view the login history of current logged in user. For "
+"more detail, please see the %1$sHelp%2$s page."
+msgstr ""
+
+#: admin/partials/about.php:21
+msgid ""
+"The plugin helps you to track any visitor's login details with the following "
+"attributes:"
+msgstr ""
+
+#: admin/partials/about.php:32
+msgid "The role while user gets logged in into your website."
+msgstr ""
+
+#: admin/partials/help.php:80
+msgid ""
+"This is used for multisite network. \n"
+"By default, a user can login to any blog and then wordpress redirects to the "
+"blog on which the user is associated. \n"
+"The plugin saves login info at the blog on which the user logged in but "
+"cannot not save the info of the blog on which wordpress redirects the user. "
+"\n"
+"You can prevent this behavior by using the plugin setting."
+msgstr ""
+
+#: admin/class-faulh-user-profile.php:83
+msgid ""
+"This is used to convert date-time (e.g. login time, last seen time etc.) on "
+"the listing table."
+msgstr ""
+
+#: includes/class-faulh-abstract-list-table.php:102
+#: public/partials/listing.php:46
+msgid "This table is showing time in the timezone"
+msgstr ""
+
+#: admin/class-faulh-user-profile.php:75
+#: public/class-faulh-public-list-table.php:357 admin/partials/about.php:37
+msgid "Timezone"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:75
+msgid "Timezone (?)"
+msgstr ""
+
+#: admin/partials/help.php:45
+msgid "Title of the listing table."
+msgstr ""
+
+#: public/partials/listing.php:18 admin/partials/form/filter.php:20
+msgid "To"
+msgstr ""
+
+#: admin/partials/help.php:23
+msgid ""
+"To see all the tracked records in admin, click on the plugin menu shown in "
+"the left sidebar."
+msgstr ""
+
+#: admin/partials/help.php:26
+msgid ""
+"To see all the tracked records of current logged in users in frontend, use "
+"the following shortcode:"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:72
+msgid "To track country name, \"Geo Tracker\" setting must be enabled."
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:75
+msgid "To track timezone, \"Geo Tracker\" setting must be enabled."
+msgstr ""
+
+#: admin/partials/about.php:48
+msgid "Translations"
+msgstr ""
+
+#: admin/partials/help.php:86 admin/partials/form/filter.php:44
+#: admin/partials/form/filter.php:69
+msgid "Unknown"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:76
+msgid "User Agent"
+msgstr ""
+
+#: admin/partials/about.php:29
+msgid "User ID"
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:67
+msgid "User Id"
+msgstr ""
+
+#. Name of the plugin
+msgid "User Login History"
+msgstr ""
+
+#: admin/partials/settings/network-admin.php:22
+msgid "User will not be able to login on another blog on the network."
+msgstr ""
+
+#: includes/class-faulh-db-helper.php:68 admin/partials/about.php:30
+msgid "Username"
+msgstr ""
+
+#: admin/class-faulh-admin.php:225
+#, php-format
+msgid ""
+"We have done some major changes in the version 1.7.0. Please see the "
+"%1$sHelp%2$s page."
+msgstr ""
+
+#: admin/partials/help.php:50
+msgid ""
+"Whether you want to show timezone selector or not. Any value other than "
+"\"true\" will be treated as \"false\". Default is:"
+msgstr ""
+
+#. URI of the plugin
+msgid "www.userloginhistory.com"
+msgstr ""
+
+#: includes/class-faulh-template-helper.php:133
+msgid "Yes"
+msgstr ""
+
+#: admin/partials/about.php:54
+msgid "You can reach me through the following links:"
+msgstr ""
+
+#: admin/partials/about.php:41
+msgid ""
+"You can select your preferred timezone to be used for the listing table."
+msgstr ""
