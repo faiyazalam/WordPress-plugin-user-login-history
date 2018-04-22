@@ -212,7 +212,7 @@ if (!class_exists('Faulh_Admin')) {
             //If the version is older
             if ($current_version && version_compare($current_version, $this->version, '<')) {
                   require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
-                $this->add_admin_notice(sprintf(esc_html__('We have done some major changes in the version 1.7.0. Please see the %1$sHelp%2$s page under the plugin menu.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"));
+                $this->add_admin_notice(sprintf(esc_html__('We have done some major changes in the version 1.7.0. Please see the %1$sHelp%2$s page.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"));
 
                 if (version_compare($current_version, '1.7.0', '<')) {
                     Faulh_Activator::create_table();
