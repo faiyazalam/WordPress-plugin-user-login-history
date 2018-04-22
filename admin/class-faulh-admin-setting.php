@@ -1,9 +1,14 @@
 <?php
 
 /**
- * WordPress settings API demo class
+ * This is used to create admin setting page.
  *
- * @author Tareq Hasan
+ * @link       https://github.com/faiyazalam
+ *
+ * @package    User_Login_History
+ * @subpackage User_Login_History/admin
+ * @author     Er Faiyaz Alam
+ * @access private
  */
 if ( !class_exists('Faulh_Admin_Setting' ) ):
 class Faulh_Admin_Setting {
@@ -16,8 +21,6 @@ class Faulh_Admin_Setting {
      * @var      string    $plugin_name    The ID of this plugin.
      */
     private $plugin_name;
-
-  
 
     /**
      * The transient for admin notice purpose.
@@ -32,6 +35,9 @@ class Faulh_Admin_Setting {
         $this->settings_api = new WeDevs_Settings_API();
     }
 
+    /**
+     * Callback function for the action - admin_init
+     */
     function admin_init() {
 
         //set the settings
@@ -42,10 +48,17 @@ class Faulh_Admin_Setting {
         $this->settings_api->admin_init();
     }
 
+        /**
+     * Callback function for the action - admin_menu
+     */
     function admin_menu() {
         add_options_page( Faulh_Template_Helper::plugin_name(), Faulh_Template_Helper::plugin_name(), 'manage_options', $this->plugin_name.'-admin-setting', array($this, 'render_setting_page') );
     }
 
+    /**
+     * Get all the setting sections.
+     * @return array
+     */
     function get_settings_sections() {
         $sections = array(
             array(
@@ -62,7 +75,7 @@ class Faulh_Admin_Setting {
     }
 
     /**
-     * Returns all the settings fields
+     * Get all the settings fields
      *
      * @return array settings fields
      */
@@ -107,6 +120,9 @@ class Faulh_Admin_Setting {
         return $settings_fields;
     }
 
+    /**
+     * Callback function to render setting page.
+     */
     function render_setting_page() {
         echo '<div class="wrap">';
 echo Faulh_Template_Helper::head();
@@ -116,6 +132,11 @@ echo Faulh_Template_Helper::head();
         echo '</div>';
     } 
     
+    /**
+     * Get setting value
+     * @param type $name
+     * @return type mixed
+     */
     public function get_options($name = '') {
         if($name)
         {

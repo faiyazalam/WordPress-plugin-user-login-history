@@ -290,17 +290,17 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                     $human_time_diff = human_time_diff($time_last_seen_unix);
                     $is_online_str = 'offline';
-                    if (Faulh_User_Tracker::LOGIN_STATUS_LOGIN == $item['login_status']) {
-                        $minutes = ((time() - $time_last_seen_unix) / 60);
-                        $settings = get_option($this->plugin_name . "_basics");
-                        $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
-                        $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
-                        if ($minutes <= $minute_online) {
-                            $is_online_str = 'online';
-                        } elseif ($minutes <= $minute_idle) {
-                            $is_online_str = 'idle';
-                        }
+
+                    $minutes = ((time() - $time_last_seen_unix) / 60);
+                    $settings = get_option($this->plugin_name . "_basics");
+                    $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
+                    $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
+                    if ($minutes <= $minute_online) {
+                        $is_online_str = 'online';
+                    } elseif ($minutes <= $minute_idle) {
+                        $is_online_str = 'idle';
                     }
+
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
                 case 'user_agent':

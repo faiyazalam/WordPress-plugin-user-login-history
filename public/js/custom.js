@@ -16,7 +16,7 @@
            var date_to = $("#date_to").val();
            var date_from = $("#date_from").val();
            
-           if((date_to && date_from) || (!date_to && !date_from))
+           if((date_to && date_from))
            {
                return true;
            }

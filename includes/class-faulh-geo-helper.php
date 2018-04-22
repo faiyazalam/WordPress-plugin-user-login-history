@@ -13,6 +13,9 @@ if (!class_exists('Faulh_Geo_Helper')) {
 
     class Faulh_Geo_Helper {
 
+        /**
+         * URL of the thirst party service.
+         */
         const GEO_API_URL = 'https://tools.keycdn.com/geo.json?host=';
 
         /**

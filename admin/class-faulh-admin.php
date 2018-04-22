@@ -181,7 +181,6 @@ if (!class_exists('Faulh_Admin')) {
             if (!current_user_can('administrator')) {
                 return;
             }
-            $this->check_update_version();
 
             global $pagenow;
             if ($pagenow == 'admin.php') {
@@ -206,12 +205,23 @@ if (!class_exists('Faulh_Admin')) {
             }
         }
 
+        /**
+         * Check if update available.
+         * If yes, update DB.
+         * 
+         */
         public function check_update_version() {
+            if (!is_admin()) {
+                return;
+            }
+            if (!current_user_can('administrator')) {
+                return;
+            }
             // Current version
             $current_version = get_option(FAULH_OPTION_NAME_VERSION);
             //If the version is older
             if ($current_version && version_compare($current_version, $this->version, '<')) {
-                  require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
+                require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-faulh-activator.php';
                 $this->add_admin_notice(sprintf(esc_html__('We have done some major changes in the version 1.7.0. Please see the %1$sHelp%2$s page.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"));
 
                 if (version_compare($current_version, '1.7.0', '<')) {
@@ -242,8 +252,6 @@ if (!class_exists('Faulh_Admin')) {
 
         /**
          * The callback function for the action hook - admin menu.
-         * 
-         * @access public
          */
         public function plugin_menu() {
             $menu_slug = $this->plugin_name . "-admin-listing";
@@ -256,10 +264,16 @@ if (!class_exists('Faulh_Admin')) {
             add_action("load-$hook", array($this, 'screen_option'));
         }
 
-        public static function set_screen($status, $option, $value) {
+        /**
+         * Callback function for the filter - set-screen-option
+         */
+        public function set_screen($status, $option, $value) {
             return $value;
         }
 
+        /**
+         * Callback function for the action - load-$hook
+         */
         public function screen_option() {
             $option = 'per_page';
             $args = array(
@@ -277,21 +291,25 @@ if (!class_exists('Faulh_Admin')) {
             } else {
                 $this->list_table = new Faulh_Admin_List_Table(null, $this->plugin_name, FAULH_TABLE_NAME, $UserProfile->get_current_user_timezone());
             }
-             $this->list_table->prepare_items();
+            $this->list_table->prepare_items();
         }
 
+        /**
+         * Callback function to render about page.
+         */
         public function render_about_page() {
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/about.php';
         }
 
+        /**
+         * Callback function to render help page.
+         */
         public function render_help_page() {
             require_once plugin_dir_path(dirname(__FILE__)) . 'admin/partials/help.php';
         }
 
         /**
-         * Loads the listing template file.
-         * 
-         * @access public
+         * Callback function to render listing table.
          */
         public function render_list_table() {
 

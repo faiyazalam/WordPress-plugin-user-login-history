@@ -1,11 +1,11 @@
 <?php
 /**
- * Template file to render listing table for admin.
+ * Template file to render listing table for public.
  *
  * @link       https://github.com/faiyazalam
  *
  * @package    User_Login_History
- * @subpackage User_Login_History/admin/partials
+ * @subpackage User_Login_History/public/partials
  */
 ?>
 <div class="<?php echo $this->plugin_name . '-wrapper'; ?>">
