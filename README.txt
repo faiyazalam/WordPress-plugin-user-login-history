@@ -8,7 +8,7 @@ Tested up to: 4.9.5
 Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Version: 1.7
+Version: 1.7.0
 
 The plugin helps you to track login related data like IP address, login/logout/last-seen time, country, user role, browser and many more.
 
