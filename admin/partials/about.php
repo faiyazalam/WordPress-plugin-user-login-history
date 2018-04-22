@@ -29,17 +29,17 @@ unset($author_links[$paypal_key]);
                 <li><strong><?php esc_html_e('User ID', 'faulh'); ?></strong></li>
                 <li><strong><?php esc_html_e('Username', 'faulh'); ?></strong></li>
                 <li><strong><?php esc_html_e('Current Role', 'faulh'); ?></strong></li>
-                <li><strong><?php esc_html_e('Old Role', 'faulh'); ?></strong> - <?php esc_html_e('The role while user gets logged-in into your website.', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Old Role', 'faulh'); ?></strong> - <?php esc_html_e('The role while user gets logged in into your website.', 'faulh'); ?></li>
                 <li><strong><?php esc_html_e('Browser', 'faulh'); ?></strong></li>
                 <li><strong><?php esc_html_e('Operating System', 'faulh'); ?></strong></li>
                 <li><strong><?php esc_html_e('IP Address', 'faulh'); ?></strong></li>
-                <li><strong><?php esc_html_e('Country Name and Country Code', 'faulh'); ?></strong> - <?php esc_html_e('(Based on IP Address)', 'faulh'); ?></li>
-                <li><strong><?php esc_html_e('Timezone', 'faulh'); ?></strong> - <?php esc_html_e('(Based on IP Address)', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Country Name and Country Code', 'faulh'); ?></strong> - <?php esc_html_e('Based on IP Address', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Timezone', 'faulh'); ?></strong> - <?php esc_html_e('Based on IP Address', 'faulh'); ?></li>
             </ol>
             <h2><?php esc_html_e('Some More Useful Features:', 'faulh'); ?></h2>
             <ol>
                 <li><strong><?php esc_html_e('Preferable Timezone', 'faulh')?></strong> - <?php esc_html_e('You can select your preferred timezone to be used for the listing table.', 'faulh'); ?></li>
-                <li><strong><?php esc_html_e('Shortcode', 'faulh')?></strong> - <?php esc_html_e('To see the listing table on front-end for the current logged-in user, you can use the following shortcode in your template file.', 'faulh'); ?><br> <pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre></li>
+                <li><strong><?php esc_html_e('Shortcode', 'faulh')?></strong> - <?php echo  sprintf(esc_html__('The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user. For more detail, please see the %1$sHelp%2$s page.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"); ?></li>
                 <li><strong><?php esc_html_e('Multisite Network (Since version 1.7)', 'faulh')?></strong> - <?php esc_html_e('On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'faulh'); ?><br> 
                 </li>
                 <li><strong><?php esc_html_e('Advanced Search Filter', 'faulh')?></strong></li>

@@ -82,14 +82,17 @@ By default, a user can login to any blog and then wordpress redirects to the blo
 The plugin saves login info at the blog on which the user logged in but cannot not save the info of the blog on which wordpress redirects the user. 
 You can prevent this behavior by using the plugin setting.', 'faulh') ?></p>
                 </li>
+<li>
+<p><strong><?php esc_html_e('Unknown', 'faulh') ?></strong> - <?php esc_html_e('Since we have added a new column "Login Status" in the version 1.7, its value will be empty in the database table after upgrading to 1.7. To filter such records, you can use this status.', 'faulh') ?></p>
+</li>
             </ol>
-            <p><strong><?php esc_html_e('Note', 'faulh') ?></strong> - <?php esc_html_e('In case a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status "Logged in".', 'faulh') ?></p>
+            <p><strong><?php esc_html_e('Note', 'faulh') ?></strong> - <?php esc_html_e('In case, a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status "Logged in".', 'faulh') ?></p>
 
 
             <h2><?php esc_html_e('Bug Fixes:', 'faulh'); ?></h2>
             <p><?php esc_html_e('If you find any bug, please create a topic with a step by step description on how to reproduce the bug.', 'faulh'); ?></strong></p>
             <p><strong><?php esc_html_e('Please search the forum before creating a new topic.', 'faulh'); ?></p>
-            <p><a href="https://wordpress.org/support/plugin/user-login-history" class="button-secondary" target="_blank"><?php esc_html_e('Search the forum', 'faulh'); ?></a></p>
+            <p><a href="https://wordpress.org/support/plugin/user-login-history" class="button-secondary" target="_blank"><?php esc_html_e('Search The Forum', 'faulh'); ?></a></p>
         </div>
     </div>
 </div>

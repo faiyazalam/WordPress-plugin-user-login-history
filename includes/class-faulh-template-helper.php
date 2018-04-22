@@ -141,8 +141,8 @@ if (!class_exists('Faulh_Template_Helper')) {
          */
         static public function login_statuses() {
             $types = array(
-                Faulh_User_Tracker::LOGIN_STATUS_LOGIN => esc_html__("Logged in", "faulh"),
-                Faulh_User_Tracker::LOGIN_STATUS_LOGOUT => esc_html__("Logged out", "faulh"),
+                Faulh_User_Tracker::LOGIN_STATUS_LOGIN => esc_html__("Logged In", "faulh"),
+                Faulh_User_Tracker::LOGIN_STATUS_LOGOUT => esc_html__("Logged Out", "faulh"),
                 Faulh_User_Tracker::LOGIN_STATUS_FAIL => esc_html__("Failed", "faulh"),
             );
 
