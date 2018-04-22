@@ -60,6 +60,10 @@ if (!class_exists('Faulh_User_Tracker')) {
          */
         private $login_status = false;
 
+        /**
+         * Stores the blog id on which user is just logged in.
+         * @var int 
+         */
         private $current_loggedin_blog_id;
 
         /**
@@ -70,12 +74,14 @@ if (!class_exists('Faulh_User_Tracker')) {
         public function __construct($plugin_name, $version) {
             $this->plugin_name = $plugin_name;
             $this->version = $version;
-           
         }
-        
-        public function set_current_loggedin_blog_id($param) {
+
+        /**
+         * Set the blog id on which user is just logged in.
+         */
+        public function set_current_loggedin_blog_id() {
             $Session_Helper = new Faulh_Session_Helper($this->plugin_name);
-             $this->current_loggedin_blog_id = $Session_Helper->get_current_login_blog_id();
+            $this->current_loggedin_blog_id = $Session_Helper->get_current_login_blog_id();
         }
 
         /**
@@ -133,7 +139,7 @@ if (!class_exists('Faulh_User_Tracker')) {
                 'browser_version' => $BrowserHelper->getVersion(),
                 'operating_system' => $BrowserHelper->getPlatform(),
                 'old_role' => !empty($user->roles) ? implode(",", $user->roles) : "",
-                'user_agent' => isset($_SERVER['HTTP_USER_AGENT'])?$_SERVER['HTTP_USER_AGENT']:$unknown,
+                'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : $unknown,
                 'login_status' => $status,
                 'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
                 'geo_response' => maybe_serialize($geo_location),
@@ -153,13 +159,12 @@ if (!class_exists('Faulh_User_Tracker')) {
             }
 
             do_action('faulh_after_save_login', $data);
-            
+
             if (self::LOGIN_STATUS_FAIL == $status) {
                 return;
             }
 
             $this->is_blocked_user_on_current_blog($user_id);
-            
         }
 
         /**
@@ -191,7 +196,7 @@ if (!class_exists('Faulh_User_Tracker')) {
                 return;
             }
 
-            $sql = "update $table set time_last_seen='$current_date' where session_token = '$session_token' and user_id = '$user_id' and login_status = '" . self::LOGIN_STATUS_LOGIN . "'";
+            $sql = "update $table set time_last_seen='$current_date' where session_token = '$session_token' and user_id = '$user_id' ";
             $user_id = get_current_user_id();
             $status = $wpdb->query($sql);
 
@@ -199,12 +204,11 @@ if (!class_exists('Faulh_User_Tracker')) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             }
 
-             $data =array(
-            'time_last_seen'=>$current_date,
-            'session_token'=>$session_token,
-        );
-         do_action('faulh_update_time_last_seen', $data);
-         
+            $data = array(
+                'time_last_seen' => $current_date,
+                'session_token' => $session_token,
+            );
+            do_action('faulh_update_time_last_seen', $data);
         }
 
         /**
@@ -236,20 +240,19 @@ if (!class_exists('Faulh_User_Tracker')) {
             $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
             $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . FAULH_TABLE_NAME;
             $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' and login_status <> '" . $login_status . "'";
-            
+
             $wpdb->query($sql);
-            
+
             if ($wpdb->last_error) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             }
-            
-              $data =array(
-            'time_logout'=>$time_logout,
-            'time_last_seen'=>$time_logout,
-            'session_token'=>$session_token,
-        );
-       do_action('faulh_logout', $data);
 
+            $data = array(
+                'time_logout' => $time_logout,
+                'time_last_seen' => $time_logout,
+                'session_token' => $session_token,
+            );
+            do_action('faulh_logout', $data);
         }
 
         /**

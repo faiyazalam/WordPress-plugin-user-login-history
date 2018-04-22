@@ -219,7 +219,10 @@ if(!class_exists('Faulh_Network_Admin_List_Table'))
         }
         return $status;
     }
-
+/**
+ * Delete single record.
+ * @return boolean
+ */
     public function delete_single_row() {
         if (empty($_GET['action']) || $this->plugin_name . '_network_admin_listing_table_delete_single_row' != $_GET['action'] || empty($_REQUEST['_wpnonce'])) {
             return FALSE;

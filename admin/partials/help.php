@@ -1,6 +1,6 @@
 <?php
 /**
- * Template file to render listing table for admin.
+ * Template file to render help page for admin.
  *
  * @link       https://github.com/faiyazalam
  *

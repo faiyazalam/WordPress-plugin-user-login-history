@@ -73,7 +73,7 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
     }
 
     /**
-     * Updates the settings.
+     * Update the settings.
      * 
      * @access private
      */
@@ -102,7 +102,7 @@ if(!class_exists('Faulh_Network_Admin_Setting'))
     }
 
     /**
-     * Gets the setting by name.
+     * Get the setting by name.
      *
      * @param $setting string optional setting name
      */
