@@ -94,3 +94,4 @@ Yes.
 After upgrading, you have to do the following changes:
 1. Update your timezone from your profile edit page.
 1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]
+1. All the logged in users must be re-login otherwise last seen time and logout time will not be updated.
