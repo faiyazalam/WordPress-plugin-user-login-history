@@ -1,3 +1,5 @@
+This is an UNSTABLE version. To download STABLE version, visit: https://wordpress.org/plugins/user-login-history/
+
 === User Login History ===
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
