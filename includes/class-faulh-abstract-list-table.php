@@ -217,24 +217,25 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $unknown_symbol = '—';
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
+                    $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
 
             switch ($column_name) {
 
                 case 'user_id':
                     if (empty($item[$column_name])) {
-                        return $unknown;
+                        return $unknown_symbol;
                     }
                     return (int) $item[$column_name];
 
                 case 'role':
                     if (empty($item['user_id'])) {
-                        return $unknown;
+                        return $unknown_symbol;
                     }
                     $user_data = get_userdata($item['user_id']);
-                    return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown;
+                    return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown_symbol;
 
                 case 'old_role':
-                    return !empty($item[$column_name]) ? $item[$column_name] : $unknown;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
 
                 case 'browser':
                     if (empty($item[$column_name])) {
@@ -266,11 +267,10 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
 
                 case 'country_name':
-                    $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
 
                 case 'country_code':
-                    return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
+                    return esc_html($country_code);
 
                 case 'operating_system':
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
@@ -291,7 +291,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $human_time_diff = human_time_diff($time_last_seen_unix);
                     $is_online_str = 'offline';
 
-                    $minutes = ((time() - $time_last_seen_unix) / 60);
+                    if(in_array($item['login_status'], array("", Faulh_User_Tracker::LOGIN_STATUS_LOGIN)) )
+                    {
+                       $minutes = ((time() - $time_last_seen_unix) / 60);
                     $settings = get_option($this->plugin_name . "_basics");
                     $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
                     $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
@@ -299,12 +301,14 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         $is_online_str = 'online';
                     } elseif ($minutes <= $minute_idle) {
                         $is_online_str = 'idle';
+                    }  
                     }
+                   
 
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
                 case 'user_agent':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
 
                 case 'duration':
                     return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
@@ -314,10 +318,10 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
 
                 case 'site_id':
-                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown;
+                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown_symbol;
 
                 case 'blog_id':
-                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown;
+                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown_symbol;
 
                 case 'is_super_admin':
                     $super_admin_statuses = Faulh_Template_Helper::super_admin_statuses();

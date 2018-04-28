@@ -40,6 +40,18 @@ The plugin helps you to track any visitor\'s login details with the following at
 1. **Advanced Search Filter**
 1. **CSV Export**
 
+= Compatible With =
+1. [WooCommerce](https://woocommerce.com/)
+1. [BuddyPress](https://buddypress.org/)
+1. [UserPro](https://userproplugin.com/)
+1. [Ultimate Member](https://wordpress.org/plugins/ultimate-member/)
+1. [Loginizer](https://wordpress.org/plugins/loginizer/)
+1. [Theme My Login](https://wordpress.org/plugins/theme-my-login/)
+1. [Admin Custom Login](https://wordpress.org/plugins/admin-custom-login/)
+1. [Login No Captcha reCAPTCHA](https://wordpress.org/plugins/login-recaptcha/)
+1. [Force Login](https://wordpress.org/plugins/wp-force-login/)
+1. [WPS Hide Login](https://wordpress.org/plugins/wps-hide-login/)
+
 = Translations =
 
 Currently, this plugin is available in the following two languages i.e. 
@@ -49,10 +61,21 @@ Currently, this plugin is available in the following two languages i.e.
 
 You can download the language files from [here](https://translate.wordpress.org/projects/wp-plugins/user-login-history "Click here to download the language file for the plugin."). 
 
+Do you want to translate this plugin to another language?
+
+I recommend using [POEdit](http://poedit.net/) or if you prefer to do it straight from the WordPress admin interface use [Loco Translate](https://wordpress.org/plugins/loco-translate/).
+When you’re done, send me the file(s) and I’ll add it to the official plugin. You can also translate the plugin [online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
+
 = Bug Fixes =
 
 If you find any bug, please create a topic with a step by step description to reproduce the bug.
 Please search the forum before creating a new topic.
+
+= Keywords =
+user log, log, logger, detector, tracker, membership, 
+register, sign up, admin, subscriber, editor, contributor, geo location, 
+profile, front end registration, manager, report, statistics, activity, user role editor
+
 
 == Installation ==
 
