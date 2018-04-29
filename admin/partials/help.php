@@ -54,7 +54,7 @@ $columns_str = (implode(',', array_keys($columns)));
                             <span><pre><code><?php echo $columns_str?></code></pre></span>
                         </li>
                     </ol>
-            <h2><?php esc_html_e('Deprecated Shortcode (Since 1.7)', 'faulh'); ?>: </h2>
+            <h2><?php esc_html_e('Deprecated Shortcode (Since 1.7.0)', 'faulh'); ?>: </h2>
             <p><?php esc_html_e('Do not use the following shortcode as it is deprecated and will be removed in future.', 'faulh') ?></p>
             <pre><code>[user-login-history]</code></pre>
 
@@ -83,7 +83,7 @@ The plugin saves login info at the blog on which the user logged in but cannot n
 You can prevent this behavior by using the plugin setting.', 'faulh') ?></p>
                 </li>
 <li>
-<p><strong><?php esc_html_e('Unknown', 'faulh') ?></strong> - <?php esc_html_e('Since we have added a new column "Login Status" in the version 1.7, its value will be empty in the database table after upgrading to 1.7. To filter such records, you can use this status.', 'faulh') ?></p>
+<p><strong><?php esc_html_e('Unknown', 'faulh') ?></strong> - <?php esc_html_e('Since we have added a new column "Login Status" in the version 1.7.0, its value will be empty in the database table after upgrading to 1.7.0. To filter such records, you can use this status.', 'faulh') ?></p>
 </li>
             </ol>
             <p><strong><?php esc_html_e('Note', 'faulh') ?></strong> - <?php esc_html_e('In case, a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status "Logged in".', 'faulh') ?></p>

@@ -317,9 +317,6 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $login_statuses = Faulh_Template_Helper::login_statuses();
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
 
-                case 'site_id':
-                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown_symbol;
-
                 case 'blog_id':
                     return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown_symbol;
 

@@ -142,7 +142,6 @@ if (!class_exists('Faulh_User_Tracker')) {
                 'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : $unknown,
                 'login_status' => $status,
                 'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
-                'geo_response' => maybe_serialize($geo_location),
             );
             //this is used to modify data before saving in db.
             $filtered_data = apply_filters('faulh_before_save_login', $data);

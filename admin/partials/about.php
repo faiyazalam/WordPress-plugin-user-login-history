@@ -38,18 +38,23 @@ unset($author_links[$paypal_key]);
             </ol>
             <h2><?php esc_html_e('Some More Useful Features:', 'faulh'); ?></h2>
             <ol>
-                <li><strong><?php esc_html_e('Preferable Timezone', 'faulh')?></strong> - <?php esc_html_e('You can select your preferred timezone to be used for the listing table.', 'faulh'); ?></li>
-                <li><strong><?php esc_html_e('Shortcode', 'faulh')?></strong> - <?php echo  sprintf(esc_html__('The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user. For more detail, please see the %1$sHelp%2$s page.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"); ?></li>
-                <li><strong><?php esc_html_e('Multisite Network (Since version 1.7)', 'faulh')?></strong> - <?php esc_html_e('On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'faulh'); ?><br> 
+                <li><strong><?php esc_html_e('Preferable Timezone', 'faulh') ?></strong> - <?php esc_html_e('You can select your preferred timezone to be used for the listing table.', 'faulh'); ?></li>
+                <li><strong><?php esc_html_e('Shortcode', 'faulh') ?></strong> - <?php echo sprintf(esc_html__('The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user. For more detail, please see the %1$sHelp%2$s page.', 'faulh'), "<a href='" . admin_url("admin.php?page={$this->plugin_name}-help") . "'>", "</a>"); ?></li>
+                <li><strong><?php esc_html_e('Multisite Network (Since version 1.7.0)', 'faulh') ?></strong> - <?php esc_html_e('On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network.', 'faulh'); ?><br> 
                 </li>
-                <li><strong><?php esc_html_e('Advanced Search Filter', 'faulh')?></strong></li>
-                <li><strong><?php esc_html_e('CSV Export', 'faulh')?></strong></li>
+                <li><strong><?php esc_html_e('Advanced Search Filter', 'faulh') ?></strong></li>
+                <li><strong><?php esc_html_e('CSV Export', 'faulh') ?></strong></li>
             </ol>
             <h2><?php esc_html_e('Translations', 'faulh'); ?></h2>
             <p><?php esc_html_e('Currently, this plugin is available in two languages i.e. English and Italian.', 'faulh') ?></p>
             <p><a href="https://translate.wordpress.org/projects/wp-plugins/user-login-history" class="button-secondary" target="_blank">
                     <?php esc_html_e('Download Language Files', 'faulh'); ?>
                 </a></p>
+            <p><strong><?php esc_html_e('Do you want to translate this plugin to another language?', 'faulh') ?></strong></p>
+            <p><?php echo sprintf(esc_html__('I recommend using %1$sPOEdit%2$s or if you prefer to do it straight from the WordPress admin interface use %3$sLoco Translate%4$s.
+When you’re done, send me the file(s) and I’ll add it to the official plugin. You can also translate the plugin %5$sOnline%6$s.', 'faulh'), "<a href='http://poedit.net/' target='_blank'>", "</a>", "<a href='https://wordpress.org/plugins/loco-translate/' target='_blank'>", "</a>", "<a href='https://translate.wordpress.org/projects/wp-plugins/user-login-history' target='_blank'>", "</a>") ?>
+            </p>
+
             <h2><?php esc_html_e('I Am Here!', 'faulh'); ?></h2>
             <p><strong><?php esc_html_e('You can reach me through the following links:', 'faulh'); ?></strong></p>
             <p>
