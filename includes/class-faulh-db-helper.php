@@ -64,7 +64,7 @@ if (!class_exists('Faulh_DB_Helper')) {
          */
         static public function all_columns() {
             $columns = array(
-                'user_id' => esc_html__('User Id', 'faulh'),
+                'user_id' => esc_html__('User ID', 'faulh'),
                 'username' => esc_html__('Username', 'faulh'),
                 'role' => esc_html__('Current Role', 'faulh'),
                 'old_role' => "<span title='" . esc_attr__('Role while user gets logged in', 'faulh') . "'>" . esc_html__('Old Role (?)', 'faulh') . "</span>",

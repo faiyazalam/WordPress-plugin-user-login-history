@@ -4,7 +4,7 @@ This is an UNSTABLE version. To download STABLE version, visit: https://wordpres
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
-Requires at least: 3.0.1
+Requires at least: 4.0
 Requires PHP: 5.5
 Tested up to: 4.9.5
 Stable tag: 1.6
@@ -38,7 +38,7 @@ The plugin helps you to track any visitor\'s login details with the following at
 
 1. **Preferable Timezone** - You can select your preferred timezone to be used for the listing table.
 1. **Shortcode** - The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user. You can use the shortcodes `<?php echo do_shortcode['user-login-history'] ?>` and `[user-login-history]` in your template file and content respectively. For more detail, please see the help page under plugin menu.
-1. **Multisite Network (Since version 1.7)** - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
+1. **Multisite Network (Since version 1.7.0)** - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
 1. **Advanced Search Filter**
 1. **CSV Export**
 
@@ -66,7 +66,7 @@ You can download the language files from [here](https://translate.wordpress.org/
 Do you want to translate this plugin to another language?
 
 I recommend using [POEdit](http://poedit.net/) or if you prefer to do it straight from the WordPress admin interface use [Loco Translate](https://wordpress.org/plugins/loco-translate/).
-When you’re done, send me the file(s) and I’ll add it to the official plugin. You can also translate the plugin [online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
+When you’re done, send me the file(s) and I’ll add it to the official plugin. You can also translate the plugin [Online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
 
 = Bug Fixes =
 
@@ -103,7 +103,7 @@ Yes.
 
 == Changelog ==
 
-= 1.7(release date) =
+= 1.7.0(release date) =
 * Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
 * Added the column **Login Status** - This is used to check whether the user is logged in, logged out, failed login or blocked login.
 * Added the option **Last Seen Time** to filter the results.
@@ -115,7 +115,7 @@ Yes.
 
 == Upgrade Notice ==
 
-= 1.* <= 1.7 =
+= 1.* <= 1.7.0 =
 After upgrading, you have to do the following changes:
 1. Update your timezone from your profile edit page.
 1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]
