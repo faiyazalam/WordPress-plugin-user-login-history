@@ -217,7 +217,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $unknown_symbol = '—';
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
-                    $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
+            $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
 
             switch ($column_name) {
 
@@ -269,6 +269,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 case 'country_name':
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
 
+                case 'country_name_csv':
+                    return in_array(strtolower($item['country_name']), array("", $unknown)) ? $unknown : esc_html($item['country_name']);
+
                 case 'country_code':
                     return esc_html($country_code);
 
@@ -291,19 +294,18 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $human_time_diff = human_time_diff($time_last_seen_unix);
                     $is_online_str = 'offline';
 
-                    if(in_array($item['login_status'], array("", Faulh_User_Tracker::LOGIN_STATUS_LOGIN)) )
-                    {
-                       $minutes = ((time() - $time_last_seen_unix) / 60);
-                    $settings = get_option($this->plugin_name . "_basics");
-                    $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
-                    $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
-                    if ($minutes <= $minute_online) {
-                        $is_online_str = 'online';
-                    } elseif ($minutes <= $minute_idle) {
-                        $is_online_str = 'idle';
-                    }  
+                    if (in_array($item['login_status'], array("", Faulh_User_Tracker::LOGIN_STATUS_LOGIN))) {
+                        $minutes = ((time() - $time_last_seen_unix) / 60);
+                        $settings = get_option($this->plugin_name . "_basics");
+                        $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
+                        $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
+                        if ($minutes <= $minute_online) {
+                            $is_online_str = 'online';
+                        } elseif ($minutes <= $minute_idle) {
+                            $is_online_str = 'idle';
+                        }
                     }
-                   
+
 
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
@@ -459,23 +461,23 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $i = 0;
             $record = array();
             foreach ($data as $row) {
-$user_id = !empty($row['user_id'])?$row['user_id']:FALSE;
+                $user_id = !empty($row['user_id']) ? $row['user_id'] : FALSE;
                 if (!$user_id) {
-                  $time_last_seen_str = $time_logout_str = $current_role = $old_role = $unknown_symbol;
+                    $time_last_seen_str = $time_logout_str = $current_role = $old_role = $unknown_symbol;
                 } else {
                     $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $unknown_symbol;
                     $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
-                     $current_role = $this->column_default($row, 'role');
-                     $old_role = $this->column_default($row, 'old_role');
-                    }
+                    $current_role = $this->column_default($row, 'role');
+                    $old_role = $this->column_default($row, 'old_role');
+                }
 
-                $record['user_id'] = $user_id ? $user_id: $unknown_symbol;
+                $record['user_id'] = $user_id ? $user_id : $unknown_symbol;
                 $record['current_role'] = $current_role;
                 $record['old_role'] = $old_role;
                 $record['ip_address'] = $this->column_default($row, 'ip_address');
                 $record['browser'] = $this->column_default($row, 'browser');
                 $record['operating_system'] = $this->column_default($row, 'operating_system');
-                $record['country_name'] = $this->column_default($row, 'country_name');
+                $record['country_name'] = $this->column_default($row, 'country_name_csv');
                 $record['country_code'] = $this->column_default($row, 'country_code');
                 $record['timezone'] = $this->column_default($row, 'timezone');
                 $record['duration'] = $this->column_default($row, 'duration');

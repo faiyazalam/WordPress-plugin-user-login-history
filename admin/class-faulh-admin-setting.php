@@ -96,7 +96,7 @@ class Faulh_Admin_Setting {
                  array(
                     'name'              => 'is_status_idle',
                     'label'             => esc_html__( 'Idle', 'faulh' ),
-                    'desc'              => esc_html__( 'Maximum number of minutes for idle users. Default is', 'faulh' )." ".FAULH_DEFAULT_IS_STATUS_IDLE_MIN,
+                    'desc'              => esc_html__( 'Maximum number of minutes for idle users. This should be greater than that of online users. Default is', 'faulh' )." ".FAULH_DEFAULT_IS_STATUS_IDLE_MIN,
                     'min'               => 0,
                     'max'               => 100,
                     'step'              => '1',
