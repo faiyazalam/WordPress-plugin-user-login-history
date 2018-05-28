@@ -459,17 +459,19 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $i = 0;
             $record = array();
             foreach ($data as $row) {
-
-                if (empty($row['user_id'])) {
-                    $time_last_seen_str = $time_logout_str = $unknown_symbol;
+$user_id = !empty($row['user_id'])?$row['user_id']:FALSE;
+                if (!$user_id) {
+                  $time_last_seen_str = $time_logout_str = $current_role = $old_role = $unknown_symbol;
                 } else {
                     $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $unknown_symbol;
                     $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
-                }
+                     $current_role = $this->column_default($row, 'role');
+                     $old_role = $this->column_default($row, 'old_role');
+                    }
 
-                $record['user_id'] = $this->column_default($row, 'user_id');
-                $record['current_role'] = $this->column_default($row, 'role');
-                $record['old_role'] = $this->column_default($row, 'old_role');
+                $record['user_id'] = $user_id ? $user_id: $unknown_symbol;
+                $record['current_role'] = $current_role;
+                $record['old_role'] = $old_role;
                 $record['ip_address'] = $this->column_default($row, 'ip_address');
                 $record['browser'] = $this->column_default($row, 'browser');
                 $record['operating_system'] = $this->column_default($row, 'operating_system');

@@ -371,7 +371,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                 'user_id' => array('user_id', true),
                 'username' => array('username', true),
                 'old_role' => array('old_role', true),
-                'time_login' => array('time_login', TRUE),
+                'time_login' => array('time_login', FALSE),
                 'time_logout' => array('time_logout', false),
                 'browser' => array('browser', true),
                 'operating_system' => array('operating_system', false),
