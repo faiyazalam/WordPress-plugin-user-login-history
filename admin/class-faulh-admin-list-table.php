@@ -53,13 +53,14 @@ if (!class_exists('Faulh_Admin_List_Table')) {
          */
         public function get_rows($per_page = 20, $page_number = 1) {
             global $wpdb;
+           
             $table = $wpdb->prefix . $this->table_name;
             $sql = " SELECT"
                     . " DISTINCT(FaUserLogin.id) as row_id, FaUserLogin.*, "
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                    . " AND UserMeta.meta_key REGEXP '^{$wpdb->prefix}([_0-9]*)capabilities$' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();

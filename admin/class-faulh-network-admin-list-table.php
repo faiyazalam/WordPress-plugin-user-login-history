@@ -91,19 +91,23 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
             foreach ($blog_ids as $blog_id) {
                 $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
                 
-             
-           if(!$this->is_table_exist($table))
+                
+             if(!$this->is_plugin_active_for_network)
+             {
+                  if(!$this->is_table_exist($table))
                 {
                     continue;
                 }
-       
+        
+             }
+         
                
 
                 if (0 < $i) {
                     $sql .= " UNION ALL";
                 }
 
-                $sql .= " (SELECT"
+                $sql .= " ( SELECT"
                         . " DISTINCT(FaUserLogin.id) as row_id, "
                         . " FaUserLogin.user_id,"
                         . " FaUserLogin.username,"
@@ -119,23 +123,22 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                         . " FaUserLogin.timezone,"
                         . " FaUserLogin.old_role,"
                         . " FaUserLogin.user_agent,"
-                        . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
+                        . " FaUserLogin.login_status,"
+                        . " FaUserLogin.is_super_admin,"
+                        . " UserMeta.meta_value, "
+                        . " TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
                         . " $blog_id as blog_id"
                         . " FROM $table  AS FaUserLogin"
                         . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                        . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
-                        . " WHERE 1) ";
+                        . " AND UserMeta.meta_key REGEXP '^{$wpdb->prefix}([_0-9]*)capabilities$' )"
+                        . " WHERE 1 ";
 
                 if ($where_query) {
                     $sql .= $where_query;
                 }
-
+$sql .= " )";
                 $i++;
             }
-            
- 
-
-           // $sql_all = "SELECT * FROM ($sql) as FaUserLoginOuter";
 
             if (!empty($_REQUEST['orderby'])) {
                 $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
@@ -176,10 +179,14 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                 $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
                 
                 
-           if(!$this->is_table_exist($table))
+             if(!$this->is_plugin_active_for_network)
+             {
+                  if(!$this->is_table_exist($table))
                 {
                     continue;
                 }
+        
+             }
                 
 
                 if (0 < $i) {
@@ -187,7 +194,7 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                 }
 
 
-                $sql .= " SELECT"
+                $sql .= " ( SELECT"
                         . " COUNT(DISTINCT(FaUserLogin.id)) AS count"
                         . " FROM $table  AS FaUserLogin"
                         . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
@@ -197,6 +204,7 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                 if ($where_query) {
                     $sql .= $where_query;
                 }
+                 $sql .= " ) ";
                 $i++;
             }
             $sql_count = "SELECT SUM(count) as total FROM ($sql) AS FaUserLoginCount";

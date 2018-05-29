@@ -237,7 +237,17 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     if (empty($item['user_id'])) {
                         return $unknown_symbol;
                     }
-                    $user_data = get_userdata($item['user_id']);
+                  
+                    if(is_network_admin() && !empty($item['blog_id']))
+                    {
+                        switch_to_blog($item['blog_id']);
+                        $user_data = get_userdata($item['user_id']);
+                      restore_current_blog();
+                    }
+                    else{
+                         $user_data = get_userdata($item['user_id']);
+                    }
+                    
                     return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown_symbol;
 
                 case 'old_role':
