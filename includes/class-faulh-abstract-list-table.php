@@ -64,6 +64,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $this->set_table_timezone($table_timezone);
         }
 
+                abstract public function get_rows($limit);
+                abstract public function record_count();
+                
         /**
          * Message to be displayed when there are no items
          *
@@ -226,6 +229,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         return $unknown_symbol;
                     }
                     return (int) $item[$column_name];
+                    
+                case 'username_csv':
+                   return $item['username'];
 
                 case 'role':
                     if (empty($item['user_id'])) {
@@ -433,6 +439,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $this->single_row_columns($item);
             echo '</tr>';
         }
+        
 
         /**
          * Exports CSV
@@ -471,24 +478,26 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $old_role = $this->column_default($row, 'old_role');
                 }
 
-                $record['user_id'] = $user_id ? $user_id : $unknown_symbol;
-                $record['current_role'] = $current_role;
-                $record['old_role'] = $old_role;
-                $record['ip_address'] = $this->column_default($row, 'ip_address');
-                $record['browser'] = $this->column_default($row, 'browser');
-                $record['operating_system'] = $this->column_default($row, 'operating_system');
-                $record['country_name'] = $this->column_default($row, 'country_name_csv');
-                $record['country_code'] = $this->column_default($row, 'country_code');
-                $record['timezone'] = $this->column_default($row, 'timezone');
-                $record['duration'] = $this->column_default($row, 'duration');
-                $record['time_last_seen'] = $time_last_seen_str;
-                $record['time_login'] = $this->column_default($row, 'time_login');
-                $record['time_logout'] = $time_logout_str;
-                $record['login_status'] = $this->column_default($row, 'login_status');
-                $record['user_agent'] = $this->column_default($row, 'user_agent');
+                $record[__('User ID', 'faulh')] = $user_id ? $user_id : $unknown_symbol;
+                $record[__('Username', 'faulh')] = $this->column_default($row, 'username_csv');
+                $record[__('Current Role', 'faulh')] = $current_role;
+                $record[__('Old Role', 'faulh')] = $old_role;
+                $record[__('IP Address', 'faulh')] = $this->column_default($row, 'ip_address');
+                
+                $record[__('Browser', 'faulh')] = $this->column_default($row, 'browser');
+                $record[__('Operating System', 'faulh')] = $this->column_default($row, 'operating_system');
+                $record[__('Country Name', 'faulh')] = $this->column_default($row, 'country_name_csv');
+                $record[__('Country Code', 'faulh')] = $this->column_default($row, 'country_code');
+                $record[__('Timezone', 'faulh')] = $this->column_default($row, 'timezone');
+                $record[__('Duration', 'faulh')] = $this->column_default($row, 'duration');
+                $record[__('Last Seen', 'faulh')] = $time_last_seen_str;
+                $record[__('Login', 'faulh')] = $this->column_default($row, 'time_login');
+                $record[__('Logout', 'faulh')] = $time_logout_str;
+                $record[__('Login Status', 'faulh')] = $this->column_default($row, 'login_status');
+                $record[__('User Agent', 'faulh')] = $this->column_default($row, 'user_agent');
                 if (is_network_admin()) {
-                    $record['is_super_admin'] = $this->column_default($row, 'is_super_admin');
-                    $record['blog_id'] = $this->column_default($row, 'blog_id');
+                    $record[__('Super Admin', 'faulh')] = $this->column_default($row, 'is_super_admin');
+                    $record[__('Blog ID', 'faulh')] = $this->column_default($row, 'blog_id');
                 }
                 //output header row
                 if (0 == $i) {

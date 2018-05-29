@@ -126,7 +126,6 @@ if (!class_exists('Faulh_Admin_List_Table')) {
 
             $title = $item['user_id'] && $user_link ? "<a href='" . get_edit_user_link($item['user_id']) . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . $item['username'] . '</strong>';
             $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
-            //  $title = '<strong>' . $item['username'] . '</strong>';
             $actions = array(
                 'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_admin_listing_table_delete_single_row', absint($item['id']), $delete_nonce),
             );

@@ -83,14 +83,14 @@ $columns_str = (implode(',', array_keys($columns)));
                 <li>
                     <p><strong><?php esc_html_e('Blocked', 'faulh') ?></strong> - <?php esc_html_e('This is used for multisite network. 
 By default, a user can login to any blog and then wordpress redirects to the blog on which the user is associated. 
-The plugin saves login info at the blog on which the user logged in but cannot not save the info of the blog on which wordpress redirects the user. 
+The plugin saves login info at the blog on which the user logged in but cannot not save the information of the blog on which wordpress redirects the user. 
 You can prevent this behavior by using the plugin setting.', 'faulh') ?></p>
                 </li>
 <li>
 <p><strong><?php esc_html_e('Unknown', 'faulh') ?></strong> - <?php esc_html_e('Since we have added a new column "Login Status" in the version 1.7.0, its value will be empty in the database table after upgrading to 1.7.0. To filter such records, you can use this status.', 'faulh') ?></p>
 </li>
             </ol>
-            <p><strong><?php esc_html_e('Note', 'faulh') ?></strong> - <?php esc_html_e('In case, a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status "Logged in".', 'faulh') ?></p>
+            <p><strong><?php esc_html_e('Note', 'faulh') ?></strong> - <?php esc_html_e('In case, a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status as "Logged in".', 'faulh') ?></p>
 
    <hr>
             <h2><?php esc_html_e('Bug Fixes:', 'faulh'); ?></h2>

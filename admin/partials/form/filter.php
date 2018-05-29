@@ -50,7 +50,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     $selected_role = isset($_GET['role']) ? $_GET['role'] : NULL;
                     wp_dropdown_roles($selected_role);
                     ?>
-                    <?php if (is_multisite()) { ?>
+                    <?php if (is_network_admin()) { ?>
                         <option value="superadmin" <?php selected($selected_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", "faulh") ?></option>
                     <?php } ?>
                 </select></div>
@@ -60,7 +60,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     $selected_old_role = isset($_GET['old_role']) ? $_GET['old_role'] : NULL;
                     wp_dropdown_roles($selected_old_role);
                     ?>
-                    <?php if (is_multisite()) { ?>
+                    <?php if (is_network_admin()) { ?>
                         <option value="superadmin" <?php selected($selected_old_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", "faulh") ?></option>  <?php } ?>
                 </select></div>
             <div> <select  name="login_status">
