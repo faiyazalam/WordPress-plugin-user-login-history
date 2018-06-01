@@ -99,7 +99,7 @@ if (!class_exists('Faulh_Template_Helper')) {
                 }
             }
             
-   $h .= " | <a href='http://www.userloginhistory.com' target='_blank'>Plusgin Website</a>";
+   $h .= " | <a href='http://www.userloginhistory.com' target='_blank'>Plugin Website</a>";
 
             $h .= "</div>";
 
