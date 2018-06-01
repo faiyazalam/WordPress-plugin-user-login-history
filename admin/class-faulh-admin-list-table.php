@@ -53,13 +53,14 @@ if (!class_exists('Faulh_Admin_List_Table')) {
          */
         public function get_rows($per_page = 20, $page_number = 1) {
             global $wpdb;
+           
             $table = $wpdb->prefix . $this->table_name;
             $sql = " SELECT"
                     . " DISTINCT(FaUserLogin.id) as row_id, FaUserLogin.*, "
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                    . " AND UserMeta.meta_key REGEXP '^{$wpdb->prefix}([_0-9]*)capabilities$' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();
@@ -126,7 +127,6 @@ if (!class_exists('Faulh_Admin_List_Table')) {
 
             $title = $item['user_id'] && $user_link ? "<a href='" . get_edit_user_link($item['user_id']) . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . $item['username'] . '</strong>';
             $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
-            //  $title = '<strong>' . $item['username'] . '</strong>';
             $actions = array(
                 'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_admin_listing_table_delete_single_row', absint($item['id']), $delete_nonce),
             );

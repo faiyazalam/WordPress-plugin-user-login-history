@@ -23,7 +23,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                 </select></div>
         </div>
         <div class="secondRow">
-            <div><input placeholder="<?php esc_html_e("Enter User ID", "faulh") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? esc_attr($_GET['user_id']) : "" ?>" ></div>
+            <div><input type="number" placeholder="<?php esc_html_e("Enter User ID", "faulh") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? esc_attr($_GET['user_id']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Username", "faulh") ?>" name="username" value="<?php echo isset($_GET['username']) ? esc_attr($_GET['username']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Country", "faulh") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? esc_attr($_GET['country_name']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Browser", "faulh") ?>" name="browser" value="<?php echo isset($_GET['browser']) ? esc_attr($_GET['browser']) : "" ?>" ></div>
@@ -50,7 +50,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     $selected_role = isset($_GET['role']) ? $_GET['role'] : NULL;
                     wp_dropdown_roles($selected_role);
                     ?>
-                    <?php if (is_multisite()) { ?>
+                    <?php if (is_network_admin()) { ?>
                         <option value="superadmin" <?php selected($selected_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", "faulh") ?></option>
                     <?php } ?>
                 </select></div>
@@ -60,7 +60,7 @@ $reset_URL = is_network_admin() ? network_admin_url($reset_URI) : admin_url($res
                     $selected_old_role = isset($_GET['old_role']) ? $_GET['old_role'] : NULL;
                     wp_dropdown_roles($selected_old_role);
                     ?>
-                    <?php if (is_multisite()) { ?>
+                    <?php if (is_network_admin()) { ?>
                         <option value="superadmin" <?php selected($selected_old_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", "faulh") ?></option>  <?php } ?>
                 </select></div>
             <div> <select  name="login_status">

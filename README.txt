@@ -4,7 +4,7 @@ This is an UNSTABLE version. To download STABLE version, visit: https://wordpres
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
-Requires at least: 4.0
+Requires at least: 4.9.0
 Requires PHP: 5.5
 Tested up to: 4.9.5
 Stable tag: 1.6
@@ -66,7 +66,7 @@ You can download the language files from [here](https://translate.wordpress.org/
 Do you want to translate this plugin to another language?
 
 I recommend using [POEdit](http://poedit.net/) or if you prefer to do it straight from the WordPress admin interface use [Loco Translate](https://wordpress.org/plugins/loco-translate/).
-When you’re done, send me the file(s) and I’ll add it to the official plugin. You can also translate the plugin [Online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
+When you’re done, send us the file(s) and I’ll add it to the official plugin. You can also translate the plugin [Online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
 
 = Bug Fixes =
 

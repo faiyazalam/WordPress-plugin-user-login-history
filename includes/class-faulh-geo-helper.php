@@ -41,6 +41,7 @@ if (!class_exists('Faulh_Geo_Helper')) {
          * @return string The IP address of user.
          */
         public function get_ip() {
+            
             $ip_address = $_SERVER['REMOTE_ADDR'];
 
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -57,7 +58,7 @@ if (!class_exists('Faulh_Geo_Helper')) {
          * @return string The response from geo API.
          */
         public function get_geo_location() {
-            $options = get_option($this->plugin_name . "_advance");
+            $options = get_option($this->plugin_name . "_advanced");
             if (empty($options['is_geo_tracker_enabled']) || 'on' != $options['is_geo_tracker_enabled']) {
                 return FALSE;
             }

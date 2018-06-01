@@ -64,6 +64,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $this->set_table_timezone($table_timezone);
         }
 
+                abstract public function get_rows($limit);
+                abstract public function record_count();
+                
         /**
          * Message to be displayed when there are no items
          *
@@ -217,7 +220,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $unknown_symbol = '—';
             $unknown = 'unknown';
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
-                    $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
+            $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
 
             switch ($column_name) {
 
@@ -226,12 +229,25 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         return $unknown_symbol;
                     }
                     return (int) $item[$column_name];
+                    
+                case 'username_csv':
+                   return $item['username'];
 
                 case 'role':
                     if (empty($item['user_id'])) {
                         return $unknown_symbol;
                     }
-                    $user_data = get_userdata($item['user_id']);
+                  
+                    if(is_network_admin() && !empty($item['blog_id']))
+                    {
+                        switch_to_blog($item['blog_id']);
+                        $user_data = get_userdata($item['user_id']);
+                      restore_current_blog();
+                    }
+                    else{
+                         $user_data = get_userdata($item['user_id']);
+                    }
+                    
                     return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown_symbol;
 
                 case 'old_role':
@@ -269,6 +285,9 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 case 'country_name':
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
 
+                case 'country_name_csv':
+                    return in_array(strtolower($item['country_name']), array("", $unknown)) ? $unknown : esc_html($item['country_name']);
+
                 case 'country_code':
                     return esc_html($country_code);
 
@@ -291,19 +310,18 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     $human_time_diff = human_time_diff($time_last_seen_unix);
                     $is_online_str = 'offline';
 
-                    if(in_array($item['login_status'], array("", Faulh_User_Tracker::LOGIN_STATUS_LOGIN)) )
-                    {
-                       $minutes = ((time() - $time_last_seen_unix) / 60);
-                    $settings = get_option($this->plugin_name . "_basics");
-                    $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
-                    $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
-                    if ($minutes <= $minute_online) {
-                        $is_online_str = 'online';
-                    } elseif ($minutes <= $minute_idle) {
-                        $is_online_str = 'idle';
-                    }  
+                    if (in_array($item['login_status'], array("", Faulh_User_Tracker::LOGIN_STATUS_LOGIN))) {
+                        $minutes = ((time() - $time_last_seen_unix) / 60);
+                        $settings = get_option($this->plugin_name . "_basics");
+                        $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
+                        $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
+                        if ($minutes <= $minute_online) {
+                            $is_online_str = 'online';
+                        } elseif ($minutes <= $minute_idle) {
+                            $is_online_str = 'idle';
+                        }
                     }
-                   
+
 
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
@@ -431,6 +449,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $this->single_row_columns($item);
             echo '</tr>';
         }
+        
 
         /**
          * Exports CSV
@@ -459,32 +478,36 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $i = 0;
             $record = array();
             foreach ($data as $row) {
-
-                if (empty($row['user_id'])) {
-                    $time_last_seen_str = $time_logout_str = $unknown_symbol;
+                $user_id = !empty($row['user_id']) ? $row['user_id'] : FALSE;
+                if (!$user_id) {
+                    $time_last_seen_str = $time_logout_str = $current_role = $old_role = $unknown_symbol;
                 } else {
                     $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $unknown_symbol;
                     $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
+                    $current_role = $this->column_default($row, 'role');
+                    $old_role = $this->column_default($row, 'old_role');
                 }
 
-                $record['user_id'] = $this->column_default($row, 'user_id');
-                $record['current_role'] = $this->column_default($row, 'role');
-                $record['old_role'] = $this->column_default($row, 'old_role');
-                $record['ip_address'] = $this->column_default($row, 'ip_address');
-                $record['browser'] = $this->column_default($row, 'browser');
-                $record['operating_system'] = $this->column_default($row, 'operating_system');
-                $record['country_name'] = $this->column_default($row, 'country_name');
-                $record['country_code'] = $this->column_default($row, 'country_code');
-                $record['timezone'] = $this->column_default($row, 'timezone');
-                $record['duration'] = $this->column_default($row, 'duration');
-                $record['time_last_seen'] = $time_last_seen_str;
-                $record['time_login'] = $this->column_default($row, 'time_login');
-                $record['time_logout'] = $time_logout_str;
-                $record['login_status'] = $this->column_default($row, 'login_status');
-                $record['user_agent'] = $this->column_default($row, 'user_agent');
+                $record[__('User ID', 'faulh')] = $user_id ? $user_id : $unknown_symbol;
+                $record[__('Username', 'faulh')] = $this->column_default($row, 'username_csv');
+                $record[__('Current Role', 'faulh')] = $current_role;
+                $record[__('Old Role', 'faulh')] = $old_role;
+                $record[__('IP Address', 'faulh')] = $this->column_default($row, 'ip_address');
+                
+                $record[__('Browser', 'faulh')] = $this->column_default($row, 'browser');
+                $record[__('Operating System', 'faulh')] = $this->column_default($row, 'operating_system');
+                $record[__('Country Name', 'faulh')] = $this->column_default($row, 'country_name_csv');
+                $record[__('Country Code', 'faulh')] = $this->column_default($row, 'country_code');
+                $record[__('Timezone', 'faulh')] = $this->column_default($row, 'timezone');
+                $record[__('Duration', 'faulh')] = $this->column_default($row, 'duration');
+                $record[__('Last Seen', 'faulh')] = $time_last_seen_str;
+                $record[__('Login', 'faulh')] = $this->column_default($row, 'time_login');
+                $record[__('Logout', 'faulh')] = $time_logout_str;
+                $record[__('Login Status', 'faulh')] = $this->column_default($row, 'login_status');
+                $record[__('User Agent', 'faulh')] = $this->column_default($row, 'user_agent');
                 if (is_network_admin()) {
-                    $record['is_super_admin'] = $this->column_default($row, 'is_super_admin');
-                    $record['blog_id'] = $this->column_default($row, 'blog_id');
+                    $record[__('Super Admin', 'faulh')] = $this->column_default($row, 'is_super_admin');
+                    $record[__('Blog ID', 'faulh')] = $this->column_default($row, 'blog_id');
                 }
                 //output header row
                 if (0 == $i) {

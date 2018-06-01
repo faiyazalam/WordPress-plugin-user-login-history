@@ -113,7 +113,7 @@ if (!class_exists('Faulh_Public')) {
                 $Public_List_Table->set_table_time_format($attributes['time_format']);
             }
 
-            $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : FALSE;
+            $reset_URL = !empty($attributes['reset_link']) ? home_url($attributes['reset_link']) : get_permalink();
             $_GET['user_id'] = $current_user->ID;//to fetch records of current logged in user only.
 
             wp_enqueue_style($this->plugin_name . '-public-jquery-ui.min');

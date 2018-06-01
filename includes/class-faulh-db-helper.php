@@ -82,7 +82,7 @@ if (!class_exists('Faulh_DB_Helper')) {
             );
             if (is_network_admin()) {
                 $columns['blog_id'] = esc_html__('Blog ID', 'faulh');
-                $columns['is_super_admin'] = esc_html__('Super Admin', 'faulh');
+                $columns['is_super_admin'] = "<span title='" . esc_attr__('Super admin role while user gets logged in', 'faulh') . "'>" . esc_html__('Super Admin (?)', 'faulh') . "</span>";
             }
             return $columns;
         }

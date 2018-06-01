@@ -146,7 +146,7 @@ if (!class_exists('Faulh_Template_Helper')) {
                 Faulh_User_Tracker::LOGIN_STATUS_FAIL => esc_html__("Failed", "faulh"),
             );
 
-            if (is_multisite()) {
+            if (is_network_admin()) {
                 $types[Faulh_User_Tracker::LOGIN_STATUS_BLOCK] = esc_html__("Blocked", "faulh");
             }
             return $types;
