@@ -112,6 +112,13 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * @var      string    $table_time_format
          */
         private $table_time_format;
+        
+        /**
+         * Holds the capabilities string to be used in where clause.
+         *
+         * @access   private
+         */
+        private $capability_string;
 
         /**
          * Initialize the class and set its properties.
@@ -123,6 +130,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? absint($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
             $this->set_table_name();
             $this->set_table_timezone();
+            $this->set_capability_string_by_blog_id();
         }
 
         /**
@@ -288,14 +296,13 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                    . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();
             if ($where_query) {
                 $sql .= $where_query;
             }
-            //   $sql .= ' GROUP BY FaUserLogin.id';
 
             if (!empty($_REQUEST['orderby'])) {
                 $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
@@ -330,7 +337,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     . " COUNT(DISTINCT(FaUserLogin.id)) as total "
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                    . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();
@@ -683,6 +690,33 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     }
                     return print_r($item, true); //Show the whole array for troubleshooting purposes
             }
+        }
+        
+        /**
+         * Set capability string by blog id.
+         * 
+         * @global object $wpdb
+         * @param int $blog_id Default is current blog id.
+         */
+        public function set_capability_string_by_blog_id($blog_id = null) {
+            global $wpdb;
+
+            if (is_null($blog_id)) {
+                $blog_id = get_current_blog_id();
+            }
+
+            $placeholder = "##";
+            $str = $wpdb->prefix . $placeholder . "capabilities";
+            $this->capability_string = str_replace($placeholder, (1 === $blog_id) ? "" : "{$blog_id}_", $str);
+        }
+
+        /**
+         * Get the capability string.
+         * 
+         * @return string
+         */
+        public function get_capability_string() {
+            return $this->capability_string;
         }
 
     }

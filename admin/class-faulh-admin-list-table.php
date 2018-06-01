@@ -29,6 +29,7 @@ if (!class_exists('Faulh_Admin_List_Table')) {
                 'plural' => $plugin_name . '_admin_users', //plural name of the listed records
             );
             parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
+            $this->set_capability_string_by_blog_id();
         }
 
         /**
@@ -60,7 +61,7 @@ if (!class_exists('Faulh_Admin_List_Table')) {
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key REGEXP '^{$wpdb->prefix}([_0-9]*)capabilities$' )"
+                    . " AND UserMeta.meta_key LIKE  '".$this->get_capability_string()."' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();
@@ -79,6 +80,7 @@ if (!class_exists('Faulh_Admin_List_Table')) {
                 $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
             }
 
+          
             $result = $wpdb->get_results($sql, 'ARRAY_A');
             if ("" != $wpdb->last_error) {
                 Faulh_Error_Handler::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
@@ -99,7 +101,7 @@ if (!class_exists('Faulh_Admin_List_Table')) {
                     . " COUNT(DISTINCT(FaUserLogin.id)) AS total"
                     . " FROM " . $table . " AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                    . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();

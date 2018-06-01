@@ -48,6 +48,13 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
         private $table_timezone;
 
         /**
+         * Holds the capabilities string to be used in where clause.
+         *
+         * @access   private
+         */
+        private $capability_string;
+
+        /**
          * Initialize the class and set its properties.
          *
          * @access public
@@ -64,9 +71,10 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $this->set_table_timezone($table_timezone);
         }
 
-                abstract public function get_rows($limit);
-                abstract public function record_count();
-                
+        abstract public function get_rows($limit);
+
+        abstract public function record_count();
+
         /**
          * Message to be displayed when there are no items
          *
@@ -229,34 +237,33 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         return $unknown_symbol;
                     }
                     return (int) $item[$column_name];
-                    
+
                 case 'username_csv':
-                   return $item['username'];
+                    return $item['username'];
 
                 case 'role':
                     if (empty($item['user_id'])) {
                         return $unknown_symbol;
                     }
-                  
-                    if(is_network_admin() && !empty($item['blog_id']))
-                    {
+
+                    if (is_network_admin() && !empty($item['blog_id'])) {
                         switch_to_blog($item['blog_id']);
                         $user_data = get_userdata($item['user_id']);
-                      restore_current_blog();
+                        restore_current_blog();
+                    } else {
+                        $user_data = get_userdata($item['user_id']);
                     }
-                    else{
-                         $user_data = get_userdata($item['user_id']);
-                    }
-                    
+
                     return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown_symbol;
 
                 case 'old_role':
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
 
                 case 'browser':
-                    if (empty($item[$column_name])) {
+                    if (in_array(strtolower($item[$column_name]), array("", $unknown))) {
                         return $unknown;
                     }
+
                     if (empty($item['browser_version'])) {
                         return esc_html($item[$column_name]);
                     }
@@ -280,7 +287,8 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
 
                 case 'timezone':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
+                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name]);
+
 
                 case 'country_name':
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
@@ -292,7 +300,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return esc_html($country_code);
 
                 case 'operating_system':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
+                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name]);
 
                 case 'time_last_seen':
 
@@ -449,7 +457,6 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             $this->single_row_columns($item);
             echo '</tr>';
         }
-        
 
         /**
          * Exports CSV
@@ -493,7 +500,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 $record[__('Current Role', 'faulh')] = $current_role;
                 $record[__('Old Role', 'faulh')] = $old_role;
                 $record[__('IP Address', 'faulh')] = $this->column_default($row, 'ip_address');
-                
+
                 $record[__('Browser', 'faulh')] = $this->column_default($row, 'browser');
                 $record[__('Operating System', 'faulh')] = $this->column_default($row, 'operating_system');
                 $record[__('Country Name', 'faulh')] = $this->column_default($row, 'country_name_csv');
@@ -541,6 +548,33 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 return $status;
             }
             return FALSE;
+        }
+
+        /**
+         * Set capability string by blog id.
+         * 
+         * @global object $wpdb
+         * @param int $blog_id Default is current blog id.
+         */
+        public function set_capability_string_by_blog_id($blog_id = null) {
+            global $wpdb;
+
+            if (is_null($blog_id)) {
+                $blog_id = get_current_blog_id();
+            }
+
+            $placeholder = "##";
+            $str = $wpdb->prefix . $placeholder . "capabilities";
+            $this->capability_string = str_replace($placeholder, (1 === $blog_id) ? "" : "{$blog_id}_", $str);
+        }
+
+        /**
+         * Get the capability string.
+         * 
+         * @return string
+         */
+        public function get_capability_string() {
+            return $this->capability_string;
         }
 
     }

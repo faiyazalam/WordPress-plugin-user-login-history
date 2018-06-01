@@ -89,6 +89,8 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
             $blog_ids = $this->get_current_network_blog_ids();
 
             foreach ($blog_ids as $blog_id) {
+                $this->set_capability_string_by_blog_id($blog_id);
+               
                 $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
                 
                 
@@ -130,7 +132,7 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                         . " $blog_id as blog_id"
                         . " FROM $table  AS FaUserLogin"
                         . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                        . " AND UserMeta.meta_key REGEXP '^{$wpdb->prefix}([_0-9]*)capabilities$' )"
+                        . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
                         . " WHERE 1 ";
 
                 if ($where_query) {
@@ -176,6 +178,7 @@ $sql .= " )";
             $blog_ids = $this->get_current_network_blog_ids();
 
             foreach ($blog_ids as $blog_id) {
+                $this->set_capability_string_by_blog_id($blog_id);
                 $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
                 
                 
@@ -198,7 +201,7 @@ $sql .= " )";
                         . " COUNT(DISTINCT(FaUserLogin.id)) AS count"
                         . " FROM $table  AS FaUserLogin"
                         . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                        . " AND UserMeta.meta_key REGEXP '^wp([_0-9]*)capabilities$' )"
+                        . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
                         . " WHERE 1 ";
 
                 if ($where_query) {
