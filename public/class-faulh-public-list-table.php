@@ -629,14 +629,14 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     if (!(strtotime($item[$column_name]) > 0)) {
                         return $unknown_symbol;
                     }
-                    $time_login = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    $time_login = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
                     return $time_login ? $time_login : $unknown_symbol;
 
                 case 'time_logout':
                     if (empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
                         return $unknown_symbol;
                     }
-                    $time_logout = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    $time_logout = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
                     return $time_logout ? $time_logout : $unknown_symbol;
 
                 case 'ip_address':

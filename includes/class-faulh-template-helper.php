@@ -98,6 +98,9 @@ if (!class_exists('Faulh_Template_Helper')) {
                     $h .= " | <a href='" . $author_urls['paypal']['url'] . "' target='_blank'> " . $author_urls['paypal']['label'] . "</a>";
                 }
             }
+            
+   $h .= " | <a href='http://www.userloginhistory.com' target='_blank'>Plusgin Website</a>";
+
             $h .= "</div>";
 
             if (!empty($page)) {

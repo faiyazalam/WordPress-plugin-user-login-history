@@ -77,7 +77,7 @@ INDEX faulh_user_traker_index (session_token,user_id)
             dbDelta($sql);
 
             if (!empty($wpdb->last_error)) {
-                Faulh_Error_Handler::error_log("Error while creating or updatiing tables-" . $wpdb->last_error, __LINE__, __FILE__);
+                Faulh_Error_Handler::error_log("Error while creating or updating tables-" . $wpdb->last_error, __LINE__, __FILE__);
                 wp_die($wpdb->last_error);
             }
         }

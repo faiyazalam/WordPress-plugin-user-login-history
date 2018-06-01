@@ -110,12 +110,13 @@ Yes.
 * Added the column **Super Admin** - This is used only for multisite network.
 * Added **Hooks** to extend its functionality easily.
 * Deprecated the shortcode [user-login-history].
-* Date range validation on the filter form.
+* Date range validation on the filter forms.
+* Date and Time format of the admin listing table can be changed from the general settings.
 * Improved design of the listing tables.
 
 == Upgrade Notice ==
 
-= 1.* <= 1.7.0 =
+= 1.0 <= 1.7.0 =
 After upgrading, you have to do the following changes:
 1. Update your timezone from your profile edit page.
 1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]
