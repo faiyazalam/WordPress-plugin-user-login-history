@@ -196,7 +196,7 @@ if (!class_exists('Faulh')) {
             $this->loader->add_action('init', $User_Tracker, 'set_current_loggedin_blog_id');
             $this->loader->add_action('init', $User_Tracker, 'update_time_last_seen');
             $this->loader->add_action('set_logged_in_cookie', $User_Tracker, 'set_logged_in_cookie', 10, 6);
-            $this->loader->add_action('wp_login', $User_Tracker, 'user_login', 10, 2);
+            $this->loader->add_action('wp_login', $User_Tracker, 'user_login', 0, 2);
             $this->loader->add_action('wp_logout', $User_Tracker, 'user_logout');
             $this->loader->add_action('wp_login_failed', $User_Tracker, 'user_login_failed');
             $this->loader->add_filter('attach_session_information', $Session_Helper, 'attach_session_information', 10, 2);

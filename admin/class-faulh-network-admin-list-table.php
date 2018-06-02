@@ -13,7 +13,7 @@
 if (!class_exists('Faulh_Network_Admin_List_Table')) {
 
     class Faulh_Network_Admin_List_Table extends Faulh_Abstract_List_Table {
-        
+
         /**
          *
          * @var type 
@@ -35,7 +35,7 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                 'plural' => $plugin_name . '_admin_users', //plural name of the listed records
             );
             parent::__construct(wp_parse_args($args, $defaults), $plugin_name, $table_name, $table_timezone);
-            
+
             $this->is_plugin_active_for_network = is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH);
         }
 
@@ -63,11 +63,11 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                     '<input type="checkbox" name="bulk-delete[blog_id][%s][]" value="%s" />', $blog_id, $item['id']
             );
         }
-        
+
         private function is_table_exist($table) {
             global $wpdb;
             $query = $wpdb->prepare("SHOW TABLES LIKE %s", $wpdb->esc_like($table));
-            return $wpdb->get_var($query) == $table ;
+            return $wpdb->get_var($query) == $table;
         }
 
         /**
@@ -79,7 +79,7 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
          * @access   public
          * @return mixed
          */
-        public function get_rows($per_page = 20, $page_number = 1) {       
+        public function get_rows($per_page = 20, $page_number = 1) {
             global $wpdb;
             $where_query = $this->prepare_where_query();
             $get_values = array();
@@ -89,28 +89,25 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
             $blog_ids = $this->get_current_network_blog_ids();
 
             foreach ($blog_ids as $blog_id) {
-                $this->set_capability_string_by_blog_id($blog_id);
-               
-                $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
-                
-                
-             if(!$this->is_plugin_active_for_network)
-             {
-                  if(!$this->is_table_exist($table))
-                {
-                    continue;
+  
+$blog_prefix = $wpdb->get_blog_prefix($blog_id);
+                $table = $blog_prefix . $this->table_name;
+
+
+                if (!$this->is_plugin_active_for_network) {
+                    if (!$this->is_table_exist($table)) {
+                        continue;
+                    }
                 }
-        
-             }
-         
-               
+
+
 
                 if (0 < $i) {
                     $sql .= " UNION ALL";
                 }
 
                 $sql .= " ( SELECT"
-                        . " DISTINCT(FaUserLogin.id) as row_id, "
+                        . " FaUserLogin.id, "
                         . " FaUserLogin.user_id,"
                         . " FaUserLogin.username,"
                         . " FaUserLogin.time_login,"
@@ -132,13 +129,13 @@ if (!class_exists('Faulh_Network_Admin_List_Table')) {
                         . " $blog_id as blog_id"
                         . " FROM $table  AS FaUserLogin"
                         . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                        . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
+                        . " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
                         . " WHERE 1 ";
 
                 if ($where_query) {
                     $sql .= $where_query;
                 }
-$sql .= " )";
+                $sql .= " )";
                 $i++;
             }
 
@@ -146,13 +143,14 @@ $sql .= " )";
                 $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
                 $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
             } else {
-               $sql .= ' ORDER BY row_id DESC';
+                $sql .= ' ORDER BY id DESC';
             }
 
             if ($per_page > 0) {
                 $sql .= " LIMIT $per_page";
                 $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
             }
+           
             $result = $wpdb->get_results($sql, 'ARRAY_A');
 
             if ("" != $wpdb->last_error) {
@@ -178,19 +176,16 @@ $sql .= " )";
             $blog_ids = $this->get_current_network_blog_ids();
 
             foreach ($blog_ids as $blog_id) {
-                $this->set_capability_string_by_blog_id($blog_id);
-                $table = $wpdb->get_blog_prefix($blog_id) . $this->table_name;
-                
-                
-             if(!$this->is_plugin_active_for_network)
-             {
-                  if(!$this->is_table_exist($table))
-                {
-                    continue;
+               $blog_prefix = $wpdb->get_blog_prefix($blog_id);
+                $table = $blog_prefix . $this->table_name;
+
+
+                if (!$this->is_plugin_active_for_network) {
+                    if (!$this->is_table_exist($table)) {
+                        continue;
+                    }
                 }
-        
-             }
-                
+
 
                 if (0 < $i) {
                     $sql .= " UNION ALL";
@@ -198,19 +193,20 @@ $sql .= " )";
 
 
                 $sql .= " ( SELECT"
-                        . " COUNT(DISTINCT(FaUserLogin.id)) AS count"
+                        . " COUNT(FaUserLogin.id) AS count"
                         . " FROM $table  AS FaUserLogin"
                         . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                        . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
+                        . " AND UserMeta.meta_key LIKE '".$blog_prefix."capabilities' )"
                         . " WHERE 1 ";
 
                 if ($where_query) {
                     $sql .= $where_query;
                 }
-                 $sql .= " ) ";
+                $sql .= " ) ";
                 $i++;
             }
             $sql_count = "SELECT SUM(count) as total FROM ($sql) AS FaUserLoginCount";
+            
             return $wpdb->get_var($sql_count);
         }
 
@@ -222,12 +218,25 @@ $sql .= " )";
          * @return string
          */
         function column_username($item) {
-            $blog_id = !empty($item['blog_id']) ? $item['blog_id'] : 0;
+
+            if(empty($item['user_id']))
+            {
+                return  esc_html($item['username']);
+            }
+            
+              $edit_link = get_edit_user_link($item['user_id']);
+              
+            $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . esc_html($item['username']) . '</strong>';
+
+            if (empty($item['blog_id'])) {
+                return $title;
+            }
             $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
-            $title = $item['user_id'] ? "<a href='" . get_edit_user_link($item['user_id']) . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . $item['username'] . '</strong>';
             $actions = array(
-                'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_network_admin_listing_table_delete_single_row', absint($blog_id), absint($item['id']), $delete_nonce),
+                'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_network_admin_listing_table_delete_single_row', absint($item['blog_id']), absint($item['id']), $delete_nonce),
             );
+
+
             return $title . $this->row_actions($actions);
         }
 

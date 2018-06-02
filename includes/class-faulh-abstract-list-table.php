@@ -48,11 +48,18 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
         private $table_timezone;
 
         /**
-         * Holds the capabilities string to be used in where clause.
+         * Holds the symbol of unknown.
          *
          * @access   private
          */
-        private $capability_string;
+        public $unknown_symbol = '----';
+        
+        /**
+         * Holds the string of unknown.
+         *
+         * @access   private
+         */
+        public $unknown_string = 'unknown';
 
         /**
          * Initialize the class and set its properties.
@@ -135,21 +142,12 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
             foreach ($fields as $field) {
                 if (!empty($_GET[$field])) {
-                    $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql($_GET[$field]) . "'";
-                }
-            }
-
-            if (!empty($_GET['login_status'])) {
-
-                if ("unknown" == $_GET['login_status']) {
-                    $where_query .= " AND `FaUserLogin`.`login_status` = '' ";
-                } else {
-                    $where_query .= " AND `FaUserLogin`.`login_status` = '" . esc_sql($_GET['login_status']) . "'";
+                    $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql(trim($_GET[$field])) . "'";
                 }
             }
 
             if (!empty($_GET['role'])) {
-                if ('superadmin' == $_GET['role']) {
+                if (is_network_admin() && 'superadmin' == $_GET['role']) {
                     $site_admins = get_super_admins();
                     $site_admins_str = implode("', '", $site_admins);
                     $where_query .= " AND `FaUserLogin`.`username` IN ('$site_admins_str')";
@@ -159,7 +157,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             }
 
             if (!empty($_GET['old_role'])) {
-                if ('superadmin' == $_GET['old_role']) {
+                if (is_network_admin() && 'superadmin' == $_GET['old_role']) {
                     $where_query .= " AND `FaUserLogin`.`is_super_admin` LIKE '1'";
                 } else {
                     $where_query .= " AND `FaUserLogin`.`old_role` LIKE '%" . esc_sql($_GET['old_role']) . "%'";
@@ -185,7 +183,18 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 }
             }
 
-            if (isset($_GET['is_super_admin'])) {
+            
+                          if (!empty($_GET['login_status'])) {
+
+                if ("unknown" == $_GET['login_status']) {
+                    $where_query .= " AND `FaUserLogin`.`login_status` = '' ";
+                } else {
+                    $where_query .= " AND `FaUserLogin`.`login_status` = '" . esc_sql($_GET['login_status']) . "'";
+                }
+            }
+            
+            
+            if (is_network_admin() && isset($_GET['is_super_admin'])) {
                 $is_super_admin = $_GET['is_super_admin'];
 
                 if ('yes' == $is_super_admin) {
@@ -193,7 +202,10 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 } elseif ('no' == $is_super_admin) {
                     $where_query .= " AND `FaUserLogin`.`is_super_admin` = '0'";
                 }
-            }
+            }  
+            
+            
+                        
 
             $where_query = apply_filters('faulh_admin_prepare_where_query', $where_query);
             return $where_query;
@@ -225,16 +237,16 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
          */
         public function column_default($item, $column_name) {
             $timezone = $this->get_table_timezone();
-            $unknown_symbol = '—';
-            $unknown = 'unknown';
+         
+           
             $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
-            $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
+            $country_code = in_array(strtolower($item['country_code']), array("", $this->unknown_string)) ? $this->unknown_string : $item['country_code'];
 
             switch ($column_name) {
 
                 case 'user_id':
                     if (empty($item[$column_name])) {
-                        return $unknown_symbol;
+                        return $this->unknown_symbol;
                     }
                     return (int) $item[$column_name];
 
@@ -243,7 +255,7 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                 case 'role':
                     if (empty($item['user_id'])) {
-                        return $unknown_symbol;
+                        return $this->unknown_symbol;
                     }
 
                     if (is_network_admin() && !empty($item['blog_id'])) {
@@ -254,14 +266,14 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                         $user_data = get_userdata($item['user_id']);
                     }
 
-                    return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $unknown_symbol;
+                    return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $this->unknown_symbol;
 
                 case 'old_role':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_symbol;
 
                 case 'browser':
-                    if (in_array(strtolower($item[$column_name]), array("", $unknown))) {
-                        return $unknown;
+                    if (in_array(strtolower($item[$column_name]), array("", $this->unknown_string))) {
+                        return $this->unknown_string;
                     }
 
                     if (empty($item['browser_version'])) {
@@ -272,47 +284,47 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
 
                 case 'time_login':
                     if (!(strtotime($item[$column_name]) > 0)) {
-                        return $unknown_symbol;
+                        return $this->unknown_symbol;
                     }
                     $time_login = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                    return $time_login ? $time_login : $unknown_symbol;
+                    return $time_login ? $time_login : $this->unknown_symbol;
 
                 case 'time_logout':
                     if (empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
-                        return $unknown_symbol;
+                        return $this->unknown_symbol;
                     }
                     $time_logout = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                    return $time_logout ? $time_logout : $unknown_symbol;
+                    return $time_logout ? $time_logout : $this->unknown_symbol;
                 case 'ip_address':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_string;
 
                 case 'timezone':
-                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name]);
+                    return in_array(strtolower($item[$column_name]), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item[$column_name]);
 
 
                 case 'country_name':
-                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
+                    return in_array(strtolower($item[$column_name]), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item[$column_name] . "(" . $country_code . ")");
 
                 case 'country_name_csv':
-                    return in_array(strtolower($item['country_name']), array("", $unknown)) ? $unknown : esc_html($item['country_name']);
+                    return in_array(strtolower($item['country_name']), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item['country_name']);
 
                 case 'country_code':
                     return esc_html($country_code);
 
                 case 'operating_system':
-                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name]);
+                    return in_array(strtolower($item[$column_name]), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item[$column_name]);
 
                 case 'time_last_seen':
 
                     $time_last_seen_unix = strtotime($item[$column_name]);
                     if (empty($item['user_id']) || !($time_last_seen_unix > 0)) {
-                        return $unknown_symbol;
+                        return $this->unknown_symbol;
                     }
 
                     $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
 
                     if (!$time_last_seen) {
-                        return $unknown_symbol;
+                        return $this->unknown_symbol;
                     }
 
                     $human_time_diff = human_time_diff($time_last_seen_unix);
@@ -334,17 +346,17 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                     return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
                 case 'user_agent':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_symbol;
 
                 case 'duration':
                     return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
 
                 case 'login_status':
                     $login_statuses = Faulh_Template_Helper::login_statuses();
-                    return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
+                    return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->unknown_string;
 
                 case 'blog_id':
-                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $unknown_symbol;
+                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->unknown_symbol;
 
                 case 'is_super_admin':
                     $super_admin_statuses = Faulh_Template_Helper::super_admin_statuses();
@@ -467,7 +479,6 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
         public function export_to_CSV() {
             global $current_user;
 
-            $unknown_symbol = '-';
             $timezone = $this->get_table_timezone();
             $data = $this->get_rows(0); // pass zero to get all the records
             //date string to suffix the file name: month - day - year - hour - minute
@@ -487,15 +498,15 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
             foreach ($data as $row) {
                 $user_id = !empty($row['user_id']) ? $row['user_id'] : FALSE;
                 if (!$user_id) {
-                    $time_last_seen_str = $time_logout_str = $current_role = $old_role = $unknown_symbol;
+                    $time_last_seen_str = $time_logout_str = $current_role = $old_role = $this->unknown_symbol;
                 } else {
-                    $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $unknown_symbol;
-                    $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $unknown_symbol;
+                    $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_last_seen'], '', $timezone)) : $this->unknown_symbol;
+                    $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($row['time_logout'], '', $timezone)) : $this->unknown_symbol;
                     $current_role = $this->column_default($row, 'role');
                     $old_role = $this->column_default($row, 'old_role');
                 }
 
-                $record[__('User ID', 'faulh')] = $user_id ? $user_id : $unknown_symbol;
+                $record[__('User ID', 'faulh')] = $user_id ? $user_id : $this->unknown_symbol;
                 $record[__('Username', 'faulh')] = $this->column_default($row, 'username_csv');
                 $record[__('Current Role', 'faulh')] = $current_role;
                 $record[__('Old Role', 'faulh')] = $old_role;
@@ -548,33 +559,6 @@ if (!class_exists('Faulh_Abstract_List_Table')) {
                 return $status;
             }
             return FALSE;
-        }
-
-        /**
-         * Set capability string by blog id.
-         * 
-         * @global object $wpdb
-         * @param int $blog_id Default is current blog id.
-         */
-        public function set_capability_string_by_blog_id($blog_id = null) {
-            global $wpdb;
-
-            if (is_null($blog_id)) {
-                $blog_id = get_current_blog_id();
-            }
-
-            $placeholder = "##";
-            $str = $wpdb->prefix . $placeholder . "capabilities";
-            $this->capability_string = str_replace($placeholder, (1 === $blog_id) ? "" : "{$blog_id}_", $str);
-        }
-
-        /**
-         * Get the capability string.
-         * 
-         * @return string
-         */
-        public function get_capability_string() {
-            return $this->capability_string;
         }
 
     }

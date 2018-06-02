@@ -2,6 +2,9 @@
 /**
  * This is used to create listing table.
  * 
+ * Due to some technical problems, I have created a new class for public listing.
+ * In future version, I have to extend this class with an abstract class.
+ * 
  * @link       https://github.com/faiyazalam
  *
  * @package    User_Login_History
@@ -112,7 +115,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
          * @var      string    $table_time_format
          */
         private $table_time_format;
-        
+
         /**
          * Holds the capabilities string to be used in where clause.
          *
@@ -224,6 +227,7 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $fields = array(
                 'user_id',
                 'username',
+                'old_role',
                 'browser',
                 'ip_address',
                 'timezone',
@@ -234,27 +238,12 @@ if (!class_exists('Faulh_Public_List_Table')) {
 
             foreach ($fields as $field) {
                 if (!empty($_GET[$field])) {
-                    $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql($_GET[$field]) . "'";
+                    $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql(trim($_GET[$field])) . "'";
                 }
             }
 
             if (!empty($_GET['role'])) {
-
-                if ('superadmin' == $_GET['role']) {
-                    $site_admins = get_super_admins();
-                    $site_admins_str = implode("', '", $site_admins);
-                    $where_query .= " AND `FaUserLogin`.`username` IN ('$site_admins_str')";
-                } else {
-                    $where_query .= " AND `UserMeta`.`meta_value` LIKE '%" . esc_sql($_GET['role']) . "%'";
-                }
-            }
-
-            if (!empty($_GET['old_role'])) {
-                if ('superadmin' == $_GET['old_role']) {
-                    $where_query .= " AND `FaUserLogin`.`is_super_admin` LIKE '1'";
-                } else {
-                    $where_query .= " AND `FaUserLogin`.`old_role` LIKE '%" . esc_sql($_GET['old_role']) . "%'";
-                }
+                $where_query .= " AND `UserMeta`.`meta_value` LIKE '%" . esc_sql($_GET['role']) . "%'";
             }
 
             if (!empty($_GET['date_type'])) {
@@ -292,11 +281,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
         public function get_rows() {
             global $wpdb;
             $sql = " SELECT"
-                    . " DISTINCT(FaUserLogin.id) as row_id, FaUserLogin.*, "
+                    . " FaUserLogin.*, "
                     . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
+                    . " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();
@@ -334,10 +323,10 @@ if (!class_exists('Faulh_Public_List_Table')) {
         public function record_count() {
             global $wpdb;
             $sql = " SELECT"
-                    . " COUNT(DISTINCT(FaUserLogin.id)) as total "
+                    . " COUNT(FaUserLogin.id) as total "
                     . " FROM " . $this->table . "  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key LIKE '".$this->get_capability_string()."' )"
+                    . " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
                     . " WHERE 1 ";
 
             $where_query = $this->prepare_where_query();
@@ -488,11 +477,11 @@ if (!class_exists('Faulh_Public_List_Table')) {
             <table>
                 <thead>
                     <tr>
-                    <?php $this->print_column_headers(); ?>
+                        <?php $this->print_column_headers(); ?>
                     </tr>
                 </thead>
                 <tbody>
-            <?php $this->display_rows_or_placeholder(); ?>
+                    <?php $this->display_rows_or_placeholder(); ?>
                 </tbody>
             </table>
             <?php
@@ -601,36 +590,47 @@ if (!class_exists('Faulh_Public_List_Table')) {
             $unknown = 'unknown';
             $unknown_symbol = '—';
             $new_column_data = apply_filters('manage_faulh_public_custom_column', '', $item, $column_name);
+            $country_code = in_array(strtolower($item['country_code']), array("", $unknown)) ? $unknown : $item['country_code'];
+
+
             switch ($column_name) {
 
                 case 'user_id':
-                    if (!$item[$column_name]) {
-                        return $unknown;
+                    if (empty($item[$column_name])) {
+                        return $unknown_symbol;
                     }
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return (int) $item[$column_name];
 
                 case 'username':
-                    if (!$item['user_id']) {
+                    if (empty($item['user_id'])) {
                         return esc_html($item[$column_name]);
                     }
                     $profile_link = get_edit_user_link($item['user_id']);
-                    if ($profile_link) {
-                        return "<a href= '$profile_link'>$item[$column_name]</a>";
-                    }
-                    return esc_html($item[$column_name]);
+
+                    return $profile_link ? "<a href= '$profile_link'>" . esc_html($item[$column_name]) . "</a>" : esc_html($item[$column_name]);
+
+
 
                 case 'role':
-                    if (!$item['user_id']) {
-                        return $unknown;
+                    if (empty($item['user_id'])) {
+                        return $unknown_symbol;
                     }
                     $user_data = get_userdata($item['user_id']);
-                    return !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown;
+                    return !empty($user_data->roles) ? implode(',', $user_data->roles) : $unknown_symbol;
 
                 case 'old_role':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
 
                 case 'browser':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    if (in_array(strtolower($item[$column_name]), array("", $unknown))) {
+                        return $unknown;
+                    }
+
+                    if (empty($item['browser_version'])) {
+                        return esc_html($item[$column_name]);
+                    }
+
+                    return esc_html($item[$column_name] . " (" . $item['browser_version'] . ")");
 
                 case 'time_login':
                     if (!(strtotime($item[$column_name]) > 0)) {
@@ -650,39 +650,40 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
 
                 case 'timezone':
-                    return $item[$column_name] ? esc_html($item[$column_name]) : $unknown;
+                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name]);
 
                 case 'operating_system':
-                    return $item[$column_name] ? $item[$column_name] : $unknown;
+                    return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name]);
 
 
                 case 'country_name':
-                    $country_code = empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : $item['country_code'];
                     return in_array(strtolower($item[$column_name]), array("", $unknown)) ? $unknown : esc_html($item[$column_name] . "(" . $country_code . ")");
 
                 case 'country_code':
-                    return empty($item['country_code']) || $unknown == strtolower($item['country_code']) ? $unknown : esc_html($item['country_code']);
+                    return esc_html($country_code);
 
                 case 'time_last_seen':
-                    if (!$item['user_id']) {
-                        return $unknown;
+                    $time_last_seen_unix = strtotime($item[$column_name]);
+                    if (empty($item['user_id']) || !($time_last_seen_unix > 0)) {
+                        return $unknown_symbol;
                     }
+
                     $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone), $date_time_format);
                     if (!$time_last_seen) {
                         return $unknown_symbol;
                     }
-                    $human_time_diff = human_time_diff(strtotime($item[$column_name]));
+                    $human_time_diff = human_time_diff($time_last_seen_unix);
                     return "<div title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
                 case 'duration':
-                    return human_time_diff(strtotime($item['time_login']), strtotime(Faulh_Date_Time_Helper::get_last_time($item['time_logout'], $item['time_last_seen'])));
+                    return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
 
                 case 'login_status':
                     $login_statuses = Faulh_Template_Helper::login_statuses();
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
 
                 case 'user_agent':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown;
+                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $unknown_symbol;
 
                 default:
                     if ($new_column_data) {
@@ -690,33 +691,6 @@ if (!class_exists('Faulh_Public_List_Table')) {
                     }
                     return print_r($item, true); //Show the whole array for troubleshooting purposes
             }
-        }
-        
-        /**
-         * Set capability string by blog id.
-         * 
-         * @global object $wpdb
-         * @param int $blog_id Default is current blog id.
-         */
-        public function set_capability_string_by_blog_id($blog_id = null) {
-            global $wpdb;
-
-            if (is_null($blog_id)) {
-                $blog_id = get_current_blog_id();
-            }
-
-            $placeholder = "##";
-            $str = $wpdb->prefix . $placeholder . "capabilities";
-            $this->capability_string = str_replace($placeholder, (1 === $blog_id) ? "" : "{$blog_id}_", $str);
-        }
-
-        /**
-         * Get the capability string.
-         * 
-         * @return string
-         */
-        public function get_capability_string() {
-            return $this->capability_string;
         }
 
     }

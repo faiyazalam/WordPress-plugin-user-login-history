@@ -81,23 +81,19 @@ if (!class_exists('Faulh_Date_Time_Helper')) {
             //timezone is compared with 'unknown' for backward compatibility.
             $input_timezone = !empty($input_timezone) && "unknown" != strtolower($input_timezone) ? $input_timezone : self::DEFAULT_TIMEZONE;
             $output_timezone = !empty($output_timezone) && "unknown" != strtolower($output_timezone) ? $output_timezone : self::DEFAULT_TIMEZONE;
-            Faulh_Error_Handler::error_log("input timezone: $input_timezone output_timezone: $output_timezone input_datetime: $input_datetime", __LINE__, __FILE__);
+           
+            try {
             $date = new DateTime($input_datetime, new DateTimeZone($input_timezone));
             $date->setTimezone(new DateTimeZone($output_timezone));
             return $date->format(self::DEFAULT_FORMAT);
+            } catch (Exception $exc) {
+               Faulh_Error_Handler::error_log("Error while converting timezone. Error message: ".$exc->getMessage().", input timezone: $input_timezone, output_timezone: $output_timezone input_datetime: $input_datetime", __LINE__, __FILE__);
+               return FALSE;
+            }
+
+           
         }
 
-        /**
-         * Compares the two input date-time and returns the latest one.
-         * @param string $time_one
-         * @param string $time_two
-         * @return string The latest input date-time.
-         */
-        static public function get_last_time($time_one, $time_two) {
-            $time_one_str = strtotime($time_one);
-            $time_two_str = strtotime($time_two);
-            return $time_one_str > $time_two_str ? $time_one : $time_two;
-        }
 
     }
 

@@ -91,10 +91,21 @@ if (!class_exists('Faulh_User_Tracker')) {
          * @access private
          */
         private function is_blocked_user_on_current_blog($user_id) {
-            if (is_multisite() && !is_user_member_of_blog($user_id) && !is_super_admin($user_id)) {
+            if(!is_multisite())
+            {
+                return FALSE;
+            }
+            
+            if(is_super_admin($user_id))
+            {
+                return FALSE; 
+            }
+            
+            if (!is_user_member_of_blog($user_id)) {
                 $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
                 if ($Network_Admin_Setting->get_settings('block_user')) {
                     $this->login_status = self::LOGIN_STATUS_BLOCK;
+                    $this->current_loggedin_blog_id = get_current_blog_id();
                     wp_logout();
                     wp_die($Network_Admin_Setting->get_settings('block_user_message'));
                 }
@@ -233,13 +244,13 @@ if (!class_exists('Faulh_User_Tracker')) {
             if (!$session_token) {
                 return;
             }
-
+           
             global $wpdb;
             $time_logout = Faulh_Date_Time_Helper::get_current_date_time();
             $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
             $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . FAULH_TABLE_NAME;
-            $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' and login_status <> '" . $login_status . "'";
-
+            $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' ";
+            
             $wpdb->query($sql);
 
             if ($wpdb->last_error) {
