@@ -6,7 +6,7 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
 Requires at least: 4.9.0
 Requires PHP: 5.5
-Tested up to: 4.9.5
+Tested up to: 4.9.6
 Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -95,23 +95,24 @@ Yes.
 
 == Screenshots ==
 
-1. User List with login details for backend.
-2. Screen Options
-3. Settings - Backend Options
-4. Settings - Frontend Options
-5. Shortcode - User List with login details for frontend.
+1. User login list table for backend
+2. Screen options to customize the user login list table
+3. Advanced search form to filter the records of user logins
+4. Settings - Basics settings
+5. Settings - Advanced settings
+6. Settings - Preferred timezone setting on user profile page
+7. Shortcode - User login list table for frontend
 
 == Changelog ==
 
 = 1.7.0(release date) =
 * Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
 * Added the column **Login Status** - This is used to check whether the user is logged in, logged out, failed login or blocked login.
-* Added the option **Last Seen Time** to filter the results.
+* Added the option **Last Seen Time** in the filter forms.
 * Added the column **Super Admin** - This is used only for multisite network.
-* Added **Hooks** to extend its functionality easily.
 * Deprecated the shortcode [user-login-history].
 * Date range validation on the filter forms.
-* Date and Time format of the admin listing table can be changed from the general settings.
+* Date and Time format of the user login listing table can be changed from the general settings.
 * Improved design of the listing tables.
 
 == Upgrade Notice ==

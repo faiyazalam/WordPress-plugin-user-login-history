@@ -221,16 +221,20 @@ $blog_prefix = $wpdb->get_blog_prefix($blog_id);
 
             if(empty($item['user_id']))
             {
-                return  esc_html($item['username']);
+                $title =  esc_html($item['username']);
             }
-            
-              $edit_link = get_edit_user_link($item['user_id']);
+            else{
+               
+                $edit_link = get_edit_user_link($item['user_id']);
               
             $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . esc_html($item['username']) . '</strong>';
 
             if (empty($item['blog_id'])) {
                 return $title;
             }
+            
+            }
+              
             $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
             $actions = array(
                 'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_network_admin_listing_table_delete_single_row', absint($item['blog_id']), absint($item['id']), $delete_nonce),
