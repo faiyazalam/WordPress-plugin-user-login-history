@@ -14,7 +14,7 @@
  * @wordpress-plugin
  * Plugin Name:       User Login History
  * Plugin URI:        www.userloginhistory.com
- * Description:       Easily tracks user login with a set of multiple attributes like ip, login/logout/last-seen time, country, username, user role, browser, OS etc.
+ * Description:       Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
  * Version:           1.7.0
  * Author:            Er Faiyaz Alam
  * Author URI:        https://github.com/faiyazalam
