@@ -1,6 +1,7 @@
 <?php
 
 namespace User_Login_History\Inc\Common\Helpers;
+use User_Login_History\Inc\Admin\LoginTracker;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -144,13 +145,13 @@ namespace User_Login_History\Inc\Common\Helpers;
          */
         static public function login_statuses() {
             $types = array(
-                Faulh_User_Tracker::LOGIN_STATUS_LOGIN => esc_html__("Logged In", "faulh"),
-                Faulh_User_Tracker::LOGIN_STATUS_LOGOUT => esc_html__("Logged Out", "faulh"),
-                Faulh_User_Tracker::LOGIN_STATUS_FAIL => esc_html__("Failed", "faulh"),
+                LoginTracker::LOGIN_STATUS_LOGIN => esc_html__("Logged In", "faulh"),
+                LoginTracker::LOGIN_STATUS_LOGOUT => esc_html__("Logged Out", "faulh"),
+                LoginTracker::LOGIN_STATUS_FAIL => esc_html__("Failed", "faulh"),
             );
 
             if (is_multisite()) {
-                $types[Faulh_User_Tracker::LOGIN_STATUS_BLOCK] = esc_html__("Blocked", "faulh");
+                $types[LoginTracker::LOGIN_STATUS_BLOCK] = esc_html__("Blocked", "faulh");
             }
             return $types;
         }

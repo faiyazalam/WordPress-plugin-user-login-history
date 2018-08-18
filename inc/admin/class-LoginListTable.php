@@ -3,8 +3,9 @@
 namespace User_Login_History\Inc\Admin;
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
-use User_Login_History\Inc\Common\Helpers\Template;
+use User_Login_History\Inc\Common\Helpers\TemplateHelper;
 use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
+use User_Login_History\Inc\Admin\LoginTracker;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -20,13 +21,14 @@ use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
 final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\ListTableAbstract {
 
     private $plugin_table;
-
+    
+    
     public function __construct($plugin_name, $version, $plugin_text_domain  ) {
             $args = array(
                 'singular' => $plugin_name . '_user_login', //singular name of the listed records
                 'plural' => $plugin_name . '_user_logins', //plural name of the listed records
             );
-            parent::__construct($plugin_name, $version, $args);
+            parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
             $this->plugin_table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
         }
         
@@ -109,21 +111,35 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
                 'ip_address' => esc_html__('IP Address', $this->plugin_text_domain),
                 'timezone' => esc_html__('Timezone', $this->plugin_text_domain),
                 'country_name' => esc_html__('Country', $this->plugin_text_domain),
+                'user_agent' => esc_html__('User Agent', $this->plugin_text_domain),
+                'duration' => esc_html__('Duration', $this->plugin_text_domain),
+                'time_last_seen' => esc_html__('Last Seen', $this->plugin_text_domain),
+                'time_login' => esc_html__('Login', $this->plugin_text_domain),
+                'time_logout' => esc_html__('Logout', $this->plugin_text_domain),
+                'login_status' => esc_html__('Login Status', $this->plugin_text_domain),
             );
-
+          
+          
             return $columns;
         }
         
         
             public function get_sortable_columns() {
-            $columns = array(
+              $columns = array(
                 'user_id' => array('user_id', true),
                 'username' => array('username', true),
                 'old_role' => array('old_role', true),
-                'browser' => array('browser', true),
-                'operating_system' => array('operating_system', true),
-                'timezone' => array('timezone', true),
-                'country_name' => array('country_name', true),
+                'time_login' => array('time_login', false),
+                'time_logout' => array('time_logout', false),
+                'browser' => array('browser', false),
+                'operating_system' => array('operating_system', false),
+                'country_name' => array('country_name', false),
+                'time_last_seen' => array('time_last_seen', false),
+                'timezone' => array('timezone', false),
+                'user_agent' => array('user_agent', false),
+                'login_status' => array('login_status', false),
+                'is_super_admin' => array('is_super_admin', false),
+                'duration' => array('duration', false),
             );
            
             return $columns;
@@ -181,14 +197,14 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
                     if (!(strtotime($item[$column_name]) > 0)) {
                         return $this->unknown_symbol;
                     }
-                    $time_login = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    $time_login = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
                     return $time_login ? $time_login : $this->unknown_symbol;
 
                 case 'time_logout':
                     if (empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
                         return $this->unknown_symbol;
                     }
-                    $time_logout = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    $time_logout = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
                     return $time_logout ? $time_logout : $this->unknown_symbol;
                 case 'ip_address':
                     return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_string;
@@ -215,8 +231,8 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
                     if (empty($item['user_id']) || !($time_last_seen_unix > 0)) {
                         return $this->unknown_symbol;
                     }
-
-                    $time_last_seen = Faulh_Date_Time_Helper::convert_format(Faulh_Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                    $time_last_seen = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
+                      
 
                     if (!$time_last_seen) {
                         return $this->unknown_symbol;
@@ -225,11 +241,11 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
                     $human_time_diff = human_time_diff($time_last_seen_unix);
                     $is_online_str = 'offline';
 
-                    if (in_array($item['login_status'], array("", Faulh_User_Tracker::LOGIN_STATUS_LOGIN))) {
+                    if (in_array($item['login_status'], array("", LoginTracker::LOGIN_STATUS_LOGIN))) {
                         $minutes = ((time() - $time_last_seen_unix) / 60);
                         $settings = get_option($this->plugin_name . "_basics");
-                        $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
-                        $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
+                        $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
+                        $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
                         if ($minutes <= $minute_online) {
                             $is_online_str = 'online';
                         } elseif ($minutes <= $minute_idle) {
@@ -247,14 +263,14 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
                     return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
 
                 case 'login_status':
-                    $login_statuses = Faulh_Template_Helper::login_statuses();
+                    $login_statuses = TemplateHelper::login_statuses();
                     return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->unknown_string;
 
                 case 'blog_id':
                     return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->unknown_symbol;
 
                 case 'is_super_admin':
-                    $super_admin_statuses = Faulh_Template_Helper::super_admin_statuses();
+                    $super_admin_statuses = TemplateHelper::super_admin_statuses();
                     return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
 
                 default:

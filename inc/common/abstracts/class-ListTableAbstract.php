@@ -47,8 +47,11 @@ abstract class ListTableAbstract extends \WP_List_Table {
 	 */
 	protected $plugin_text_domain;
         
-	public function __construct($plugin_name, $version, $args = array()) {
+	public function __construct($plugin_name, $version,$plugin_text_domain, $args = array()) {
             parent::__construct($args);
+            $this->plugin_name = $plugin_name;
+            $this->version = $version;
+            $this->plugin_text_domain = $plugin_text_domain;
         }
         
                 /**
