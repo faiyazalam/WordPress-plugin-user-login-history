@@ -3,9 +3,8 @@
 namespace User_Login_History\Inc\Admin;
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
-use User_Login_History\Inc\Common\Helpers\TemplateHelper;
-use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
-use User_Login_History\Inc\Admin\LoginTracker;
+
+
 
 /**
  * The admin-specific functionality of the plugin.
@@ -146,140 +145,7 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
         }
         
         
-          public function column_default($item, $column_name) {
-            $timezone = $this->get_table_timezone();
-         
-           
-            $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
-            $country_code = in_array(strtolower($item['country_code']), array("", $this->unknown_string)) ? $this->unknown_string : $item['country_code'];
-
-            switch ($column_name) {
-
-                case 'user_id':
-                    if (empty($item[$column_name])) {
-                        return $this->unknown_symbol;
-                    }
-                    return (int) $item[$column_name];
-
-                case 'username_csv':
-                    return $item['username'];
-
-                case 'role':
-                    if (empty($item['user_id'])) {
-                        return $this->unknown_symbol;
-                    }
-
-                    if (is_network_admin() && !empty($item['blog_id'])) {
-                        switch_to_blog($item['blog_id']);
-                        $user_data = get_userdata($item['user_id']);
-                        restore_current_blog();
-                    } else {
-                        $user_data = get_userdata($item['user_id']);
-                    }
-
-                    return !empty($user_data->roles) ? esc_html(implode(',', $user_data->roles)) : $this->unknown_symbol;
-
-                case 'old_role':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_symbol;
-
-                case 'browser':
-                    if (in_array(strtolower($item[$column_name]), array("", $this->unknown_string))) {
-                        return $this->unknown_string;
-                    }
-
-                    if (empty($item['browser_version'])) {
-                        return esc_html($item[$column_name]);
-                    }
-
-                    return esc_html($item[$column_name] . " (" . $item['browser_version'] . ")");
-
-                case 'time_login':
-                    if (!(strtotime($item[$column_name]) > 0)) {
-                        return $this->unknown_symbol;
-                    }
-                    $time_login = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
-                    return $time_login ? $time_login : $this->unknown_symbol;
-
-                case 'time_logout':
-                    if (empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
-                        return $this->unknown_symbol;
-                    }
-                    $time_logout = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
-                    return $time_logout ? $time_logout : $this->unknown_symbol;
-                case 'ip_address':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_string;
-
-                case 'timezone':
-                    return in_array(strtolower($item[$column_name]), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item[$column_name]);
-
-
-                case 'country_name':
-                    return in_array(strtolower($item[$column_name]), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item[$column_name] . "(" . $country_code . ")");
-
-                case 'country_name_csv':
-                    return in_array(strtolower($item['country_name']), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item['country_name']);
-
-                case 'country_code':
-                    return esc_html($country_code);
-
-                case 'operating_system':
-                    return in_array(strtolower($item[$column_name]), array("", $this->unknown_string)) ? $this->unknown_string : esc_html($item[$column_name]);
-
-                case 'time_last_seen':
-
-                    $time_last_seen_unix = strtotime($item[$column_name]);
-                    if (empty($item['user_id']) || !($time_last_seen_unix > 0)) {
-                        return $this->unknown_symbol;
-                    }
-                    $time_last_seen = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
-                      
-
-                    if (!$time_last_seen) {
-                        return $this->unknown_symbol;
-                    }
-
-                    $human_time_diff = human_time_diff($time_last_seen_unix);
-                    $is_online_str = 'offline';
-
-                    if (in_array($item['login_status'], array("", LoginTracker::LOGIN_STATUS_LOGIN))) {
-                        $minutes = ((time() - $time_last_seen_unix) / 60);
-                        $settings = get_option($this->plugin_name . "_basics");
-                        $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-                        $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
-                        if ($minutes <= $minute_online) {
-                            $is_online_str = 'online';
-                        } elseif ($minutes <= $minute_idle) {
-                            $is_online_str = 'idle';
-                        }
-                    }
-
-
-                    return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
-
-                case 'user_agent':
-                    return !empty($item[$column_name]) ? esc_html($item[$column_name]) : $this->unknown_symbol;
-
-                case 'duration':
-                    return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
-
-                case 'login_status':
-                    $login_statuses = TemplateHelper::login_statuses();
-                    return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->unknown_string;
-
-                case 'blog_id':
-                    return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->unknown_symbol;
-
-                case 'is_super_admin':
-                    $super_admin_statuses = TemplateHelper::super_admin_statuses();
-                    return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
-
-                default:
-                    if ($new_column_data) {
-                        return $new_column_data;
-                    }
-                    return print_r($item, true); //Show the whole array for troubleshooting purposes
-            }
-        }
+      
         
         
         /**

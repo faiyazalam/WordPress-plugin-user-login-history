@@ -22,6 +22,7 @@ class ValidationHelper{
      * @return type
      */
     static public function isEmpty($value = '') {
+        $value = trim($value);
         return (empty($value) || "unknown" == strtolower($value)) ? TRUE : FALSE;
     }
 }
