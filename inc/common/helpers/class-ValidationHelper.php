@@ -13,16 +13,20 @@ namespace User_Login_History\Inc\Common\Helpers;
  *
  * @author    Er Faiyaz Alam
  */
-
-class ValidationHelper{
+class ValidationHelper {
 
     /**
-     * For backward compatibility, we use this method.
+     * For backward compatibility, we use this method isEmptyString.
      * @param type $value
      * @return type
      */
     static public function isEmpty($value = '') {
-        $value = trim($value);
-        return (empty($value) || "unknown" == strtolower($value)) ? TRUE : FALSE;
+        if (is_string($value)) {
+            $value = trim($value);
+            return (empty($value) || "unknown" == strtolower($value));
+        }
+
+        return empty($value);
     }
+
 }

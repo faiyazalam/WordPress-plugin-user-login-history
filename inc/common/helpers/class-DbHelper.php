@@ -13,63 +13,94 @@ namespace User_Login_History\Inc\Common\Helpers;
  *
  * @author    Er Faiyaz Alam
  */
-
 class DbHelper {
-        
-    static public function insert($table ='', $data = array()) {
-        if(!$table || !$data)
-        {
+
+    static public function insert($table = '', $data = array()) {
+        if (!$table || !$data) {
             return FALSE;
         }
-          global $wpdb;
-          
-          $wpdb->insert($wpdb->prefix.$table, $data);
+        global $wpdb;
 
-            if ($wpdb->last_error || !$wpdb->insert_id) {
-                ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
-                return FALSE;
-            }
-            return $wpdb->insert_id;
+        $wpdb->insert($wpdb->prefix . $table, $data);
 
-        
-    }       
+        if ($wpdb->last_error || !$wpdb->insert_id) {
+            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            return FALSE;
+        }
+        return $wpdb->insert_id;
+    }
+
+    static public function get_results($sql = '', $type = 'ARRAY_A') {
+        if (!$sql) {
+            return FALSE;
+        }
+        global $wpdb;
+
+        $results = $wpdb->get_results($sql, $type);
+
+        if ($wpdb->last_error) {
+            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            return FALSE;
+        }
+
+        return $results;
+    }
+
+    static public function get_var($sql = '') {
+        if (!$sql) {
+            return FALSE;
+        }
+        global $wpdb;
+
+        $result = $wpdb->get_var($sql);
+
+        if ($wpdb->last_error) {
+            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            return FALSE;
+        }
+        return $result;
+    }
     
-    static public function get_results($sql ='', $type = 'ARRAY_A') {
-        if(!$sql)
-        {
-            return FALSE;
-        }
-          global $wpdb;
-          
-       $results = $wpdb->get_results($sql, $type);
-
-            if ($wpdb->last_error) {
-                ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
-                return FALSE;
-            }
-           
-            return $results;
-
-        
-    }      
     
-    static public function get_var($sql ='') {
-        if(!$sql)
-        {
-            return FALSE;
-        }
-          global $wpdb;
-          
-       $result = $wpdb->get_var($sql, $type);
-
-            if ($wpdb->last_error) {
-                ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+    
+    /**
+         * Delete multiple records from a table.
+         *
+         * @access public
+         * @param int $id The record ID
+         */
+        static public function delete_rows_by_table_and_ids($table='', $ids = array()) {
+            if(empty($table) || empty($ids) || !is_array($ids))
+            {
                 return FALSE;
             }
-            return $result;
+            global $wpdb;
+            $table = $wpdb->prefix . $table;
+    
+              
+                $ids = implode(',', array_map('absint', $ids));
+                $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
+                
+                if ($wpdb->last_error) {
+                    ErrorLogHelper::error_log($wpdb->last_error . " " . $wpdb->last_query);
+                }
+                return $status;
+            
+        }
+        static public function truncate_table($table='') {
+            if(empty($table))
+            {
+                return FALSE;
+            }
+            global $wpdb;
+            $table = $wpdb->prefix . $table;
+                $status = $wpdb->query("TRUNCATE $table");
+                
+                if ($wpdb->last_error) {
+                    ErrorLogHelper::error_log($wpdb->last_error . " " . $wpdb->last_query);
+                }
+                return $status;
+            
+        }
 
-        
-    }        
-        
-       
 }

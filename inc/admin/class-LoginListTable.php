@@ -1,10 +1,9 @@
 <?php
 
 namespace User_Login_History\Inc\Admin;
+
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
-
-
 
 /**
  * The admin-specific functionality of the plugin.
@@ -19,157 +18,293 @@ use User_Login_History\Inc\Common\Helpers\DbHelper;
  */
 final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\ListTableAbstract {
 
-    private $plugin_table;
-    
-    
-    public function __construct($plugin_name, $version, $plugin_text_domain  ) {
-            $args = array(
-                'singular' => $plugin_name . '_user_login', //singular name of the listed records
-                'plural' => $plugin_name . '_user_logins', //plural name of the listed records
-            );
-            parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
-            $this->plugin_table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
-        }
-        
-        private function prepare_where_query() {
-            return '';
-        }
-   /**
-         * Retrieve rows
-         * 
-         * @access   public
-         * @param int $per_page
-         * @param int $page_number
-         * @access   public
-         * @return mixed
-         */
-        public function get_rows($per_page = 20, $page_number = 1) {
-            global $wpdb;
-            $table = $wpdb->prefix . $this->plugin_table;
-               $sql = " SELECT"
-                    . " FaUserLogin.*, "
-                    . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
-                    . " FROM " . $table . "  AS FaUserLogin"
-                    . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key LIKE  '".$wpdb->prefix."capabilities' )"
-                    . " WHERE 1 ";
-               
-            $where_query = $this->prepare_where_query();
-            if ($where_query) {
-                $sql .= $where_query;
+    private $table;
+    private $message;
+
+    public function __construct($plugin_name, $version, $plugin_text_domain) {
+        $args = array(
+            'singular' => $plugin_name . '_user_login', //singular name of the listed records
+            'plural' => $plugin_name . '_user_logins', //plural name of the listed records
+        );
+        parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
+        $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
+    }
+
+    public function get_message() {
+        return $this->message;
+    }
+
+    public function set_message($message = '') {
+        $this->message = $message;
+    }
+
+    /**
+     * Prepares the where query.
+     *
+     * @access public
+     * @return string
+     */
+    protected function prepare_where_query() {
+
+        $where_query = '';
+
+        $fields = array(
+            'user_id',
+            'username',
+            'browser',
+            'operating_system',
+            'ip_address',
+            'timezone',
+            'country_name',
+            'old_role',
+        );
+
+        foreach ($fields as $field) {
+            if (!empty($_GET[$field])) {
+                $where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql(trim($_GET[$field])) . "'";
             }
-            if (!empty($_REQUEST['orderby'])) {
-                $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-                $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+        }
+
+        if (!empty($_GET['role'])) {
+            $where_query .= " AND `UserMeta`.`meta_value` LIKE '%" . esc_sql($_GET['role']) . "%'";
+        }
+
+
+        if (!empty($_GET['date_type'])) {
+            $UserProfile = new Faulh_User_Profile($this->plugin_name, NULL);
+            $input_timezone = $UserProfile->get_current_user_timezone();
+            $date_type = $_GET['date_type'];
+            if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
+
+                if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
+                    $date_type = esc_sql($date_type);
+                    $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                    $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                    $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
+                    $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
+                } else {
+                    unset($_GET['date_from']);
+                    unset($_GET['date_to']);
+                }
+            }
+        }
+
+
+        if (!empty($_GET['login_status'])) {
+
+            if ("unknown" == $_GET['login_status']) {
+                $where_query .= " AND `FaUserLogin`.`login_status` = '' ";
             } else {
-                $sql .= ' ORDER BY id DESC';
+                $where_query .= " AND `FaUserLogin`.`login_status` = '" . esc_sql($_GET['login_status']) . "'";
             }
-
-            if ($per_page > 0) {
-                $sql .= " LIMIT $per_page";
-                $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
-            }
-
-          return DbHelper::get_results($sql);
         }
 
-        /**
-         * Returns the count of records in the database.
-         * 
-         * @access   public
-         * @return null|string
-         */
-        public function record_count() {
-            global $wpdb;
-            $table = $wpdb->prefix . $this->plugin_table;
-             $sql = " SELECT"
-                    . " COUNT(FaUserLogin.id) AS total"
-                    . " FROM " . $table . " AS FaUserLogin"
-                    . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key LIKE '".$wpdb->prefix."capabilities' )"
-                    . " WHERE 1 ";
+        $where_query = apply_filters('faulh_admin_prepare_where_query', $where_query);
+        return $where_query;
+    }
 
-            $where_query = $this->prepare_where_query();
+    /**
+     * Retrieve rows
+     * 
+     * @access   public
+     * @param int $per_page
+     * @param int $page_number
+     * @access   public
+     * @return mixed
+     */
+    public function get_rows($per_page = 20, $page_number = 1) {
+        global $wpdb;
+        $table = $wpdb->prefix . $this->table;
+        $sql = " SELECT"
+                . " FaUserLogin.*, "
+                . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
+                . " FROM " . $table . "  AS FaUserLogin"
+                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
+                . " AND UserMeta.meta_key LIKE  '" . $wpdb->prefix . "capabilities' )"
+                . " WHERE 1 ";
 
-            if ($where_query) {
-                $sql .= $where_query;
-            }
+        $where_query = $this->prepare_where_query();
+        if ($where_query) {
+            $sql .= $where_query;
+        }
+        if (!empty($_REQUEST['orderby'])) {
+            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
+            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+        } else {
+            $sql .= ' ORDER BY id DESC';
+        }
 
-           return DbHelper::get_var($sql);
+        if ($per_page > 0) {
+            $sql .= " LIMIT $per_page";
+            $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
-        
-        
-           public function get_columns() {
-          $columns = array(
-                'user_id' => esc_html__('User ID', $this->plugin_text_domain),
-                'username' => esc_html__('Username', $this->plugin_text_domain),
-                'role' => esc_html__('Role', $this->plugin_text_domain),
-                'old_role' => esc_html__('Old Role', $this->plugin_text_domain),
-                'browser' => esc_html__('Browser', $this->plugin_text_domain),
-                'operating_system' => esc_html__('Operating System', $this->plugin_text_domain),
-                'ip_address' => esc_html__('IP Address', $this->plugin_text_domain),
-                'timezone' => esc_html__('Timezone', $this->plugin_text_domain),
-                'country_name' => esc_html__('Country', $this->plugin_text_domain),
-                'user_agent' => esc_html__('User Agent', $this->plugin_text_domain),
-                'duration' => esc_html__('Duration', $this->plugin_text_domain),
-                'time_last_seen' => esc_html__('Last Seen', $this->plugin_text_domain),
-                'time_login' => esc_html__('Login', $this->plugin_text_domain),
-                'time_logout' => esc_html__('Logout', $this->plugin_text_domain),
-                'login_status' => esc_html__('Login Status', $this->plugin_text_domain),
-            );
-          
-          
-            return $columns;
+
+        return DbHelper::get_results($sql);
+    }
+
+    /**
+     * Returns the count of records in the database.
+     * 
+     * @access   public
+     * @return null|string
+     */
+    public function record_count() {
+        global $wpdb;
+        $table = $wpdb->prefix . $this->table;
+        $sql = " SELECT"
+                . " COUNT(FaUserLogin.id) AS total"
+                . " FROM " . $table . " AS FaUserLogin"
+                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
+                . " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
+                . " WHERE 1 ";
+
+        $where_query = $this->prepare_where_query();
+
+        if ($where_query) {
+            $sql .= $where_query;
         }
-        
-        
-            public function get_sortable_columns() {
-              $columns = array(
-                'user_id' => array('user_id', true),
-                'username' => array('username', true),
-                'old_role' => array('old_role', true),
-                'time_login' => array('time_login', false),
-                'time_logout' => array('time_logout', false),
-                'browser' => array('browser', false),
-                'operating_system' => array('operating_system', false),
-                'country_name' => array('country_name', false),
-                'time_last_seen' => array('time_last_seen', false),
-                'timezone' => array('timezone', false),
-                'user_agent' => array('user_agent', false),
-                'login_status' => array('login_status', false),
-                'is_super_admin' => array('is_super_admin', false),
-                'duration' => array('duration', false),
-            );
-           
-            return $columns;
+
+        return DbHelper::get_var($sql);
+    }
+
+    public function get_columns() {
+        $columns = array(
+            'cb' => '<input type="checkbox" />',
+            'user_id' => esc_html__('User ID', $this->plugin_text_domain),
+            'username' => esc_html__('Username', $this->plugin_text_domain),
+            'role' => esc_html__('Role', $this->plugin_text_domain),
+            'old_role' => esc_html__('Old Role', $this->plugin_text_domain),
+            'browser' => esc_html__('Browser', $this->plugin_text_domain),
+            'operating_system' => esc_html__('Operating System', $this->plugin_text_domain),
+            'ip_address' => esc_html__('IP Address', $this->plugin_text_domain),
+            'timezone' => esc_html__('Timezone', $this->plugin_text_domain),
+            'country_name' => esc_html__('Country', $this->plugin_text_domain),
+            'user_agent' => esc_html__('User Agent', $this->plugin_text_domain),
+            'duration' => esc_html__('Duration', $this->plugin_text_domain),
+            'time_last_seen' => esc_html__('Last Seen', $this->plugin_text_domain),
+            'time_login' => esc_html__('Login', $this->plugin_text_domain),
+            'time_logout' => esc_html__('Logout', $this->plugin_text_domain),
+            'login_status' => esc_html__('Login Status', $this->plugin_text_domain),
+        );
+        return $columns;
+    }
+
+    public function get_sortable_columns() {
+        $columns = array(
+            'user_id' => array('user_id', true),
+            'username' => array('username', true),
+            'old_role' => array('old_role', true),
+            'time_login' => array('time_login', false),
+            'time_logout' => array('time_logout', false),
+            'browser' => array('browser', false),
+            'operating_system' => array('operating_system', false),
+            'country_name' => array('country_name', false),
+            'time_last_seen' => array('time_last_seen', false),
+            'timezone' => array('timezone', false),
+            'user_agent' => array('user_agent', false),
+            'login_status' => array('login_status', false),
+            'is_super_admin' => array('is_super_admin', false),
+            'duration' => array('duration', false),
+        );
+
+        return $columns;
+    }
+
+    /**
+     * Method for name column
+     * 
+     * @access   public
+     * @param array $item an array of DB data
+     * @return string
+     */
+    function column_username($item) {
+
+        if ($this->is_empty($item['username'])) {
+            return $this->unknown_symbol;
         }
-        
-        
-      
-        
-        
-        /**
-         * Method for name column
-         * 
-         * @access   public
-         * @param array $item an array of DB data
-         * @return string
-         */
-        function column_username($item) {
-            if(empty($item['user_id']))
-            {
-                $title =  esc_html($item['username']);
-            }
-            else{
+
+
+        if ($this->is_empty($item['user_id'])) {
+            $title = esc_html($item['username']);
+        } else {
             $edit_link = get_edit_user_link($item['user_id']);
-            $title = !empty($edit_link) ? "<a href='" .$edit_link. "'>" . esc_html($item['username']) . "</a>" : '<strong>' . esc_html($item['username']) . '</strong>';
-            }
-            
-          $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
-            $actions = array(
-                'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->plugin_name . '_admin_listing_table_delete_single_row', absint($item['id']), $delete_nonce),
-            );
-            return $title . $this->row_actions($actions);
+            $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . esc_html($item['username']) . '</strong>';
         }
+
+        $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
+        $actions = array(
+            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->_args['singular'], absint($item['id']), $delete_nonce),
+        );
+        return $title . $this->row_actions($actions);
+    }
+
+    /**
+     * Returns an associative array containing the bulk action
+     *
+     * @access public 
+     * @return array
+     */
+    public function get_bulk_actions() {
+        $actions = array(
+            'bulk-delete' => esc_html__('Delete Selected Records', 'faulh'),
+            'bulk-delete-all-admin' => esc_html__('Delete All Records', 'faulh'),
+        );
+
+        return $actions;
+    }
+
+    /**
+     * Render the bulk edit checkbox
+     * 
+     * @access   public
+     * @param array $item
+     * @return string
+     */
+    public function column_cb($item) {
+        return sprintf('<input type="checkbox" name="bulk-action-ids[]" value="%s" />', $item['id']);
+    }
+
+    /**
+     * Check form submission and then 
+     * process the bulk operation.
+     * 
+     * @access   public 
+     * @return boolean
+     */
+    public function process_bulk_action() {
+        if (!isset($_POST[$this->_args['singular'] . "_form"]) || empty($_POST['_wpnonce'])) {
+            return;
+        }
+        $nonce = $_POST['_wpnonce'];
+        $bulk_action = 'bulk-' . $this->_args['plural'];
+
+        if (!wp_verify_nonce($nonce, $bulk_action)) {
+            return;
+        }
+
+        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+
+        switch ($this->current_action()) {
+            case 'bulk-delete':
+                $status = DbHelper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
+                if ($status) {
+                    $message = esc_html__('Selected record(s) deleted.', $this->plugin_text_domain);
+                }
+                break;
+            case 'bulk-delete-all-admin':
+                $status = DbHelper::truncate_table($this->table);
+                if ($status) {
+                    $message = esc_html__('All record(s) deleted.', $this->plugin_text_domain);
+                }
+                break;
+            default:
+                $status = FALSE;
+
+                break;
+        }
+
+        $this->set_message($message);
+        return $status;
+    }
 
 }

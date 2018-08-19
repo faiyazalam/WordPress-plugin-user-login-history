@@ -111,6 +111,8 @@ class Init {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
+                 $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
+                   $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
 
 		/*
 		 * Additional Hooks go here
