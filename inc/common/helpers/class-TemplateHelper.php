@@ -1,7 +1,7 @@
 <?php
 
 namespace User_Login_History\Inc\Common\Helpers;
-use User_Login_History\Inc\Admin\LoginTracker;
+use User_Login_History\Inc\Common\LoginTracker;
 
 /**
  * The admin-specific functionality of the plugin.

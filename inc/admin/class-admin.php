@@ -125,7 +125,6 @@ class Admin {
      * Callback function for the filter - set-screen-option
      */
     public function set_screen($status, $option, $value) {
-
         return $value;
     }
 
@@ -143,8 +142,7 @@ class Admin {
         add_screen_option($option, $args);
 
         $this->list_table = new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
-        $status = $this->list_table->process_bulk_action();
-
+        $status = $this->list_table->process_action();
         if (!is_null($status)) {
             $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
         }

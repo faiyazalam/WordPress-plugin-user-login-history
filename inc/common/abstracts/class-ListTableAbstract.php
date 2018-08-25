@@ -6,7 +6,7 @@ use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\TemplateHelper;
 use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
-use User_Login_History\Inc\Admin\LoginTracker;
+use User_Login_History\Inc\Common\LoginTracker;
 use User_Login_History\Inc\Common\Helpers\ValidationHelper;
 
 /**
@@ -202,7 +202,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
 
                 $human_time_diff = human_time_diff($time_last_seen_unix);
                 $is_online_str = 'offline';
-
+                
                 if (in_array($item['login_status'], array("", LoginTracker::LOGIN_STATUS_LOGIN))) {
                     $minutes = ((time() - $time_last_seen_unix) / 60);
                     $settings = get_option($this->plugin_name . "_basics");

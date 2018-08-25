@@ -20,6 +20,10 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
 
     private $table;
     private $message;
+    private $bulk_action_form;
+    private $delete_action;
+    private $delete_action_nonce;
+    private $bulk_action_nonce;
 
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
@@ -28,10 +32,20 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
         );
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
         $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
+        
+        $this->bulk_action_form = $this->_args['singular'] . "_form";
+        $this->delete_action_nonce = $this->_args['singular']."_delete_none";
+        $this->delete_action = $this->_args['singular']."_delete";
+        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+        $this->bulk_action_nonce = 'bulk-' . $this->_args['plural'];
     }
 
     public function get_message() {
         return $this->message;
+    }
+    
+    public function get_bulk_action_form() {
+        return $this->bulk_action_form;
     }
 
     public function set_message($message = '') {
@@ -44,7 +58,7 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
      * @access public
      * @return string
      */
-    protected function prepare_where_query() {
+    private function prepare_where_query() {
 
         $where_query = '';
 
@@ -219,21 +233,17 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
      */
     function column_username($item) {
 
-        if ($this->is_empty($item['username'])) {
-            return $this->unknown_symbol;
-        }
-
-
+        $username = $this->is_empty($item['username'])?$this->unknown_symbol : esc_html($item['username']);
         if ($this->is_empty($item['user_id'])) {
-            $title = esc_html($item['username']);
+            $title = $username;
         } else {
             $edit_link = get_edit_user_link($item['user_id']);
-            $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . esc_html($item['username']) . '</strong>';
+            $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . $username . "</a>" : '<strong>' . $username . '</strong>';
         }
 
-        $delete_nonce = wp_create_nonce($this->plugin_name . 'delete_row_by_' . $this->_args['singular']);
+        $delete_nonce = wp_create_nonce($this->delete_action_nonce);
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->_args['singular'], absint($item['id']), $delete_nonce),
+            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->delete_action, absint($item['id']), $delete_nonce),
         );
         return $title . $this->row_actions($actions);
     }
@@ -271,30 +281,37 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
      * @access   public 
      * @return boolean
      */
-    public function process_bulk_action() {
-        if (!isset($_POST[$this->_args['singular'] . "_form"]) || empty($_POST['_wpnonce'])) {
+    public function process_action() {
+        
+        if(empty($_REQUEST['_wpnonce']))
+        {
             return;
         }
-        $nonce = $_POST['_wpnonce'];
-        $bulk_action = 'bulk-' . $this->_args['plural'];
-
-        if (!wp_verify_nonce($nonce, $bulk_action)) {
-            return;
+        
+        if (isset($_POST[$this->bulk_action_form]) && wp_verify_nonce($_POST['_wpnonce'], $this->bulk_action_nonce)) {
+        return $this->process_bulk_action();
         }
 
-        $message = esc_html__('Please try again.', $this->plugin_text_domain);
 
+  
+        if (wp_verify_nonce($_GET['_wpnonce'], $this->delete_action_nonce)) {
+        return $this->process_single_action();
+        }
+        
+       
+    }
+    private function process_bulk_action() {
         switch ($this->current_action()) {
             case 'bulk-delete':
                 $status = DbHelper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
                 if ($status) {
-                    $message = esc_html__('Selected record(s) deleted.', $this->plugin_text_domain);
+                    $this->set_message( esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
                 }
                 break;
             case 'bulk-delete-all-admin':
                 $status = DbHelper::truncate_table($this->table);
                 if ($status) {
-                    $message = esc_html__('All record(s) deleted.', $this->plugin_text_domain);
+                     $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
                 }
                 break;
             default:
@@ -303,7 +320,30 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
                 break;
         }
 
-        $this->set_message($message);
+        return $status;
+    }
+    
+    private function process_single_action() {
+        if(empty($_GET['record_id']))
+        {
+            return;
+        }
+        
+        $id = absint($_GET['record_id']);
+     
+        switch ($this->current_action()) {
+            case $this->delete_action:
+                $status = DbHelper::delete_rows_by_table_and_ids($this->table, array($id));
+                if ($status) {
+                    $this->set_message( esc_html__('Selected record deleted.', $this->plugin_text_domain));
+                }
+                break;
+
+            default:
+                  $status = FALSE;
+                break;
+        }
+      
         return $status;
     }
 

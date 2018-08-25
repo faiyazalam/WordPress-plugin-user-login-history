@@ -1,6 +1,6 @@
 <?php
 
-namespace User_Login_History\Inc\Admin;
+namespace User_Login_History\Inc\Common;
 
 /**
  * The admin-specific functionality of the plugin.
