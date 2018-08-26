@@ -4,6 +4,8 @@ namespace User_Login_History\Inc\Core;
 use User_Login_History as NS;
 use User_Login_History\Inc\Admin as Admin;
 use User_Login_History\Inc\Frontend as Frontend;
+use User_Login_History\Inc\Common;
+use User_Login_History\Inc\Common\Settings;
 
 /**
  * The core plugin class.
@@ -113,6 +115,11 @@ class Init {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
                  $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
                    $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
+                   
+                   
+                                   $Admin_Setting = new Admin\Settings($plugin_name, new Settings());
+                $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
+                $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 
 		/*
 		 * Additional Hooks go here
