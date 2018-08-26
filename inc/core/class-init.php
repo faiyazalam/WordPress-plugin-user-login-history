@@ -3,6 +3,7 @@
 namespace User_Login_History\Inc\Core;
 use User_Login_History as NS;
 use User_Login_History\Inc\Admin as Admin;
+use User_Login_History\Inc\Common\LoginTracker;
 use User_Login_History\Inc\Frontend as Frontend;
 use User_Login_History\Inc\Common;
 use User_Login_History\Inc\Common\Settings;
@@ -115,6 +116,13 @@ class Init {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
                  $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
                    $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
+                   
+                   $LoginTracker = new LoginTracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
+                       $this->loader->add_action('set_logged_in_cookie', $LoginTracker, 'set_logged_in_cookie', 10, 6);
+                       $this->loader->add_action('wp_login_failed', $LoginTracker, 'on_login_failed');
+                       $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
+                       $this->loader->add_action('init', $LoginTracker, 'init');
+                       $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information');
                    
                    
                                    $Admin_Setting = new Admin\Settings($plugin_name, new Settings());

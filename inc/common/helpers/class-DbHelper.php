@@ -15,6 +15,7 @@ namespace User_Login_History\Inc\Common\Helpers;
  */
 class DbHelper {
 
+
     static public function insert($table = '', $data = array()) {
         if (!$table || !$data) {
             return FALSE;
@@ -24,6 +25,21 @@ class DbHelper {
         $wpdb->insert($wpdb->prefix . $table, $data);
 
         if ($wpdb->last_error || !$wpdb->insert_id) {
+            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            return FALSE;
+        }
+        return $wpdb->insert_id;
+    }
+    
+    static public function query($sql ='') {
+        if (empty($sql)) {
+            return FALSE;
+        }
+        global $wpdb;
+
+        $wpdb->query($sql);
+
+        if ($wpdb->last_error) {
             ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
             return FALSE;
         }

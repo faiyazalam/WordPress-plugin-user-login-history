@@ -134,7 +134,7 @@ class Admin {
     public function screen_option() {
         $option = 'per_page';
         $args = array(
-            'label' => __('Show Records Per Page', 'user-login-history'),
+            'label' => __('Show Records Per Page', $this->plugin_text_domain),
             'default' => 20,
             'option' => $this->plugin_name . '_rows_per_page'
         );
@@ -145,6 +145,8 @@ class Admin {
         $status = $this->list_table->process_action();
         if (!is_null($status)) {
             $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
+               wp_safe_redirect(esc_url($url . "admin.php?page=" . $_GET['page']));
+               exit;
         }
 
         $this->list_table->prepare_items();
