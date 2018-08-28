@@ -1,8 +1,10 @@
 <?php
 
 namespace User_Login_History\Inc\Core;
+
 use User_Login_History as NS;
-use User_Login_History\Inc\Admin as Admin;
+use User_Login_History\Inc\Admin;
+use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\LoginTracker;
 use User_Login_History\Inc\Frontend as Frontend;
 use User_Login_History\Inc\Common;
@@ -19,187 +21,194 @@ use User_Login_History\Inc\Common\Settings;
  */
 class Init {
 
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
-	 *
-	 * @var      Loader    $loader    Maintains and registers all hooks for the plugin.
-	 */
-	protected $loader;
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @var      Loader    $loader    Maintains and registers all hooks for the plugin.
+     */
+    protected $loader;
 
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $plugin_base_name    The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_basename;
+    /**
+     * The unique identifier of this plugin.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $plugin_base_name    The string used to uniquely identify this plugin.
+     */
+    protected $plugin_basename;
 
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
-	 */
-	protected $version;
+    /**
+     * The current version of the plugin.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $version    The current version of the plugin.
+     */
+    protected $version;
 
-	/**
-	 * The text domain of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
-	 */
-	protected $plugin_text_domain;
+    /**
+     * The text domain of the plugin.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      string    $version    The current version of the plugin.
+     */
+    protected $plugin_text_domain;
 
-	/**
-	 * Initialize and define the core functionality of the plugin.
-	 */
-	public function __construct() {
+    /**
+     * Initialize and define the core functionality of the plugin.
+     */
+    public function __construct() {
 
-		$this->plugin_name = NS\USER_LOGIN_HISTORY;
-		$this->version = NS\PLUGIN_VERSION;
-				$this->plugin_basename = NS\PLUGIN_BASENAME;
-				$this->plugin_text_domain = NS\PLUGIN_TEXT_DOMAIN;
+        $this->plugin_name = NS\USER_LOGIN_HISTORY;
+        $this->version = NS\PLUGIN_VERSION;
+        $this->plugin_basename = NS\PLUGIN_BASENAME;
+        $this->plugin_text_domain = NS\PLUGIN_TEXT_DOMAIN;
 
-		$this->load_dependencies();
-		$this->set_locale();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
-	}
+        $this->load_dependencies();
+        $this->set_locale();
+        $this->define_admin_hooks();
+        $this->define_public_hooks();
+    }
 
-	/**
-	 * Loads the following required dependencies for this plugin.
-	 *
-	 * - Loader - Orchestrates the hooks of the plugin.
-	 * - Internationalization_I18n - Defines internationalization functionality.
-	 * - Admin - Defines all hooks for the admin area.
-	 * - Frontend - Defines all hooks for the public side of the site.
-	 *
-	 * @access    private
-	 */
-	private function load_dependencies() {
-		$this->loader = new Loader();
+    /**
+     * Loads the following required dependencies for this plugin.
+     *
+     * - Loader - Orchestrates the hooks of the plugin.
+     * - Internationalization_I18n - Defines internationalization functionality.
+     * - Admin - Defines all hooks for the admin area.
+     * - Frontend - Defines all hooks for the public side of the site.
+     *
+     * @access    private
+     */
+    private function load_dependencies() {
+        $this->loader = new Loader();
+    }
 
-	}
+    /**
+     * Define the locale for this plugin for internationalization.
+     *
+     * Uses the Internationalization_I18n class in order to set the domain and to register the hook
+     * with WordPress.
+     *
+     * @access    private
+     */
+    private function set_locale() {
 
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the Internationalization_I18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 *
-	 * @access    private
-	 */
-	private function set_locale() {
+        $plugin_i18n = new Internationalization_I18n($this->plugin_text_domain);
 
-		$plugin_i18n = new Internationalization_I18n( $this->plugin_text_domain );
+        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
+    }
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+    /**
+     * Register all of the hooks related to the admin area functionality
+     * of the plugin.
+     *
+     * @access    private
+     */
+    private function define_admin_hooks() {
 
-	}
+        $plugin_admin = new Admin\Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
 
-	/**
-	 * Register all of the hooks related to the admin area functionality
-	 * of the plugin.
-	 *
-	 * @access    private
-	 */
-	private function define_admin_hooks() {
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
+        $this->loader->add_action('admin_menu', $plugin_admin, 'admin_menu');
+        $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
+        $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
 
-		$plugin_admin = new Admin\Admin($this->get_plugin_name(), $this->get_version(),$this->get_plugin_text_domain());
+        $LoginTracker = new LoginTracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
+        $this->loader->add_action('set_logged_in_cookie', $LoginTracker, 'set_logged_in_cookie', 10, 6);
+        $this->loader->add_action('wp_login_failed', $LoginTracker, 'on_login_failed');
+        $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
+        $this->loader->add_action('init', $LoginTracker, 'init');
+        $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information');
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
-                 $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
-                   $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-                   
-                   $LoginTracker = new LoginTracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
-                       $this->loader->add_action('set_logged_in_cookie', $LoginTracker, 'set_logged_in_cookie', 10, 6);
-                       $this->loader->add_action('wp_login_failed', $LoginTracker, 'on_login_failed');
-                       $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
-                       $this->loader->add_action('init', $LoginTracker, 'init');
-                       $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information');
-                   
-                   
-                                   $Admin_Setting = new Admin\Settings($plugin_name, new Settings());
-                $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
-                $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 
-		/*
-		 * Additional Hooks go here
-		 *
-		 * e.g.
-		 *
-		 * //admin menu pages
-		 * $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
-		 *
-		 *  //plugin action links
-		 * $this->loader->add_filter( 'plugin_action_links_' . $this->plugin_basename, $plugin_admin, 'add_additional_action_link' );
-		 *
-		 */
-	}
+        $Admin_Setting = new Admin\Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());
+        $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
+        $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 
-	/**
-	 * Register all of the hooks related to the public-facing functionality
-	 * of the plugin.
-	 *
-	 * @access    private
-	 */
-	private function define_public_hooks() {
+        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
 
-		$plugin_public = new Frontend\Frontend( $this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain() );
+        $this->loader->add_action('admin_init', $User_Profile, 'admin_init');
+        $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
+        $this->loader->add_action('edit_user_profile', $User_Profile, 'show_extra_profile_fields');
+        $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
+        $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
+        $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
-	}
+        /*
+         * Additional Hooks go here
+         *
+         * e.g.
+         *
+         * //admin menu pages
+         * $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
+         *
+         *  //plugin action links
+         * $this->loader->add_filter( 'plugin_action_links_' . $this->plugin_basename, $plugin_admin, 'add_additional_action_link' );
+         *
+         */
+    }
 
-	/**
-	 * Run the loader to execute all of the hooks with WordPress.
-	 */
-	public function run() {
-		$this->loader->run();
-	}
+    /**
+     * Register all of the hooks related to the public-facing functionality
+     * of the plugin.
+     *
+     * @access    private
+     */
+    private function define_public_hooks() {
 
-	/**
-	 * The name of the plugin used to uniquely identify it within the context of
-	 * WordPress and to define internationalization functionality.
-	 */
-	public function get_plugin_name() {
-		return $this->plugin_name;
-	}
+        $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
 
-	/**
-	 * The reference to the class that orchestrates the hooks with the plugin.
-	 *
-	 * @return    Loader    Orchestrates the hooks of the plugin.
-	 */
-	public function get_loader() {
-		return $this->loader;
-	}
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
+        $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+    }
 
-	/**
-	 * Retrieve the version number of the plugin.
-	 *
-	 * @since     1.0.0
-	 * @return    string    The version number of the plugin.
-	 */
-	public function get_version() {
-		return $this->version;
-	}
+    /**
+     * Run the loader to execute all of the hooks with WordPress.
+     */
+    public function run() {
+        $this->loader->run();
+    }
 
-	/**
-	 * Retrieve the text domain of the plugin.
-	 *
-	 * @since     1.0.0
-	 * @return    string    The text domain of the plugin.
-	 */
-	public function get_plugin_text_domain() {
-		return $this->plugin_text_domain;
-	}
+    /**
+     * The name of the plugin used to uniquely identify it within the context of
+     * WordPress and to define internationalization functionality.
+     */
+    public function get_plugin_name() {
+        return $this->plugin_name;
+    }
+
+    /**
+     * The reference to the class that orchestrates the hooks with the plugin.
+     *
+     * @return    Loader    Orchestrates the hooks of the plugin.
+     */
+    public function get_loader() {
+        return $this->loader;
+    }
+
+    /**
+     * Retrieve the version number of the plugin.
+     *
+     * @since     1.0.0
+     * @return    string    The version number of the plugin.
+     */
+    public function get_version() {
+        return $this->version;
+    }
+
+    /**
+     * Retrieve the text domain of the plugin.
+     *
+     * @since     1.0.0
+     * @return    string    The text domain of the plugin.
+     */
+    public function get_plugin_text_domain() {
+        return $this->plugin_text_domain;
+    }
 
 }

@@ -4,6 +4,7 @@ namespace User_Login_History\Inc\Admin;
 
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
+use User_Login_History\Inc\Admin\User_Profile;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -85,8 +86,8 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
 
 
         if (!empty($_GET['date_type'])) {
-            $UserProfile = new Faulh_User_Profile($this->plugin_name, NULL);
-            $input_timezone = $UserProfile->get_current_user_timezone();
+            $UserProfile = new User_Profile($this->plugin_name, $this->version, $this->plugin_text_domain);
+            $input_timezone = $UserProfile->get_user_timezone();
             $date_type = $_GET['date_type'];
             if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
 

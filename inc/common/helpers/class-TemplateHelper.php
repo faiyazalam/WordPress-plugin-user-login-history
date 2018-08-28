@@ -65,7 +65,7 @@ use User_Login_History\Inc\Common\LoginTracker;
          */
         static public function dropdown_timezones($selected = '') {
             $r = '';
-            $timezones = Faulh_Date_Time_Helper::get_timezone_list();
+            $timezones = DateTimeHelper::get_timezone_list();
             foreach ($timezones as $timezone) {
                 $key = $timezone['zone'];
                 $name = $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")";
