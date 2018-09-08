@@ -11,8 +11,8 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
 <?php TemplateHelper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL); ?>
         </select>
     </div>
-    
-    <div class="advanced_search">
+    <div><a id="show_hide_advanced_search" href="#"><?php esc_html_e('Show Advanced Filters', 'faulh') ?></a></div>
+    <div id="advanced_search" style="display: none">
         <div><input min="1" type="number" placeholder="<?php esc_html_e("Enter User ID", "faulh") ?>" name="user_id" value="<?php echo isset($_GET['user_id']) ? esc_attr($_GET['user_id']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Username", "faulh") ?>" name="username" value="<?php echo isset($_GET['username']) ? esc_attr($_GET['username']) : "" ?>" ></div>
             <div><input placeholder="<?php esc_html_e("Enter Country", "faulh") ?>" name="country_name" value="<?php echo isset($_GET['country_name']) ? esc_attr($_GET['country_name']) : "" ?>" ></div>

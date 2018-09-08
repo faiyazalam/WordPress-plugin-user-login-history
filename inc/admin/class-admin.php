@@ -94,6 +94,8 @@ class Admin {
             'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
             'admin_url' => admin_url(),
             'plugin_name' => $this->plugin_name,
+            'show_advanced_filters' => esc_html__('Show Advanced Filters', 'faulh'),
+            'hide_advanced_filters' => esc_html__('Hide Advanced Filters', 'faulh'),
         ));
     }
 

@@ -41,6 +41,25 @@
             return false; 
         });
     });
+    
+  
+    $("#show_hide_advanced_search").click(function(){
+        let  show_hide_advanced_search =  $(this);
+        let advanced_search = $("#advanced_search"); 
+        
+        if("none" == advanced_search.css("display"))
+        {
+           advanced_search.show("fast", function(){
+               show_hide_advanced_search.text(admin_custom_object.hide_advanced_filters);
+           });
+           
+        }else{
+             advanced_search.hide("fast", function(){
+                show_hide_advanced_search.text(admin_custom_object.show_advanced_filters);
+           });
+        }
+        return false;
+    });
 
 })(jQuery);
 
