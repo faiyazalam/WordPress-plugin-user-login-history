@@ -61,25 +61,64 @@ class Admin {
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
     }
 
+    private function is_current_page_by_file_name($file = 'admin') {
+        global $pagenow;
+        return $file . '.php' == $pagenow;
+    }
+
+    private function is_plugin_login_list_page() {
+        if (!$this->is_current_page_by_file_name()) {
+            return FALSE;
+        }
+
+        if (!empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page']) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    private function get_plugin_login_list_page_slug() {
+        return $this->plugin_name . "-login-listing";
+    }
+
+    private function enqueue_scripts_for_plugin_login_list_page() {
+        if (!$this->is_plugin_login_list_page()) {
+            return FALSE;
+        }
+
+        wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+        wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+        wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
+            'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
+            'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
+            'admin_url' => admin_url(),
+            'plugin_name' => $this->plugin_name,
+        ));
+    }
+
+    private function enqueue_styles_for_user_profile() {
+        if ($this->is_current_page_by_file_name('profile') || $this->is_current_page_by_file_name('user-edit')) {
+            wp_enqueue_style($this->plugin_name . '-user-profile.css', plugin_dir_url(__FILE__) . 'css/user-profile.css', array(), $this->version, 'all');
+        }
+    }
+
+    private function enqueue_styles_for_plugin_login_list_page() {
+        if (!$this->is_plugin_login_list_page()) {
+            return FALSE;
+        }
+        wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+        wp_enqueue_style($this->plugin_name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
+    }
+
     /**
      * Register the stylesheets for the admin area.
      *
      * @since    1.0.0
      */
     public function enqueue_styles() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-        wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/faulh-admin.css', array(), $this->version, 'all');
+        $this->enqueue_styles_for_plugin_login_list_page();
+        $this->enqueue_styles_for_user_profile();
     }
 
     /**
@@ -88,37 +127,20 @@ class Admin {
      * @since    1.0.0
      */
     public function enqueue_scripts() {
-        /*
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
-        wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/faulh-admin.js', array('jquery'), $this->version, false);
+        $this->enqueue_scripts_for_plugin_login_list_page();
     }
 
     public function admin_menu() {
-        $menu_slug = $this->plugin_name . "-login-listing";
+        $menu_slug = $this->get_plugin_login_list_page_slug();
         $hook = add_menu_page(
                 esc_html__('Login List', 'faulh'), 'User Login History', 'manage_options', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
         );
         add_submenu_page($menu_slug, esc_html__('Login List', $this->plugin_text_domain), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_login_list'));
-        // add_submenu_page($menu_slug, esc_html__('Login Lists', 'faulh'), esc_html__('Login Lists', 'faulh'), 'manage_options', $this->plugin_name . "-login-listings", array($this, 'render_login_lists'));
         add_action("load-$hook", array($this, 'screen_option'));
     }
 
     public function render_login_list() {
         require plugin_dir_path(dirname(__FILE__)) . 'admin/views/login-list-table.php';
-    }
-
-    public function render_login_lists() {
-        echo "hellos";
     }
 
     /**
@@ -145,8 +167,8 @@ class Admin {
         $status = $this->list_table->process_action();
         if (!is_null($status)) {
             $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
-               wp_safe_redirect(esc_url($url . "admin.php?page=" . $_GET['page']));
-               exit;
+            wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
+            exit;
         }
 
         $this->list_table->prepare_items();

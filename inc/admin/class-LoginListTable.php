@@ -33,10 +33,10 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
         );
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
         $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
-        
+
         $this->bulk_action_form = $this->_args['singular'] . "_form";
-        $this->delete_action_nonce = $this->_args['singular']."_delete_none";
-        $this->delete_action = $this->_args['singular']."_delete";
+        $this->delete_action_nonce = $this->_args['singular'] . "_delete_none";
+        $this->delete_action = $this->_args['singular'] . "_delete";
         $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
         $this->bulk_action_nonce = 'bulk-' . $this->_args['plural'];
     }
@@ -44,7 +44,7 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
     public function get_message() {
         return $this->message;
     }
-    
+
     public function get_bulk_action_form() {
         return $this->bulk_action_form;
     }
@@ -106,12 +106,9 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
 
 
         if (!empty($_GET['login_status'])) {
-
-            if ("unknown" == $_GET['login_status']) {
-                $where_query .= " AND `FaUserLogin`.`login_status` = '' ";
-            } else {
-                $where_query .= " AND `FaUserLogin`.`login_status` = '" . esc_sql($_GET['login_status']) . "'";
-            }
+            $login_status = $_GET['login_status'];
+            $login_status_value = "unknown" == $login_status ? "" : esc_sql($login_status);
+            $where_query .= " AND `FaUserLogin`.`login_status` = '" . $login_status_value . "'";
         }
 
         $where_query = apply_filters('faulh_admin_prepare_where_query', $where_query);
@@ -234,7 +231,7 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
      */
     function column_username($item) {
 
-        $username = $this->is_empty($item['username'])?$this->unknown_symbol : esc_html($item['username']);
+        $username = $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
         if ($this->is_empty($item['user_id'])) {
             $title = $username;
         } else {
@@ -283,68 +280,61 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
      * @return boolean
      */
     public function process_action() {
-        
-        if(empty($_REQUEST['_wpnonce']))
-        {
+
+        if (empty($_REQUEST['_wpnonce'])) {
             return;
         }
-        
+
         if (isset($_POST[$this->bulk_action_form]) && wp_verify_nonce($_POST['_wpnonce'], $this->bulk_action_nonce)) {
-        return $this->process_bulk_action();
+            return $this->process_bulk_action();
         }
 
-
-  
         if (wp_verify_nonce($_GET['_wpnonce'], $this->delete_action_nonce)) {
-        return $this->process_single_action();
+            return $this->process_single_action();
         }
-        
-       
     }
+
     private function process_bulk_action() {
         switch ($this->current_action()) {
             case 'bulk-delete':
                 $status = DbHelper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
                 if ($status) {
-                    $this->set_message( esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
+                    $this->set_message(esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
                 }
                 break;
             case 'bulk-delete-all-admin':
                 $status = DbHelper::truncate_table($this->table);
                 if ($status) {
-                     $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
+                    $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
                 }
                 break;
             default:
                 $status = FALSE;
-
                 break;
         }
-
         return $status;
     }
-    
+
     private function process_single_action() {
-        if(empty($_GET['record_id']))
-        {
+        if (empty($_GET['record_id'])) {
             return;
         }
-        
+
         $id = absint($_GET['record_id']);
-     
+
         switch ($this->current_action()) {
             case $this->delete_action:
                 $status = DbHelper::delete_rows_by_table_and_ids($this->table, array($id));
                 if ($status) {
-                    $this->set_message( esc_html__('Selected record deleted.', $this->plugin_text_domain));
+                    $this->set_message(esc_html__('Selected record deleted.', $this->plugin_text_domain));
                 }
                 break;
 
             default:
-                  $status = FALSE;
+                $status = FALSE;
                 break;
         }
-      
+
         return $status;
     }
 

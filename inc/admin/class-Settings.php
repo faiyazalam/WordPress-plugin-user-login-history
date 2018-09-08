@@ -28,7 +28,7 @@ class Settings {
     }
 
     function admin_menu() {
-        add_options_page('User Login History', 'User Login History', 'delete_posts', 'settings_api_test', array($this, 'plugin_page'));
+        add_options_page('User Login History', 'User Login History', 'delete_posts', $this->plugin_name."-settings", array($this, 'plugin_page'));
     }
 
     function get_settings_sections() {

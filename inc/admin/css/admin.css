@@ -1,0 +1,167 @@
+/*
+admin css for the plugin - user login history
+*/
+
+.is_status_online,  .is_status_offline, .is_status_idle{min-width: 80px;}
+
+.is_status_online:before{
+    background-color:  #5ace5a;
+    content: ""; margin-right: 3px; 
+    width: 10px; height: 10px; border-radius: 50%;  display: inline-block;
+}
+.is_status_offline:before{
+    background-color:   #ff6a44;
+    content: "";  margin-right: 3px;
+    width: 10px; height: 10px; border-radius: 50%;  display: inline-block;
+}
+.is_status_idle:before{
+    background-color:   #cccccc;
+    content: "";  margin-right: 3px;
+    width: 10px; height: 10px; border-radius: 50%;  display: inline-block;
+}
+
+
+.faulh-search-filter .secondRow{background-color: #fff; padding:10px ;  display: block; margin-bottom: 1px;}
+.faulh-search-filter .secondRow input{background-color: #FFF; border: solid 1px #e0e0e0; min-height: 30px;}
+.secondRow{display: flex !important; width: 100%; box-sizing: border-box; }
+.secondRow > div {flex: 1;  padding: 0px 5px;}
+.secondRow > div input, .secondRow > div select{width: 100%;}
+.submitAction{margin-top: 10px;}
+
+.faulhbtn,
+.faulh-btn-primary,
+.faulhbtn-secondary {
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 26px;
+    height: 28px;
+    margin: 0;
+    padding: 0 10px 1px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    white-space: nowrap;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.faulhbtn,
+.faulhbtn-secondary {
+    color: #555;
+    border-color: #cccccc;
+    background: #f7f7f7;
+    -webkit-box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(0,0,0,.08);
+    box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(0,0,0,.08);
+    vertical-align: top;
+}
+
+p .faulhbtn {
+    vertical-align: baseline;
+}
+
+.faulhbtn:hover,
+.faulhbtn-secondary:hover,
+.faulhbtn:focus,
+.faulhbtn-secondary:focus {
+    background: #fafafa;
+    border-color: #999;
+    color: #222;
+}
+
+.faulhbtn:focus,
+.faulhbtn-secondary:focus {
+    -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.2);
+    box-shadow: 1px 1px 1px rgba(0,0,0,.2);
+}
+
+.faulhbtn:active,
+.faulhbtn-secondary:active {
+    background: #eee;
+    border-color: #999;
+    color: #333;
+    -webkit-box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
+    box-shadow: inset 0 2px 5px -3px rgba( 0, 0, 0, 0.5 );
+}
+
+.faulh-btn-primary {
+    background: #2ea2cc;
+    border-color: #0074a2;
+    -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.5), 0 1px 0 rgba(0,0,0,.15);
+    box-shadow: inset 0 1px 0 rgba(120,200,230,0.5), 0 1px 0 rgba(0,0,0,.15);
+    color: #fff;
+    text-decoration: none;
+}
+
+.faulh-btn-primary:hover,
+.faulh-btn-primary:focus {
+    background: #1e8cbe;
+    border-color: #0074a2;
+    -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.6);
+    box-shadow: inset 0 1px 0 rgba(120,200,230,0.6);
+    color: #fff;
+}
+
+.faulh-btn-primary:focus {
+    border-color: #0e3950;
+    -webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.6), 1px 1px 2px rgba(0,0,0,0.4);
+    box-shadow: inset 0 1px 0 rgba(120,200,230,0.6), 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.faulh-btn-primary:active {
+    background: #1b7aa6;
+    border-color: #005684;
+    color: rgba(255,255,255,0.95);
+    -webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.1);
+    vertical-align: top;
+}
+
+.listingOuter .faulh_admin_users{
+    margin-top: 20px;
+    width: auto;
+    min-width: 100%;	
+    white-space: nowrap;	
+}
+
+.listingOuter form{overflow: auto; max-width: 100%;}
+.listingOuter{ position: relative;padding: 30px 0;}
+.tablenav{
+    left: 0;
+    right: 0;
+    position: absolute;
+}
+
+.top{
+    top: 0
+}
+.bottom{
+    bottom: 0
+}
+
+.aboutAuthor{float: right;  margin-top: -20px; font-size: 16px; }
+
+
+.listingOuter th, .listingOuter td{vertical-align: top; text-align: left;}
+.faulhSettingPage textarea{ width: 400px; height: 100px; vertical-align: top; margin-left:10px;  }
+.mt20{margin-top: 20px;}
+
+
+
+.infoBlockUser, label[for="block_user_message"]
+{width: 200px; float: left; margin-right: 10px;font-size: 14px}
+.infoBlockUser + div{float: left;  line-height: 26px;}
+
+
+
+
+
+
+@media  (max-width: 767px){
+    .secondRow{display: block !important;}
+    .listingOuter { padding: 50px 0;}
+}
