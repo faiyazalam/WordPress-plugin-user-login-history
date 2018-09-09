@@ -53,6 +53,7 @@ define( NS . 'PLUGIN_OPTION_NAME_VERSION', 'fa_userloginhostory_version' );
 define( NS . 'PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins' );
 define( NS . 'DEFAULT_IS_STATUS_ONLINE_MIN', '2' );
 define( NS . 'DEFAULT_IS_STATUS_IDLE_MIN', '30' );
+define( NS . 'PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER', basename(__DIR__) . "/" . basename(__FILE__));
 
 
 

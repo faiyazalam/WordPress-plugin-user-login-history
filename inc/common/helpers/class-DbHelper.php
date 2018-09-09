@@ -43,7 +43,7 @@ class DbHelper {
             ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
             return FALSE;
         }
-        return $wpdb->insert_id;
+        return !empty($wpdb->insert_id) ? $wpdb->insert_id : TRUE;
     }
 
     static public function get_results($sql = '', $type = 'ARRAY_A') {
@@ -104,18 +104,23 @@ class DbHelper {
             
         }
         static public function truncate_table($table='') {
+            
             if(empty($table))
             {
                 return FALSE;
             }
             global $wpdb;
-            $table = $wpdb->prefix . $table;
-                $status = $wpdb->query("TRUNCATE $table");
-                
-                if ($wpdb->last_error) {
-                    ErrorLogHelper::error_log($wpdb->last_error . " " . $wpdb->last_query);
-                }
-                return $status;
+               return self::query("TRUNCATE {$wpdb->prefix}$table");
+    }
+        
+        static public function drop_table($table='') {
+            if(empty($table))
+            {
+                return FALSE;
+            }
+            
+            global $wpdb;
+            return self::query("DROP TABLE IF EXISTS {$wpdb->prefix}$table");
             
         }
         
@@ -132,13 +137,15 @@ class DbHelper {
             
             if ($wpdb->last_error) {
                 ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+                return FALSE;
             }
             
             return $result;
         }
          static public function get_blog_ids_by_site_id($site_id = NULL) {
-         
+       
             if (is_null($site_id)) {
+                
                 $site_id = get_current_network_id();
             }
             
@@ -146,6 +153,7 @@ class DbHelper {
             {
                 return FALSE;
             }
+            global $wpdb;
             return self::get_col("SELECT blog_id FROM $wpdb->blogs WHERE `site_id` = ". absint($site_id)." ORDER BY blog_id ASC");
             
         }

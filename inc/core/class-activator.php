@@ -37,8 +37,11 @@ class Activator {
 
         global $wpdb;
         if (is_multisite() && $network_wide) {
+         
             // Get all blogs from current network the network and activate plugin on each one
+              
             $blog_ids = DbHelper::get_blog_ids_by_site_id();
+              
             foreach ($blog_ids as $blog_id) {
                 switch_to_blog($blog_id);
                 self::create_table();
@@ -85,19 +88,7 @@ INDEX faulh_user_traker_index (session_token,user_id)
         DbHelper::dbDelta($sql);
     }
 
-    /**
-     * Create table whenever a new blog is created.
-     * 
-     * @access public
-     */
-    public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
-        if (is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH)) {
-            switch_to_blog($blog_id);
-            self:: create_table();
-            self::update_options();
-            restore_current_blog();
-        }
-    }
+    
 
     /**
      * Update plugin options.
@@ -107,5 +98,7 @@ INDEX faulh_user_traker_index (session_token,user_id)
     public static function update_options() {
         update_option(NS\PLUGIN_OPTION_NAME_VERSION, NS\PLUGIN_VERSION);
     }
+    
+     
 
 }

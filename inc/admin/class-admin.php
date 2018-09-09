@@ -63,7 +63,7 @@ class Admin {
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
         $this->user_profile = $user_profile;
     }
-
+    
     public function admin_init() {
         $this->export_csv();
     }

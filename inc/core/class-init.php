@@ -11,6 +11,7 @@ use User_Login_History\Inc\Admin\LoginListTable;
 use User_Login_History\Inc\Common\LoginTracker;
 use User_Login_History\Inc\Frontend as Frontend;
 use User_Login_History\Inc\Common\Settings;
+use User_Login_History\Inc\Admin\NetworkBlogManager;
 
 /**
  * The core plugin class.
@@ -110,8 +111,15 @@ class Init {
      * @access    private
      */
     private function define_admin_hooks() {
-    $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        if (is_multisite() && is_network_admin()) {
+            $NetworkBlogManager = new NetworkBlogManager();
+            $this->loader->add_action('wpmu_new_blog', $NetworkBlogManager, 'on_create_blog', 10, 6);
+            $this->loader->add_action('deleted_blog', $NetworkBlogManager, 'deleted_blog', 10, 1);
+        }
+
+        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         $plugin_admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile);
+
 
         $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
@@ -126,13 +134,13 @@ class Init {
         $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
         $this->loader->add_action('init', $LoginTracker, 'init');
         $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information');
-        
+
 
         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());
         $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
         $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 
-    
+
 
         $this->loader->add_action('admin_init', $User_Profile, 'admin_init');
         $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');

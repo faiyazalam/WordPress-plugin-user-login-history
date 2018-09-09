@@ -15,11 +15,6 @@ namespace User_Login_History\Inc\Common\Helpers;
  */
 
     class DateTimeHelper {
-        
-        static public function test() {
-            echo __CLASS__;exit;
-        }
-
         /**
          * Defalult timizone.
          */
