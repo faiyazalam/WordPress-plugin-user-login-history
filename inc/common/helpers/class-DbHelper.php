@@ -118,5 +118,51 @@ class DbHelper {
                 return $status;
             
         }
+        
+         static public function get_col($sql = '') {
+         
+           if(empty($sql))
+           {
+               return;
+           }
+            
+            global $wpdb;
 
+            $result = $wpdb->get_col($sql);
+            
+            if ($wpdb->last_error) {
+                ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            }
+            
+            return $result;
+        }
+         static public function get_blog_ids_by_site_id($site_id = NULL) {
+         
+            if (is_null($site_id)) {
+                $site_id = get_current_network_id();
+            }
+            
+            if(!is_numeric($site_id))
+            {
+                return FALSE;
+            }
+            return self::get_col("SELECT blog_id FROM $wpdb->blogs WHERE `site_id` = ". absint($site_id)." ORDER BY blog_id ASC");
+            
+        }
+
+        
+        static public function dbDelta($sql = '') {
+            if(empty($sql))
+            {
+                return FALSE;
+            }
+            global $wpdb;
+            require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+            
+           dbDelta($sql);
+        if (!empty($wpdb->last_error)) {
+            ErrorLogHelper::error_log("Error while creating or updatiing tables-" . $wpdb->last_error, __LINE__, __FILE__);
+            wp_die($wpdb->last_error);
+        }
+        }
 }

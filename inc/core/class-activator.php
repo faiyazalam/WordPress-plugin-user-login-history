@@ -1,7 +1,10 @@
 <?php
 
 namespace User_Login_History\Inc\Core;
+
 use User_Login_History as NS;
+use User_Login_History\Inc\Common\Helpers\ErrorLogHelper;
+use User_Login_History\Inc\Common\Helpers\DbHelper;
 
 /**
  * Fired during plugin activation
@@ -12,38 +15,50 @@ use User_Login_History as NS;
  * @since      1.0.0
  *
  * @author     Er Faiyaz Alam
- **/
+ * */
 class Activator {
 
-	/**
-	 * Short Description.
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function activate() {
-			$min_php = '5.6.0';
+    /**
+     * Short Description.
+     *
+     * Long Description.
+     *
+     * @since    1.0.0
+     */
+    public static function activate($network_wide) {
+     
+        $min_php = '5.6.0';
 
-		// Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
-		if ( version_compare( PHP_VERSION, $min_php, '<' ) ) {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( 'This plugin requires a minmum PHP Version of ' . $min_php );
-		}
-                
+        // Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
+        if (version_compare(PHP_VERSION, $min_php, '<')) {
+            deactivate_plugins(plugin_basename(__FILE__));
+            wp_die('This plugin requires a minmum PHP Version of ' . $min_php);
+        }
+
+        global $wpdb;
+        if (is_multisite() && $network_wide) {
+            // Get all blogs from current network the network and activate plugin on each one
+            $blog_ids = DbHelper::get_blog_ids_by_site_id();
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
                 self::create_table();
-                
-                
+                self::update_options();
+            }
+            restore_current_blog();
+        } else {
+             
+            self::create_table();
+             
+            self::update_options();
+        }
+    }
 
-	}
-        
-        
-         public static function create_table() {
-            global $wpdb;
-            $charset_collate = $wpdb->get_charset_collate();
-            $table = $wpdb->prefix . NS\PLUGIN_TABLE_FA_USER_LOGINS;
+    public static function create_table() {
+        global $wpdb;
+        $charset_collate = $wpdb->get_charset_collate();
+        $table = $wpdb->prefix . NS\PLUGIN_TABLE_FA_USER_LOGINS;
 
-            $sql = "CREATE TABLE $table (
+        $sql = "CREATE TABLE $table (
 id int(11) NOT NULL AUTO_INCREMENT,
 session_token varchar(100) NOT NULL,
 user_id int(11) NOT NULL,
@@ -67,13 +82,30 @@ PRIMARY KEY  (id),
 INDEX faulh_user_traker_index (session_token,user_id)
 ) $charset_collate;";
 
-            require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-            dbDelta($sql);
+        DbHelper::dbDelta($sql);
+    }
 
-            if (!empty($wpdb->last_error)) {
-                Faulh_Error_Handler::error_log("Error while creating or updatiing tables-" . $wpdb->last_error, __LINE__, __FILE__);
-                wp_die($wpdb->last_error);
-            }
+    /**
+     * Create table whenever a new blog is created.
+     * 
+     * @access public
+     */
+    public static function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
+        if (is_plugin_active_for_network(FAULH_BOOTSTRAP_FILE_PATH)) {
+            switch_to_blog($blog_id);
+            self:: create_table();
+            self::update_options();
+            restore_current_blog();
         }
+    }
+
+    /**
+     * Update plugin options.
+     * 
+     * @access public
+     */
+    public static function update_options() {
+        update_option(NS\PLUGIN_OPTION_NAME_VERSION, NS\PLUGIN_VERSION);
+    }
 
 }

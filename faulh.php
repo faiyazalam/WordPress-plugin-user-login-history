@@ -49,9 +49,11 @@ define( NS . 'USER_LOGIN_HISTORY_URL', plugin_dir_url( __FILE__ ) );
 define( NS . 'PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 define( NS . 'PLUGIN_TEXT_DOMAIN', 'faulh' );
+define( NS . 'PLUGIN_OPTION_NAME_VERSION', 'fa_userloginhostory_version' );
 define( NS . 'PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins' );
 define( NS . 'DEFAULT_IS_STATUS_ONLINE_MIN', '2' );
 define( NS . 'DEFAULT_IS_STATUS_IDLE_MIN', '30' );
+
 
 
 
