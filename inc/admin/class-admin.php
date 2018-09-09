@@ -3,6 +3,7 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Admin\LoginListTable;
+use User_Login_History\Inc\Admin\User_Profile;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -44,6 +45,7 @@ class Admin {
      */
     private $plugin_text_domain;
     private $admin_notice_transient;
+    private $user_profile;
 
     /**
      * Initialize the class and set its properties.
@@ -53,12 +55,30 @@ class Admin {
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain) {
+    public function __construct($plugin_name, $version, $plugin_text_domain,  User_Profile $user_profile) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
+        $this->user_profile = $user_profile;
+    }
+
+    public function admin_init() {
+        $this->export_csv();
+    }
+
+    private function export_csv() {
+        if (!$this->is_plugin_login_list_page()) {
+            return;
+        }
+
+        if (!empty($_GET['csv']) && 1 == $_GET['csv']) {
+            if (check_admin_referer('csv_nonce')) {
+            $LoginListCsv = new LoginListCsv(new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain));
+                $LoginListCsv->init();
+            }
+        }
     }
 
     private function is_current_page_by_file_name($file = 'admin') {
@@ -166,6 +186,7 @@ class Admin {
         add_screen_option($option, $args);
 
         $this->list_table = new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $this->list_table->set_timezone($this->user_profile->get_user_timezone());
         $status = $this->list_table->process_action();
         if (!is_null($status)) {
             $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
@@ -181,13 +202,14 @@ class Admin {
      * @access public
      */
     public function add_admin_notice($message, $type = 'success') {
+        $seconds = 120;
         $notices = get_transient($this->admin_notice_transient);
         if ($notices === false) {
             $new_notices[] = array($message, $type);
-            set_transient($this->admin_notice_transient, $new_notices, 120);
+            set_transient($this->admin_notice_transient, $new_notices, $seconds);
         } else {
             $notices[] = array($message, $type);
-            set_transient($this->admin_notice_transient, $notices, 120);
+            set_transient($this->admin_notice_transient, $notices, $seconds);
         }
     }
 

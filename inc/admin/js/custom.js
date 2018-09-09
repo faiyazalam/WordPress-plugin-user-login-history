@@ -27,10 +27,10 @@
 
 //csv
         $("#download_csv_link").click(function () {
-            var export_csv = $("#export-csv");
-            export_csv.val('csv');
+            let csv = $("#csv");
+            csv.val('1');
             $("#submit").trigger('click');
-            export_csv.val('');
+            csv.val('');
         });
         //delete all records
         $("#doaction, #doaction2, .delete").click(function (e) {

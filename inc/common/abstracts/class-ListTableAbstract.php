@@ -52,15 +52,23 @@ abstract class ListTableAbstract extends \WP_List_Table {
      * @var      string    $plugin_text_domain    The text domain of this plugin.
      */
     protected $plugin_text_domain;
-    protected $table_timezone;
-    protected $unknown_symbol = '<span aria-hidden="true">—</span>';
+    protected $timezone;
+    private $unknown_symbol = '<span aria-hidden="true">—</span>';
 
-    public function __construct($plugin_name, $version, $plugin_text_domain, $args = array(), $timezone = '') {
+    public function __construct($plugin_name, $version, $plugin_text_domain, $args = array()) {
         parent::__construct($args);
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        $this->set_timezone($timezone);
+        
+    }
+    
+    public function set_unknown_symbol($unknown_symbol) {
+        $this->unknown_symbol = $unknown_symbol;
+    }
+    
+    public function get_unknown_symbol() {
+        return $this->unknown_symbol;
     }
 
     /**
@@ -70,7 +78,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
      * @param string $timezone
      */
     public function set_timezone($timezone = '') {
-        $this->timezone = $timezone ? $timezone : 'UTC';
+        $this->timezone = $timezone;
     }
 
     /**
@@ -105,37 +113,37 @@ abstract class ListTableAbstract extends \WP_List_Table {
     abstract public function record_count();
 
     public function column_default($item, $column_name) {
-        $timezone = $this->get_table_timezone();
+        $timezone = $this->get_timezone();
 
 
         $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
-        $country_code = in_array(strtolower($item['country_code']), array("", $this->unknown_symbol)) ? $this->unknown_symbol : $item['country_code'];
+        $country_code = in_array(strtolower($item['country_code']), array("", $this->get_unknown_symbol())) ? $this->get_unknown_symbol() : $item['country_code'];
 
         switch ($column_name) {
 
             case 'user_id':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : absint($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : absint($item[$column_name]);
 
             case 'username_csv':
-                return $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
+                return $this->is_empty($item['username']) ? $this->get_unknown_symbol() : esc_html($item['username']);
 
             case 'role':
 
                 if ($this->is_empty($item['user_id'])) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
                 $user_data = get_userdata($item['user_id']);
 
 
-                return $this->is_empty($user_data->roles) ? $this->unknown_symbol : esc_html(implode(',', $user_data->roles));
+                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
 
             case 'old_role':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : esc_html($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
             case 'browser':
 
                 if ($this->is_empty($item[$column_name])) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
 
                 if (empty($item['browser_version'])) {
@@ -145,16 +153,16 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 return esc_html($item[$column_name] . " (" . $item['browser_version'] . ")");
 
             case 'ip_address':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : esc_html($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
             case 'timezone':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : esc_html($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
 
             case 'country_name':
 
                 if ($this->is_empty($item[$column_name])) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
 
                 if (empty($item['country_code'])) {
@@ -165,25 +173,25 @@ abstract class ListTableAbstract extends \WP_List_Table {
 
 
             case 'country_code':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : esc_html($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
             case 'operating_system':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : esc_html($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
 
             case 'time_login':
                 if (!(strtotime($item[$column_name]) > 0)) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
                 $time_login = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
-                return $time_login ? $time_login : $this->unknown_symbol;
+                return $time_login ? $time_login : $this->get_unknown_symbol();
 
             case 'time_logout':
                 if ($this->is_empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
                 $time_logout = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
-                return $time_logout ? $time_logout : $this->unknown_symbol;
+                return $time_logout ? $time_logout : $this->get_unknown_symbol();
 
 
 
@@ -191,13 +199,13 @@ abstract class ListTableAbstract extends \WP_List_Table {
 
                 $time_last_seen_unix = strtotime($item[$column_name]);
                 if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
                 $time_last_seen = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
 
 
                 if (!$time_last_seen) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
 
                 $human_time_diff = human_time_diff($time_last_seen_unix);
@@ -219,24 +227,24 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
 
             case 'user_agent':
-                return $this->is_empty($item[$column_name]) ? $this->unknown_symbol : esc_html($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
             case 'duration':
                 if ($this->is_empty($item['time_login']) || !(strtotime($item['time_login']) > 0)) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
 
                 if ($this->is_empty($item['time_last_seen']) || !(strtotime($item['time_login']) > 0)) {
-                    return $this->unknown_symbol;
+                    return $this->get_unknown_symbol();
                 }
                 return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
 
             case 'login_status':
                 $login_statuses = TemplateHelper::login_statuses();
-                return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->unknown_symbol;
+                return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->get_unknown_symbol();
 
             case 'blog_id':
-                return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->unknown_symbol;
+                return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->get_unknown_symbol();
 
             case 'is_super_admin':
                 $super_admin_statuses = TemplateHelper::super_admin_statuses();
@@ -253,5 +261,14 @@ abstract class ListTableAbstract extends \WP_List_Table {
     protected function is_empty($value = '') {
         return ValidationHelper::isEmpty($value);
     }
+    
+    /**
+         * Timezone edit link
+         * 
+         * @return string
+         */
+        public function timezone_edit_link($user_id = null) {
+            return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone($user_id) . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
+        }
 
 }

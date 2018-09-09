@@ -3,11 +3,13 @@
 namespace User_Login_History\Inc\Core;
 
 use User_Login_History as NS;
-use User_Login_History\Inc\Admin;
+use User_Login_History\Inc\Admin\Admin;
 use User_Login_History\Inc\Admin\User_Profile;
+use User_Login_History\Inc\Admin\Settings as AdminSettings;
+use User_Login_History\Inc\Admin\LoginListCsv;
+use User_Login_History\Inc\Admin\LoginListTable;
 use User_Login_History\Inc\Common\LoginTracker;
 use User_Login_History\Inc\Frontend as Frontend;
-use User_Login_History\Inc\Common;
 use User_Login_History\Inc\Common\Settings;
 
 /**
@@ -108,9 +110,10 @@ class Init {
      * @access    private
      */
     private function define_admin_hooks() {
+    $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        $plugin_admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile);
 
-        $plugin_admin = new Admin\Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-
+        $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu', $plugin_admin, 'admin_menu');
@@ -123,13 +126,13 @@ class Init {
         $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
         $this->loader->add_action('init', $LoginTracker, 'init');
         $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information');
+        
 
-
-        $Admin_Setting = new Admin\Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());
+        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());
         $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
         $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 
-        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+    
 
         $this->loader->add_action('admin_init', $User_Profile, 'admin_init');
         $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');

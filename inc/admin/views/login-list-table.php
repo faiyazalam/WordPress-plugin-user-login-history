@@ -3,6 +3,8 @@
     <hr>
     <div><?php require(plugin_dir_path(dirname(__FILE__)) . 'views/forms/filter.php'); ?></div>
     <hr>
+    <div><?php echo $this->list_table->timezone_edit_link() ?></div>
+    <hr>
     <form method="post">
         <input type="hidden" name="<?php echo $this->list_table->get_bulk_action_form() ?>" value="">
         <?php

@@ -4,7 +4,10 @@ namespace User_Login_History\Inc\Admin;
 
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
+use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
 use User_Login_History\Inc\Admin\User_Profile;
+use User_Login_History\Inc\Common\Abstracts\ListTableAbstract;
+use User_Login_History\Inc\Common\Interfaces\IAdminCsv;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -17,7 +20,7 @@ use User_Login_History\Inc\Admin\User_Profile;
  *
  * @author    Er Faiyaz Alam
  */
-final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\ListTableAbstract {
+final class LoginListTable extends ListTableAbstract implements IAdminCsv {
 
     private $table;
     private $message;
@@ -93,8 +96,8 @@ final class LoginListTable extends \User_Login_History\Inc\Common\Abstracts\List
 
                 if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
                     $date_type = esc_sql($date_type);
-                    $date_from = Faulh_Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
-                    $date_to = Faulh_Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                    $date_from = DateTimeHelper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                    $date_to = DateTimeHelper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
                 } else {
