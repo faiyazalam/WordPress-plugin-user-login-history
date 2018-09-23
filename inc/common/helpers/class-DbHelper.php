@@ -173,4 +173,17 @@ class DbHelper {
             wp_die($wpdb->last_error);
         }
         }
+        
+        
+        static public function is_table_exist($table = '') {
+             if(empty($table) || !is_string($table))
+             {
+               
+                 return FALSE;
+             }
+            global $wpdb;
+           
+            $query = $wpdb->prepare("SHOW TABLES LIKE %s", $wpdb->esc_like($table));
+            return $wpdb->get_var($query) == $table;
+        }
 }

@@ -22,12 +22,7 @@ use User_Login_History\Inc\Common\Interfaces\IAdminCsv;
  */
 final class LoginListTable extends ListTableAbstract implements IAdminCsv {
 
-    private $table;
-    private $message;
-    private $bulk_action_form;
-    private $delete_action;
-    private $delete_action_nonce;
-    private $bulk_action_nonce;
+   
 
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
@@ -218,7 +213,6 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
             'timezone' => array('timezone', false),
             'user_agent' => array('user_agent', false),
             'login_status' => array('login_status', false),
-            'is_super_admin' => array('is_super_admin', false),
             'duration' => array('duration', false),
         );
 
@@ -275,29 +269,9 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
         return sprintf('<input type="checkbox" name="bulk-action-ids[]" value="%s" />', $item['id']);
     }
 
-    /**
-     * Check form submission and then 
-     * process the bulk operation.
-     * 
-     * @access   public 
-     * @return boolean
-     */
-    public function process_action() {
+    
 
-        if (empty($_REQUEST['_wpnonce'])) {
-            return;
-        }
-
-        if (isset($_POST[$this->bulk_action_form]) && wp_verify_nonce($_POST['_wpnonce'], $this->bulk_action_nonce)) {
-            return $this->process_bulk_action();
-        }
-
-        if (wp_verify_nonce($_GET['_wpnonce'], $this->delete_action_nonce)) {
-            return $this->process_single_action();
-        }
-    }
-
-    private function process_bulk_action() {
+    public function process_bulk_action() {
         switch ($this->current_action()) {
             case 'bulk-delete':
                 $status = DbHelper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
@@ -318,7 +292,7 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
         return $status;
     }
 
-    private function process_single_action() {
+    public function process_single_action() {
         if (empty($_GET['record_id'])) {
             return;
         }
@@ -340,5 +314,8 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
 
         return $status;
     }
+    
+    
+    
 
 }

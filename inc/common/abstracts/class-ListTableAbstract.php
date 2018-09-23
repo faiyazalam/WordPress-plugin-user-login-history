@@ -54,6 +54,14 @@ abstract class ListTableAbstract extends \WP_List_Table {
     protected $plugin_text_domain;
     protected $timezone;
     private $unknown_symbol = '<span aria-hidden="true">—</span>';
+    
+    
+     protected $table;
+    protected $message;
+    protected $bulk_action_form;
+    protected $delete_action;
+    protected $delete_action_nonce;
+    protected $bulk_action_nonce;
 
     public function __construct($plugin_name, $version, $plugin_text_domain, $args = array()) {
         parent::__construct($args);
@@ -270,5 +278,31 @@ abstract class ListTableAbstract extends \WP_List_Table {
         public function timezone_edit_link($user_id = null) {
             return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone($user_id) . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
         }
+        
+        
+        /**
+     * Check form submission and then 
+     * process the bulk operation.
+     * 
+     * @access   public 
+     * @return boolean
+     */
+    public function process_action() {
+
+        if (empty($_REQUEST['_wpnonce'])) {
+            return;
+        }
+       
+        if (isset($_POST[$this->bulk_action_form]) && !empty($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], $this->bulk_action_nonce)) {
+            return $this->process_bulk_action();
+        }
+
+        if (!empty($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], $this->delete_action_nonce)) {
+            return $this->process_single_action();
+        }
+    }
+    
+    abstract public function process_bulk_action() ;
+    abstract public function process_single_action() ;
 
 }

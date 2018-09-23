@@ -7,6 +7,7 @@ use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
 use User_Login_History\Inc\Common\Helpers\GeoHelper;
 use User_Login_History\Inc\Common\Helpers\ErrorLogHelper;
 use User_Login_History\Inc\Common\Helpers\DbHelper;
+use User_Login_History\Inc\Admin\Network_Admin_Settings;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -140,9 +141,9 @@ class LoginTracker {
         if (is_super_admin($user_id)) {
             return FALSE;
         }
-
+        
         if (!is_user_member_of_blog($user_id)) {
-            $Network_Admin_Setting = new Faulh_Network_Admin_Setting($this->plugin_name);
+            $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
             if ($Network_Admin_Setting->get_settings('block_user')) {
                 $this->login_status = self::LOGIN_STATUS_BLOCK;
                 $this->current_loggedin_blog_id = get_current_blog_id();

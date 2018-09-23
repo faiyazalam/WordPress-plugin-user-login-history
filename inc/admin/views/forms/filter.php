@@ -74,7 +74,7 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
     <fieldset>
         <a href="<?php echo esc_url("admin.php?page=" . $_GET['page']); ?>"><?php esc_html_e('CANCEL', $this->plugin_text_domain) ?></a>
         <input id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', $this->plugin_text_domain) ?>" />
-        <a id="download_csv_link" href="#"><?php esc_html_e('DOWNLOAD CSV', $this->plugin_text_domain); ?></a> 
+        <a id="download_csv_link" href="javascript::void(0)"><?php esc_html_e('DOWNLOAD CSV', $this->plugin_text_domain); ?></a> 
     </fieldset>
 
 </form>

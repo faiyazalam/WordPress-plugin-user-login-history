@@ -18,6 +18,8 @@ use User_Login_History\Inc\Admin\User_Profile;
  */
 class Admin {
 
+    const INTERVAL_FOR_TRANSIENT = 120;
+
     /**
      * The ID of this plugin.
      *
@@ -66,6 +68,7 @@ class Admin {
     
     public function admin_init() {
         $this->export_csv();
+        $this->update_network_settings();
     }
 
     private function export_csv() {
@@ -185,7 +188,13 @@ class Admin {
 
         add_screen_option($option, $args);
 
+        if(is_network_admin()){
+               $this->list_table = new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+        }
+ else {
         $this->list_table = new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
+ }
+     
         $this->list_table->set_timezone($this->user_profile->get_user_timezone());
         $status = $this->list_table->process_action();
         if (!is_null($status)) {
@@ -202,14 +211,13 @@ class Admin {
      * @access public
      */
     public function add_admin_notice($message, $type = 'success') {
-        $seconds = 120;
         $notices = get_transient($this->admin_notice_transient);
         if ($notices === false) {
             $new_notices[] = array($message, $type);
-            set_transient($this->admin_notice_transient, $new_notices, $seconds);
+            set_transient($this->admin_notice_transient, $new_notices, self::INTERVAL_FOR_TRANSIENT);
         } else {
             $notices[] = array($message, $type);
-            set_transient($this->admin_notice_transient, $notices, $seconds);
+            set_transient($this->admin_notice_transient, $notices, self::INTERVAL_FOR_TRANSIENT);
         }
     }
 
@@ -228,5 +236,23 @@ class Admin {
             delete_transient($this->admin_notice_transient);
         }
     }
+    
+    /**
+         * Update the network settings.
+         * 
+         * @access public
+         */
+        private function update_network_settings() {
+            if(!is_network_admin())
+            {
+                return;
+            }
+            $obj = new Network_Admin_Settings($this->plugin_name);
+            if ($obj->update()) {
+                $this->add_admin_notice(esc_html__('Settings updated successfully.', 'faulh'));
+                wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
+                exit;
+            }
+        }
 
 }

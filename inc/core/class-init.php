@@ -6,6 +6,7 @@ use User_Login_History as NS;
 use User_Login_History\Inc\Admin\Admin;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Admin\Settings as AdminSettings;
+use User_Login_History\Inc\Admin\Network_Admin_Settings;
 use User_Login_History\Inc\Admin\LoginListCsv;
 use User_Login_History\Inc\Admin\LoginListTable;
 use User_Login_History\Inc\Common\LoginTracker;
@@ -125,15 +126,18 @@ class Init {
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu', $plugin_admin, 'admin_menu');
+        $this->loader->add_action('network_admin_menu', $plugin_admin, 'admin_menu');
         $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
+        
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
+        $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
 
         $LoginTracker = new LoginTracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
         $this->loader->add_action('set_logged_in_cookie', $LoginTracker, 'set_logged_in_cookie', 10, 6);
         $this->loader->add_action('wp_login_failed', $LoginTracker, 'on_login_failed');
         $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
         $this->loader->add_action('init', $LoginTracker, 'init');
-        $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information');
+        $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information', 10, 2);
 
 
         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());
@@ -148,6 +152,9 @@ class Init {
         $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
         $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
         $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
+        
+          $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
+                $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
 
 
         /*

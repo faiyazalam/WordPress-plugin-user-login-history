@@ -2,6 +2,7 @@
 
 namespace User_Login_History\Inc\Common\Helpers;
 use User_Login_History\Inc\Common\LoginTracker;
+use User_Login_History as NS;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -92,7 +93,7 @@ use User_Login_History\Inc\Common\LoginTracker;
          */
         static public function head($page = '') {
             $author_urls = self::plugin_author_links();
-            $h = "<h1>" . self::plugin_name() . " " . FAULH_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
+            $h = "<h1>" . self::plugin_name() . " " . NS\PLUGIN_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
             $h .= "<div>";
 
             if (!empty($author_urls['wordpress'])) {
