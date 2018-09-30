@@ -35,7 +35,7 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
         $this->bulk_action_form = $this->_args['singular'] . "_form";
         $this->delete_action_nonce = $this->_args['singular'] . "_delete_none";
         $this->delete_action = $this->_args['singular'] . "_delete";
-        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+    
         $this->bulk_action_nonce = 'bulk-' . $this->_args['plural'];
     }
 
@@ -272,6 +272,7 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
     
 
     public function process_bulk_action() {
+         $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
         switch ($this->current_action()) {
             case 'bulk-delete':
                 $status = DbHelper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
@@ -298,12 +299,12 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
         }
 
         $id = absint($_GET['record_id']);
-
+        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
         switch ($this->current_action()) {
             case $this->delete_action:
                 $status = DbHelper::delete_rows_by_table_and_ids($this->table, array($id));
                 if ($status) {
-                    $this->set_message(esc_html__('Selected record deleted.', $this->plugin_text_domain));
+                    $this->set_message(esc_html__('Record deleted.', $this->plugin_text_domain));
                 }
                 break;
 
@@ -314,8 +315,5 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
 
         return $status;
     }
-    
-    
-    
 
 }

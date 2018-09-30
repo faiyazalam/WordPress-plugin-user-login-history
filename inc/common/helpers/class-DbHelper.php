@@ -85,8 +85,8 @@ class DbHelper {
          * @access public
          * @param int $id The record ID
          */
-        static public function delete_rows_by_table_and_ids($table='', $ids = array()) {
-            if(empty($table) || empty($ids) || !is_array($ids))
+        static public function delete_rows_by_table_and_ids($table='', $ids) {
+            if(empty($table) || empty($ids))
             {
                 return FALSE;
             }
@@ -94,11 +94,12 @@ class DbHelper {
             $table = $wpdb->prefix . $table;
     
               
-                $ids = implode(',', array_map('absint', $ids));
+                $ids = is_array($ids) ? implode(',', array_map('absint', $ids)) : $ids;
                 $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
                 
                 if ($wpdb->last_error) {
                     ErrorLogHelper::error_log($wpdb->last_error . " " . $wpdb->last_query);
+                    return FALSE;
                 }
                 return $status;
             
@@ -149,7 +150,7 @@ class DbHelper {
                 $site_id = get_current_network_id();
             }
             
-            if(!is_numeric($site_id))
+            if(!is_numeric($site_id) || !($site_id > 0))
             {
                 return FALSE;
             }
@@ -185,5 +186,26 @@ class DbHelper {
            
             $query = $wpdb->prepare("SHOW TABLES LIKE %s", $wpdb->esc_like($table));
             return $wpdb->get_var($query) == $table;
+        }
+        
+        
+         static public function is_blog_exist($blog_id = NULL, $site_id = NULL) {
+             if(is_null($blog_id) || !is_numeric($blog_id) || !($blog_id > 0))
+             {
+                 return FALSE;
+             }
+       
+            if (is_null($site_id)) {
+                
+                $site_id = get_current_network_id();
+            }
+            
+            if(!is_numeric($site_id) || !($site_id > 0))
+            {
+                return FALSE;
+            }
+                        global $wpdb;
+            return self::get_var("SELECT blog_id FROM $wpdb->blogs WHERE `blog_id` = ". absint($blog_id)." AND `site_id` = ". absint($site_id)." ORDER BY blog_id ASC");
+            
         }
 }

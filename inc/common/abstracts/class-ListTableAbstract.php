@@ -54,9 +54,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
     protected $plugin_text_domain;
     protected $timezone;
     private $unknown_symbol = '<span aria-hidden="true">—</span>';
-    
-    
-     protected $table;
+    protected $table;
     protected $message;
     protected $bulk_action_form;
     protected $delete_action;
@@ -68,13 +66,12 @@ abstract class ListTableAbstract extends \WP_List_Table {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        
     }
-    
+
     public function set_unknown_symbol($unknown_symbol) {
         $this->unknown_symbol = $unknown_symbol;
     }
-    
+
     public function get_unknown_symbol() {
         return $this->unknown_symbol;
     }
@@ -140,7 +137,18 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 if ($this->is_empty($item['user_id'])) {
                     return $this->get_unknown_symbol();
                 }
-                $user_data = get_userdata($item['user_id']);
+
+
+                if (is_network_admin()) {
+                    switch_to_blog($item['blog_id']);
+                    $user_data = get_userdata($item['user_id']);
+                    restore_current_blog();
+                } else {
+                    $user_data = get_userdata($item['user_id']);
+                }
+
+
+
 
 
                 return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
@@ -218,7 +226,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
 
                 $human_time_diff = human_time_diff($time_last_seen_unix);
                 $is_online_str = 'offline';
-                
+
                 if (in_array($item['login_status'], array("", LoginTracker::LOGIN_STATUS_LOGIN))) {
                     $minutes = ((time() - $time_last_seen_unix) / 60);
                     $settings = get_option($this->plugin_name . "_basics");
@@ -269,18 +277,17 @@ abstract class ListTableAbstract extends \WP_List_Table {
     protected function is_empty($value = '') {
         return ValidationHelper::isEmpty($value);
     }
-    
+
     /**
-         * Timezone edit link
-         * 
-         * @return string
-         */
-        public function timezone_edit_link($user_id = null) {
-            return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone($user_id) . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
-        }
-        
-        
-        /**
+     * Timezone edit link
+     * 
+     * @return string
+     */
+    public function timezone_edit_link($user_id = null) {
+        return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone($user_id) . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
+    }
+
+    /**
      * Check form submission and then 
      * process the bulk operation.
      * 
@@ -292,17 +299,18 @@ abstract class ListTableAbstract extends \WP_List_Table {
         if (empty($_REQUEST['_wpnonce'])) {
             return;
         }
-       
+
         if (isset($_POST[$this->bulk_action_form]) && !empty($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], $this->bulk_action_nonce)) {
             return $this->process_bulk_action();
         }
 
         if (!empty($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], $this->delete_action_nonce)) {
+
             return $this->process_single_action();
         }
     }
-    
-    abstract public function process_bulk_action() ;
-    abstract public function process_single_action() ;
 
+    abstract public function process_bulk_action();
+
+    abstract public function process_single_action();
 }

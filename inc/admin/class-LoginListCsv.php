@@ -61,13 +61,18 @@ final class LoginListCsv {
             $i = 0;
             $record = array();
             foreach ($data as $row) {
+               
+                
+               
+                
+                
                 $user_id = !empty($row['user_id']) ? $row['user_id'] : FALSE;
                 if (!$user_id) {
                     $time_last_seen_str = $time_logout_str = $current_role = $old_role = $this->list_table->get_unknown_symbol();
                 } else {
                     $time_last_seen_str = !empty($row['time_last_seen']) && strtotime($row['time_last_seen']) > 0 ? DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($row['time_last_seen'], '', $timezone)) : $this->list_table->get_unknown_symbol();
                     $time_logout_str = !empty($row['time_logout']) && strtotime($row['time_logout']) > 0 ? DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($row['time_logout'], '', $timezone)) : $this->list_table->get_unknown_symbol();
-                    $current_role = $this->list_table->column_default($row, 'role');
+                    $current_role = $this->list_table->column_default($row, 'role'); 
                     $old_role = $this->list_table->column_default($row, 'old_role');
                 }
 
@@ -79,7 +84,7 @@ final class LoginListCsv {
 
                 $record[__('Browser', 'faulh')] = $this->list_table->column_default($row, 'browser');
                 $record[__('Operating System', 'faulh')] = $this->list_table->column_default($row, 'operating_system');
-                $record[__('Country Name', 'faulh')] = $this->list_table->column_default($row, 'country_name_csv');
+                $record[__('Country Name', 'faulh')] = $this->list_table->column_default($row, 'country_name');
                 $record[__('Country Code', 'faulh')] = $this->list_table->column_default($row, 'country_code');
                 $record[__('Timezone', 'faulh')] = $this->list_table->column_default($row, 'timezone');
                 $record[__('Duration', 'faulh')] = $this->list_table->column_default($row, 'duration');

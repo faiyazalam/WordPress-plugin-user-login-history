@@ -78,7 +78,8 @@ class Admin {
 
         if (!empty($_GET['csv']) && 1 == $_GET['csv']) {
             if (check_admin_referer('csv_nonce')) {
-            $LoginListCsv = new LoginListCsv(new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain));
+                $LoginList = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
+                $LoginListCsv = new LoginListCsv($LoginList);
                 $LoginListCsv->init();
             }
         }
