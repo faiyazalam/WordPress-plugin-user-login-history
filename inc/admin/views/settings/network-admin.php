@@ -1,9 +1,9 @@
 <?php
-use User_Login_History\Inc\Common\Helpers\TemplateHelper;
+use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
 ?>
 <div class="wrap faulhSettingPage">
-    <?php echo TemplateHelper::head(esc_html__('Network Settings', 'faulh')) ?>
+    <?php echo Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?>
     <form method="post">
         <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_setting_submit' ?>" >
         <fieldset>

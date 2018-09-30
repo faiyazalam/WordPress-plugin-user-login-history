@@ -7,12 +7,10 @@ use User_Login_History\Inc\Admin\Admin;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Admin\Settings as AdminSettings;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
-use User_Login_History\Inc\Admin\LoginListCsv;
-use User_Login_History\Inc\Admin\LoginListTable;
-use User_Login_History\Inc\Common\LoginTracker;
+use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Frontend as Frontend;
 use User_Login_History\Inc\Common\Settings;
-use User_Login_History\Inc\Admin\NetworkBlogManager;
+use User_Login_History\Inc\Admin\Network_Blog_Manager;
 
 /**
  * The core plugin class.
@@ -113,9 +111,9 @@ class Init {
      */
     private function define_admin_hooks() {
         if (is_multisite() && is_network_admin()) {
-            $NetworkBlogManager = new NetworkBlogManager();
-            $this->loader->add_action('wpmu_new_blog', $NetworkBlogManager, 'on_create_blog', 10, 6);
-            $this->loader->add_action('deleted_blog', $NetworkBlogManager, 'deleted_blog', 10, 1);
+            $Network_Blog_Manager = new Network_Blog_Manager();
+            $this->loader->add_action('wpmu_new_blog', $Network_Blog_Manager, 'on_create_blog', 10, 6);
+            $this->loader->add_action('deleted_blog', $Network_Blog_Manager, 'deleted_blog', 10, 1);
         }
 
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
@@ -132,12 +130,12 @@ class Init {
         $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
         $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
 
-        $LoginTracker = new LoginTracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
-        $this->loader->add_action('set_logged_in_cookie', $LoginTracker, 'set_logged_in_cookie', 10, 6);
-        $this->loader->add_action('wp_login_failed', $LoginTracker, 'on_login_failed');
-        $this->loader->add_action('wp_logout', $LoginTracker, 'on_logout');
-        $this->loader->add_action('init', $LoginTracker, 'init');
-        $this->loader->add_action('attach_session_information', $LoginTracker, 'attach_session_information', 10, 2);
+        $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
+        $this->loader->add_action('set_logged_in_cookie', $Login_Tracker, 'set_logged_in_cookie', 10, 6);
+        $this->loader->add_action('wp_login_failed', $Login_Tracker, 'on_login_failed');
+        $this->loader->add_action('wp_logout', $Login_Tracker, 'on_logout');
+        $this->loader->add_action('init', $Login_Tracker, 'init');
+        $this->loader->add_action('attach_session_information', $Login_Tracker, 'attach_session_information', 10, 2);
 
 
         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());

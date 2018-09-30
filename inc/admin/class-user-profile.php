@@ -2,7 +2,7 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History\Inc\Common\Helpers\TemplateHelper;
+use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 use User_Login_History\Inc\Common\Abstracts\User_Profile as User_Profile_Abstract;
 
 class User_Profile extends User_Profile_Abstract {
@@ -26,7 +26,7 @@ class User_Profile extends User_Profile_Abstract {
                     <select required="required" id="<?php echo $this->get_usermeta_key_timezone() ?>" name="<?php echo $this->get_usermeta_key_timezone() ?>">
                         <option value=""><?php esc_html_e('Select Timezone', 'faulh') ?></option>
                         <?php
-                        TemplateHelper::dropdown_timezones($user_timezone);
+                        Template_Helper::dropdown_timezones($user_timezone);
                         ?>
                     </select>
                     <div><?php esc_html_e('This is used to convert date-time (e.g. login time, last seen time etc.) on the listing table.', $this->plugin_text_domain) ?></div>

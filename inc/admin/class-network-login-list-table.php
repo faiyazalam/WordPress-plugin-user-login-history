@@ -3,11 +3,11 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\DbHelper;
-use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
+use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Admin\User_Profile;
-use User_Login_History\Inc\Common\Abstracts\ListTableAbstract;
-use User_Login_History\Inc\Common\Interfaces\IAdminCsv;
+use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
+use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -20,7 +20,7 @@ use User_Login_History\Inc\Common\Interfaces\IAdminCsv;
  *
  * @author    Er Faiyaz Alam
  */
-final class Network_Login_List_Table extends ListTableAbstract implements IAdminCsv {
+final class Network_Login_List_Table extends List_Table_Abstract implements Admin_Csv_Interface {
 
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
@@ -88,8 +88,8 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
 
                 if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
                     $date_type = esc_sql($date_type);
-                    $date_from = DateTimeHelper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
-                    $date_to = DateTimeHelper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                    $date_from = Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                    $date_to = Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
                 } else {
@@ -201,7 +201,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
         $where_query = $this->prepare_where_query();
         $i = 0;
         $sql = "";
-        $blog_ids = DbHelper::get_blog_ids_by_site_id();
+        $blog_ids = Db_Helper::get_blog_ids_by_site_id();
 
 
 
@@ -213,7 +213,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
 
 //if plugin is not activated network wide, we have to check existence of plugin table.
             if (!$this->is_plugin_active_for_network) {
-                if (!DbHelper::is_table_exist($table)) {
+                if (!Db_Helper::is_table_exist($table)) {
                     continue;
                 }
             }
@@ -267,7 +267,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
 
-        return DbHelper::get_results($sql);
+        return Db_Helper::get_results($sql);
     }
 
     /**
@@ -284,7 +284,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
         $table_users = $wpdb->users;
         $i = 0;
         $sql = "";
-        $blog_ids = DbHelper::get_blog_ids_by_site_id();
+        $blog_ids = Db_Helper::get_blog_ids_by_site_id();
 
         foreach ($blog_ids as $blog_id) {
             $blog_prefix = $wpdb->get_blog_prefix($blog_id);
@@ -292,7 +292,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
 
 
             if (!$this->is_plugin_active_for_network) {
-                if (!DbHelper::is_table_exist($table)) {
+                if (!Db_Helper::is_table_exist($table)) {
                     continue;
                 }
             }
@@ -365,7 +365,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
 
                 foreach ($ids as $blog_id => $record_ids) {
                     switch_to_blog($blog_id);
-                    $status = DbHelper::delete_rows_by_table_and_ids($this->table, $record_ids);
+                    $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $record_ids);
                     restore_current_blog();
                     if (!$status) {
                         break;
@@ -374,10 +374,10 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
                 $this->set_message(esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
                 break;
             case 'bulk-delete-all-admin':
-                $blog_ids = DbHelper::get_blog_ids_by_site_id();
+                $blog_ids = Db_Helper::get_blog_ids_by_site_id();
                 foreach ($blog_ids as $blog_id) {
                     switch_to_blog($blog_id);
-                    $status = DbHelper::truncate_table($this->table);
+                    $status = Db_Helper::truncate_table($this->table);
                     restore_current_blog();
                     if (!$status) {
                         break;
@@ -402,7 +402,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
         $id = absint($_GET['record_id']);
         $blog_id = absint($_GET['blog_id']);
         
-        if(!DbHelper::is_blog_exist($blog_id))
+        if(!Db_Helper::is_blog_exist($blog_id))
         {
             
             return;
@@ -411,7 +411,7 @@ final class Network_Login_List_Table extends ListTableAbstract implements IAdmin
         switch ($this->current_action()) {
             case $this->delete_action:
                  switch_to_blog($blog_id);
-                $status = DbHelper::delete_rows_by_table_and_ids($this->table, array($id));
+                $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
                 if ($status) {
                     $this->set_message(esc_html__('Selected record deleted.', $this->plugin_text_domain));
                 }

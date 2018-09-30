@@ -1,7 +1,7 @@
 <?php
 namespace User_Login_History\Inc\Admin;
 use User_Login_History\Inc\Common\Abstracts\Settings as AbstractSettings;
-use User_Login_History\Inc\Common\Helpers\TemplateHelper;
+use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
    class Network_Admin_Settings extends AbstractSettings {
 
@@ -29,7 +29,7 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
      */
     public function add_setting_menu() {
         add_submenu_page(
-                'settings.php', TemplateHelper::plugin_name(), TemplateHelper::plugin_name(), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
+                'settings.php', Template_Helper::plugin_name(), Template_Helper::plugin_name(), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
         );
     }
 

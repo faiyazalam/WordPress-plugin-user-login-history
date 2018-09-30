@@ -2,7 +2,7 @@
 namespace User_Login_History\Inc\Common\Helpers;
 
 
-    class GeoHelper {
+    class Geo {
 
         /**
          * URL of the thirst party service.

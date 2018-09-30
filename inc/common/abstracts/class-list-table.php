@@ -3,11 +3,11 @@
 namespace User_Login_History\Inc\Common\Abstracts;
 
 use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\TemplateHelper;
-use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
-use User_Login_History\Inc\Common\Helpers\DbHelper;
-use User_Login_History\Inc\Common\LoginTracker;
-use User_Login_History\Inc\Common\Helpers\ValidationHelper;
+use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
+use User_Login_History\Inc\Common\Login_Tracker;
+use User_Login_History\Inc\Common\Helpers\Validation as Validation_Helper;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -24,7 +24,7 @@ if (!class_exists('WP_List_Table')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-abstract class ListTableAbstract extends \WP_List_Table {
+abstract class List_Table extends \WP_List_Table {
 
     /**
      * The ID of this plugin.
@@ -199,14 +199,14 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 if (!(strtotime($item[$column_name]) > 0)) {
                     return $this->get_unknown_symbol();
                 }
-                $time_login = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
+                $time_login = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
                 return $time_login ? $time_login : $this->get_unknown_symbol();
 
             case 'time_logout':
                 if ($this->is_empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
                     return $this->get_unknown_symbol();
                 }
-                $time_logout = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
+                $time_logout = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
                 return $time_logout ? $time_logout : $this->get_unknown_symbol();
 
 
@@ -217,7 +217,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
                     return $this->get_unknown_symbol();
                 }
-                $time_last_seen = DateTimeHelper::convert_format(DateTimeHelper::convert_timezone($item[$column_name], '', $timezone));
+                $time_last_seen = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
 
 
                 if (!$time_last_seen) {
@@ -227,7 +227,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 $human_time_diff = human_time_diff($time_last_seen_unix);
                 $is_online_str = 'offline';
 
-                if (in_array($item['login_status'], array("", LoginTracker::LOGIN_STATUS_LOGIN))) {
+                if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
                     $minutes = ((time() - $time_last_seen_unix) / 60);
                     $settings = get_option($this->plugin_name . "_basics");
                     $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
@@ -256,14 +256,14 @@ abstract class ListTableAbstract extends \WP_List_Table {
                 return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
 
             case 'login_status':
-                $login_statuses = TemplateHelper::login_statuses();
+                $login_statuses = Template_Helper::login_statuses();
                 return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->get_unknown_symbol();
 
             case 'blog_id':
                 return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->get_unknown_symbol();
 
             case 'is_super_admin':
-                $super_admin_statuses = TemplateHelper::super_admin_statuses();
+                $super_admin_statuses = Template_Helper::super_admin_statuses();
                 return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
 
             default:
@@ -275,7 +275,7 @@ abstract class ListTableAbstract extends \WP_List_Table {
     }
 
     protected function is_empty($value = '') {
-        return ValidationHelper::isEmpty($value);
+        return Validation_Helper::isEmpty($value);
     }
 
     /**

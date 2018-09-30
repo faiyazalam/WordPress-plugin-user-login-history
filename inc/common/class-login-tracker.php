@@ -2,11 +2,11 @@
 
 namespace User_Login_History\Inc\Common;
 
-use User_Login_History\Inc\Common\Helpers\BrowserHelper;
-use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
-use User_Login_History\Inc\Common\Helpers\GeoHelper;
-use User_Login_History\Inc\Common\Helpers\ErrorLogHelper;
-use User_Login_History\Inc\Common\Helpers\DbHelper;
+use User_Login_History\Inc\Common\Helpers\Browser as Browser_Helper;
+use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
+use User_Login_History\Inc\Common\Helpers\Geo as Geo_Helper;
+use User_Login_History\Inc\Common\Helpers\Error_Log as Error_Log_Helper;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
 
 /**
@@ -20,7 +20,7 @@ use User_Login_History\Inc\Admin\Network_Admin_Settings;
  *
  * @author    Er Faiyaz Alam
  */
-class LoginTracker {
+class Login_Tracker {
 
     /**
      * Login Status Constants.
@@ -170,9 +170,9 @@ class LoginTracker {
         $options = get_option($this->plugin_name . "_advanced");
         $unknown = 'unknown';
         $table = $wpdb->prefix . $this->table;
-        $current_date = DateTimeHelper::get_current_date_time();
+        $current_date = Date_Time_Helper::get_current_date_time();
         $user_id = !empty($user->ID) ? $user->ID : FALSE;
-        $BrowserHelper = new BrowserHelper();
+        $Browser_Helper = new Browser_Helper();
 
 
 
@@ -184,11 +184,11 @@ class LoginTracker {
             'session_token' => $this->get_session_token(),
             'username' => $user_login,
             'time_login' => $current_date,
-            'ip_address' => GeoHelper::get_ip(),
+            'ip_address' => Geo_Helper::get_ip(),
             'time_last_seen' => $current_date,
-            'browser' => $BrowserHelper->getBrowser(),
-            'browser_version' => $BrowserHelper->getVersion(),
-            'operating_system' => $BrowserHelper->getPlatform(),
+            'browser' => $Browser_Helper->getBrowser(),
+            'browser_version' => $Browser_Helper->getVersion(),
+            'operating_system' => $Browser_Helper->getPlatform(),
             'old_role' => !empty($user->roles) ? implode(",", $user->roles) : "",
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : $unknown,
             'login_status' => $status,
@@ -196,7 +196,7 @@ class LoginTracker {
         );
 
         if (!empty($options['is_geo_tracker_enabled']) && 'on' == $options['is_geo_tracker_enabled']) {
-            $geo_location = GeoHelper::get_geo_location();
+            $geo_location = Geo_Helper::get_geo_location();
             $geo_fields = array('country_name', 'country_code', 'timezone');
             foreach ($geo_fields as $geo_field) {
                 $data[$geo_field] = !empty($geo_location[$geo_field]) ? $geo_location[$geo_field] : $unknown;
@@ -212,7 +212,7 @@ class LoginTracker {
         $wpdb->insert($table, $data);
 
         if ($wpdb->last_error || !$wpdb->insert_id) {
-            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Error_Log_Helper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
             return;
         }
 
@@ -241,12 +241,12 @@ class LoginTracker {
         
         global $wpdb;
         $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . $this->table;
-        $current_date = DateTimeHelper::get_current_date_time();
+        $current_date = Date_Time_Helper::get_current_date_time();
         $session_token = wp_get_session_token();
         
         $sql = "update $table set time_last_seen='$current_date' where session_token = '$session_token' and user_id = '{$current_user->ID}' ";
         
-        DbHelper::query($sql);
+        Db_Helper::query($sql);
       
         $data = array(
             'time_last_seen' => $current_date,
@@ -279,7 +279,7 @@ class LoginTracker {
         }
 
         global $wpdb;
-        $time_logout = DateTimeHelper::get_current_date_time();
+        $time_logout = Date_Time_Helper::get_current_date_time();
         $login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
         $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . $this->table;
         $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' ";
@@ -287,7 +287,7 @@ class LoginTracker {
         $wpdb->query($sql);
 
         if ($wpdb->last_error) {
-            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+            Error_Log_Helper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
         }
 
         $data = array(

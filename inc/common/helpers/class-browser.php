@@ -16,7 +16,7 @@ if (!class_exists('Browser')) {
 
 
 
-    class BrowserHelper extends \Browser {
+    class Browser extends \Browser {
         
     }
 

@@ -4,9 +4,9 @@ namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Common\Interfaces\IAdminSettings;
 use User_Login_History as NS;
-use User_Login_History\Inc\Common\Abstracts\Settings as AbstractSettings;
+use User_Login_History\Inc\Common\Abstracts\Settings as Abstract_Settings;
 
-class Settings extends AbstractSettings {
+class Settings extends Abstract_Settings {
 
     private $settings_api;
     private $plugin_name;

@@ -1,6 +1,6 @@
 <?php
 
-use User_Login_History\Inc\Common\Helpers\TemplateHelper;
+use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 ?>
 <form id="filter_form" method="get">
     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']) ?>" />
@@ -10,7 +10,7 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
         <input readonly autocomplete="off" placeholder="<?php esc_html_e("From", $this->plugin_text_domain) ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
         <input readonly autocomplete="off" placeholder="<?php esc_html_e("To", $this->plugin_text_domain) ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" >
         <select  name="date_type" >
-            <?php TemplateHelper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL); ?>
+            <?php Template_Helper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL); ?>
         </select>
     </div>
     <div><a id="show_hide_advanced_search" href="#"><?php esc_html_e('Show Advanced Filters', $this->plugin_text_domain) ?></a></div>
@@ -30,7 +30,7 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
                 <?php $selected_timezone = isset($_GET['timezone']) ? $_GET['timezone'] : "" ?>
                 <option value=""><?php esc_html_e('Select Timezone', $this->plugin_text_domain) ?></option>
                 <option value="unknown" <?php selected($selected_timezone, "unknown"); ?> ><?php esc_html_e('Unknown', $this->plugin_text_domain) ?></option>
-                <?php TemplateHelper::dropdown_timezones($selected_timezone); ?>
+                <?php Template_Helper::dropdown_timezones($selected_timezone); ?>
             </select></div>
         <div><label for="role" ><?php esc_html_e("Current Role", $this->plugin_text_domain) ?></label><select id="role"  name="role">
                 <option value=""><?php esc_html_e("Select Current Role", $this->plugin_text_domain) ?></option>
@@ -55,7 +55,7 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
                 <option value=""><?php esc_html_e('Select Login Status', $this->plugin_text_domain) ?></option>
                 <?php $selected_login_status = isset($_GET['login_status']) ? $_GET['login_status'] : "" ?>
                 <option value="unknown" <?php selected($selected_login_status, "unknown"); ?> ><?php esc_html_e('Unknown', $this->plugin_text_domain) ?></option>
-                <?php TemplateHelper::dropdown_login_statuses($selected_login_status); ?>
+                <?php Template_Helper::dropdown_login_statuses($selected_login_status); ?>
             </select></div>
         <?php if (is_network_admin()) { ?>
             <div><label for="is_super_admin" ><?php esc_html_e("Super Admin", $this->plugin_text_domain) ?></label>
@@ -63,7 +63,7 @@ use User_Login_History\Inc\Common\Helpers\TemplateHelper;
                     <option value=""><?php esc_html_e('Select Super Admin', $this->plugin_text_domain) ?></option>
 
                     <?php
-                    TemplateHelper::dropdown_is_super_admin(isset($_GET['is_super_admin']) ? $_GET['is_super_admin'] : NULL);
+                    Template_Helper::dropdown_is_super_admin(isset($_GET['is_super_admin']) ? $_GET['is_super_admin'] : NULL);
                     ?>
                 </select>
             </div>

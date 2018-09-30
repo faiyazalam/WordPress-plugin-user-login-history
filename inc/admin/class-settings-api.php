@@ -12,7 +12,7 @@ namespace User_Login_History\Inc\Admin;
  * @example example/oop-example.php How to use the class
  */
 
-class SettingsAPI {
+class Settings_Api {
 
     /**
      * settings sections array

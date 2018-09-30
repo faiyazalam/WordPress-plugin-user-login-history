@@ -13,7 +13,7 @@ namespace User_Login_History\Inc\Common\Helpers;
  *
  * @author    Er Faiyaz Alam
  */
-class DbHelper {
+class Db {
 
 
     static public function insert($table = '', $data = array()) {

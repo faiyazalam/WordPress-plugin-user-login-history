@@ -3,11 +3,11 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\DbHelper;
-use User_Login_History\Inc\Common\Helpers\DateTimeHelper;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
+use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Admin\User_Profile;
-use User_Login_History\Inc\Common\Abstracts\ListTableAbstract;
-use User_Login_History\Inc\Common\Interfaces\IAdminCsv;
+use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
+use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -20,7 +20,7 @@ use User_Login_History\Inc\Common\Interfaces\IAdminCsv;
  *
  * @author    Er Faiyaz Alam
  */
-final class LoginListTable extends ListTableAbstract implements IAdminCsv {
+final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_Interface {
 
    
 
@@ -91,8 +91,8 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
 
                 if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
                     $date_type = esc_sql($date_type);
-                    $date_from = DateTimeHelper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
-                    $date_to = DateTimeHelper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                    $date_from = Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
+                    $date_to = Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
                 } else {
@@ -149,7 +149,7 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
 
-        return DbHelper::get_results($sql);
+        return Db_Helper::get_results($sql);
     }
 
     /**
@@ -174,7 +174,7 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
             $sql .= $where_query;
         }
 
-        return DbHelper::get_var($sql);
+        return Db_Helper::get_var($sql);
     }
 
     public function get_columns() {
@@ -275,13 +275,13 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
          $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
         switch ($this->current_action()) {
             case 'bulk-delete':
-                $status = DbHelper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
+                $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
                 if ($status) {
                     $this->set_message(esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
                 }
                 break;
             case 'bulk-delete-all-admin':
-                $status = DbHelper::truncate_table($this->table);
+                $status = Db_Helper::truncate_table($this->table);
                 if ($status) {
                     $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
                 }
@@ -302,7 +302,7 @@ final class LoginListTable extends ListTableAbstract implements IAdminCsv {
         $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
         switch ($this->current_action()) {
             case $this->delete_action:
-                $status = DbHelper::delete_rows_by_table_and_ids($this->table, array($id));
+                $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
                 if ($status) {
                     $this->set_message(esc_html__('Record deleted.', $this->plugin_text_domain));
                 }

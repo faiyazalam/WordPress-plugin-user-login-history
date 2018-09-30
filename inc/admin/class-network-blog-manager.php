@@ -3,7 +3,7 @@
 namespace User_Login_History\Inc\Admin;
 use User_Login_History as NS;
 use User_Login_History\Inc\Core\Activator;
-use User_Login_History\Inc\Common\Helpers\DbHelper;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -17,7 +17,7 @@ use User_Login_History\Inc\Common\Helpers\DbHelper;
  * @author    Er Faiyaz Alam
  */
 
-    class NetworkBlogManager {
+    class Network_Blog_Manager {
         
       /**
      * Create table whenever a new blog is created.
@@ -49,7 +49,7 @@ use User_Login_History\Inc\Common\Helpers\DbHelper;
             return;
         }
             switch_to_blog($blog_id);
-            DbHelper::drop_table(NS\PLUGIN_TABLE_FA_USER_LOGINS);
+            Db_Helper::drop_table(NS\PLUGIN_TABLE_FA_USER_LOGINS);
             restore_current_blog();
     }
 

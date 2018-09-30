@@ -4,7 +4,7 @@ namespace User_Login_History\Inc\Core;
 
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\ErrorLogHelper;
-use User_Login_History\Inc\Common\Helpers\DbHelper;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
 /**
  * Fired during plugin activation
@@ -40,7 +40,7 @@ class Activator {
          
             // Get all blogs from current network the network and activate plugin on each one
               
-            $blog_ids = DbHelper::get_blog_ids_by_site_id();
+            $blog_ids = Db_Helper::get_blog_ids_by_site_id();
               
             foreach ($blog_ids as $blog_id) {
                 switch_to_blog($blog_id);
@@ -85,7 +85,7 @@ PRIMARY KEY  (id),
 INDEX faulh_user_traker_index (session_token,user_id)
 ) $charset_collate;";
 
-        DbHelper::dbDelta($sql);
+        Db_Helper::dbDelta($sql);
     }
 
     

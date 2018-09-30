@@ -1,7 +1,8 @@
 <?php
 
 namespace User_Login_History\Inc\Common\Helpers;
-use User_Login_History\Inc\Common\LoginTracker;
+use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
+use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History as NS;
 
 /**
@@ -16,7 +17,7 @@ use User_Login_History as NS;
  * @author    Er Faiyaz Alam
  */
 
-  class TemplateHelper {
+  class Template {
 
         /**
          * Print out option html elements for all the time field types.
@@ -66,7 +67,7 @@ use User_Login_History as NS;
          */
         static public function dropdown_timezones($selected = '') {
             $r = '';
-            $timezones = DateTimeHelper::get_timezone_list();
+            $timezones = Date_Time_Helper::get_timezone_list();
             foreach ($timezones as $timezone) {
                 $key = $timezone['zone'];
                 $name = $timezone['zone'] . "(" . $timezone['diff_from_GMT'] . ")";
@@ -146,13 +147,13 @@ use User_Login_History as NS;
          */
         static public function login_statuses() {
             $types = array(
-                LoginTracker::LOGIN_STATUS_LOGIN => esc_html__("Logged In", "faulh"),
-                LoginTracker::LOGIN_STATUS_LOGOUT => esc_html__("Logged Out", "faulh"),
-                LoginTracker::LOGIN_STATUS_FAIL => esc_html__("Failed", "faulh"),
+                Login_Tracker::LOGIN_STATUS_LOGIN => esc_html__("Logged In", "faulh"),
+                Login_Tracker::LOGIN_STATUS_LOGOUT => esc_html__("Logged Out", "faulh"),
+                Login_Tracker::LOGIN_STATUS_FAIL => esc_html__("Failed", "faulh"),
             );
 
             if (is_multisite()) {
-                $types[LoginTracker::LOGIN_STATUS_BLOCK] = esc_html__("Blocked", "faulh");
+                $types[Login_Tracker::LOGIN_STATUS_BLOCK] = esc_html__("Blocked", "faulh");
             }
             return $types;
         }
