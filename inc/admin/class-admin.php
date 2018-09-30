@@ -79,6 +79,8 @@ class Admin {
         if (!empty($_GET['csv']) && 1 == $_GET['csv']) {
             if (check_admin_referer('csv_nonce')) {
                 $LoginList = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
+                $this->user_profile->set_user_id();
+                $LoginList->set_timezone($this->user_profile->get_user_timezone());
                 $LoginListCsv = new LoginListCsv($LoginList);
                 $LoginListCsv->init();
             }
@@ -188,16 +190,11 @@ class Admin {
         );
 
         add_screen_option($option, $args);
-
-        if(is_network_admin()){
-               $this->list_table = new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
-        }
- else {
-        $this->list_table = new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
- }
-     
+        
+        $this->list_table = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain):new LoginListTable($this->plugin_name, $this->version, $this->plugin_text_domain);
         $this->list_table->set_timezone($this->user_profile->get_user_timezone());
         $status = $this->list_table->process_action();
+        
         if (!is_null($status)) {
             $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
             wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));

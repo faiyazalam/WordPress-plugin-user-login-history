@@ -101,6 +101,7 @@ final class LoginListCsv {
                 if (0 == $i) {
                     fputcsv($fp, array_keys($record));
                 }
+                
                 fputcsv($fp, $record);
                 $i++;
             }
