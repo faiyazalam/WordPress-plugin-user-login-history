@@ -14,7 +14,7 @@ namespace User_Login_History\Inc\Common\Helpers;
  * @author    Er Faiyaz Alam
  */
 
-class ErrorLog {
+class Error_Log {
         
     const ERROR_LOG_FILE = '/user-login-history';
 

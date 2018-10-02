@@ -25,7 +25,7 @@ class Db {
         $wpdb->insert($wpdb->prefix . $table, $data);
 
         if ($wpdb->last_error || !$wpdb->insert_id) {
-            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            Error_Log::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
             return FALSE;
         }
         return $wpdb->insert_id;
@@ -40,7 +40,7 @@ class Db {
         $wpdb->query($sql);
 
         if ($wpdb->last_error) {
-            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            Error_Log::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
             return FALSE;
         }
         return !empty($wpdb->insert_id) ? $wpdb->insert_id : TRUE;
@@ -55,7 +55,7 @@ class Db {
         $results = $wpdb->get_results($sql, $type);
 
         if ($wpdb->last_error) {
-            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            Error_Log::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
             return FALSE;
         }
 
@@ -71,7 +71,7 @@ class Db {
         $result = $wpdb->get_var($sql);
 
         if ($wpdb->last_error) {
-            ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+            Error_Log::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
             return FALSE;
         }
         return $result;
@@ -98,7 +98,7 @@ class Db {
                 $status = $wpdb->query("DELETE FROM $table WHERE id IN($ids)");
                 
                 if ($wpdb->last_error) {
-                    ErrorLogHelper::error_log($wpdb->last_error . " " . $wpdb->last_query);
+                    Error_Log::error_log($wpdb->last_error . " " . $wpdb->last_query);
                     return FALSE;
                 }
                 return $status;
@@ -137,7 +137,7 @@ class Db {
             $result = $wpdb->get_col($sql);
             
             if ($wpdb->last_error) {
-                ErrorLogHelper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+                Error_Log::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
                 return FALSE;
             }
             
@@ -170,7 +170,7 @@ class Db {
             
            dbDelta($sql);
         if (!empty($wpdb->last_error)) {
-            ErrorLogHelper::error_log("Error while creating or updatiing tables-" . $wpdb->last_error, __LINE__, __FILE__);
+            Error_Log::error_log("Error while creating or updatiing tables-" . $wpdb->last_error, __LINE__, __FILE__);
             wp_die($wpdb->last_error);
         }
         }

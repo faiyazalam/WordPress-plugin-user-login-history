@@ -40,7 +40,7 @@ namespace User_Login_History\Inc\Common\Helpers;
             $r = wp_parse_args($args, $defaults);
             $response = wp_remote_get(self::GEO_API_URL . self::get_ip(), $r);
             if (is_wp_error($response)) {
-                ErrorLogHelper::error_log("error while calling wp_remote_get method:" . $response->get_error_message(), __LINE__, __FILE__);
+                Error_Log::error_log("error while calling wp_remote_get method:" . $response->get_error_message(), __LINE__, __FILE__);
                 return FALSE;
             }
 

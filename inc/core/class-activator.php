@@ -3,7 +3,6 @@
 namespace User_Login_History\Inc\Core;
 
 use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\ErrorLogHelper;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
 /**

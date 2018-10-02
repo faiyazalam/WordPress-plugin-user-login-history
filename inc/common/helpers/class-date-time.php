@@ -88,7 +88,7 @@ namespace User_Login_History\Inc\Common\Helpers;
             $date->setTimezone(new \DateTimeZone($output_timezone));
             return $date->format(self::DEFAULT_FORMAT);
             } catch (Exception $exc) {
-                ErrorLogHelper::error_log("Error while converting timezone. Error message: ".$exc->getMessage().", input timezone: $input_timezone, output_timezone: $output_timezone input_datetime: $input_datetime", __LINE__, __FILE__);
+                Error_Log::error_log("Error while converting timezone. Error message: ".$exc->getMessage().", input timezone: $input_timezone, output_timezone: $output_timezone input_datetime: $input_datetime", __LINE__, __FILE__);
                return FALSE;
             }
 
