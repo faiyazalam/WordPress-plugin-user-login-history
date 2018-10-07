@@ -9,8 +9,8 @@ use User_Login_History\Inc\Admin\Settings as AdminSettings;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Frontend as Frontend;
-use User_Login_History\Inc\Common\Settings;
 use User_Login_History\Inc\Admin\Network_Blog_Manager;
+use User_Login_History\Inc\Admin\Settings_Api;
 
 /**
  * The core plugin class.
@@ -119,7 +119,7 @@ class Init {
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         $plugin_admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile);
 
-
+     
         $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
@@ -138,7 +138,8 @@ class Init {
         $this->loader->add_action('attach_session_information', $Login_Tracker, 'attach_session_information', 10, 2);
 
 
-        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings());
+        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
+        
         $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
         $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 

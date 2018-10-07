@@ -2,19 +2,18 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History\Inc\Common\Interfaces\IAdminSettings;
+use User_Login_History\Inc\Admin\Settings_Api;
 use User_Login_History as NS;
-use User_Login_History\Inc\Common\Abstracts\Settings as Abstract_Settings;
 
-class Settings extends Abstract_Settings {
+class Settings {
 
     private $settings_api;
     private $plugin_name;
     private $plugin_text_domain;
     private $version;
 
-    function __construct($plugin, $version, $plugin_text_domain, IAdminSettings $settings) {
-        $this->settings_api = $settings;
+    function __construct($plugin, $version, $plugin_text_domain, Settings_Api $settings_api) {
+        $this->settings_api = $settings_api;
         $this->plugin_name = $plugin;
         $this->plugin_text_domain = $plugin_text_domain;
     }

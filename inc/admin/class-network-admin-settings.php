@@ -1,9 +1,8 @@
 <?php
 namespace User_Login_History\Inc\Admin;
-use User_Login_History\Inc\Common\Abstracts\Settings as AbstractSettings;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
-   class Network_Admin_Settings extends AbstractSettings {
+   class Network_Admin_Settings {
 
     /**
      * The unique identifier of this plugin.
