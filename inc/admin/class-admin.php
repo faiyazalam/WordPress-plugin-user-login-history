@@ -70,8 +70,15 @@ class Admin {
     }
     
     public function admin_init() {
-        $this->export_csv();
+        $this->init_csv_export();
+       
         $this->update_network_settings();
+    }
+    
+    private function init_csv_export() {
+        if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
+           $this->export_csv();
+        }
     }
 
     private function is_plugin_login_list_page() {
@@ -85,11 +92,9 @@ class Admin {
 
         return FALSE;
     }
+    
+    
     private function export_csv() {
-        if ($this->is_plugin_login_list_page()) {
-            return;
-        }
-
         if (!empty($_GET['csv']) && 1 == $_GET['csv']) {
             if (check_admin_referer('csv_nonce')) {
                 $Login_List = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
