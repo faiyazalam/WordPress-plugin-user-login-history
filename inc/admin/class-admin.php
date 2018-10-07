@@ -6,6 +6,7 @@ use User_Login_History\Inc\Admin\Login_List_Csv;
 use User_Login_History\Inc\Admin\Login_List_Table;
 use User_Login_History\Inc\Admin\Network_Login_List_Table;
 use User_Login_History\Inc\Admin\User_Profile;
+use User_Login_History\Inc\Common\Helpers\Request as RequestHelper;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -73,8 +74,19 @@ class Admin {
         $this->update_network_settings();
     }
 
+    private function is_plugin_login_list_page() {
+        if (!RequestHelper::is_current_page_by_file_name()) {
+            return FALSE;
+        }
+
+        if (!empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page']) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
     private function export_csv() {
-        if (!$this->is_plugin_login_list_page()) {
+        if ($this->is_plugin_login_list_page()) {
             return;
         }
 
@@ -89,22 +101,7 @@ class Admin {
         }
     }
 
-    private function is_current_page_by_file_name($file = 'admin') {
-        global $pagenow;
-        return $file . '.php' == $pagenow;
-    }
-
-    private function is_plugin_login_list_page() {
-        if (!$this->is_current_page_by_file_name()) {
-            return FALSE;
-        }
-
-        if (!empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page']) {
-            return TRUE;
-        }
-
-        return FALSE;
-    }
+   
 
     private function get_plugin_login_list_page_slug() {
         return $this->plugin_name . "-login-listing";
@@ -115,9 +112,9 @@ class Admin {
             return FALSE;
         }
 
-        wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
-        wp_enqueue_script($this->plugin_name . '-admin-custom.js', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
-        wp_localize_script($this->plugin_name . '-admin-custom.js', 'admin_custom_object', array(
+        wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+        wp_enqueue_script($this->plugin_name . '-admin-custom', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
+        wp_localize_script($this->plugin_name . '-admin-custom', 'admin_custom_object', array(
             'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
             'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
             'admin_url' => admin_url(),
@@ -128,7 +125,7 @@ class Admin {
     }
 
     private function enqueue_styles_for_user_profile() {
-        if ($this->is_current_page_by_file_name('profile') || $this->is_current_page_by_file_name('user-edit')) {
+        if (RequestHelper::is_current_page_by_file_name('profile') || RequestHelper::is_current_page_by_file_name('user-edit')) {
             wp_enqueue_style($this->plugin_name . '-user-profile.css', plugin_dir_url(__FILE__) . 'css/user-profile.css', array(), $this->version, 'all');
         }
     }
@@ -137,8 +134,8 @@ class Admin {
         if (!$this->is_plugin_login_list_page()) {
             return FALSE;
         }
-        wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min.css', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
-        wp_enqueue_style($this->plugin_name . '-admin.css', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
+        wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+        wp_enqueue_style($this->plugin_name . '-admin', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
     }
 
     /**
