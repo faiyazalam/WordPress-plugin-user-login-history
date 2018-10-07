@@ -21,7 +21,7 @@ final class Login_List_Csv {
     private $list_table;
     private $unknown_symbol = '---';
 
-    public function __construct(Admin_Csv_Interface $Admin_Csv_Interface) {
+    public function set_login_list_object(Admin_Csv_Interface $Admin_Csv_Interface) {
         $this->list_table = $Admin_Csv_Interface;
         $this->list_table->set_unknown_symbol($this->unknown_symbol);
     }
@@ -40,6 +40,17 @@ final class Login_List_Csv {
         $this->export();
     }
 
+    
+     public function is_request_for_csv() {
+        if (!empty($_GET[$this->list_table->get_csv_field_name()]) && 1 == $_GET[$this->list_table->get_csv_field_name()]) {
+            if (check_admin_referer($this->list_table->get_csv_nonce_name())) {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+    
+    
     /**
      * Exports CSV
      * 
@@ -47,11 +58,9 @@ final class Login_List_Csv {
      * @global type $current_user
      */
     private function export() {
-
         $timezone = $this->list_table->get_timezone();
         $data = $this->list_table->get_rows(0); // pass zero to get all the records
         //date string to suffix the file name: month - day - year - hour - minute
-
 
         if (!$data) {
             $this->list_table->no_items();
@@ -62,10 +71,6 @@ final class Login_List_Csv {
         $i = 0;
         $record = array();
         foreach ($data as $row) {
-
-
-
-
 
             $user_id = !empty($row['user_id']) ? $row['user_id'] : FALSE;
             if (!$user_id) {
@@ -94,6 +99,7 @@ final class Login_List_Csv {
             $record[__('Logout', 'faulh')] = $time_logout_str;
             $record[__('Login Status', 'faulh')] = $this->list_table->column_default($row, 'login_status');
             $record[__('User Agent', 'faulh')] = $this->list_table->column_default($row, 'user_agent');
+            
             if (is_network_admin()) {
                 $record[__('Super Admin', 'faulh')] = $this->list_table->column_default($row, 'is_super_admin');
                 $record[__('Blog ID', 'faulh')] = $this->list_table->column_default($row, 'blog_id');

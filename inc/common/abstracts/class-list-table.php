@@ -25,7 +25,6 @@ if (!class_exists('WP_List_Table')) {
 }
 
 abstract class List_Table extends \WP_List_Table {
-
     /**
      * The ID of this plugin.
      *
@@ -60,6 +59,8 @@ abstract class List_Table extends \WP_List_Table {
     protected $delete_action;
     protected $delete_action_nonce;
     protected $bulk_action_nonce;
+    protected $csv_field_name = 'csv';
+    protected $csv_nonce_name = 'csv_nonce';
 
     public function __construct($plugin_name, $version, $plugin_text_domain, $args = array()) {
         parent::__construct($args);
@@ -68,6 +69,22 @@ abstract class List_Table extends \WP_List_Table {
         $this->plugin_text_domain = $plugin_text_domain;
     }
 
+    protected function set_csv_field_name($name) {
+         $this->csv_field_name = $name;
+    }
+    
+    public function get_csv_field_name() {
+        return $this->csv_field_name;
+    }
+    
+    protected function set_csv_nonce_name($name) {
+        $this->csv_nonce_name = $name;
+    }
+    
+    public function get_csv_nonce_name() {
+        return $this->csv_nonce_name;
+    }
+    
     public function set_unknown_symbol($unknown_symbol) {
         $this->unknown_symbol = $unknown_symbol;
     }
@@ -309,6 +326,8 @@ abstract class List_Table extends \WP_List_Table {
             return $this->process_single_action();
         }
     }
+    
+   
 
     abstract public function process_bulk_action();
 

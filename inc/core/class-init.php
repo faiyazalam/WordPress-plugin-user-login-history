@@ -11,6 +11,7 @@ use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Frontend as Frontend;
 use User_Login_History\Inc\Admin\Network_Blog_Manager;
 use User_Login_History\Inc\Admin\Settings_Api;
+use User_Login_History\Inc\Admin\Login_List_Csv;
 
 /**
  * The core plugin class.
@@ -117,7 +118,8 @@ class Init {
         }
 
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-        $plugin_admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile);
+       
+        $plugin_admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv());
 
      
         $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
@@ -153,7 +155,7 @@ class Init {
         $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
         
           $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
-                $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
+          $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
 
 
         /*

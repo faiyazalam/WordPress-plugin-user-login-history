@@ -7,6 +7,7 @@ use User_Login_History\Inc\Admin\Login_List_Table;
 use User_Login_History\Inc\Admin\Network_Login_List_Table;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Helpers\Request as RequestHelper;
+use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -50,7 +51,8 @@ class Admin {
      */
     private $plugin_text_domain;
     private $admin_notice_transient;
-    private $user_profile;
+    private $User_Profile;
+    private $Login_List_Csv;
 
     /**
      * Initialize the class and set its properties.
@@ -60,24 +62,31 @@ class Admin {
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain,  User_Profile $user_profile) {
+    public function __construct($plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
-        $this->user_profile = $user_profile;
+        $this->User_Profile = $User_Profile;
+        $this->Login_List_Csv = $Login_List_Csv;
     }
-    
+
     public function admin_init() {
         $this->init_csv_export();
-       
         $this->update_network_settings();
     }
-    
+
     private function init_csv_export() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
-           $this->export_csv();
+            $Login_List = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+            $this->Login_List_Csv->set_login_list_object($Login_List);
+            
+            if ($this->Login_List_Csv->is_request_for_csv()) {
+                $this->User_Profile->set_user_id();
+                $Login_List->set_timezone($this->User_Profile->get_user_timezone());
+                $this->Login_List_Csv->init();
+            }
         }
     }
 
@@ -92,21 +101,6 @@ class Admin {
 
         return FALSE;
     }
-    
-    
-    private function export_csv() {
-        if (!empty($_GET['csv']) && 1 == $_GET['csv']) {
-            if (check_admin_referer('csv_nonce')) {
-                $Login_List = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
-                $this->user_profile->set_user_id();
-                $Login_List->set_timezone($this->user_profile->get_user_timezone());
-                $Login_List_Csv = new Login_List_Csv($Login_List);
-                $Login_List_Csv->init();
-            }
-        }
-    }
-
-   
 
     private function get_plugin_login_list_page_slug() {
         return $this->plugin_name . "-login-listing";
@@ -194,11 +188,11 @@ class Admin {
         );
 
         add_screen_option($option, $args);
-        
-        $this->list_table = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain):new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
-        $this->list_table->set_timezone($this->user_profile->get_user_timezone());
+
+        $this->list_table = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
         $status = $this->list_table->process_action();
-        
+
         if (!is_null($status)) {
             $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
             wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
@@ -238,23 +232,22 @@ class Admin {
             delete_transient($this->admin_notice_transient);
         }
     }
-    
+
     /**
-         * Update the network settings.
-         * 
-         * @access public
-         */
-        private function update_network_settings() {
-            if(!is_network_admin())
-            {
-                return;
-            }
-            $obj = new Network_Admin_Settings($this->plugin_name);
-            if ($obj->update()) {
-                $this->add_admin_notice(esc_html__('Settings updated successfully.', 'faulh'));
-                wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
-                exit;
-            }
+     * Update the network settings.
+     * 
+     * @access public
+     */
+    private function update_network_settings() {
+        if (!is_network_admin()) {
+            return;
         }
+        $obj = new Network_Admin_Settings($this->plugin_name);
+        if ($obj->update()) {
+            $this->add_admin_notice(esc_html__('Settings updated successfully.', 'faulh'));
+            wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
+            exit;
+        }
+    }
 
 }

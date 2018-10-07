@@ -4,8 +4,8 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 ?>
 <form id="filter_form" method="get">
     <input type="hidden" name="page" value="<?php echo esc_attr($_GET['page']) ?>" />
-    <input type="hidden" name="csv" id="csv" value="">
-    <input type="hidden" name="_wpnonce" id="csv_nonce" value="<?php echo wp_create_nonce('csv_nonce') ?>">
+    <input type="hidden" name="<?php echo $this->list_table->get_csv_field_name() ?>" id="csv" value="">
+    <input type="hidden" name="_wpnonce" id="csv_nonce" value="<?php echo wp_create_nonce($this->list_table->get_csv_nonce_name()) ?>">
     <div class="basic_search">
         <input readonly autocomplete="off" placeholder="<?php esc_html_e("From", $this->plugin_text_domain) ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
         <input readonly autocomplete="off" placeholder="<?php esc_html_e("To", $this->plugin_text_domain) ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" >
