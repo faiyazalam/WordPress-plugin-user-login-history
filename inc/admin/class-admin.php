@@ -3,8 +3,8 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Admin\Login_List_Csv;
-use User_Login_History\Inc\Admin\Login_List_Table;
-use User_Login_History\Inc\Admin\Network_Login_List_Table;
+use User_Login_History\Inc\Admin\Admin_Login_List_Table;
+use User_Login_History\Inc\Admin\Network_Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Helpers\Request as RequestHelper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
@@ -79,7 +79,7 @@ class Admin {
 
     private function init_csv_export() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
-            $Login_List = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+            $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
             $this->Login_List_Csv->set_login_list_object($Login_List);
             
             if ($this->Login_List_Csv->is_request_for_csv()) {
@@ -189,7 +189,7 @@ class Admin {
 
         add_screen_option($option, $args);
 
-        $this->list_table = is_network_admin() ? new Network_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
         $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
         $status = $this->list_table->process_action();
 

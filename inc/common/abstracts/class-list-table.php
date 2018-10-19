@@ -25,6 +25,7 @@ if (!class_exists('WP_List_Table')) {
 }
 
 abstract class List_Table extends \WP_List_Table {
+
     /**
      * The ID of this plugin.
      *
@@ -52,7 +53,7 @@ abstract class List_Table extends \WP_List_Table {
      */
     protected $plugin_text_domain;
     protected $timezone;
-    private $unknown_symbol = '<span aria-hidden="true">—</span>';
+    protected $unknown_symbol = '<span aria-hidden="true">—</span>';
     protected $table;
     protected $message;
     protected $bulk_action_form;
@@ -67,24 +68,28 @@ abstract class List_Table extends \WP_List_Table {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
+
+        $this->set_bulk_action_form($this->_args['singular'] . "_form");
+        $this->set_delete_action_nonce($this->_args['singular'] . "_delete_none");
+        $this->set_bulk_action_nonce('bulk-' . $this->_args['plural']);
     }
 
     protected function set_csv_field_name($name) {
-         $this->csv_field_name = $name;
+        $this->csv_field_name = $name;
     }
-    
+
     public function get_csv_field_name() {
         return $this->csv_field_name;
     }
-    
+
     protected function set_csv_nonce_name($name) {
         $this->csv_nonce_name = $name;
     }
-    
+
     public function get_csv_nonce_name() {
         return $this->csv_nonce_name;
     }
-    
+
     public function set_unknown_symbol($unknown_symbol) {
         $this->unknown_symbol = $unknown_symbol;
     }
@@ -130,210 +135,12 @@ abstract class List_Table extends \WP_List_Table {
         $this->items = $this->get_rows($per_page, $this->get_pagenum());
     }
 
-    abstract public function get_rows();
-
-    abstract public function record_count();
-    
-    
-    public function column_time_last_seen($item) {
-        $column_name = 'time_last_seen';
-
-        $time_last_seen_unix = strtotime($item[$column_name]);
-
-        if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
-            return $this->get_unknown_symbol();
-        }
-
-        $timezone = $this->get_timezone();
-        $time_last_seen = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-
-        if (!$time_last_seen) {
-            return $this->get_unknown_symbol();
-        }
-
-        $human_time_diff = human_time_diff($time_last_seen_unix);
-        $is_online_str = 'offline';
-
-        if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
-            $minutes = ((time() - $time_last_seen_unix) / 60);
-            $settings = get_option($this->plugin_name . "_basics");
-            $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-            $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
-            if ($minutes <= $minute_online) {
-                $is_online_str = 'online';
-            } elseif ($minutes <= $minute_idle) {
-                $is_online_str = 'idle';
-            }
-        }
-
-
-        return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
-    }
-
-    public function column_default($item, $column_name) {
-        $timezone = $this->get_timezone();
-
-
-        $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
-        $country_code = in_array(strtolower($item['country_code']), array("", $this->get_unknown_symbol())) ? $this->get_unknown_symbol() : $item['country_code'];
-
-        switch ($column_name) {
-
-            case 'user_id':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : absint($item[$column_name]);
-
-            case 'username':
-                return $this->is_empty($item['username']) ? $this->get_unknown_symbol() : esc_html($item['username']);
-
-            case 'role':
-
-                if ($this->is_empty($item['user_id'])) {
-                    return $this->get_unknown_symbol();
-                }
-
-
-                if (is_network_admin()) {
-                    switch_to_blog($item['blog_id']);
-                    $user_data = get_userdata($item['user_id']);
-                    restore_current_blog();
-                } else {
-                    $user_data = get_userdata($item['user_id']);
-                }
-
-
-
-
-
-                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
-
-            case 'old_role':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
-            case 'browser':
-
-                if ($this->is_empty($item[$column_name])) {
-                    return $this->get_unknown_symbol();
-                }
-
-                if (empty($item['browser_version'])) {
-                    return esc_html($item[$column_name]);
-                }
-
-                return esc_html($item[$column_name] . " (" . $item['browser_version'] . ")");
-
-            case 'ip_address':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
-            case 'timezone':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
-
-            case 'country_name':
-
-                if ($this->is_empty($item[$column_name])) {
-                    return $this->get_unknown_symbol();
-                }
-
-                if (empty($item['country_code'])) {
-                    return esc_html($item[$column_name]);
-                }
-
-                return esc_html($item[$column_name] . " (" . $item['country_code'] . ")");
-
-
-            case 'country_code':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
-            case 'operating_system':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
-
-            case 'time_login':
-                if (!(strtotime($item[$column_name]) > 0)) {
-                    return $this->get_unknown_symbol();
-                }
-                $time_login = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                return $time_login ? $time_login : $this->get_unknown_symbol();
-
-            case 'time_logout':
-                if ($this->is_empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
-                    return $this->get_unknown_symbol();
-                }
-                $time_logout = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-                return $time_logout ? $time_logout : $this->get_unknown_symbol();
-
-
-
-            case 'time_last_seen':
-
-                $time_last_seen_unix = strtotime($item[$column_name]);
-                if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
-                    return $this->get_unknown_symbol();
-                }
-                $time_last_seen = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
-
-
-                if (!$time_last_seen) {
-                    return $this->get_unknown_symbol();
-                }
-
-                $human_time_diff = human_time_diff($time_last_seen_unix);
-                $is_online_str = 'offline';
-
-//                if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
-//                    $minutes = ((time() - $time_last_seen_unix) / 60);
-//                    $settings = get_option($this->plugin_name . "_basics");
-//                    $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-//                    $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
-//                    if ($minutes <= $minute_online) {
-//                        $is_online_str = 'online';
-//                    } elseif ($minutes <= $minute_idle) {
-//                        $is_online_str = 'idle';
-//                    }
-//                }
-
-
-                //return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
-                return $human_time_diff . " " . esc_html__('ago', 'faulh'). " ($time_last_seen)";
-
-            case 'user_agent':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
-            case 'duration':
-                if ($this->is_empty($item['time_login']) || !(strtotime($item['time_login']) > 0)) {
-                    return $this->get_unknown_symbol();
-                }
-
-                if ($this->is_empty($item['time_last_seen']) || !(strtotime($item['time_login']) > 0)) {
-                    return $this->get_unknown_symbol();
-                }
-                return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
-
-            case 'login_status':
-                $login_statuses = Template_Helper::login_statuses();
-                return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->get_unknown_symbol();
-
-            case 'blog_id':
-                return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->get_unknown_symbol();
-
-            case 'is_super_admin':
-                $super_admin_statuses = Template_Helper::super_admin_statuses();
-                return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
-
-            default:
-                if ($new_column_data) {
-                    return $new_column_data;
-                }
-                return print_r($item, true); //Show the whole array for troubleshooting purposes
-        }
-    }
-
     protected function is_empty($value = '') {
         return Validation_Helper::isEmpty($value);
     }
 
     /**
-     * Timezone edit link
+     * Time-zone edit link
      * 
      * @return string
      */
@@ -349,27 +156,57 @@ abstract class List_Table extends \WP_List_Table {
      * @return boolean
      */
     public function process_action() {
-
-        if (empty($_REQUEST['_wpnonce'])) {
+        $nonce = '_wpnonce';
+        if (empty($_REQUEST[$nonce])) {
             return;
         }
 
-        if (isset($_POST[$this->bulk_action_form]) && !empty($_POST['_wpnonce']) && wp_verify_nonce($_POST['_wpnonce'], $this->bulk_action_nonce)) {
+        if (isset($_POST[$this->get_bulk_action_form()]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce())) {
             return $this->process_bulk_action();
         }
 
-        if (!empty($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], $this->delete_action_nonce)) {
-
+        if (!empty($_GET[$nonce]) && wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce())) {
             return $this->process_single_action();
         }
     }
-    
-   
+
     public function get_all_rows() {
         return $this->get_rows(0);
     }
 
-    abstract public function process_bulk_action();
+    public function get_bulk_action_form() {
+        return $this->bulk_action_form;
+    }
 
-    abstract public function process_single_action();
+    public function get_bulk_action_nonce() {
+        return $this->bulk_action_nonce;
+    }
+
+    public function get_delete_action_nonce() {
+        return $this->delete_action_nonce;
+    }
+
+    public function set_bulk_action_form($value) {
+        $this->bulk_action_form = $value;
+        return $this;
+    }
+
+    public function set_bulk_action_nonce($value) {
+        $this->bulk_action_nonce = $value;
+        return $this;
+    }
+
+    public function set_delete_action_nonce($value) {
+        $this->delete_action_nonce = $value;
+        return $this;
+    }
+
+    public function set_message($message = '') {
+        $this->message = $message;
+    }
+
+    public function get_message() {
+        return $this->message;
+    }
+
 }

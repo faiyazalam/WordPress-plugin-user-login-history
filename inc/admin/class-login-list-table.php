@@ -7,7 +7,9 @@ use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
-use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
+use User_Login_History\Inc\Common\Login_Tracker;
+use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+
 
 /**
  * The admin-specific functionality of the plugin.
@@ -20,10 +22,7 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
  *
  * @author    Er Faiyaz Alam
  */
-final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_Interface {
-
-   
-
+class Login_List_Table extends List_Table_Abstract {
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
             'singular' => $plugin_name . '_user_login', //singular name of the listed records
@@ -32,24 +31,12 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
         $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
 
-        $this->bulk_action_form = $this->_args['singular'] . "_form";
-        $this->delete_action_nonce = $this->_args['singular'] . "_delete_none";
-        $this->delete_action = $this->_args['singular'] . "_delete";
-    
-        $this->bulk_action_nonce = 'bulk-' . $this->_args['plural'];
+        
+        
+         $this->delete_action = $this->_args['singular'] . "_delete";
     }
 
-    public function get_message() {
-        return $this->message;
-    }
 
-    public function get_bulk_action_form() {
-        return $this->bulk_action_form;
-    }
-
-    public function set_message($message = '') {
-        $this->message = $message;
-    }
 
     /**
      * Prepares the where query.
@@ -57,7 +44,7 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
      * @access public
      * @return string
      */
-    private function prepare_where_query() {
+    public function prepare_where_query() {
 
         $where_query = '';
 
@@ -114,67 +101,18 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
     }
 
     /**
-     * Retrieve rows
-     * 
-     * @access   public
-     * @param int $per_page
-     * @param int $page_number
-     * @access   public
-     * @return mixed
+     * Returns an associative array containing the bulk action
+     *
+     * @access public 
+     * @return array
      */
-    public function get_rows($per_page = 20, $page_number = 1) {
-        global $wpdb;
-        $table = $wpdb->prefix . $this->table;
-        $sql = " SELECT"
-                . " FaUserLogin.*, "
-                . " UserMeta.meta_value, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration"
-                . " FROM " . $table . "  AS FaUserLogin"
-                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                . " AND UserMeta.meta_key LIKE  '" . $wpdb->prefix . "capabilities' )"
-                . " WHERE 1 ";
+    public function get_bulk_actions() {
+        $actions = array(
+            'bulk-delete' => esc_html__('Delete Selected Records', 'faulh'),
+            'bulk-delete-all-admin' => esc_html__('Delete All Records', 'faulh'),
+        );
 
-        $where_query = $this->prepare_where_query();
-        if ($where_query) {
-            $sql .= $where_query;
-        }
-        if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
-        } else {
-            $sql .= ' ORDER BY id DESC';
-        }
-
-        if ($per_page > 0) {
-            $sql .= " LIMIT $per_page";
-            $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
-        }
-        
-        return Db_Helper::get_results($sql);
-    }
-
-    /**
-     * Returns the count of records in the database.
-     * 
-     * @access   public
-     * @return null|string
-     */
-    public function record_count() {
-        global $wpdb;
-        $table = $wpdb->prefix . $this->table;
-        $sql = " SELECT"
-                . " COUNT(FaUserLogin.id) AS total"
-                . " FROM " . $table . " AS FaUserLogin"
-                . " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-                . " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
-                . " WHERE 1 ";
-
-        $where_query = $this->prepare_where_query();
-
-        if ($where_query) {
-            $sql .= $where_query;
-        }
-
-        return Db_Helper::get_var($sql);
+        return $actions;
     }
 
     public function get_columns() {
@@ -227,7 +165,7 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
      * @return string
      */
    
-    function column_username($item) {
+    public function column_username($item) {
         $username = $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
         if ($this->is_empty($item['user_id'])) {
             $title = $username;
@@ -244,21 +182,6 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
     }
 
     /**
-     * Returns an associative array containing the bulk action
-     *
-     * @access public 
-     * @return array
-     */
-    public function get_bulk_actions() {
-        $actions = array(
-            'bulk-delete' => esc_html__('Delete Selected Records', 'faulh'),
-            'bulk-delete-all-admin' => esc_html__('Delete All Records', 'faulh'),
-        );
-
-        return $actions;
-    }
-
-    /**
      * Render the bulk edit checkbox
      * 
      * @access   public
@@ -268,8 +191,6 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
     public function column_cb($item) {
         return sprintf('<input type="checkbox" name="bulk-action-ids[]" value="%s" />', $item['id']);
     }
-
-    
 
     public function process_bulk_action() {
          $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
@@ -314,6 +235,181 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
         }
 
         return $status;
+    }
+    
+    public function column_time_last_seen($item) {
+        $column_name = 'time_last_seen';
+
+        $time_last_seen_unix = strtotime($item[$column_name]);
+
+        if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
+            return $this->get_unknown_symbol();
+        }
+
+        $timezone = $this->get_timezone();
+        $time_last_seen = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+
+        if (!$time_last_seen) {
+            return $this->get_unknown_symbol();
+        }
+
+        $human_time_diff = human_time_diff($time_last_seen_unix);
+        $is_online_str = 'offline';
+
+        if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
+            $minutes = ((time() - $time_last_seen_unix) / 60);
+            $settings = get_option($this->plugin_name . "_basics");
+            $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
+            $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
+            if ($minutes <= $minute_online) {
+                $is_online_str = 'online';
+            } elseif ($minutes <= $minute_idle) {
+                $is_online_str = 'idle';
+            }
+        }
+
+
+        return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+    }
+
+    public function column_default($item, $column_name) {
+        $timezone = $this->get_timezone();
+
+
+        $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
+        $country_code = in_array(strtolower($item['country_code']), array("", $this->get_unknown_symbol())) ? $this->get_unknown_symbol() : $item['country_code'];
+
+        switch ($column_name) {
+
+            case 'user_id':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : absint($item[$column_name]);
+
+            case 'username':
+                return $this->is_empty($item['username']) ? $this->get_unknown_symbol() : esc_html($item['username']);
+
+            case 'role':
+
+                if ($this->is_empty($item['user_id'])) {
+                    return $this->get_unknown_symbol();
+                }
+
+
+                if (is_network_admin()) {
+                    switch_to_blog($item['blog_id']);
+                    $user_data = get_userdata($item['user_id']);
+                    restore_current_blog();
+                } else {
+                    $user_data = get_userdata($item['user_id']);
+                }
+
+
+
+
+
+                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
+
+            case 'old_role':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+
+            case 'browser':
+
+                if ($this->is_empty($item[$column_name])) {
+                    return $this->get_unknown_symbol();
+                }
+
+                if (empty($item['browser_version'])) {
+                    return esc_html($item[$column_name]);
+                }
+
+                return esc_html($item[$column_name] . " (" . $item['browser_version'] . ")");
+
+            case 'ip_address':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+
+            case 'timezone':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+
+
+            case 'country_name':
+
+                if ($this->is_empty($item[$column_name])) {
+                    return $this->get_unknown_symbol();
+                }
+
+                if (empty($item['country_code'])) {
+                    return esc_html($item[$column_name]);
+                }
+
+                return esc_html($item[$column_name] . " (" . $item['country_code'] . ")");
+
+
+            case 'country_code':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+
+            case 'operating_system':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+
+
+            case 'time_login':
+                if (!(strtotime($item[$column_name]) > 0)) {
+                    return $this->get_unknown_symbol();
+                }
+                $time_login = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                return $time_login ? $time_login : $this->get_unknown_symbol();
+
+            case 'time_logout':
+                if ($this->is_empty($item['user_id']) || !(strtotime($item[$column_name]) > 0)) {
+                    return $this->get_unknown_symbol();
+                }
+                $time_logout = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+                return $time_logout ? $time_logout : $this->get_unknown_symbol();
+
+
+
+            case 'time_last_seen':
+
+                $time_last_seen_unix = strtotime($item[$column_name]);
+                if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
+                    return $this->get_unknown_symbol();
+                }
+                $time_last_seen = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+
+                if (!$time_last_seen) {
+                    return $this->get_unknown_symbol();
+                }
+
+                return human_time_diff($time_last_seen_unix) . " " . esc_html__('ago', 'faulh') . " ($time_last_seen)";
+
+            case 'user_agent':
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+
+            case 'duration':
+                if ($this->is_empty($item['time_login']) || !(strtotime($item['time_login']) > 0)) {
+                    return $this->get_unknown_symbol();
+                }
+
+                if ($this->is_empty($item['time_last_seen']) || !(strtotime($item['time_login']) > 0)) {
+                    return $this->get_unknown_symbol();
+                }
+                return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
+
+            case 'login_status':
+                $login_statuses = Template_Helper::login_statuses();
+                return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $this->get_unknown_symbol();
+
+            case 'blog_id':
+                return !empty($item[$column_name]) ? (int) $item[$column_name] : $this->get_unknown_symbol();
+
+            case 'is_super_admin':
+                $super_admin_statuses = Template_Helper::super_admin_statuses();
+                return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
+
+            default:
+                if ($new_column_data) {
+                    return $new_column_data;
+                }
+                return print_r($item, true); //Show the whole array for troubleshooting purposes
+        }
     }
 
 }
