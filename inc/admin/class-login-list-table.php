@@ -148,7 +148,7 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
             $sql .= " LIMIT $per_page";
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
-
+        
         return Db_Helper::get_results($sql);
     }
 
@@ -226,8 +226,8 @@ final class Login_List_Table extends List_Table_Abstract implements Admin_Csv_In
      * @param array $item an array of DB data
      * @return string
      */
+   
     function column_username($item) {
-
         $username = $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
         if ($this->is_empty($item['user_id'])) {
             $title = $username;

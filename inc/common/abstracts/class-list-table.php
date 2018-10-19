@@ -133,6 +133,42 @@ abstract class List_Table extends \WP_List_Table {
     abstract public function get_rows();
 
     abstract public function record_count();
+    
+    
+    public function column_time_last_seen($item) {
+        $column_name = 'time_last_seen';
+
+        $time_last_seen_unix = strtotime($item[$column_name]);
+
+        if ($this->is_empty($item['user_id']) || !($time_last_seen_unix > 0)) {
+            return $this->get_unknown_symbol();
+        }
+
+        $timezone = $this->get_timezone();
+        $time_last_seen = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
+
+        if (!$time_last_seen) {
+            return $this->get_unknown_symbol();
+        }
+
+        $human_time_diff = human_time_diff($time_last_seen_unix);
+        $is_online_str = 'offline';
+
+        if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
+            $minutes = ((time() - $time_last_seen_unix) / 60);
+            $settings = get_option($this->plugin_name . "_basics");
+            $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
+            $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
+            if ($minutes <= $minute_online) {
+                $is_online_str = 'online';
+            } elseif ($minutes <= $minute_idle) {
+                $is_online_str = 'idle';
+            }
+        }
+
+
+        return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+    }
 
     public function column_default($item, $column_name) {
         $timezone = $this->get_timezone();
@@ -146,7 +182,7 @@ abstract class List_Table extends \WP_List_Table {
             case 'user_id':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : absint($item[$column_name]);
 
-            case 'username_csv':
+            case 'username':
                 return $this->is_empty($item['username']) ? $this->get_unknown_symbol() : esc_html($item['username']);
 
             case 'role':
@@ -244,20 +280,21 @@ abstract class List_Table extends \WP_List_Table {
                 $human_time_diff = human_time_diff($time_last_seen_unix);
                 $is_online_str = 'offline';
 
-                if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
-                    $minutes = ((time() - $time_last_seen_unix) / 60);
-                    $settings = get_option($this->plugin_name . "_basics");
-                    $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-                    $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
-                    if ($minutes <= $minute_online) {
-                        $is_online_str = 'online';
-                    } elseif ($minutes <= $minute_idle) {
-                        $is_online_str = 'idle';
-                    }
-                }
+//                if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
+//                    $minutes = ((time() - $time_last_seen_unix) / 60);
+//                    $settings = get_option($this->plugin_name . "_basics");
+//                    $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
+//                    $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
+//                    if ($minutes <= $minute_online) {
+//                        $is_online_str = 'online';
+//                    } elseif ($minutes <= $minute_idle) {
+//                        $is_online_str = 'idle';
+//                    }
+//                }
 
 
-                return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+                //return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
+                return $human_time_diff . " " . esc_html__('ago', 'faulh'). " ($time_last_seen)";
 
             case 'user_agent':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
@@ -328,6 +365,9 @@ abstract class List_Table extends \WP_List_Table {
     }
     
    
+    public function get_all_rows() {
+        return $this->get_rows(0);
+    }
 
     abstract public function process_bulk_action();
 
