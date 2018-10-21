@@ -1,8 +1,10 @@
 <?php
+
 namespace User_Login_History\Inc\Admin;
+
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
-   class Network_Admin_Settings {
+class Network_Admin_Settings {
 
     /**
      * The unique identifier of this plugin.
@@ -11,6 +13,9 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
      * @var      string    $plugin_name    The string used to uniquely identify this plugin.
      */
     private $plugin_name;
+    private $form_name;
+    private $form_nonce_name;
+    private $settings_name;
 
     /**
      * Initialize the class and set its properties.
@@ -21,6 +26,40 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
      */
     function __construct($plugin_name) {
         $this->plugin_name = $plugin_name;
+        $this->form_name = $this->plugin_name . '_network_admin_setting_submit';
+        $this->form_nonce_name = $this->plugin_name . '_network_admin_setting_nonce';
+        $this->settings_name = $this->plugin_name . '_network_settings';
+    }
+
+    private function is_form_submitted() {
+        return isset($_POST[$this->get_form_name()]) && !empty($_POST[$this->get_form_nonce_name()]) && wp_verify_nonce($_POST[$this->get_form_nonce_name()], $this->get_form_nonce_name());
+    }
+
+    /**
+     * Update the settings.
+     * 
+     * @access private
+     */
+    private function update_settings() {
+
+        $settings = array();
+
+        if (isset($_POST['block_user'])) {
+            $settings['block_user'] = 1;
+        }
+        if (isset($_POST['block_user_message'])) {
+            $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
+        }
+
+        return !empty($settings) ? update_site_option($this->settings_name, $settings) : delete_site_option($this->settings_name);
+    }
+
+    public function get_form_name() {
+        return $this->form_name;
+    }
+
+    public function get_form_nonce_name() {
+        return $this->form_nonce_name;
     }
 
     /**
@@ -48,48 +87,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
      * @access public
      */
     public function update() {
-
-        if (isset($_POST[$this->plugin_name . "_network_admin_setting_submit"])) {
-
-            if (empty($_POST[$this->plugin_name . '_network_admin_setting_nonce'])) {
-                return false;
-            }
-
-            if (!wp_verify_nonce($_POST[$this->plugin_name . '_network_admin_setting_nonce'], $this->plugin_name . '_network_admin_setting_nonce')) {
-                return false;
-            }
-
-            return $this->update_settings();
-        }
-    }
-
-    /**
-     * Update the settings.
-     * 
-     * @access private
-     */
-    private function update_settings() {
-        $settings = array();
-      
-
-        if (isset($_POST['block_user'])) {
-            $settings['block_user'] = 1;
-        }
-        if (isset($_POST['block_user_message'])) {
-            $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
-        }
-       
-
-        if ($settings) {
-            // update new settings
-            global $wpdb;
-            update_site_option($this->plugin_name . '_settings', $settings);
-        } else {
-            // empty settings, revert back to default
-            delete_site_option($this->plugin_name . '_settings');
-        }
-
-        return TRUE;
+        return $this->is_form_submitted() ? $this->update_settings() : FALSE;
     }
 
     /**
@@ -107,17 +105,15 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
             return $settings;
         }
 
-        $settings = wp_parse_args(get_site_option($this->plugin_name . '_settings'), array(
+        $settings = wp_parse_args(get_site_option($this->settings_name), array(
             'block_user' => null,
             'block_user_message' => 'Please contact website administrator.',
         ));
 
         if ($setting) {
-            return isset($settings[$setting]) ?maybe_unserialize($settings[$setting]) : null;
+            return isset($settings[$setting]) ? maybe_unserialize($settings[$setting]) : null;
         }
         return $settings;
     }
 
-} 
-
-
+}

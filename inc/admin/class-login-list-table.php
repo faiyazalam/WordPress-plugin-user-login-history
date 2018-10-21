@@ -27,9 +27,9 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
-            'singular' => $plugin_name . '_user_login', //singular name of the listed records
-            'plural' => $plugin_name . '_user_logins', //plural name of the listed records
-        );
+            'singular' => $plugin_name . '_user_login', 
+            'plural' => $plugin_name . '_user_logins', 
+            );
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
          
     }
@@ -74,7 +74,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
         if (!empty($_GET['role'])) {
             $where_query .= " AND `UserMeta`.`meta_value` LIKE '%" . esc_sql($_GET['role']) . "%'";
         }
-
 
         if (!empty($_GET['date_type'])) {
             $UserProfile = new User_Profile($this->plugin_name, $this->version, $this->plugin_text_domain);
@@ -244,6 +243,9 @@ abstract class Login_List_Table extends List_Table_Abstract {
         $timezone = $this->get_timezone();
 
         $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
+        if ($new_column_data) {
+            return $new_column_data;
+        }
         $country_code = in_array(strtolower($item['country_code']), array("", $this->get_unknown_symbol())) ? $this->get_unknown_symbol() : $item['country_code'];
 
         switch ($column_name) {
@@ -260,7 +262,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
                     return $this->get_unknown_symbol();
                 }
 
-
                 if (is_network_admin()) {
                     switch_to_blog($item['blog_id']);
                     $user_data = get_userdata($item['user_id']);
@@ -269,11 +270,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
                     $user_data = get_userdata($item['user_id']);
                 }
 
-
-
-
-
-                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
+            return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
 
             case 'old_role':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
@@ -296,7 +293,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
             case 'timezone':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
-
             case 'country_name':
 
                 if ($this->is_empty($item[$column_name])) {
@@ -307,15 +303,13 @@ abstract class Login_List_Table extends List_Table_Abstract {
                     return esc_html($item[$column_name]);
                 }
 
-                return esc_html($item[$column_name] . " (" . $item['country_code'] . ")");
-
+            return esc_html($item[$column_name] . " (" . $item['country_code'] . ")");
 
             case 'country_code':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
 
             case 'operating_system':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
-
 
             case 'time_login':
                 if (!(strtotime($item[$column_name]) > 0)) {
@@ -330,8 +324,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
                 }
                 $time_logout = Date_Time_Helper::convert_format(Date_Time_Helper::convert_timezone($item[$column_name], '', $timezone));
                 return $time_logout ? $time_logout : $this->get_unknown_symbol();
-
-
 
             case 'time_last_seen':
 
@@ -372,9 +364,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
                 return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
 
             default:
-                if ($new_column_data) {
-                    return $new_column_data;
-                }
+               
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
     }

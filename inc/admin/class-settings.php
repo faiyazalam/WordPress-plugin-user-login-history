@@ -19,16 +19,13 @@ class Settings {
     }
 
     function admin_init() {
-
-        //set the settings
         $this->settings_api->set_sections($this->get_settings_sections());
         $this->settings_api->set_fields($this->get_settings_fields());
-        //initialize settings
         $this->settings_api->admin_init();
     }
 
     function admin_menu() {
-        add_options_page('User Login History', 'User Login History', 'delete_posts', $this->plugin_name."-settings", array($this, 'plugin_page'));
+        add_options_page('User Login History', 'User Login History', 'manage_options', $this->plugin_name . "-settings", array($this, 'plugin_page'));
     }
 
     function get_settings_sections() {
@@ -87,24 +84,25 @@ class Settings {
 
         return $settings_fields;
     }
-    
+
     private function get_basic_settings() {
-        return  get_option($this->plugin_name . "_basics");;
+        return get_option($this->plugin_name . "_basics");
     }
-    
+
     private function get_advanced_settings() {
-        return  get_option($this->plugin_name . "_advanced");;
+        return get_option($this->plugin_name . "_advanced");
     }
-    
+
     public function get_online_duration() {
-         $settings = $this->get_basic_settings();
+        $settings = $this->get_basic_settings();
         $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
         $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
-        return array('online'=>$minute_online, 'idle'=>$minute_idle);
+        return array('online' => $minute_online, 'idle' => $minute_idle);
     }
+
     public function is_geo_tracker_enabled() {
-       $options = $this->get_advanced_settings();
-       return  (!empty($options['is_geo_tracker_enabled']) && 'on' == $options['is_geo_tracker_enabled']);
+        $options = $this->get_advanced_settings();
+        return (!empty($options['is_geo_tracker_enabled']) && 'on' == $options['is_geo_tracker_enabled']);
     }
 
     function plugin_page() {

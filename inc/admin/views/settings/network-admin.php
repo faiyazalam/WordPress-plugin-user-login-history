@@ -5,7 +5,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 <div class="wrap faulhSettingPage">
     <?php echo Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?>
     <form method="post">
-        <input type="hidden" name="<?php echo $this->plugin_name . '_network_admin_setting_submit' ?>" >
+        <input type="hidden" name="<?php echo $this->get_form_name(); ?>" >
         <fieldset>
             <div class="mt20">
                 <label class="infoBlockUser"> <strong><?php esc_html_e('Block User', 'faulh') ?></strong></label>
@@ -23,7 +23,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
             </div>
         </fieldset>
          
-        <?php wp_nonce_field($this->plugin_name . '_network_admin_setting_nonce', $this->plugin_name . '_network_admin_setting_nonce'); ?>
+        <?php wp_nonce_field($this->get_form_nonce_name(), $this->get_form_nonce_name()); ?>
         <?php submit_button(); ?>
     </form>
 </div>
