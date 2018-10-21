@@ -23,6 +23,83 @@ use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Tabl
  */
 final class Network_Admin_Login_List_Table extends Login_List_Table implements Admin_Csv_Interface, Admin_List_Table_Interface {
 
+    private $rows_sql = '';
+    private $count_sql = '';
+
+    public function init() {
+        parent::init();
+        $this->prepare_sql_queries();
+    }
+
+    private function prepare_sql_queries() {
+        global $wpdb;
+        $where_query = $this->prepare_where_query();
+        $rows_sql = '';
+        $count_sql = '';
+
+        $i = 0;
+        $blog_ids = Db_Helper::get_blog_ids_by_site_id();
+        foreach ($blog_ids as $blog_id) {
+            $blog_prefix = $wpdb->get_blog_prefix($blog_id);
+            $table = $blog_prefix . $this->table;
+
+            if (!$this->is_plugin_active_for_network && !Db_Helper::is_table_exist($table)) {
+                continue;
+            }
+
+            if (0 < $i) {
+                $rows_sql .= " UNION ALL";
+                $count_sql .= " UNION ALL";
+            }
+
+            $rows_sql .= " ( SELECT"
+                    . " FaUserLogin.id, "
+                    . " FaUserLogin.user_id,"
+                    . " FaUserLogin.username,"
+                    . " FaUserLogin.time_login,"
+                    . " FaUserLogin.time_logout,"
+                    . " FaUserLogin.time_last_seen,"
+                    . " FaUserLogin.ip_address,"
+                    . " FaUserLogin.operating_system,"
+                    . " FaUserLogin.browser,"
+                    . " FaUserLogin.browser_version,"
+                    . " FaUserLogin.country_name,"
+                    . " FaUserLogin.country_code,"
+                    . " FaUserLogin.timezone,"
+                    . " FaUserLogin.old_role,"
+                    . " FaUserLogin.user_agent,"
+                    . " FaUserLogin.login_status,"
+                    . " FaUserLogin.is_super_admin,"
+                    . " UserMeta.meta_value, "
+                    . " TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
+                    . " $blog_id as blog_id"
+                    . " FROM $table  AS FaUserLogin"
+                    . " LEFT JOIN $wpdb->usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
+                    . " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
+                    . " WHERE 1 ";
+
+
+            $count_sql .= " ( SELECT"
+                    . " COUNT(FaUserLogin.id) AS count"
+                    . " FROM $table  AS FaUserLogin"
+                    . " LEFT JOIN $wpdb->usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
+                    . " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
+                    . " WHERE 1 ";
+
+            if ($where_query) {
+                $rows_sql .= $where_query;
+                $count_sql .= $where_query;
+            }
+
+            $rows_sql .= " )";
+            $count_sql .= " ) ";
+            $i++;
+        }
+
+        $this->rows_sql = $rows_sql;
+        $this->count_sql = "SELECT SUM(count) as total FROM ($count_sql) AS FaUserLoginCount";
+    }
+
     public function get_columns() {
         $columns = array_merge(parent::get_columns(), array(
             'blog_id' => esc_html__('Blog ID', $this->plugin_text_domain),
@@ -49,7 +126,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
      * @return string
      */
     public function column_cb($item) {
-        $blog_id = !empty($item['blog_id']) ? $item['blog_id'] : 0;
+        $blog_id = !empty($item['blog_id']) ? absint($item['blog_id']) : 0;
         return sprintf(
                 '<input type="checkbox" name="bulk-delete-ids[%s][]" value="%s" />', $blog_id, $item['id']
         );
@@ -65,70 +142,20 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
      * @return mixed
      */
     public function get_rows($per_page = 20, $page_number = 1) {
-        global $wpdb;
-        $where_query = $this->prepare_where_query();
-        $i = 0;
-        $sql = "";
-        $blog_ids = Db_Helper::get_blog_ids_by_site_id();
-
-        foreach ($blog_ids as $blog_id) {
-            $blog_prefix = $wpdb->get_blog_prefix($blog_id);
-            $table = $blog_prefix . $this->table;
-
-            if (!$this->is_plugin_active_for_network && !Db_Helper::is_table_exist($table)) {
-                    continue;
-            }
-
-            if (0 < $i) {
-                $sql .= " UNION ALL";
-            }
-
-            $sql .= " ( SELECT"
-                    . " FaUserLogin.id, "
-                    . " FaUserLogin.user_id,"
-                    . " FaUserLogin.username,"
-                    . " FaUserLogin.time_login,"
-                    . " FaUserLogin.time_logout,"
-                    . " FaUserLogin.time_last_seen,"
-                    . " FaUserLogin.ip_address,"
-                    . " FaUserLogin.operating_system,"
-                    . " FaUserLogin.browser,"
-                    . " FaUserLogin.browser_version,"
-                    . " FaUserLogin.country_name,"
-                    . " FaUserLogin.country_code,"
-                    . " FaUserLogin.timezone,"
-                    . " FaUserLogin.old_role,"
-                    . " FaUserLogin.user_agent,"
-                    . " FaUserLogin.login_status,"
-                    . " FaUserLogin.is_super_admin,"
-                    . " UserMeta.meta_value, "
-                    . " TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
-                    . " $blog_id as blog_id"
-                    . " FROM $table  AS FaUserLogin"
-                    . " LEFT JOIN $wpdb->usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
-                    . " WHERE 1 ";
-
-            if ($where_query) {
-                $sql .= $where_query;
-            }
-            $sql .= " )";
-            $i++;
-        }
 
         if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $this->rows_sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
+            $this->rows_sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
         } else {
-            $sql .= ' ORDER BY id DESC';
+            $this->rows_sql .= ' ORDER BY id DESC';
         }
 
         if ($per_page > 0) {
-            $sql .= " LIMIT $per_page";
-            $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
+            $this->rows_sql .= " LIMIT $per_page";
+            $this->rows_sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
 
-        return Db_Helper::get_results($sql);
+        return Db_Helper::get_results($this->rows_sql);
     }
 
     /**
@@ -138,44 +165,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
      * @return null|string
      */
     public function record_count() {
-        global $wpdb;
-        $get_values = array();
-        $where_query = $this->prepare_where_query();
-        $table_usermeta = $wpdb->usermeta;
-        $table_users = $wpdb->users;
-        $i = 0;
-        $sql = "";
-        $blog_ids = Db_Helper::get_blog_ids_by_site_id();
-
-        foreach ($blog_ids as $blog_id) {
-            $blog_prefix = $wpdb->get_blog_prefix($blog_id);
-            $table = $blog_prefix . $this->table;
-
-            if (!$this->is_plugin_active_for_network && !Db_Helper::is_table_exist($table)) {
-                    continue;
-            }
-
-            if (0 < $i) {
-                $sql .= " UNION ALL";
-            }
-
-
-            $sql .= " ( SELECT"
-                    . " COUNT(FaUserLogin.id) AS count"
-                    . " FROM $table  AS FaUserLogin"
-                    . " LEFT JOIN $table_usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-                    . " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
-                    . " WHERE 1 ";
-
-            if ($where_query) {
-                $sql .= $where_query;
-            }
-            $sql .= " ) ";
-            $i++;
-        }
-        $sql_count = "SELECT SUM(count) as total FROM ($sql) AS FaUserLoginCount";
-
-        return $wpdb->get_var($sql_count);
+        return Db_Helper::get_var($this->count_sql);
     }
 
     /**

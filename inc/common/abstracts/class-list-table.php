@@ -9,6 +9,7 @@ use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Common\Helpers\Validation as Validation_Helper;
 
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -62,13 +63,21 @@ abstract class List_Table extends \WP_List_Table {
     protected $bulk_action_nonce;
     protected $csv_field_name = 'csv';
     protected $csv_nonce_name = 'csv_nonce';
+   
+   
 
     public function __construct($plugin_name, $version, $plugin_text_domain, $args = array()) {
         parent::__construct($args);
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
+     
+        $this->init();
+    }
+    
+   
 
+    public function init() {
         $this->set_bulk_action_form($this->_args['singular'] . "_form");
         $this->set_delete_action_nonce($this->_args['singular'] . "_delete_none");
         $this->set_bulk_action_nonce('bulk-' . $this->_args['plural']);

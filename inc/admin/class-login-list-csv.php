@@ -42,7 +42,8 @@ final class Login_List_Csv {
 
     
      public function is_request_for_csv() {
-        return !empty($_GET[$this->list_table->get_csv_field_name()]) && 1 == $_GET[$this->list_table->get_csv_field_name()] && check_admin_referer($this->list_table->get_csv_nonce_name());
+        
+        return !is_null($this->list_table) && !empty($_GET[$this->list_table->get_csv_field_name()]) && 1 == $_GET[$this->list_table->get_csv_field_name()] && check_admin_referer($this->list_table->get_csv_nonce_name());
     }
 
     /**

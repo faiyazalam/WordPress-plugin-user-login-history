@@ -8,6 +8,8 @@ use User_Login_History\Inc\Common\Helpers\Geo as Geo_Helper;
 use User_Login_History\Inc\Common\Helpers\Error_Log as Error_Log_Helper;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
+use User_Login_History\Inc\Admin\Settings AS Admin_Settings;
+
 
 /**
  * The admin-specific functionality of the plugin.
@@ -75,16 +77,18 @@ class Login_Tracker {
      */
     private $current_loggedin_blog_id;
     private $table;
+    private $Admin_Settings;
 
     /**
      * Initialize the class and set its properties.
      *
      * @var      string    $plugin_name       The name of this plugin.
      */
-    public function __construct($plugin_name, $version, $table) {
+    public function __construct($plugin_name, $version, $table, Admin_Settings $Admin_Settings) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->table = $table;
+        $this->Admin_Settings = $Admin_Settings;
       
     }
     
@@ -167,16 +171,12 @@ class Login_Tracker {
         }
 
         global $wpdb;
-        $options = get_option($this->plugin_name . "_advanced");
+        
         $unknown = 'unknown';
         $table = $wpdb->prefix . $this->table;
         $current_date = Date_Time_Helper::get_current_date_time();
         $user_id = !empty($user->ID) ? $user->ID : FALSE;
         $Browser_Helper = new Browser_Helper();
-
-
-
-
 
         //now insert for new login
         $data = array(
@@ -194,8 +194,8 @@ class Login_Tracker {
             'login_status' => $status,
             'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
         );
-
-        if (!empty($options['is_geo_tracker_enabled']) && 'on' == $options['is_geo_tracker_enabled']) {
+        
+        if ($this->Admin_Settings->is_geo_tracker_enabled()) {
             $geo_location = Geo_Helper::get_geo_location();
             $geo_fields = array('country_name', 'country_code', 'timezone');
             foreach ($geo_fields as $geo_field) {
@@ -268,7 +268,7 @@ class Login_Tracker {
 
     /**
      * Fires on logout.
-     * Save logout time of current user.
+     * Saves logout time of current user.
      * 
      * @access public
      */
@@ -284,11 +284,9 @@ class Login_Tracker {
         $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . $this->table;
         $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' ";
 
-        $wpdb->query($sql);
+       Db_Helper::query($sql);
 
-        if ($wpdb->last_error) {
-            Error_Log_Helper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
-        }
+     
 
         $data = array(
             'time_logout' => $time_logout,
@@ -309,13 +307,6 @@ class Login_Tracker {
 
     /**
      * Callback function for the action hook - set_logged_in_cookie
-     * 
-     * @param string $logged_in_cookie
-     * @param string $expire
-     * @param string $expiration
-     * @param string|int $user_id
-     * @param string $logged_in_text
-     * @param string $token The session token.
      */
     public function set_logged_in_cookie($logged_in_cookie, $expire, $expiration, $user_id, $logged_in_text, $token) {
         $this->set_session_token($token);
@@ -330,6 +321,34 @@ class Login_Tracker {
      */
     public function get_session_token() {
         return $this->session_token;
+    }
+    
+    
+    public function get_online_status($time_last_seen_unix, $login_status) {
+       
+        $time_last_seen_unix = absint($time_last_seen_unix);
+
+        if (!is_string($login_status) || empty(trim($login_status)) || $time_last_seen_unix <= 0) {
+            return FALSE;
+        }
+        
+        $online_status = 'offline';
+        
+        if(self::LOGIN_STATUS_LOGIN == $login_status)
+        {
+        $minutes = ((time() - $time_last_seen_unix) / 60);
+        $online_duration = $this->Admin_Settings->get_online_duration();
+        $minute_online = $online_duration['online'];
+        $minute_idle = $online_duration['idle'];
+
+        if ($minutes <= $minute_online) {
+            $online_status = 'online';
+        } elseif ($minutes <= $minute_idle) {
+            $online_status = 'idle';
+        } 
+        
+        }
+        return $online_status;
     }
 
 }

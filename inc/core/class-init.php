@@ -111,28 +111,33 @@ class Init {
      * @access    private
      */
     private function define_admin_hooks() {
+
         if (is_multisite() && is_network_admin()) {
             $Network_Blog_Manager = new Network_Blog_Manager();
             $this->loader->add_action('wpmu_new_blog', $Network_Blog_Manager, 'on_create_blog', 10, 6);
             $this->loader->add_action('deleted_blog', $Network_Blog_Manager, 'deleted_blog', 10, 1);
         }
 
+        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-       
-        $plugin_admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv());
 
-     
-        $this->loader->add_action('admin_init', $plugin_admin, 'admin_init');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-        $this->loader->add_action('admin_menu', $plugin_admin, 'admin_menu');
-        $this->loader->add_action('network_admin_menu', $plugin_admin, 'admin_menu');
-        $this->loader->add_filter('set-screen-option', $plugin_admin, 'set_screen', 10, 3);
-        
-        $this->loader->add_action('admin_notices', $plugin_admin, 'show_admin_notice');
-        $this->loader->add_action('network_admin_notices', $plugin_admin, 'show_admin_notice');
 
-        $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
+        $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS, $Admin_Setting);
+
+
+        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Login_Tracker);
+
+
+        $this->loader->add_action('admin_init', $Admin, 'admin_init');
+        $this->loader->add_action('admin_enqueue_scripts', $Admin, 'enqueue_styles');
+        $this->loader->add_action('admin_enqueue_scripts', $Admin, 'enqueue_scripts');
+        $this->loader->add_action('admin_menu', $Admin, 'admin_menu');
+        $this->loader->add_action('network_admin_menu', $Admin, 'admin_menu');
+        $this->loader->add_filter('set-screen-option', $Admin, 'set_screen', 10, 3);
+
+        $this->loader->add_action('admin_notices', $Admin, 'show_admin_notice');
+        $this->loader->add_action('network_admin_notices', $Admin, 'show_admin_notice');
+
         $this->loader->add_action('set_logged_in_cookie', $Login_Tracker, 'set_logged_in_cookie', 10, 6);
         $this->loader->add_action('wp_login_failed', $Login_Tracker, 'on_login_failed');
         $this->loader->add_action('wp_logout', $Login_Tracker, 'on_logout');
@@ -140,8 +145,8 @@ class Init {
         $this->loader->add_action('attach_session_information', $Login_Tracker, 'attach_session_information', 10, 2);
 
 
-        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
-        
+
+
         $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
         $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
 
@@ -153,9 +158,9 @@ class Init {
         $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
         $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
         $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
-        
-          $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
-          $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
+
+        $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
+        $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
 
 
         /*
@@ -164,10 +169,10 @@ class Init {
          * e.g.
          *
          * //admin menu pages
-         * $this->loader->add_action('admin_menu', $plugin_admin, 'add_plugin_admin_menu');
+         * $this->loader->add_action('admin_menu', $Admin, 'add_plugin_admin_menu');
          *
          *  //plugin action links
-         * $this->loader->add_filter( 'plugin_action_links_' . $this->plugin_basename, $plugin_admin, 'add_additional_action_link' );
+         * $this->loader->add_filter( 'plugin_action_links_' . $this->plugin_basename, $Admin, 'add_additional_action_link' );
          *
          */
     }

@@ -8,6 +8,7 @@ use User_Login_History\Inc\Admin\Network_Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Helpers\Request as RequestHelper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
+use User_Login_History\Inc\Common\Login_Tracker;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -62,7 +63,8 @@ class Admin {
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv) {
+    public function __construct($plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Login_Tracker $Login_Tracker
+    ) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
@@ -70,6 +72,7 @@ class Admin {
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
         $this->User_Profile = $User_Profile;
         $this->Login_List_Csv = $Login_List_Csv;
+        $this->Login_Tracker = $Login_Tracker;
     }
 
     public function admin_init() {
@@ -79,14 +82,16 @@ class Admin {
 
     private function init_csv_export() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
+            if (!$this->Login_List_Csv->is_request_for_csv()) {
+                return;
+            }
             $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
             $this->Login_List_Csv->set_login_list_object($Login_List);
-            
-            if ($this->Login_List_Csv->is_request_for_csv()) {
-                $this->User_Profile->set_user_id();
-                $Login_List->set_timezone($this->User_Profile->get_user_timezone());
-                $this->Login_List_Csv->init();
-            }
+
+
+            $this->User_Profile->set_user_id();
+            $Login_List->set_timezone($this->User_Profile->get_user_timezone());
+            $this->Login_List_Csv->init();
         }
     }
 
@@ -191,6 +196,7 @@ class Admin {
 
         $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
         $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
+        $this->list_table->set_Login_Tracker($this->Login_Tracker);
         $status = $this->list_table->process_action();
 
         if (!is_null($status)) {

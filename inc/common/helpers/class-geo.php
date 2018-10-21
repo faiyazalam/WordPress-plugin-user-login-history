@@ -16,15 +16,22 @@ namespace User_Login_History\Inc\Common\Helpers;
          * @return string The IP address of user.
          */
         static public function get_ip() {
+            $https = array(
+                'HTTP_CLIENT_IP',
+                'HTTP_X_FORWARDED_FOR',
+                'HTTP_X_REAL_IP',
+                'REMOTE_ADDR',
+            );
             
-            $ip_address = $_SERVER['REMOTE_ADDR'];
-
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $ip_address = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            $https = apply_filters('faulh_https_list', $https);
+          
+            foreach ($https as $http) {
+                if(!empty($_SERVER[$http]))
+                {
+                    return $_SERVER[$http];
+                }
             }
-            return $ip_address;
+
         }
 
         /**
@@ -33,7 +40,6 @@ namespace User_Login_History\Inc\Common\Helpers;
          * @return string The response from geo API.
          */
         static public function get_geo_location() {
-
 
             $defaults = array('timeout' => 5);
             $args = apply_filters('faulh_remote_get_args', $defaults);

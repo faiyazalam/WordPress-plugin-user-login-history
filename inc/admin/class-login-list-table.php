@@ -10,7 +10,6 @@ use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -22,21 +21,28 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
  *
  * @author    Er Faiyaz Alam
  */
-class Login_List_Table extends List_Table_Abstract {
+abstract class Login_List_Table extends List_Table_Abstract {
+    
+    protected $Login_Tracker;
+
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
             'singular' => $plugin_name . '_user_login', //singular name of the listed records
             'plural' => $plugin_name . '_user_logins', //plural name of the listed records
         );
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
-        $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
-
-        
-        
-         $this->delete_action = $this->_args['singular'] . "_delete";
+         
+    }
+    
+    public function set_Login_Tracker(Login_Tracker $Login_Tracker) {
+         $this->Login_Tracker = $Login_Tracker;
     }
 
-
+    public function init() {
+        parent::init();
+        $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
+        $this->delete_action = $this->_args['singular'] . "_delete";
+    }
 
     /**
      * Prepares the where query.
@@ -74,17 +80,26 @@ class Login_List_Table extends List_Table_Abstract {
             $UserProfile = new User_Profile($this->plugin_name, $this->version, $this->plugin_text_domain);
             $input_timezone = $UserProfile->get_user_timezone();
             $date_type = $_GET['date_type'];
+            
             if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
 
-                if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
+                $key_date_from = 'date_from';
+                $key_date_to = 'date_to';
+                
+                if (!empty($_GET[$key_date_from]) && !empty($_GET[$key_date_to])) {
                     $date_type = esc_sql($date_type);
-                    $date_from = Date_Time_Helper::convert_timezone($_GET['date_from'] . " 00:00:00", $input_timezone);
-                    $date_to = Date_Time_Helper::convert_timezone($_GET['date_to'] . " 23:59:59", $input_timezone);
+                    $date_from = Date_Time_Helper::convert_timezone($_GET[$key_date_from] . " 00:00:00", $input_timezone);
+                    $date_to = Date_Time_Helper::convert_timezone($_GET[$key_date_to] . " 23:59:59", $input_timezone);
+                    
+                    if($date_from && $date_to)
+                    {
                     $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
-                    $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
+                    $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";  
+                    }
+                  
                 } else {
-                    unset($_GET['date_from']);
-                    unset($_GET['date_to']);
+                    unset($_GET[$key_date_from]);
+                    unset($_GET[$key_date_to]);
                 }
             }
         }
@@ -157,43 +172,8 @@ class Login_List_Table extends List_Table_Abstract {
         return $columns;
     }
 
-    /**
-     * Method for name column
-     * 
-     * @access   public
-     * @param array $item an array of DB data
-     * @return string
-     */
-   
-    public function column_username($item) {
-        $username = $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
-        if ($this->is_empty($item['user_id'])) {
-            $title = $username;
-        } else {
-            $edit_link = get_edit_user_link($item['user_id']);
-            $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . $username . "</a>" : '<strong>' . $username . '</strong>';
-        }
-
-        $delete_nonce = wp_create_nonce($this->delete_action_nonce);
-        $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->delete_action, absint($item['id']), $delete_nonce),
-        );
-        return $title . $this->row_actions($actions);
-    }
-
-    /**
-     * Render the bulk edit checkbox
-     * 
-     * @access   public
-     * @param array $item
-     * @return string
-     */
-    public function column_cb($item) {
-        return sprintf('<input type="checkbox" name="bulk-action-ids[]" value="%s" />', $item['id']);
-    }
-
     public function process_bulk_action() {
-         $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
         switch ($this->current_action()) {
             case 'bulk-delete':
                 $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
@@ -236,7 +216,7 @@ class Login_List_Table extends List_Table_Abstract {
 
         return $status;
     }
-    
+
     public function column_time_last_seen($item) {
         $column_name = 'time_last_seen';
 
@@ -254,27 +234,14 @@ class Login_List_Table extends List_Table_Abstract {
         }
 
         $human_time_diff = human_time_diff($time_last_seen_unix);
-        $is_online_str = 'offline';
-
-        if (in_array($item['login_status'], array("", Login_Tracker::LOGIN_STATUS_LOGIN))) {
-            $minutes = ((time() - $time_last_seen_unix) / 60);
-            $settings = get_option($this->plugin_name . "_basics");
-            $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-            $minute_idle = !empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
-            if ($minutes <= $minute_online) {
-                $is_online_str = 'online';
-            } elseif ($minutes <= $minute_idle) {
-                $is_online_str = 'idle';
-            }
-        }
-
-
+        $is_online_str =  $this->Login_Tracker->get_online_status($time_last_seen_unix, $item['login_status']);
         return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
     }
+    
+   
 
     public function column_default($item, $column_name) {
         $timezone = $this->get_timezone();
-
 
         $new_column_data = apply_filters('manage_faulh_admin_custom_column', '', $item, $column_name);
         $country_code = in_array(strtolower($item['country_code']), array("", $this->get_unknown_symbol())) ? $this->get_unknown_symbol() : $item['country_code'];
