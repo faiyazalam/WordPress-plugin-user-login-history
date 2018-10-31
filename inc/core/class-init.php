@@ -122,10 +122,11 @@ class Init {
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
 
 
-        $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS, $Admin_Setting);
+        $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
+        $Login_Tracker->set_is_geo_tracker_enabled($Admin_Setting->is_geo_tracker_enabled());
 
 
-        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Login_Tracker);
+        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Login_Tracker, $Admin_Setting);
 
 
         $this->loader->add_action('admin_init', $Admin, 'admin_init');
@@ -152,7 +153,7 @@ class Init {
 
 
 
-        $this->loader->add_action('admin_init', $User_Profile, 'admin_init');
+        $this->loader->add_action('init', $User_Profile, 'init');
         $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
         $this->loader->add_action('edit_user_profile', $User_Profile, 'show_extra_profile_fields');
         $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);

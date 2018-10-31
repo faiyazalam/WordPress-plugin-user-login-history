@@ -9,6 +9,7 @@ use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Helpers\Request as RequestHelper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
 use User_Login_History\Inc\Common\Login_Tracker;
+use User_Login_History\Inc\Admin\Settings as Admin_Settings;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -54,6 +55,7 @@ class Admin {
     private $admin_notice_transient;
     private $User_Profile;
     private $Login_List_Csv;
+    private $Admin_Settings;
 
     /**
      * Initialize the class and set its properties.
@@ -63,7 +65,7 @@ class Admin {
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Login_Tracker $Login_Tracker
+    public function __construct($plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Login_Tracker $Login_Tracker, Admin_Settings $Admin_Settings
     ) {
 
         $this->plugin_name = $plugin_name;
@@ -73,6 +75,7 @@ class Admin {
         $this->User_Profile = $User_Profile;
         $this->Login_List_Csv = $Login_List_Csv;
         $this->Login_Tracker = $Login_Tracker;
+        $this->Admin_Settings = $Admin_Settings;
     }
 
     public function admin_init() {
@@ -89,7 +92,6 @@ class Admin {
                 return;
             }
 
-            $this->User_Profile->set_user_id();
             $Login_List->set_timezone($this->User_Profile->get_user_timezone());
             $this->Login_List_Csv->init();
         }
@@ -187,6 +189,9 @@ class Admin {
         add_screen_option($option, $args);
 
         $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $online_duration = $this->Admin_Settings->get_online_duration();
+        $this->list_table->set_online_duration($online_duration['online']);
+        $this->list_table->set_idle_duration($online_duration['idle']);
         $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
         $this->list_table->set_Login_Tracker($this->Login_Tracker);
         $status = $this->list_table->process_action();

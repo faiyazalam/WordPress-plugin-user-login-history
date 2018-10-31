@@ -10,7 +10,6 @@ use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
 use User_Login_History\Inc\Admin\Settings AS Admin_Settings;
 
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -77,24 +76,31 @@ class Login_Tracker {
      */
     private $current_loggedin_blog_id;
     private $table;
-    private $Admin_Settings;
+    private $is_geo_tracker_enabled = FALSE;
 
     /**
      * Initialize the class and set its properties.
      *
      * @var      string    $plugin_name       The name of this plugin.
      */
-    public function __construct($plugin_name, $version, $table, Admin_Settings $Admin_Settings) {
+    public function __construct($plugin_name, $version, $table) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->table = $table;
-        $this->Admin_Settings = $Admin_Settings;
-      
     }
-    
+
     public function init() {
         $this->set_current_loggedin_blog_id();
         $this->update_time_last_seen();
+    }
+
+    public function set_is_geo_tracker_enabled($status) {
+        $this->is_geo_tracker_enabled = $status;
+        return $this;
+    }
+
+    public function get_is_geo_tracker_enabled() {
+        return $this->is_geo_tracker_enabled;
     }
 
     /**
@@ -126,11 +132,9 @@ class Login_Tracker {
      * Set the blog id on which user is just logged in.
      */
     private function set_current_loggedin_blog_id() {
-            $this->current_loggedin_blog_id = $this->get_current_login_blog_id_from_session();  
+        $this->current_loggedin_blog_id = $this->get_current_login_blog_id_from_session();
     }
-    
-    
-    
+
     /**
      * Blocks user if the user is not allowed to 
      * login on another blog on the network.
@@ -145,7 +149,7 @@ class Login_Tracker {
         if (is_super_admin($user_id)) {
             return FALSE;
         }
-        
+
         if (!is_user_member_of_blog($user_id)) {
             $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
             if ($Network_Admin_Setting->get_settings('block_user')) {
@@ -171,7 +175,7 @@ class Login_Tracker {
         }
 
         global $wpdb;
-        
+
         $unknown = 'unknown';
         $table = $wpdb->prefix . $this->table;
         $current_date = Date_Time_Helper::get_current_date_time();
@@ -194,8 +198,8 @@ class Login_Tracker {
             'login_status' => $status,
             'is_super_admin' => is_multisite() ? is_super_admin($user_id) : FALSE,
         );
-        
-        if ($this->Admin_Settings->is_geo_tracker_enabled()) {
+
+        if ($this->get_is_geo_tracker_enabled()) {
             $geo_location = Geo_Helper::get_geo_location();
             $geo_fields = array('country_name', 'country_code', 'timezone');
             foreach ($geo_fields as $geo_field) {
@@ -233,21 +237,21 @@ class Login_Tracker {
      * @return bool|int The number of records updated.
      */
     public function update_time_last_seen() {
-      
+
         $current_user = wp_get_current_user();
-         if (!$current_user->ID) {
+        if (!$current_user->ID) {
             return;
         }
-        
+
         global $wpdb;
         $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . $this->table;
         $current_date = Date_Time_Helper::get_current_date_time();
         $session_token = wp_get_session_token();
-        
+
         $sql = "update $table set time_last_seen='$current_date' where session_token = '$session_token' and user_id = '{$current_user->ID}' ";
-        
+
         Db_Helper::query($sql);
-      
+
         $data = array(
             'time_last_seen' => $current_date,
             'session_token' => $session_token,
@@ -284,9 +288,9 @@ class Login_Tracker {
         $table = $wpdb->get_blog_prefix($this->current_loggedin_blog_id) . $this->table;
         $sql = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' ";
 
-       Db_Helper::query($sql);
+        Db_Helper::query($sql);
 
-     
+
 
         $data = array(
             'time_logout' => $time_logout,
@@ -322,33 +326,7 @@ class Login_Tracker {
     public function get_session_token() {
         return $this->session_token;
     }
-    
-    
-    public function get_online_status($time_last_seen_unix, $login_status) {
-       
-        $time_last_seen_unix = absint($time_last_seen_unix);
 
-        if (!is_string($login_status) || empty(trim($login_status)) || $time_last_seen_unix <= 0) {
-            return FALSE;
-        }
-        
-        $online_status = 'offline';
-        
-        if(self::LOGIN_STATUS_LOGIN == $login_status)
-        {
-        $minutes = ((time() - $time_last_seen_unix) / 60);
-        $online_duration = $this->Admin_Settings->get_online_duration();
-        $minute_online = $online_duration['online'];
-        $minute_idle = $online_duration['idle'];
-
-        if ($minutes <= $minute_online) {
-            $online_status = 'online';
-        } elseif ($minutes <= $minute_idle) {
-            $online_status = 'idle';
-        } 
-        
-        }
-        return $online_status;
-    }
+    
 
 }

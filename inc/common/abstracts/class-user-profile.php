@@ -46,24 +46,23 @@ abstract class User_Profile {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-          $this->set_usermeta_key_timezone();
+        $this->set_usermeta_key_timezone();
     }
 
-    public function admin_init() {
-      
+    public function init() {
         $this->set_user_id();
-      
     }
 
     public function set_user_id($user_id = NULL) {
-       
+
         if (!empty($user_id)) {
-            $this->user_id = $current_user->ID;
+            $this->user_id = $user_id;
         } else {
             global $current_user;
             $this->user_id = $current_user->ID;
         }
-   
+
+        return $this;
     }
 
     public function get_user_id() {
@@ -100,9 +99,9 @@ abstract class User_Profile {
      * @return boolean|string False on failure, timezone on success.
      */
     public function get_user_timezone() {
-    
+
         if (!$this->get_user_id()) {
-           
+
             return FALSE;
         }
         return get_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), TRUE);

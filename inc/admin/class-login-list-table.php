@@ -24,6 +24,8 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 abstract class Login_List_Table extends List_Table_Abstract {
     
     protected $Login_Tracker;
+    protected $online_duration;
+    protected $idle_duration;
 
     public function __construct($plugin_name, $version, $plugin_text_domain) {
         $args = array(
@@ -33,6 +35,25 @@ abstract class Login_List_Table extends List_Table_Abstract {
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
          
     }
+    
+    public function set_online_duration($duration) {
+        $this->online_duration = $duration;
+        return $this;
+    }
+    
+    public function get_online_duration() {
+        return $this->online_duration;
+    }
+    
+    public function set_idle_duration($duration) {
+        $this->idle_duration = $duration;
+        return $this;
+    }
+    
+    public function get_idle_duration() {
+        return $this->idle_duration;
+    }
+    
     
     public function set_Login_Tracker(Login_Tracker $Login_Tracker) {
          $this->Login_Tracker = $Login_Tracker;
@@ -233,11 +254,35 @@ abstract class Login_List_Table extends List_Table_Abstract {
         }
 
         $human_time_diff = human_time_diff($time_last_seen_unix);
-        $is_online_str =  $this->Login_Tracker->get_online_status($time_last_seen_unix, $item['login_status']);
+        $is_online_str =  $this->get_online_status($time_last_seen_unix, $item['login_status']);
         return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
     }
     
-   
+    
+    private function get_online_status($time_last_seen_unix, $login_status) {
+
+        $time_last_seen_unix = absint($time_last_seen_unix);
+
+        if (!is_string($login_status) || empty(trim($login_status)) || $time_last_seen_unix <= 0) {
+            return FALSE;
+        }
+
+        $online_status = 'offline';
+
+        if (Login_Tracker::LOGIN_STATUS_LOGIN == $login_status) {
+            $minutes = ((time() - $time_last_seen_unix) / 60);
+           
+
+            if ($minutes <= $this->get_online_duration()) {
+                $online_status = 'online';
+            } elseif ($minutes <= $this->get_idle_duration()) {
+                $online_status = 'idle';
+            }
+        }
+        return $online_status;
+    }
+
+
 
     public function column_default($item, $column_name) {
         $timezone = $this->get_timezone();
