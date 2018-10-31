@@ -82,12 +82,12 @@ class Admin {
 
     private function init_csv_export() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
-            if (!$this->Login_List_Csv->is_request_for_csv()) {
-                return;
-            }
             $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
             $this->Login_List_Csv->set_login_list_object($Login_List);
 
+            if (!$this->Login_List_Csv->is_request_for_csv()) {
+                return;
+            }
 
             $this->User_Profile->set_user_id();
             $Login_List->set_timezone($this->User_Profile->get_user_timezone());
@@ -96,15 +96,7 @@ class Admin {
     }
 
     private function is_plugin_login_list_page() {
-        if (!RequestHelper::is_current_page_by_file_name()) {
-            return FALSE;
-        }
-
-        if (!empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page']) {
-            return TRUE;
-        }
-
-        return FALSE;
+        return RequestHelper::is_current_page_by_file_name() && !empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page'];
     }
 
     private function get_plugin_login_list_page_slug() {

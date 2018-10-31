@@ -26,7 +26,7 @@
         });
 
 //csv
-        $("#download_csv_link").click(function () {
+        $("#download_csv_link").click(function (e) {
             let csv = $("#csv");
             csv.val('1');
             $("#submit").trigger('click');
@@ -34,11 +34,7 @@
         });
         //delete all records
         $("#doaction, #doaction2, .delete").click(function (e) {
-            if (confirm(admin_custom_object.delete_confirm_message))
-            {
-                return true;
-            }
-            return false; 
+            return confirm(admin_custom_object.delete_confirm_message);
         });
     });
     
