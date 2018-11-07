@@ -4,6 +4,7 @@ namespace User_Login_History\Inc\Core;
 
 use User_Login_History as NS;
 use User_Login_History\Inc\Admin\Admin;
+use User_Login_History\Inc\Admin\Admin_Notice;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Admin\Settings as AdminSettings;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
@@ -112,32 +113,42 @@ class Init {
      */
     private function define_admin_hooks() {
 
-        if (is_multisite() && is_network_admin()) {
+        $Admin_Notice = new Admin_Notice($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
+        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
+
+
+
+        if (is_network_admin()) {
             $Network_Blog_Manager = new Network_Blog_Manager();
             $this->loader->add_action('wpmu_new_blog', $Network_Blog_Manager, 'on_create_blog', 10, 6);
             $this->loader->add_action('deleted_blog', $Network_Blog_Manager, 'deleted_blog', 10, 1);
         }
 
-        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
-        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
 
+       
+   
 
         $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
         $Login_Tracker->set_is_geo_tracker_enabled($Admin_Setting->is_geo_tracker_enabled());
 
-
-        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Login_Tracker, $Admin_Setting);
-
+        $Network_Admin_Setting = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
 
         $this->loader->add_action('admin_init', $Admin, 'admin_init');
+
+        if (is_network_admin()) {
+            $this->loader->add_action('admin_init', $Network_Admin_Setting, 'update');
+        }
+
         $this->loader->add_action('admin_enqueue_scripts', $Admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $Admin, 'enqueue_scripts');
         $this->loader->add_action('admin_menu', $Admin, 'admin_menu');
         $this->loader->add_action('network_admin_menu', $Admin, 'admin_menu');
         $this->loader->add_filter('set-screen-option', $Admin, 'set_screen', 10, 3);
 
-        $this->loader->add_action('admin_notices', $Admin, 'show_admin_notice');
-        $this->loader->add_action('network_admin_notices', $Admin, 'show_admin_notice');
+        $this->loader->add_action('admin_notices', $Admin_Notice, 'show_notice');
+        $this->loader->add_action('network_admin_notices', $Admin_Notice, 'show_notice');
 
         $this->loader->add_action('set_logged_in_cookie', $Login_Tracker, 'set_logged_in_cookie', 10, 6);
         $this->loader->add_action('wp_login_failed', $Login_Tracker, 'on_login_failed');
@@ -145,13 +156,8 @@ class Init {
         $this->loader->add_action('init', $Login_Tracker, 'init');
         $this->loader->add_action('attach_session_information', $Login_Tracker, 'attach_session_information', 10, 2);
 
-
-
-
         $this->loader->add_action('admin_init', $Admin_Setting, 'admin_init');
         $this->loader->add_action('admin_menu', $Admin_Setting, 'admin_menu');
-
-
 
         $this->loader->add_action('init', $User_Profile, 'init');
         $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
@@ -160,22 +166,7 @@ class Init {
         $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
         $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
 
-        $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
         $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
-
-
-        /*
-         * Additional Hooks go here
-         *
-         * e.g.
-         *
-         * //admin menu pages
-         * $this->loader->add_action('admin_menu', $Admin, 'add_plugin_admin_menu');
-         *
-         *  //plugin action links
-         * $this->loader->add_filter( 'plugin_action_links_' . $this->plugin_basename, $Admin, 'add_additional_action_link' );
-         *
-         */
     }
 
     /**
@@ -185,9 +176,7 @@ class Init {
      * @access    private
      */
     private function define_public_hooks() {
-
         $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
     }

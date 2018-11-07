@@ -23,16 +23,17 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
  */
 abstract class Login_List_Table extends List_Table_Abstract {
     
-    protected $Login_Tracker;
     protected $online_duration;
     protected $idle_duration;
+        protected $Admin_Notice;
 
-    public function __construct($plugin_name, $version, $plugin_text_domain) {
+    public function __construct($plugin_name, $version, $plugin_text_domain, Admin_Notice $Admin_Notice) {
         $args = array(
             'singular' => $plugin_name . '_user_login', 
             'plural' => $plugin_name . '_user_logins', 
             );
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
+        $this->Admin_Notice = $Admin_Notice;
          
     }
     
@@ -55,9 +56,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
     }
     
     
-    public function set_Login_Tracker(Login_Tracker $Login_Tracker) {
-         $this->Login_Tracker = $Login_Tracker;
-    }
+  
 
     public function init() {
         parent::init();

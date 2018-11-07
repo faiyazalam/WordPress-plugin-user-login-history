@@ -56,6 +56,7 @@ class Admin {
     private $User_Profile;
     private $Login_List_Csv;
     private $Admin_Settings;
+    private $Admin_Notice;
 
     /**
      * Initialize the class and set its properties.
@@ -65,7 +66,14 @@ class Admin {
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Login_Tracker $Login_Tracker, Admin_Settings $Admin_Settings
+    public function __construct(
+            $plugin_name, 
+            $version, 
+            $plugin_text_domain, 
+            User_Profile $User_Profile, 
+            Login_List_Csv $Login_List_Csv, 
+            Admin_Settings $Admin_Settings,
+            Admin_Notice $Admin_Notice
     ) {
 
         $this->plugin_name = $plugin_name;
@@ -74,18 +82,18 @@ class Admin {
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
         $this->User_Profile = $User_Profile;
         $this->Login_List_Csv = $Login_List_Csv;
-        $this->Login_Tracker = $Login_Tracker;
+      $this->Admin_Notice = $Admin_Notice;
         $this->Admin_Settings = $Admin_Settings;
     }
 
     public function admin_init() {
         $this->init_csv_export();
-        $this->update_network_settings();
+     
     }
 
     private function init_csv_export() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
-            $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+            $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain,$this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
             $this->Login_List_Csv->set_login_list_object($Login_List);
 
             if (!$this->Login_List_Csv->is_request_for_csv()) {
@@ -188,12 +196,12 @@ class Admin {
 
         add_screen_option($option, $args);
 
-        $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain);
+        $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
         $online_duration = $this->Admin_Settings->get_online_duration();
         $this->list_table->set_online_duration($online_duration['online']);
         $this->list_table->set_idle_duration($online_duration['idle']);
         $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
-        $this->list_table->set_Login_Tracker($this->Login_Tracker);
+       
         $status = $this->list_table->process_action();
 
         if (!is_null($status)) {
@@ -236,21 +244,6 @@ class Admin {
         }
     }
 
-    /**
-     * Update the network settings.
-     * 
-     * @access public
-     */
-    private function update_network_settings() {
-        if (!is_network_admin()) {
-            return;
-        }
-        $obj = new Network_Admin_Settings($this->plugin_name);
-        if ($obj->update()) {
-            $this->add_admin_notice(esc_html__('Settings updated successfully.', 'faulh'));
-            wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
-            exit;
-        }
-    }
+    
 
 }

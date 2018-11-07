@@ -6,16 +6,13 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
 class Network_Admin_Settings {
 
-    /**
-     * The unique identifier of this plugin.
-     *
-     * @access   private
-     * @var      string    $plugin_name    The string used to uniquely identify this plugin.
-     */
     private $plugin_name;
+    private $version;
+    private $plugin_text_domain;
     private $form_name;
     private $form_nonce_name;
     private $settings_name;
+    private $Admin_Notice;
 
     /**
      * Initialize the class and set its properties.
@@ -24,11 +21,12 @@ class Network_Admin_Settings {
      * @param      array    $args       The overridden arguments.
      * @param      string    $plugin_name       The name of this plugin.
      */
-    function __construct($plugin_name) {
+    function __construct($plugin_name, $version, $plugin_text_domain, Admin_Notice $Admin_Notice) {
         $this->plugin_name = $plugin_name;
         $this->form_name = $this->plugin_name . '_network_admin_setting_submit';
         $this->form_nonce_name = $this->plugin_name . '_network_admin_setting_nonce';
         $this->settings_name = $this->plugin_name . '_network_settings';
+        $this->Admin_Notice = $Admin_Notice;
     }
 
     private function is_form_submitted() {
@@ -87,7 +85,12 @@ class Network_Admin_Settings {
      * @access public
      */
     public function update() {
-        return $this->is_form_submitted() ? $this->update_settings() : FALSE;
+
+        if ($this->is_form_submitted() && $this->update_settings()) {
+            $this->Admin_Notice->add_notice(esc_html__('Settings updated successfully.', $this->plugin_name));
+            wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
+            exit;
+        }
     }
 
     /**
