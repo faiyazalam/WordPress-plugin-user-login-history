@@ -30,7 +30,7 @@ class Network_Admin_Settings {
     }
 
     private function is_form_submitted() {
-        return isset($_POST[$this->get_form_name()]) && !empty($_POST[$this->get_form_nonce_name()]) && wp_verify_nonce($_POST[$this->get_form_nonce_name()], $this->get_form_nonce_name() && current_user_can('administrator'));
+        return isset($_POST[$this->get_form_name()]) && !empty($_POST[$this->get_form_nonce_name()]) && wp_verify_nonce($_POST[$this->get_form_nonce_name()], $this->get_form_nonce_name()) && current_user_can('administrator');
     }
 
     /**
