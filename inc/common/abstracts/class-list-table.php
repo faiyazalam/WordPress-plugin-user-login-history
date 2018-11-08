@@ -55,7 +55,6 @@ abstract class List_Table extends \WP_List_Table {
     protected $timezone;
     protected $unknown_symbol = '<span aria-hidden="true">—</span>';
     protected $table;
-    protected $message;
     protected $bulk_action_form;
     protected $delete_action;
     protected $delete_action_nonce;
@@ -156,27 +155,7 @@ abstract class List_Table extends \WP_List_Table {
         return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone($user_id) . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
     }
 
-    /**
-     * Check form submission and then 
-     * process the bulk operation.
-     * 
-     * @access   public 
-     * @return boolean
-     */
-    public function process_action() {
-        $nonce = '_wpnonce';
-        if (empty($_REQUEST[$nonce])) {
-            return;
-        }
-
-        if (isset($_POST[$this->get_bulk_action_form()]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce())) {
-            return $this->process_bulk_action();
-        }
-
-        if (!empty($_GET[$nonce]) && wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce())) {
-            return $this->process_single_action();
-        }
-    }
+    
 
     public function get_all_rows() {
         return $this->get_rows(0);
@@ -209,12 +188,5 @@ abstract class List_Table extends \WP_List_Table {
         return $this;
     }
 
-    public function set_message($message = '') {
-        $this->message = $message;
-    }
-
-    public function get_message() {
-        return $this->message;
-    }
 
 }

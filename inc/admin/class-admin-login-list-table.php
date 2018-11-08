@@ -58,7 +58,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
             $sql .= " LIMIT $per_page";
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
         }
-        
+
         return Db_Helper::get_results($sql);
     }
 
@@ -87,8 +87,6 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
         return Db_Helper::get_var($sql);
     }
 
-
-
     /**
      * Method for name column
      * 
@@ -96,7 +94,6 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
      * @param array $item an array of DB data
      * @return string
      */
-   
     public function column_username($item) {
         $username = $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
         if ($this->is_empty($item['user_id'])) {
@@ -113,8 +110,6 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
         return $title . $this->row_actions($actions);
     }
 
-    
-
     /**
      * Render the bulk edit checkbox
      * 
@@ -126,58 +121,70 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
         return sprintf('<input type="checkbox" name="bulk-action-ids[]" value="%s" />', $item['id']);
     }
 
-    
-
     public function process_bulk_action() {
-         $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+        $nonce = '_wpnonce';
+
+        if (!isset($_POST[$this->get_bulk_action_form()]) || empty($_POST[$nonce]) || !wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce()) || !current_user_can('administrator')) {
+            return;
+        }
+
+
+        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $status = FALSE;
+
         switch ($this->current_action()) {
             case 'bulk-delete':
-                $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
-                if ($status) {
-                    $this->set_message(esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
+
+                if (!empty($_POST['bulk-action-ids'])) {
+                    $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
+                    if ($status) {
+                        $message = esc_html__('Selected record(s) deleted.', $this->plugin_text_domain);
+                    }
                 }
+
                 break;
             case 'bulk-delete-all-admin':
                 $status = Db_Helper::truncate_table($this->table);
                 if ($status) {
-                    $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
+                    $message = esc_html__('All record(s) deleted.', $this->plugin_text_domain);
                 }
                 break;
-            default:
-                $status = FALSE;
-                break;
         }
-        return $status;
+        $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
+        wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
+        exit;
     }
 
     public function process_single_action() {
-        if (empty($_GET['record_id'])) {
+        $nonce = '_wpnonce';
+
+        if (empty($_GET['record_id']) || empty($_GET[$nonce]) || !wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce()) || !current_user_can('administrator')) {
             return;
         }
 
         $id = absint($_GET['record_id']);
-        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+        $status = FALSE;
+        $message = esc_html__('Please try again.', $this->plugin_text_domain);
         switch ($this->current_action()) {
             case $this->delete_action:
                 $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
                 if ($status) {
-                    $this->set_message(esc_html__('Record deleted.', $this->plugin_text_domain));
+                    $message = esc_html__('Record deleted.', $this->plugin_text_domain);
                 }
-                break;
-
-            default:
-                $status = FALSE;
                 break;
         }
 
-        return $status;
+        $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
+        wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
+        exit;
     }
-    
+
     public function get_columns() {
-         return apply_filters($this->plugin_name."_admin_login_list_get_columns", parent::get_columns());
+        return apply_filters($this->plugin_name . "_admin_login_list_get_columns", parent::get_columns());
     }
+
     public function get_sortable_columns() {
-         return apply_filters($this->plugin_name."_admin_login_list_get_columns", parent::get_sortable_columns());
+        return apply_filters($this->plugin_name . "_admin_login_list_get_columns", parent::get_sortable_columns());
     }
 
 }

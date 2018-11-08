@@ -40,9 +40,8 @@ final class Login_List_Csv {
         $this->export();
     }
 
-    
-     public function is_request_for_csv() {
-        
+    public function is_request_for_csv() {
+
         return !empty($_GET[$this->list_table->get_csv_field_name()]) && 1 == $_GET[$this->list_table->get_csv_field_name()] && check_admin_referer($this->list_table->get_csv_nonce_name());
     }
 
@@ -53,39 +52,37 @@ final class Login_List_Csv {
      * @global type $current_user
      */
     private function export() {
-        $timezone = $this->list_table->get_timezone();
         $data = $this->list_table->get_all_rows();
 
         if (!$data) {
             $this->list_table->no_items();
             exit;
         }
-        
+
         $columns = $this->list_table->get_columns();
-       
+
 
         $fp = fopen('php://output', 'w');
         $i = 0;
         $record = array();
         foreach ($data as $row) {
-            
-        foreach ($columns as $fieldName => $fieldLabel) {
-            if(!key_exists($fieldName, $row))
-            {
-                continue;
+
+            foreach ($columns as $fieldName => $fieldLabel) {
+                if (!key_exists($fieldName, $row)) {
+                    continue;
+                }
+
+                $record[$fieldLabel] = $this->list_table->column_default($row, $fieldName);
             }
-            
-            $record[$fieldLabel] = $this->list_table->column_default($row, $fieldName);
-        }
-        
-        if (0 == $i) {
+
+            if (0 == $i) {
                 fputcsv($fp, array_keys($record));
             }
 
             fputcsv($fp, $record);
             $i++;
         }
-        
+
         fclose($fp);
         die();
     }

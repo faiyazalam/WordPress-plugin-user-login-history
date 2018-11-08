@@ -30,7 +30,7 @@ class Network_Admin_Settings {
     }
 
     private function is_form_submitted() {
-        return isset($_POST[$this->get_form_name()]) && !empty($_POST[$this->get_form_nonce_name()]) && wp_verify_nonce($_POST[$this->get_form_nonce_name()], $this->get_form_nonce_name());
+        return isset($_POST[$this->get_form_name()]) && !empty($_POST[$this->get_form_nonce_name()]) && wp_verify_nonce($_POST[$this->get_form_nonce_name()], $this->get_form_nonce_name() && current_user_can('administrator'));
     }
 
     /**
@@ -63,7 +63,7 @@ class Network_Admin_Settings {
     /**
      * The callback function for the action hook - network_admin_menu.
      */
-    public function add_setting_menu() {
+    public function admin_menu() {
         add_submenu_page(
                 'settings.php', Template_Helper::plugin_name(), Template_Helper::plugin_name(), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
         );
@@ -85,12 +85,21 @@ class Network_Admin_Settings {
      * @access public
      */
     public function update() {
-
-        if ($this->is_form_submitted() && $this->update_settings()) {
-            $this->Admin_Notice->add_notice(esc_html__('Settings updated successfully.', $this->plugin_name));
-            wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
-            exit;
+        if (!$this->is_form_submitted()) {
+            return;
         }
+
+        if ($this->update_settings()) {
+            $message = esc_html__('Settings updated successfully.', $this->plugin_name);
+            $status = TRUE;
+        } else {
+            $message = esc_html__('Please try again.', $this->plugin_name);
+            $status = FALSE;
+        }
+
+        $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
+        wp_safe_redirect(esc_url(network_admin_url("settings.php?page=" . $_GET['page'])));
+        exit;
     }
 
     /**

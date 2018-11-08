@@ -199,27 +199,37 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
     }
 
     public function process_bulk_action() {
-        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+        $nonce = '_wpnonce';
 
+        if (!isset($_POST[$this->get_bulk_action_form()]) || empty($_POST[$nonce]) || !wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce()) || !current_user_can('administrator')) {
+            return;
+        }
+
+
+
+        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $status = FALSE;
         switch ($this->current_action()) {
             case 'bulk-delete':
 
-                if (empty($_POST['bulk-delete-ids'])) {
-                    return;
-                }
-                $ids = $_POST['bulk-delete-ids'];
 
-                foreach ($ids as $blog_id => $record_ids) {
-                    switch_to_blog($blog_id);
-                    $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $record_ids);
-                    restore_current_blog();
-                    if (!$status) {
-                        break;
+                if (!empty($_POST['bulk-delete-ids'])) {
+                    $ids = $_POST['bulk-delete-ids'];
+
+                    foreach ($ids as $blog_id => $record_ids) {
+                        switch_to_blog($blog_id);
+                        $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $record_ids);
+                        restore_current_blog();
+                    }
+
+                    if ($status) {
+                        $message = esc_html__('Selected record(s) deleted.', $this->plugin_text_domain);
                     }
                 }
-                $this->set_message(esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
+
                 break;
             case 'bulk-delete-all-admin':
+                Db_Helper::query('START TRANSACTION');
                 $blog_ids = Db_Helper::get_blog_ids_by_site_id();
                 foreach ($blog_ids as $blog_id) {
                     switch_to_blog($blog_id);
@@ -229,18 +239,27 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                         break;
                     }
                 }
-                $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
-                break;
-            default:
-                $status = FALSE;
+
+                if ($status) {
+                    $message = esc_html__('All records deleted.', $this->plugin_text_domain);
+                    Db_Helper::query('COMMIT');
+                } else {
+                    Db_Helper::query('ROLLBACK');
+                }
+
                 break;
         }
-        return $status;
+
+
+        $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
+        wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
+        exit;
     }
 
     public function process_single_action() {
+        $nonce = '_wpnonce';
 
-        if (empty($_GET['record_id']) || empty($_GET['blog_id'])) {
+        if (empty($_GET['record_id']) || empty($_GET['blog_id']) || empty($_GET[$nonce]) || !wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce()) || !current_user_can('administrator')) {
             return;
         }
 
@@ -250,23 +269,25 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         if (!Db_Helper::is_blog_exist($blog_id)) {
             return;
         }
-        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
+
+        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $status = FALSE;
+
         switch ($this->current_action()) {
             case $this->delete_action:
                 switch_to_blog($blog_id);
                 $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
-                if ($status) {
-                    $this->set_message(esc_html__('Selected record deleted.', $this->plugin_text_domain));
-                }
                 restore_current_blog();
-                break;
+                if ($status) {
+                    $message = esc_html__('Selected record deleted.', $this->plugin_text_domain);
+                }
 
-            default:
-                $status = FALSE;
                 break;
         }
 
-        return $status;
+        $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
+        wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
+        exit;
     }
 
 }

@@ -112,7 +112,7 @@ class Init {
      * @access    private
      */
     private function define_admin_hooks() {
-
+      
         $Admin_Notice = new Admin_Notice($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
          $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
@@ -133,12 +133,12 @@ class Init {
         $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
         $Login_Tracker->set_is_geo_tracker_enabled($Admin_Setting->is_geo_tracker_enabled());
 
-        $Network_Admin_Setting = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
+        $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
 
         $this->loader->add_action('admin_init', $Admin, 'admin_init');
 
         if (is_network_admin()) {
-            $this->loader->add_action('admin_init', $Network_Admin_Setting, 'update');
+            $this->loader->add_action('admin_init', $Network_Admin_Settings, 'update');
         }
 
         $this->loader->add_action('admin_enqueue_scripts', $Admin, 'enqueue_styles');
@@ -166,7 +166,7 @@ class Init {
         $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
         $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
 
-        $this->loader->add_action('network_admin_menu', $Network_Admin_Setting, 'add_setting_menu');
+        $this->loader->add_action('network_admin_menu', $Network_Admin_Settings, 'admin_menu');
     }
 
     /**

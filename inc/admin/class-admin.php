@@ -67,13 +67,7 @@ class Admin {
      * @param       string $plugin_text_domain The text domain of this plugin.
      */
     public function __construct(
-            $plugin_name, 
-            $version, 
-            $plugin_text_domain, 
-            User_Profile $User_Profile, 
-            Login_List_Csv $Login_List_Csv, 
-            Admin_Settings $Admin_Settings,
-            Admin_Notice $Admin_Notice
+    $plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
     ) {
 
         $this->plugin_name = $plugin_name;
@@ -82,18 +76,18 @@ class Admin {
         $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
         $this->User_Profile = $User_Profile;
         $this->Login_List_Csv = $Login_List_Csv;
-      $this->Admin_Notice = $Admin_Notice;
+        $this->Admin_Notice = $Admin_Notice;
         $this->Admin_Settings = $Admin_Settings;
     }
 
     public function admin_init() {
-        $this->init_csv_export();
-     
+        $this->csv_export_login_list();
     }
 
-    private function init_csv_export() {
+    private function csv_export_login_list() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
-            $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain,$this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
+            $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
+
             $this->Login_List_Csv->set_login_list_object($Login_List);
 
             if (!$this->Login_List_Csv->is_request_for_csv()) {
@@ -197,53 +191,15 @@ class Admin {
         add_screen_option($option, $args);
 
         $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
+
+        $this->list_table->process_bulk_action();
+        $this->list_table->process_single_action();
+
         $online_duration = $this->Admin_Settings->get_online_duration();
         $this->list_table->set_online_duration($online_duration['online']);
         $this->list_table->set_idle_duration($online_duration['idle']);
         $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
-       
-        $status = $this->list_table->process_action();
-
-        if (!is_null($status)) {
-            $this->add_admin_notice($this->list_table->get_message(), $status ? 'success' : 'error');
-            wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
-            exit;
-        }
-
         $this->list_table->prepare_items();
     }
-
-    /**
-     * Add admin notices
-     * @access public
-     */
-    public function add_admin_notice($message, $type = 'success') {
-        $notices = get_transient($this->admin_notice_transient);
-        if ($notices === false) {
-            $new_notices[] = array($message, $type);
-            set_transient($this->admin_notice_transient, $new_notices, self::INTERVAL_FOR_TRANSIENT);
-        } else {
-            $notices[] = array($message, $type);
-            set_transient($this->admin_notice_transient, $notices, self::INTERVAL_FOR_TRANSIENT);
-        }
-    }
-
-    /**
-     * Show admin notices
-     * 
-     * @access public
-     */
-    public function show_admin_notice() {
-        $notices = get_transient($this->admin_notice_transient);
-
-        if ($notices !== false) {
-            foreach ($notices as $notice) {
-                echo '<div class="notice notice-' . $notice[1] . ' is-dismissible"><p>' . $notice[0] . '</p></div>';
-            }
-            delete_transient($this->admin_notice_transient);
-        }
-    }
-
-    
 
 }

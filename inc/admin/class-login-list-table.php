@@ -22,41 +22,37 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
  * @author    Er Faiyaz Alam
  */
 abstract class Login_List_Table extends List_Table_Abstract {
-    
+
     protected $online_duration;
     protected $idle_duration;
-        protected $Admin_Notice;
+    protected $Admin_Notice;
 
     public function __construct($plugin_name, $version, $plugin_text_domain, Admin_Notice $Admin_Notice) {
         $args = array(
-            'singular' => $plugin_name . '_user_login', 
-            'plural' => $plugin_name . '_user_logins', 
-            );
+            'singular' => $plugin_name . '_user_login',
+            'plural' => $plugin_name . '_user_logins',
+        );
         parent::__construct($plugin_name, $version, $plugin_text_domain, $args);
         $this->Admin_Notice = $Admin_Notice;
-         
     }
-    
+
     public function set_online_duration($duration) {
         $this->online_duration = $duration;
         return $this;
     }
-    
+
     public function get_online_duration() {
         return $this->online_duration;
     }
-    
+
     public function set_idle_duration($duration) {
         $this->idle_duration = $duration;
         return $this;
     }
-    
+
     public function get_idle_duration() {
         return $this->idle_duration;
     }
-    
-    
-  
 
     public function init() {
         parent::init();
@@ -99,23 +95,21 @@ abstract class Login_List_Table extends List_Table_Abstract {
             $UserProfile = new User_Profile($this->plugin_name, $this->version, $this->plugin_text_domain);
             $input_timezone = $UserProfile->get_user_timezone();
             $date_type = $_GET['date_type'];
-            
+
             if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
 
                 $key_date_from = 'date_from';
                 $key_date_to = 'date_to';
-                
+
                 if (!empty($_GET[$key_date_from]) && !empty($_GET[$key_date_to])) {
                     $date_type = esc_sql($date_type);
                     $date_from = Date_Time_Helper::convert_timezone($_GET[$key_date_from] . " 00:00:00", $input_timezone);
                     $date_to = Date_Time_Helper::convert_timezone($_GET[$key_date_to] . " 23:59:59", $input_timezone);
-                    
-                    if($date_from && $date_to)
-                    {
-                    $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
-                    $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";  
+
+                    if ($date_from && $date_to) {
+                        $where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql($date_from) . "'";
+                        $where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql($date_to) . "'";
                     }
-                  
                 } else {
                     unset($_GET[$key_date_from]);
                     unset($_GET[$key_date_to]);
@@ -191,51 +185,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
         return $columns;
     }
 
-    public function process_bulk_action() {
-        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
-        switch ($this->current_action()) {
-            case 'bulk-delete':
-                $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
-                if ($status) {
-                    $this->set_message(esc_html__('Selected record(s) deleted.', $this->plugin_text_domain));
-                }
-                break;
-            case 'bulk-delete-all-admin':
-                $status = Db_Helper::truncate_table($this->table);
-                if ($status) {
-                    $this->set_message(esc_html__('All record(s) deleted.', $this->plugin_text_domain));
-                }
-                break;
-            default:
-                $status = FALSE;
-                break;
-        }
-        return $status;
-    }
-
-    public function process_single_action() {
-        if (empty($_GET['record_id'])) {
-            return;
-        }
-
-        $id = absint($_GET['record_id']);
-        $this->set_message(esc_html__('Please try again.', $this->plugin_text_domain));
-        switch ($this->current_action()) {
-            case $this->delete_action:
-                $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
-                if ($status) {
-                    $this->set_message(esc_html__('Record deleted.', $this->plugin_text_domain));
-                }
-                break;
-
-            default:
-                $status = FALSE;
-                break;
-        }
-
-        return $status;
-    }
-
     public function column_time_last_seen($item) {
         $column_name = 'time_last_seen';
 
@@ -253,11 +202,10 @@ abstract class Login_List_Table extends List_Table_Abstract {
         }
 
         $human_time_diff = human_time_diff($time_last_seen_unix);
-        $is_online_str =  $this->get_online_status($time_last_seen_unix, $item['login_status']);
+        $is_online_str = $this->get_online_status($time_last_seen_unix, $item['login_status']);
         return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
     }
-    
-    
+
     private function get_online_status($time_last_seen_unix, $login_status) {
 
         $time_last_seen_unix = absint($time_last_seen_unix);
@@ -270,7 +218,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
         if (Login_Tracker::LOGIN_STATUS_LOGIN == $login_status) {
             $minutes = ((time() - $time_last_seen_unix) / 60);
-           
+
 
             if ($minutes <= $this->get_online_duration()) {
                 $online_status = 'online';
@@ -280,8 +228,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
         }
         return $online_status;
     }
-
-
 
     public function column_default($item, $column_name) {
         $timezone = $this->get_timezone();
@@ -314,7 +260,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
                     $user_data = get_userdata($item['user_id']);
                 }
 
-            return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
+                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
 
             case 'old_role':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
@@ -347,7 +293,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
                     return esc_html($item[$column_name]);
                 }
 
-            return esc_html($item[$column_name] . " (" . $item['country_code'] . ")");
+                return esc_html($item[$column_name] . " (" . $item['country_code'] . ")");
 
             case 'country_code':
                 return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
@@ -408,7 +354,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
                 return $super_admin_statuses[$item[$column_name] ? 'yes' : 'no'];
 
             default:
-               
+
                 return print_r($item, true); //Show the whole array for troubleshooting purposes
         }
     }

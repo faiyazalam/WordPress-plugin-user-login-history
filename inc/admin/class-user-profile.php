@@ -10,13 +10,9 @@ class User_Profile extends User_Profile_Abstract {
     /**
      * The callback function for the action hook - show_user_profile.
      */
-    function show_extra_profile_fields($user) {
+    public function show_user_profile($user) {
         $user_timezone = get_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), TRUE);
         ?>
-        <style>
-
-
-        </style>
         <h3 id="<?php echo $this->plugin_name ?>"><?php esc_html_e('User Login History', $this->plugin_text_domain) ?></h3>
 
         <table class="faulh-form-table">
@@ -40,7 +36,7 @@ class User_Profile extends User_Profile_Abstract {
     /**
      * The callback function for the action hook - user_profile_update_errors.
      */
-    function user_profile_update_errors($errors, $update, $user) {
+    public function user_profile_update_errors($errors, $update, $user) {
         if (!$update) {
             return;
         }
@@ -54,7 +50,7 @@ class User_Profile extends User_Profile_Abstract {
     /**
      * The callback function for the action hook - edit_user_profile_update.
      */
-    function update_profile_fields($user_id) {
+    public function update_profile_fields($user_id) {
 
         if (!current_user_can('edit_user', $user_id)) {
             return false;
