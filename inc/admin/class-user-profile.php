@@ -10,8 +10,7 @@ class User_Profile extends User_Profile_Abstract {
     /**
      * The callback function for the action hook - show_user_profile.
      */
-    public function show_user_profile($user) {
-        $user_timezone = get_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), TRUE);
+    public function show_extra_profile_fields($user) {
         ?>
         <h3 id="<?php echo $this->plugin_name ?>"><?php esc_html_e('User Login History', $this->plugin_text_domain) ?></h3>
 
@@ -22,7 +21,7 @@ class User_Profile extends User_Profile_Abstract {
                     <select required="required" id="<?php echo $this->get_usermeta_key_timezone() ?>" name="<?php echo $this->get_usermeta_key_timezone() ?>">
                         <option value=""><?php esc_html_e('Select Timezone', 'faulh') ?></option>
                         <?php
-                        Template_Helper::dropdown_timezones($user_timezone);
+                        Template_Helper::dropdown_timezones($this->get_user_timezone());
                         ?>
                     </select>
                     <div><?php esc_html_e('This is used to convert date-time (e.g. login time, last seen time etc.) on the listing table.', $this->plugin_text_domain) ?></div>
@@ -37,13 +36,8 @@ class User_Profile extends User_Profile_Abstract {
      * The callback function for the action hook - user_profile_update_errors.
      */
     public function user_profile_update_errors($errors, $update, $user) {
-        if (!$update) {
-            return;
-        }
-
         if (empty($_POST[$this->get_usermeta_key_timezone()])) {
-
-            $errors->add('user_timezone_error', sprintf(esc_html__('%1$sERROR%2$s: Please select a timezone.', 'faulh'), "<strong>", "</strong>"));
+            $errors->add($this->plugin_name."_user_timezone_error", sprintf(esc_html__('%1$sERROR%2$s: Please select a timezone.', 'faulh'), "<strong>", "</strong>"));
         }
     }
 

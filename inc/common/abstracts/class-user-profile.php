@@ -46,20 +46,23 @@ abstract class User_Profile {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        $this->set_usermeta_key_timezone();
     }
 
+    /**
+     * Callback function for the hook - init.
+     */
     public function init() {
         $this->set_user_id();
+        $this->set_usermeta_key_timezone();
     }
 
     public function set_user_id($user_id = NULL) {
 
         if (!empty($user_id)) {
-            $this->user_id = $user_id;
+            $this->user_id = absint($user_id);
         } else {
             global $current_user;
-            $this->user_id = $current_user->ID;
+            $this->user_id = !empty($current_user->ID) ? $current_user->ID : FALSE;
         }
 
         return $this;
@@ -88,7 +91,7 @@ abstract class User_Profile {
      * @param string $timezone The timezone.
      * @return int|false Meta ID on success, false on failure.
      */
-    function add_timezone($timezone) {
+    public function add_timezone($timezone) {
         return add_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), $timezone, true);
     }
 
@@ -99,11 +102,6 @@ abstract class User_Profile {
      * @return boolean|string False on failure, timezone on success.
      */
     public function get_user_timezone() {
-
-        if (!$this->get_user_id()) {
-
-            return FALSE;
-        }
         return get_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), TRUE);
     }
 
@@ -125,8 +123,6 @@ abstract class User_Profile {
     protected function update_usermeta_key_timezone() {
         if (!empty($_POST[$this->get_usermeta_key_timezone()])) {
             update_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), $_POST[$this->get_usermeta_key_timezone()]);
-        } else {
-            delete_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone());
         }
     }
 

@@ -14,26 +14,21 @@ class User_Profile extends User_Profile_Abstract {
      * @access public
      */
     public function update_user_timezone() {
-        if (!is_user_logged_in()) {
-            return;
+        if (!$this->is_valid_request_for_update()) {
+            return FALSE;
         }
-
-        if (!isset($_POST[$this->plugin_name . "_update_user_timezone"]) || empty($_POST['_wpnonce'])) {
-            return;
-        }
-
-        if (!wp_verify_nonce($_POST['_wpnonce'], $this->plugin_name . "_update_user_timezone")) {
-            return;
-        }
-
-        if (!current_user_can('edit_user', $this->get_user_id())) {
-            return false;
-        }
+        
         $this->update_usermeta_key_timezone();
-
         $this->delete_old_usermeta_key_timezone($this->get_user_id());
+        
         wp_safe_redirect(esc_url_raw(add_query_arg()));
         exit;
+    }
+
+    private function is_valid_request_for_update() {
+        $key = $this->plugin_name . "_update_user_timezone";
+        $nonce = "_wpnonce";
+        return isset($_POST[$key]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $key) && $this->get_user_id() && current_user_can('edit_user', $this->get_user_id()) && is_user_logged_in();
     }
 
 }

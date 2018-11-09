@@ -96,7 +96,8 @@ abstract class Login_List_Table extends List_Table_Abstract {
             $input_timezone = $UserProfile->get_user_timezone();
             $date_type = $_GET['date_type'];
 
-            if (in_array($date_type, array('login', 'logout', 'last_seen'))) {
+          
+            if (in_array($date_type, array_keys(Template_Helper::time_field_types()))) {
 
                 $key_date_from = 'date_from';
                 $key_date_to = 'date_to';

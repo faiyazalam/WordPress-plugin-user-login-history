@@ -2,6 +2,7 @@
 
 namespace User_Login_History\Inc\Admin;
 
+use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
 class Network_Admin_Settings {
@@ -65,7 +66,7 @@ class Network_Admin_Settings {
      */
     public function admin_menu() {
         add_submenu_page(
-                'settings.php', Template_Helper::plugin_name(), Template_Helper::plugin_name(), 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
+                'settings.php', NS\PLUGIN_NAME, NS\PLUGIN_NAME, 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
         );
     }
 
@@ -108,6 +109,7 @@ class Network_Admin_Settings {
      * @param $setting string optional setting name
      */
     public function get_settings($setting = '') {
+        //TODO: Rename $settings because this is  global and can be modified from outside of the class.
         global $settings;
 
         if (isset($settings)) {

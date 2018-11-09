@@ -25,7 +25,7 @@ class Settings {
     }
 
     function admin_menu() {
-        add_options_page('User Login History', 'User Login History', 'manage_options', $this->plugin_name . "-settings", array($this, 'plugin_page'));
+        add_options_page(NS\PLUGIN_NAME, NS\PLUGIN_NAME, 'manage_options', $this->plugin_name . "-settings", array($this, 'plugin_page'));
     }
 
     function get_settings_sections() {

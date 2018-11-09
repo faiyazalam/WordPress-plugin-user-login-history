@@ -25,11 +25,7 @@ use User_Login_History as NS;
          */
         static public function dropdown_time_field_types($selected = '') {
             $r = '';
-            $types = array(
-                'login' => esc_html__("Login", "faulh"),
-                'logout' => esc_html__("Logout", "faulh"),
-                'last_seen' => esc_html__("Last Seen", "faulh"),
-            );
+            $types = self::time_field_types();
             foreach ($types as $key => $type) {
                 $name = $type;
                 if ($selected == $key) {
@@ -80,13 +76,7 @@ use User_Login_History as NS;
             echo $r;
         }
 
-        /**
-         * Returns plugin name.
-         * @return string Returns plugin name.
-         */
-        static public function plugin_name() {
-            return "User Login History";
-        }
+       
 
         /**
          * Print the head section.
@@ -94,7 +84,7 @@ use User_Login_History as NS;
          */
         static public function head($page = '') {
             $author_urls = self::plugin_author_links();
-            $h = "<h1>" . self::plugin_name() . " " . NS\PLUGIN_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
+            $h = "<h1>" . NS\PLUGIN_NAME . " " . NS\PLUGIN_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
             $h .= "<div>";
 
             if (!empty($author_urls['wordpress'])) {
@@ -138,6 +128,18 @@ use User_Login_History as NS;
             return array(
                 'yes' => esc_html__("Yes", "faulh"),
                 'no' => esc_html__("No", "faulh"),
+            );
+        }
+        
+        /**
+         * This is used on filter form to filter the record based on given time interval.
+         * @return array
+         */
+        static public function time_field_types() {
+            return  array(
+                'login' => esc_html__("Login", "faulh"),
+                'logout' => esc_html__("Logout", "faulh"),
+                'last_seen' => esc_html__("Last Seen", "faulh"),
             );
         }
 

@@ -2,6 +2,7 @@
 
 namespace User_Login_History\Inc\Admin;
 
+use User_Login_History AS NS;
 use User_Login_History\Inc\Admin\Login_List_Csv;
 use User_Login_History\Inc\Admin\Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\Network_Admin_Login_List_Table;
@@ -160,7 +161,7 @@ class Admin {
     public function admin_menu() {
         $menu_slug = $this->get_plugin_login_list_page_slug();
         $hook = add_menu_page(
-                esc_html__('Login List', 'faulh'), 'User Login History', 'manage_options', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
+                esc_html__('Login List', 'faulh'), NS\PLUGIN_NAME, 'manage_options', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
         );
         add_submenu_page($menu_slug, esc_html__('Login List', $this->plugin_text_domain), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_login_list'));
         add_action("load-$hook", array($this, 'screen_option'));
