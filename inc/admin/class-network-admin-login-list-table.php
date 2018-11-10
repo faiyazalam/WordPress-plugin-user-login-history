@@ -31,14 +31,27 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         $this->prepare_sql_queries();
     }
 
+    public function prepare_where_query() {
+
+        $where_query = parent::prepare_where_query();
+
+        if (!empty($_GET['is_super_admin']) && in_array($_GET['is_super_admin'], array('yes', 'no'))) {
+            $where_query .= " AND `FaUserLogin`.`is_super_admin` = '" . absint('yes' == $_GET['is_super_admin']) . "'";
+        }
+
+        return $where_query;
+    }
+
+    private function get_blog_ids_for_where_clause() {
+        return !empty($_GET['blog_id']) && $_GET['blog_id'] > 0 ? array($_GET['blog_id']) : Db_Helper::get_blog_ids_by_site_id();
+    }
+
     private function prepare_sql_queries() {
         global $wpdb;
         $where_query = $this->prepare_where_query();
-        $rows_sql = '';
-        $count_sql = '';
 
         $i = 0;
-        $blog_ids = Db_Helper::get_blog_ids_by_site_id();
+        $blog_ids = $this->get_blog_ids_for_where_clause();
         foreach ($blog_ids as $blog_id) {
             $blog_prefix = $wpdb->get_blog_prefix($blog_id);
             $table = $blog_prefix . $this->table;
@@ -48,11 +61,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
             }
 
             if (0 < $i) {
-                $rows_sql .= " UNION ALL";
-                $count_sql .= " UNION ALL";
+                $this->rows_sql .= " UNION ALL";
+                $this->count_sql .= " UNION ALL";
             }
 
-            $rows_sql .= " ( SELECT"
+            $this->rows_sql .= " SELECT"
                     . " FaUserLogin.id, "
                     . " FaUserLogin.user_id,"
                     . " FaUserLogin.username,"
@@ -78,8 +91,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                     . " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
                     . " WHERE 1 ";
 
-
-            $count_sql .= " ( SELECT"
+            $this->count_sql .= " SELECT"
                     . " COUNT(FaUserLogin.id) AS count"
                     . " FROM $table  AS FaUserLogin"
                     . " LEFT JOIN $wpdb->usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
@@ -87,17 +99,15 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                     . " WHERE 1 ";
 
             if ($where_query) {
-                $rows_sql .= $where_query;
-                $count_sql .= $where_query;
+                $this->rows_sql .= $where_query;
+                $this->count_sql .= $where_query;
             }
 
-            $rows_sql .= " )";
-            $count_sql .= " ) ";
             $i++;
         }
 
-        $this->rows_sql = $rows_sql;
-        $this->count_sql = "SELECT SUM(count) as total FROM ($count_sql) AS FaUserLoginCount";
+        $this->rows_sql = "SELECT * FROM ({$this->rows_sql}) AS FaUserLoginAllRows";
+        $this->count_sql = "SELECT SUM(count) as total FROM ({$this->count_sql}) AS FaUserLoginCount";
     }
 
     public function get_columns() {
@@ -110,11 +120,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
     }
 
     public function get_sortable_columns() {
-        $columns = array_merge(parent::get_columns(), array(
+        $columns = array_merge(parent::get_sortable_columns(), array(
             'is_super_admin' => array('is_super_admin', false),
-            'blog_id' => array('is_super_admin', false),
+            'blog_id' => array('blog_id', false),
         ));
-
+      
         return apply_filters($this->plugin_name . "_network_admin_login_list_get_sortable_columns", $columns);
     }
 
@@ -147,7 +157,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
             $this->rows_sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
             $this->rows_sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
         } else {
-            $this->rows_sql .= ' ORDER BY id DESC';
+            $this->rows_sql .= ' ORDER BY time_login DESC';
         }
 
         if ($per_page > 0) {
@@ -180,7 +190,6 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         if (empty($item['user_id'])) {
             $title = esc_html($item['username']);
         } else {
-
             $edit_link = get_edit_user_link($item['user_id']);
 
             $title = !empty($edit_link) ? "<a href='" . $edit_link . "'>" . esc_html($item['username']) . "</a>" : '<strong>' . esc_html($item['username']) . '</strong>';
@@ -198,20 +207,25 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         return $title . $this->row_actions($actions);
     }
 
-    public function process_bulk_action() {
+    private function is_valid_request_to_process_bulk_action() {
         $nonce = '_wpnonce';
+        return isset($_POST[$this->get_bulk_action_form()]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce()) && current_user_can('administrator');
+    }
 
-        if (!isset($_POST[$this->get_bulk_action_form()]) || empty($_POST[$nonce]) || !wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce()) || !current_user_can('administrator')) {
+    private function is_valid_request_to_process_single_action() {
+        $nonce = '_wpnonce';
+        return !empty($_GET['record_id']) && $_GET['record_id'] > 0 && !empty($_GET['blog_id']) && $_GET['blog_id'] > 0 && !empty($_GET[$nonce]) && wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce()) && current_user_can('administrator');
+    }
+
+    public function process_bulk_action() {
+        if (!$this->is_valid_request_to_process_bulk_action()) {
             return;
         }
-
-
 
         $message = esc_html__('Please try again.', $this->plugin_text_domain);
         $status = FALSE;
         switch ($this->current_action()) {
             case 'bulk-delete':
-
 
                 if (!empty($_POST['bulk-delete-ids'])) {
                     $ids = $_POST['bulk-delete-ids'];
@@ -250,16 +264,13 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                 break;
         }
 
-
         $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
         wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
         exit;
     }
 
     public function process_single_action() {
-        $nonce = '_wpnonce';
-
-        if (empty($_GET['record_id']) || empty($_GET['blog_id']) || empty($_GET[$nonce]) || !wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce()) || !current_user_can('administrator')) {
+        if (!$this->is_valid_request_to_process_single_action()) {
             return;
         }
 
