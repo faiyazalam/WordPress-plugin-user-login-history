@@ -77,6 +77,8 @@ class Login_Tracker {
     private $current_loggedin_blog_id;
     private $table;
     private $is_geo_tracker_enabled = FALSE;
+    private $is_cross_blog_login_blocked = FALSE;
+    private $message_for_cross_blog_login = "No cross blog login is allowed. Please contact administrator.";
 
     /**
      * Initialize the class and set its properties.
@@ -135,6 +137,24 @@ class Login_Tracker {
         $this->current_loggedin_blog_id = $this->get_current_login_blog_id_from_session();
     }
 
+    public function set_is_cross_blog_login_blocked($value) {
+        $this->is_cross_blog_login_blocked = (bool) $value;
+        return $this;
+    }
+
+    public function get_is_cross_blog_login_blocked() {
+        return $this->is_cross_blog_login_blocked;
+    }
+
+    public function set_message_for_cross_blog_login($message) {
+        $this->message_for_cross_blog_login = $message;
+        return $this;
+    }
+
+    public function get_message_for_cross_blog_login() {
+        return $this->message_for_cross_blog_login;
+    }
+
     /**
      * Blocks user if the user is not allowed to 
      * login on another blog on the network.
@@ -142,23 +162,14 @@ class Login_Tracker {
      * @access private
      */
     private function is_blocked_user_on_current_blog($user_id) {
-        if (!is_multisite()) {
-            return FALSE;
+        if (!is_multisite() || is_super_admin($user_id) || is_user_member_of_blog($user_id) || !$this->get_is_cross_blog_login_blocked()) {
+            return;
         }
 
-        if (is_super_admin($user_id)) {
-            return FALSE;
-        }
-
-        if (!is_user_member_of_blog($user_id)) {
-            $Network_Admin_Setting = new Network_Admin_Settings($this->plugin_name);
-            if ($Network_Admin_Setting->get_settings('block_user')) {
-                $this->login_status = self::LOGIN_STATUS_BLOCK;
-                $this->current_loggedin_blog_id = get_current_blog_id();
-                wp_logout();
-                wp_die($Network_Admin_Setting->get_settings('block_user_message'));
-            }
-        }
+        $this->login_status = self::LOGIN_STATUS_BLOCK;
+        $this->current_loggedin_blog_id = get_current_blog_id();
+        wp_logout();
+        wp_die($this->get_message_for_cross_blog_login());
     }
 
     /**
@@ -174,10 +185,8 @@ class Login_Tracker {
             return FALSE;
         }
 
-        global $wpdb;
 
         $unknown = 'unknown';
-        $table = $wpdb->prefix . $this->table;
         $current_date = Date_Time_Helper::get_current_date_time();
         $user_id = !empty($user->ID) ? $user->ID : FALSE;
         $Browser_Helper = new Browser_Helper();
@@ -213,10 +222,7 @@ class Login_Tracker {
             $data = array_merge($data, $filtered_data);
         }
 
-        $wpdb->insert($table, $data);
-
-        if ($wpdb->last_error || !$wpdb->insert_id) {
-            Error_Log_Helper::error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query, __LINE__, __FILE__);
+        if (!Db_Helper::insert($this->table, $data)) {
             return;
         }
 
@@ -326,7 +332,5 @@ class Login_Tracker {
     public function get_session_token() {
         return $this->session_token;
     }
-
-    
 
 }

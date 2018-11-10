@@ -129,5 +129,13 @@ class Network_Admin_Settings {
         }
         return $settings;
     }
+    
+    public function get_block_user() {
+        return $this->get_settings('block_user');
+    }
+    
+    public function get_block_user_message() {
+        return $this->get_settings('block_user_message');
+    }
 
 }

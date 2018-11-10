@@ -117,8 +117,7 @@ class Init {
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
          $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
         $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
-
-
+        $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
 
         if (is_network_admin()) {
             $Network_Blog_Manager = new Network_Blog_Manager();
@@ -126,14 +125,10 @@ class Init {
             $this->loader->add_action('deleted_blog', $Network_Blog_Manager, 'deleted_blog', 10, 1);
         }
 
-
-       
-   
-
         $Login_Tracker = new Login_Tracker($this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS);
         $Login_Tracker->set_is_geo_tracker_enabled($Admin_Setting->is_geo_tracker_enabled());
-
-        $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
+        $Login_Tracker->set_is_cross_blog_login_blocked($Network_Admin_Settings->get_block_user());
+        $Login_Tracker->set_message_for_cross_blog_login($Network_Admin_Settings->get_block_user_message());
 
         $this->loader->add_action('admin_init', $Admin, 'admin_init');
 
