@@ -14,13 +14,15 @@ class User_Profile extends User_Profile_Abstract {
      * @access public
      */
     public function update_user_timezone() {
+
         if (!$this->is_valid_request_for_update()) {
             return FALSE;
         }
-        
+
+
         $this->update_usermeta_key_timezone();
         $this->delete_old_usermeta_key_timezone($this->get_user_id());
-        
+
         wp_safe_redirect(esc_url_raw(add_query_arg()));
         exit;
     }

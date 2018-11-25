@@ -61,7 +61,9 @@ abstract class User_Profile {
         if (!empty($user_id)) {
             $this->user_id = absint($user_id);
         } else {
+
             global $current_user;
+
             $this->user_id = !empty($current_user->ID) ? $current_user->ID : FALSE;
         }
 
@@ -110,7 +112,7 @@ abstract class User_Profile {
      * @param int $user_id
      * @access private
      */
-    protected function delete_old_usermeta_key_timezone($user_id = NULL) {
+    protected function delete_old_usermeta_key_timezone() {
         if (empty($this->get_user_id())) {
             return;
         }

@@ -6,13 +6,15 @@ use User_Login_History as NS;
 use User_Login_History\Inc\Admin\Admin;
 use User_Login_History\Inc\Admin\Admin_Notice;
 use User_Login_History\Inc\Admin\User_Profile;
+use User_Login_History\Inc\Frontend\User_Profile as FrontendUserProfile;
 use User_Login_History\Inc\Admin\Settings as AdminSettings;
 use User_Login_History\Inc\Admin\Network_Admin_Settings;
 use User_Login_History\Inc\Common\Login_Tracker;
-use User_Login_History\Inc\Frontend as Frontend;
 use User_Login_History\Inc\Admin\Network_Blog_Manager;
 use User_Login_History\Inc\Admin\Settings_Api;
 use User_Login_History\Inc\Admin\Login_List_Csv;
+use User_Login_History\Inc\Frontend\Frontend;
+use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
 
 /**
  * The core plugin class.
@@ -112,10 +114,10 @@ class Init {
      * @access    private
      */
     private function define_admin_hooks() {
-      
+
         $Admin_Notice = new Admin_Notice($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
+        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
         $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
         $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
 
@@ -171,9 +173,19 @@ class Init {
      * @access    private
      */
     private function define_public_hooks() {
-        $plugin_public = new Frontend\Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        if (is_admin()) {
+            return;
+        }
+        $List_Table = new Frontend_Login_List_Table($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        $User_Profile = new FrontendUserProfile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        $plugin_public = new Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $List_Table, $User_Profile);
+        $this->loader->add_shortcode('user-login-history', $plugin_public, 'shortcode_user_table'); //old-shortcode
+        $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table'); //new shortcode
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+
+        $this->loader->add_action('init', $User_Profile, 'init');
+        $this->loader->add_action('init', $User_Profile, 'update_user_timezone');
     }
 
     /**

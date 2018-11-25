@@ -36,8 +36,9 @@ class User_Profile extends User_Profile_Abstract {
      * The callback function for the action hook - user_profile_update_errors.
      */
     public function user_profile_update_errors($errors, $update, $user) {
-        if (empty($_POST[$this->get_usermeta_key_timezone()])) {
-            $errors->add($this->plugin_name."_user_timezone_error", sprintf(esc_html__('%1$sERROR%2$s: Please select a timezone.', 'faulh'), "<strong>", "</strong>"));
+        global $pagenow;
+        if (in_array($pagenow, array('user-edit.php', 'profile.php')) && empty($_POST[$this->get_usermeta_key_timezone()])) {
+            $errors->add($this->plugin_name . "_user_timezone_error", sprintf(esc_html__('%1$sERROR%2$s: Please select a timezone.', 'faulh'), "<strong>", "</strong>"));
         }
     }
 
@@ -49,7 +50,6 @@ class User_Profile extends User_Profile_Abstract {
         if (!current_user_can('edit_user', $user_id)) {
             return false;
         }
-
         $this->update_usermeta_key_timezone();
         $this->delete_old_usermeta_key_timezone();
     }
