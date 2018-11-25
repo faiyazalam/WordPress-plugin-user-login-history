@@ -8,7 +8,6 @@ use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Helpers\Validation as Validation_Helper;
 
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -25,6 +24,8 @@ if (!class_exists('WP_List_Table')) {
 }
 
 abstract class List_Table extends \WP_List_Table {
+
+    const DEFAULT_TIMEZONE = 'UTC';
 
     /**
      * The ID of this plugin.
@@ -61,19 +62,15 @@ abstract class List_Table extends \WP_List_Table {
     protected $bulk_action_nonce;
     protected $csv_field_name = 'csv';
     protected $csv_nonce_name = 'csv_nonce';
-   
-   
 
     public function __construct($plugin_name, $version, $plugin_text_domain, $args = array()) {
         parent::__construct($args);
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-     
+
         $this->init();
     }
-    
-   
 
     public function init() {
         $this->set_bulk_action_form($this->_args['singular'] . "_form");
@@ -122,7 +119,7 @@ abstract class List_Table extends \WP_List_Table {
      * @return string
      */
     public function get_timezone() {
-        return $this->timezone;
+        return !empty($this->timezone) ? $this->timezone : self::DEFAULT_TIMEZONE;
     }
 
     /**
@@ -151,11 +148,10 @@ abstract class List_Table extends \WP_List_Table {
      * 
      * @return string
      */
-    public function timezone_edit_link($user_id = null) {
-        return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone($user_id) . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
+    public function timezone_edit_link() {
+        $timezone = empty($this->get_timezone()) ? self::DL : $this->get_timezone();
+        return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone() . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
     }
-
-    
 
     public function get_all_rows() {
         return $this->get_rows(0);
@@ -187,6 +183,5 @@ abstract class List_Table extends \WP_List_Table {
         $this->delete_action_nonce = $value;
         return $this;
     }
-
 
 }
