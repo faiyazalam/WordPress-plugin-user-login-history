@@ -8,7 +8,7 @@ use User_Login_History\Inc\Common\Abstracts\User_Profile as User_Profile_Abstrac
 class User_Profile extends User_Profile_Abstract {
 
     /**
-     * The callback function for the action hook - show_user_profile.
+     * Hooked with show_user_profile action action
      */
     public function show_extra_profile_fields($user) {
         ?>
@@ -33,7 +33,7 @@ class User_Profile extends User_Profile_Abstract {
     }
 
     /**
-     * The callback function for the action hook - user_profile_update_errors.
+     * Hooked with user_profile_update_errors action
      */
     public function user_profile_update_errors($errors, $update, $user) {
         global $pagenow;
@@ -43,7 +43,7 @@ class User_Profile extends User_Profile_Abstract {
     }
 
     /**
-     * The callback function for the action hook - edit_user_profile_update.
+     * Hooked with edit_user_profile_update action
      */
     public function update_profile_fields($user_id) {
 

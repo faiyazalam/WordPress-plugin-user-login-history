@@ -11,7 +11,6 @@ use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author     Er Faiyaz Alam
  * */
@@ -22,10 +21,9 @@ class Activator {
      *
      * Long Description.
      *
-     * @since    1.0.0
      */
     public static function activate($network_wide) {
-     
+
         $min_php = '5.6.0';
 
         // Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
@@ -36,11 +34,11 @@ class Activator {
 
         global $wpdb;
         if (is_multisite() && $network_wide) {
-         
+
             // Get all blogs from current network the network and activate plugin on each one
-              
+
             $blog_ids = Db_Helper::get_blog_ids_by_site_id();
-              
+
             foreach ($blog_ids as $blog_id) {
                 switch_to_blog($blog_id);
                 self::create_table();
@@ -48,9 +46,9 @@ class Activator {
             }
             restore_current_blog();
         } else {
-             
+
             self::create_table();
-             
+
             self::update_options();
         }
     }
@@ -87,8 +85,6 @@ INDEX faulh_user_traker_index (session_token,user_id)
         Db_Helper::dbDelta($sql);
     }
 
-    
-
     /**
      * Update plugin options.
      * 
@@ -97,7 +93,5 @@ INDEX faulh_user_traker_index (session_token,user_id)
     public static function update_options() {
         update_option(NS\PLUGIN_OPTION_NAME_VERSION, NS\PLUGIN_VERSION);
     }
-    
-     
 
 }

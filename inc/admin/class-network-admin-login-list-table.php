@@ -17,7 +17,6 @@ use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Tabl
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author    Er Faiyaz Alam
  */
@@ -124,7 +123,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
             'is_super_admin' => array('is_super_admin', false),
             'blog_id' => array('blog_id', false),
         ));
-      
+
         return apply_filters($this->plugin_name . "_network_admin_login_list_get_sortable_columns", $columns);
     }
 

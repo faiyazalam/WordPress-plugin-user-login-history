@@ -15,12 +15,6 @@ use User_Login_History\Inc\Admin\Settings as Admin_Settings;
 /**
  * The admin-specific functionality of the plugin.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @link       http://userloginhistory.com
- * @since      1.0.0
- *
  * @author    Er Faiyaz Alam
  */
 class Admin {
@@ -30,7 +24,6 @@ class Admin {
     /**
      * The ID of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $plugin_name    The ID of this plugin.
      */
@@ -39,7 +32,6 @@ class Admin {
     /**
      * The version of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $version    The current version of this plugin.
      */
@@ -48,12 +40,14 @@ class Admin {
     /**
      * The text domain of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $plugin_text_domain    The text domain of this plugin.
      */
     private $plugin_text_domain;
-    private $admin_notice_transient;
+
+    /**
+     * Variables used for DI
+     */
     private $User_Profile;
     private $Login_List_Csv;
     private $Admin_Settings;
@@ -62,7 +56,6 @@ class Admin {
     /**
      * Initialize the class and set its properties.
      *
-     * @since       1.0.0
      * @param       string $plugin_name        The name of this plugin.
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
@@ -74,17 +67,22 @@ class Admin {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->plugin_text_domain = $plugin_text_domain;
-        $this->admin_notice_transient = $this->plugin_name . '_admin_notice_transient';
         $this->User_Profile = $User_Profile;
         $this->Login_List_Csv = $Login_List_Csv;
         $this->Admin_Notice = $Admin_Notice;
         $this->Admin_Settings = $Admin_Settings;
     }
 
+    /**
+     * Hooked with admin_init action
+     */
     public function admin_init() {
         $this->csv_export_login_list();
     }
 
+    /**
+     * Exports the login list in csv format
+     */
     private function csv_export_login_list() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
             $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
@@ -100,14 +98,25 @@ class Admin {
         }
     }
 
+    /**
+     * Checks if the current page is the login listing page or not. 
+     * @return bool
+     */
     private function is_plugin_login_list_page() {
         return RequestHelper::is_current_page_by_file_name() && !empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page'];
     }
 
+    /**
+     * Gets the slug of the login listing page.
+     * @return string
+     */
     private function get_plugin_login_list_page_slug() {
         return $this->plugin_name . "-login-listing";
     }
 
+    /**
+     * Enqueue scripts for the login list page only.
+     */
     private function enqueue_scripts_for_plugin_login_list_page() {
         if (!$this->is_plugin_login_list_page()) {
             return FALSE;
@@ -125,12 +134,19 @@ class Admin {
         ));
     }
 
+    /**
+     * Enqueue styles for the user profile page only.
+     */
     private function enqueue_styles_for_user_profile() {
         if (RequestHelper::is_current_page_by_file_name('profile') || RequestHelper::is_current_page_by_file_name('user-edit')) {
             wp_enqueue_style($this->plugin_name . '-user-profile.css', plugin_dir_url(__FILE__) . 'css/user-profile.css', array(), $this->version, 'all');
         }
     }
 
+    /**
+     * Enqueue styles for the login list page only.
+     * @return null
+     */
     private function enqueue_styles_for_plugin_login_list_page() {
         if (!$this->is_plugin_login_list_page()) {
             return FALSE;
@@ -142,7 +158,6 @@ class Admin {
     /**
      * Register the stylesheets for the admin area.
      *
-     * @since    1.0.0
      */
     public function enqueue_styles() {
         $this->enqueue_styles_for_plugin_login_list_page();
@@ -152,34 +167,41 @@ class Admin {
     /**
      * Register the JavaScript for the admin area.
      *
-     * @since    1.0.0
      */
     public function enqueue_scripts() {
         $this->enqueue_scripts_for_plugin_login_list_page();
     }
 
+    /**
+     * Hooked with admin_menu action
+     */
     public function admin_menu() {
+
         $menu_slug = $this->get_plugin_login_list_page_slug();
         $hook = add_menu_page(
                 esc_html__('Login List', 'faulh'), NS\PLUGIN_NAME, 'manage_options', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
         );
         add_submenu_page($menu_slug, esc_html__('Login List', $this->plugin_text_domain), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_login_list'));
+
         add_action("load-$hook", array($this, 'screen_option'));
     }
 
+    /**
+     * Render the login listing page
+     */
     public function render_login_list() {
         require plugin_dir_path(dirname(__FILE__)) . 'admin/views/login-list-table.php';
     }
 
     /**
-     * Callback function for the filter - set-screen-option
+     * Hooked with set-screen-option filter
      */
     public function set_screen($status, $option, $value) {
         return $value;
     }
 
     /**
-     * Callback function for the action - load-$hook
+     * Hooked with load-$hook action
      */
     public function screen_option() {
         $option = 'per_page';

@@ -14,7 +14,6 @@ use User_Login_History\Inc\Common\Helpers\Error_Log as ErrorLogHelper;
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author    Er Faiyaz Alam
  */

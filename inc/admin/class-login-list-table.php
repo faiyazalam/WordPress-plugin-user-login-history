@@ -17,7 +17,6 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author    Er Faiyaz Alam
  */
@@ -96,7 +95,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
             $input_timezone = $UserProfile->get_user_timezone();
             $date_type = $_GET['date_type'];
 
-          
+
             if (in_array($date_type, array_keys(Template_Helper::time_field_types()))) {
 
                 $key_date_from = 'date_from';

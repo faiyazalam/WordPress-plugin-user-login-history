@@ -11,25 +11,19 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Table_Interface;
 
 /**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @link       http://userloginhistory.com
- * @since      1.0.0
+ * Render the login listing page.
  *
  * @author    Er Faiyaz Alam
  */
 final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv_Interface, Admin_List_Table_Interface {
 
     /**
-     * Retrieve rows
+     * Return the records.
      * 
      * @access   public
      * @param int $per_page
      * @param int $page_number
-     * @access   public
+     * @global object $wpdb
      * @return mixed
      */
     public function get_rows($per_page = 20, $page_number = 1) {
@@ -63,10 +57,10 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
     }
 
     /**
-     * Returns the count of records in the database.
+     * Returns the count of the records.
      * 
-     * @access   public
-     * @return null|string
+     * @global object $wpdb
+     * @return mixed
      */
     public function record_count() {
         global $wpdb;
@@ -88,11 +82,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
     }
 
     /**
-     * Method for name column
-     * 
-     * @access   public
-     * @param array $item an array of DB data
-     * @return string
+     * @overridden
      */
     public function column_username($item) {
         $username = $this->is_empty($item['username']) ? $this->unknown_symbol : esc_html($item['username']);
@@ -111,16 +101,15 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
     }
 
     /**
-     * Render the bulk edit checkbox
-     * 
-     * @access   public
-     * @param array $item
-     * @return string
+     * @overridden
      */
     public function column_cb($item) {
         return sprintf('<input type="checkbox" name="bulk-action-ids[]" value="%s" />', $item['id']);
     }
 
+    /**
+     * Handles the bulk actions.
+     */
     public function process_bulk_action() {
         $nonce = '_wpnonce';
 
@@ -128,11 +117,11 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
             return;
         }
 
-
         $message = esc_html__('Please try again.', $this->plugin_text_domain);
         $status = FALSE;
 
         switch ($this->current_action()) {
+
             case 'bulk-delete':
 
                 if (!empty($_POST['bulk-action-ids'])) {
@@ -143,18 +132,24 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
                 }
 
                 break;
+
             case 'bulk-delete-all-admin':
+
                 $status = Db_Helper::truncate_table($this->table);
                 if ($status) {
                     $message = esc_html__('All record(s) deleted.', $this->plugin_text_domain);
                 }
                 break;
         }
+
         $this->Admin_Notice->add_notice($message, $status ? 'success' : 'error');
         wp_safe_redirect(esc_url("admin.php?page=" . $_GET['page']));
         exit;
     }
 
+    /**
+     * Handles the single action.
+     */
     public function process_single_action() {
         $nonce = '_wpnonce';
 
@@ -179,10 +174,16 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
         exit;
     }
 
+    /**
+     * @overridden
+     */
     public function get_columns() {
         return apply_filters($this->plugin_name . "_admin_login_list_get_columns", parent::get_columns());
     }
 
+    /**
+     * @overridden
+     */
     public function get_sortable_columns() {
         return apply_filters($this->plugin_name . "_admin_login_list_get_columns", parent::get_sortable_columns());
     }

@@ -12,54 +12,76 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author    Er Faiyaz Alam
  */
 final class Login_List_Csv {
 
-    private $list_table;
+    /**
+     * Holds the instance of the class which is implemented with Admin_Csv
+     * @var Admin_Csv 
+     */
+    private $Listing_Table;
+
+    /**
+     * Holds a symbol to be used to render unknown record.
+     * @var string 
+     */
     private $unknown_symbol = '---';
 
     public function set_login_list_object(Admin_Csv_Interface $Admin_Csv_Interface) {
-        $this->list_table = $Admin_Csv_Interface;
-        $this->list_table->set_unknown_symbol($this->unknown_symbol);
+        $this->Listing_Table = $Admin_Csv_Interface;
     }
 
+    /**
+     * Set content type in header.
+     */
     private function set_headers() {
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment;filename=' . $this->get_suffix() . '.csv');
     }
 
+    /**
+     * get suffix to be used for csv file name.
+     * @return string
+     */
     private function get_suffix() {
         return $suffix = "login_list_" . date('n-j-y_H-i');
     }
 
+    /**
+     * Initializes csv export
+     * @access public
+     */
     public function init() {
         $this->set_headers();
         $this->export();
     }
 
+    /**
+     * Validate http request
+     * TODO: make this function private - low priority
+     * @return bool
+     */
     public function is_request_for_csv() {
-
-        return !empty($_GET[$this->list_table->get_csv_field_name()]) && 1 == $_GET[$this->list_table->get_csv_field_name()] && check_admin_referer($this->list_table->get_csv_nonce_name());
+        return !empty($_GET[$this->Listing_Table->get_csv_field_name()]) && 1 == $_GET[$this->Listing_Table->get_csv_field_name()] && check_admin_referer($this->Listing_Table->get_csv_nonce_name());
     }
 
     /**
      * Exports CSV
      * 
-     * @access public
-     * @global type $current_user
+     * @access private
      */
     private function export() {
-        $data = $this->list_table->get_all_rows();
+        $data = $this->Listing_Table->get_all_rows();
 
         if (!$data) {
-            $this->list_table->no_items();
+            $this->Listing_Table->no_items();
             exit;
         }
 
-        $columns = $this->list_table->get_columns();
+        $this->Listing_Table->set_unknown_symbol($this->unknown_symbol);
+        $columns = $this->Listing_Table->get_columns();
 
 
         $fp = fopen('php://output', 'w');
@@ -72,7 +94,7 @@ final class Login_List_Csv {
                     continue;
                 }
 
-                $record[$fieldLabel] = $this->list_table->column_default($row, $fieldName);
+                $record[$fieldLabel] = $this->Listing_Table->column_default($row, $fieldName);
             }
 
             if (0 == $i) {

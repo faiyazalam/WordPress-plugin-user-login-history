@@ -21,7 +21,6 @@ use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
  * Defines internationalization, admin-specific hooks, and public-facing site hooks.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author     Er Faiyaz Alam
  */
@@ -38,7 +37,6 @@ class Init {
     /**
      * The unique identifier of this plugin.
      *
-     * @since    1.0.0
      * @access   protected
      * @var      string    $plugin_base_name    The string used to uniquely identify this plugin.
      */
@@ -47,7 +45,6 @@ class Init {
     /**
      * The current version of the plugin.
      *
-     * @since    1.0.0
      * @access   protected
      * @var      string    $version    The current version of the plugin.
      */
@@ -56,7 +53,6 @@ class Init {
     /**
      * The text domain of the plugin.
      *
-     * @since    1.0.0
      * @access   protected
      * @var      string    $version    The current version of the plugin.
      */
@@ -115,7 +111,7 @@ class Init {
      */
     private function define_admin_hooks() {
 
-        $Admin_Notice = new Admin_Notice($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
+        $Admin_Notice = new Admin_Notice($this->get_plugin_name());
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
         $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
@@ -215,7 +211,6 @@ class Init {
     /**
      * Retrieve the version number of the plugin.
      *
-     * @since     1.0.0
      * @return    string    The version number of the plugin.
      */
     public function get_version() {
@@ -225,7 +220,6 @@ class Init {
     /**
      * Retrieve the text domain of the plugin.
      *
-     * @since     1.0.0
      * @return    string    The text domain of the plugin.
      */
     public function get_plugin_text_domain() {

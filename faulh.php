@@ -9,14 +9,13 @@
  * that starts the plugin.
  *
  * @link              http://userloginhistory.com
- * @since             1.0.0
  * @package           User_Login_History
  *
  * @wordpress-plugin
  * Plugin Name:       User Login History
  * Plugin URI:        http://userloginhistory.com/home/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Description:       Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
+ * Version:           1.8.0
  * Author:            Er Faiyaz Alam
  * Author URI:        http://userloginhistory.com/
  * License:           GPL-2.0+
@@ -32,7 +31,7 @@ if (!defined('WPINC')) {
     die;
 }
 /**
- * Define Constants
+ * Plugin Constants
  */
 define(__NAMESPACE__ . '\NS', __NAMESPACE__ . '\\');
 
@@ -54,11 +53,6 @@ define(NS . 'PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins');
 define(NS . 'DEFAULT_IS_STATUS_ONLINE_MIN', '2');
 define(NS . 'DEFAULT_IS_STATUS_IDLE_MIN', '30');
 define(NS . 'PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER', basename(__DIR__) . "/" . basename(__FILE__));
-
-
-
-
-
 
 /**
  * Autoload Classes
@@ -82,14 +76,12 @@ register_deactivation_hook(__FILE__, array(NS . 'Inc\Core\Deactivator', 'deactiv
  *
  * Maintains a single copy of the plugin app object
  *
- * @since    1.0.0
  */
 class User_Login_History {
 
     /**
      * The instance of the plugin.
      *
-     * @since    1.0.0
      * @var      Init $init Instance of the plugin.
      */
     private static $init;
@@ -121,7 +113,7 @@ class User_Login_History {
  * Also returns copy of the app object so 3rd party developers
  * can interact with the plugin's hooks contained within.
  * */
-function wp_plugin_name_init() {
+function wp_user_login_history_init() {
     return User_Login_History::init();
 }
 
@@ -129,5 +121,5 @@ $min_php = '5.6.0';
 
 // Check the minimum required PHP version and run the plugin.
 if (version_compare(PHP_VERSION, $min_php, '>=')) {
-    wp_plugin_name_init();
+    wp_user_login_history_init();
 }

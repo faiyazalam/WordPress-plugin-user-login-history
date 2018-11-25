@@ -15,7 +15,6 @@ use User_Login_History\Inc\Common\Helpers\Validation as Validation_Helper;
  * enqueue the admin-specific stylesheet and JavaScript.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author    Er Faiyaz Alam
  */
@@ -30,7 +29,6 @@ abstract class List_Table extends \WP_List_Table {
     /**
      * The ID of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $plugin_name    The ID of this plugin.
      */
@@ -39,7 +37,6 @@ abstract class List_Table extends \WP_List_Table {
     /**
      * The version of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $version    The current version of this plugin.
      */
@@ -48,7 +45,6 @@ abstract class List_Table extends \WP_List_Table {
     /**
      * The text domain of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $plugin_text_domain    The text domain of this plugin.
      */
@@ -103,7 +99,7 @@ abstract class List_Table extends \WP_List_Table {
     }
 
     /**
-     * Sets the timezone to be used for table listing.
+     * Set the timezone to be used for the listing table.
      * 
      * @access public
      * @param string $timezone
@@ -113,7 +109,8 @@ abstract class List_Table extends \WP_List_Table {
     }
 
     /**
-     * Gets the timezone to be used for table listing.
+     * Get the timezone to be used for the listing table.
+     * Default is UTC
      * 
      * @access public
      * @return string
@@ -123,7 +120,7 @@ abstract class List_Table extends \WP_List_Table {
     }
 
     /**
-     * Handles data query and filter, sorting, and pagination.
+     * Prepare data for the listing table.
      * 
      * @access public
      */
@@ -139,12 +136,19 @@ abstract class List_Table extends \WP_List_Table {
         $this->items = $this->get_rows($per_page, $this->get_pagenum());
     }
 
+    /**
+     * Check if variable is empty or not.
+     * This is used for backward compatibility.
+     * 
+     * @param type $value
+     * @return type
+     */
     protected function is_empty($value = '') {
         return Validation_Helper::isEmpty($value);
     }
 
     /**
-     * Time-zone edit link
+     * Return html for the time-zone edit link
      * 
      * @return string
      */
@@ -153,6 +157,11 @@ abstract class List_Table extends \WP_List_Table {
         return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone() . "</strong>&nbsp;<span><a class='' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a></span>";
     }
 
+    /**
+     * Fetches all the records.
+     * 
+     * @return mixed
+     */
     public function get_all_rows() {
         return $this->get_rows(0);
     }

@@ -12,7 +12,6 @@ use User_Login_History\Inc\Frontend\Frontend_Login_List_Table as List_Table;
  * enqueue the public-facing stylesheet and JavaScript.
  *
  * @link       http://userloginhistory.com
- * @since      1.0.0
  *
  * @author    Er Faiyaz Alam
  */
@@ -21,7 +20,6 @@ class Frontend {
     /**
      * The ID of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $plugin_name    The ID of this plugin.
      */
@@ -30,7 +28,6 @@ class Frontend {
     /**
      * The version of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $version    The current version of this plugin.
      */
@@ -39,7 +36,6 @@ class Frontend {
     /**
      * The text domain of this plugin.
      *
-     * @since    1.0.0
      * @access   private
      * @var      string    $plugin_text_domain    The text domain of this plugin.
      */
@@ -50,7 +46,6 @@ class Frontend {
     /**
      * Initialize the class and set its properties.
      *
-     * @since       1.0.0
      * @param       string $plugin_name        The name of this plugin.
      * @param       string $version            The version of this plugin.
      * @param       string $plugin_text_domain The text domain of this plugin.
@@ -75,7 +70,6 @@ class Frontend {
     /**
      * Register the stylesheets for the public-facing side of the site.
      *
-     * @since    1.0.0
      */
     public function enqueue_styles() {
         wp_register_style($this->plugin_name . '-public-jquery-ui.min', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
@@ -85,7 +79,6 @@ class Frontend {
     /**
      * Register the JavaScript for the public-facing side of the site.
      *
-     * @since    1.0.0
      */
     public function enqueue_scripts() {
         wp_register_script($this->plugin_name . '-public-jquery-ui.min.js', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
