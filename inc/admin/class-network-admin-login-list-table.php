@@ -11,10 +11,7 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Table_Interface;
 
 /**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
+ * The login listing table for network admin.
  *
  * @link       http://userloginhistory.com
  *
@@ -22,14 +19,29 @@ use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Tabl
  */
 final class Network_Admin_Login_List_Table extends Login_List_Table implements Admin_Csv_Interface, Admin_List_Table_Interface {
 
+    /**
+     * Holds the main sql query.
+     * @var string 
+     */
     private $rows_sql = '';
+
+    /**
+     * Holds the count sql query.
+     * @var string 
+     */
     private $count_sql = '';
 
+    /**
+     * Overrides 
+     */
     public function init() {
         parent::init();
         $this->prepare_sql_queries();
     }
 
+    /**
+     * Overrides
+     */
     public function prepare_where_query() {
 
         $where_query = parent::prepare_where_query();
@@ -41,10 +53,18 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         return $where_query;
     }
 
+    /**
+     * Get array of blog ids to be used in where sql query.
+     * @return array 
+     */
     private function get_blog_ids_for_where_clause() {
         return !empty($_GET['blog_id']) && $_GET['blog_id'] > 0 ? array($_GET['blog_id']) : Db_Helper::get_blog_ids_by_site_id();
     }
 
+    /**
+     * Prepare main and count sql queries.
+     * @global type $wpdb
+     */
     private function prepare_sql_queries() {
         global $wpdb;
         $where_query = $this->prepare_where_query();
@@ -109,6 +129,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         $this->count_sql = "SELECT SUM(count) as total FROM ({$this->count_sql}) AS FaUserLoginCount";
     }
 
+    /**
+     * Overrides
+     */
     public function get_columns() {
         $columns = array_merge(parent::get_columns(), array(
             'blog_id' => esc_html__('Blog ID', $this->plugin_text_domain),
@@ -118,6 +141,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         return apply_filters($this->plugin_name . "_network_admin_login_list_get_columns", $columns);
     }
 
+    /**
+     * Overrides
+     */
     public function get_sortable_columns() {
         $columns = array_merge(parent::get_sortable_columns(), array(
             'is_super_admin' => array('is_super_admin', false),
@@ -130,6 +156,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
     /**
      * Render the bulk edit checkbox
      *
+     * Overrides
      * @param array $item
      * @access public
      * @return string
@@ -206,16 +233,25 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         return $title . $this->row_actions($actions);
     }
 
+    /**
+     * Validate the request for bulk action
+     */
     private function is_valid_request_to_process_bulk_action() {
         $nonce = '_wpnonce';
         return isset($_POST[$this->get_bulk_action_form()]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $this->get_bulk_action_nonce()) && current_user_can('administrator');
     }
 
+    /**
+     * Validate the request for single action
+     */
     private function is_valid_request_to_process_single_action() {
         $nonce = '_wpnonce';
         return !empty($_GET['record_id']) && $_GET['record_id'] > 0 && !empty($_GET['blog_id']) && $_GET['blog_id'] > 0 && !empty($_GET[$nonce]) && wp_verify_nonce($_GET[$nonce], $this->get_delete_action_nonce()) && current_user_can('administrator');
     }
 
+    /**
+     * Process the bulk action
+     */
     public function process_bulk_action() {
         if (!$this->is_valid_request_to_process_bulk_action()) {
             return;
@@ -268,6 +304,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
         exit;
     }
 
+    /**
+     * Process the single action
+     */
     public function process_single_action() {
         if (!$this->is_valid_request_to_process_single_action()) {
             return;

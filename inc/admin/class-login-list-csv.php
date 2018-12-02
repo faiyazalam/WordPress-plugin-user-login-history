@@ -6,15 +6,13 @@ use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 
 /**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
+ * CSV Export Functionality
  *
  * @link       http://userloginhistory.com
  *
  * @author    Er Faiyaz Alam
  */
+//TODO:: Rename class to Listing_Table_Csv
 final class Login_List_Csv {
 
     /**
@@ -29,6 +27,7 @@ final class Login_List_Csv {
      */
     private $unknown_symbol = '---';
 
+    //TODO::Rename this function to set_listing_table
     public function set_login_list_object(Admin_Csv_Interface $Admin_Csv_Interface) {
         $this->Listing_Table = $Admin_Csv_Interface;
     }

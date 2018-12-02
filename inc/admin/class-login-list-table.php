@@ -11,21 +11,40 @@ use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
 /**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
+ * Base class to handle admin and network admin login listing functionality.
+ * 
  * @link       http://userloginhistory.com
  *
  * @author    Er Faiyaz Alam
  */
 abstract class Login_List_Table extends List_Table_Abstract {
 
+    /**
+     * Holds the interval for online status
+     * @var int 
+     */
     protected $online_duration;
+
+    /**
+     * Holds the interval for idle status
+     * @var int 
+     */
     protected $idle_duration;
+
+    /**
+     * Holds the instance of Admin_Notice
+     * @var Admin_Notice 
+     */
     protected $Admin_Notice;
 
+    /**
+     * Initialize the class and set its properties.
+     *
+     * @param       string $plugin_name        The name of this plugin.
+     * @param       string $version            The version of this plugin.
+     * @param       string $plugin_text_domain The text domain of this plugin.
+     * @param       Admin_Notice $Admin_Notice
+     */
     public function __construct($plugin_name, $version, $plugin_text_domain, Admin_Notice $Admin_Notice) {
         $args = array(
             'singular' => $plugin_name . '_user_login',
@@ -35,24 +54,48 @@ abstract class Login_List_Table extends List_Table_Abstract {
         $this->Admin_Notice = $Admin_Notice;
     }
 
+    /**
+     * Set interval for online status
+     * @param int $duration
+     * @return $this
+     */
     public function set_online_duration($duration) {
         $this->online_duration = $duration;
         return $this;
     }
 
+    /**
+     * Get interval for online status
+     * @return int 
+     */
     public function get_online_duration() {
         return $this->online_duration;
     }
 
+    /**
+     * Set interval for idle status
+     * @param int $duration
+     * @return $this
+     */
     public function set_idle_duration($duration) {
         $this->idle_duration = $duration;
         return $this;
     }
 
+    /**
+     * Get interval for idle status
+     * @return int
+     * @access public
+     */
     public function get_idle_duration() {
         return $this->idle_duration;
     }
 
+    /**
+     * Overrides and initializes class properties
+     * @Overrides
+     * @access public
+     */
     public function init() {
         parent::init();
         $this->table = NS\PLUGIN_TABLE_FA_USER_LOGINS;
@@ -143,6 +186,9 @@ abstract class Login_List_Table extends List_Table_Abstract {
         return $actions;
     }
 
+    /**
+     * Overwrites
+     */
     public function get_columns() {
         $columns = array(
             'cb' => '<input type="checkbox" />',
@@ -165,6 +211,9 @@ abstract class Login_List_Table extends List_Table_Abstract {
         return $columns;
     }
 
+    /**
+     * Overwrites
+     */
     public function get_sortable_columns() {
         $columns = array(
             'user_id' => array('user_id', true),
@@ -185,6 +234,9 @@ abstract class Login_List_Table extends List_Table_Abstract {
         return $columns;
     }
 
+    /**
+     * Overwrites
+     */
     public function column_time_last_seen($item) {
         $column_name = 'time_last_seen';
 
@@ -206,6 +258,15 @@ abstract class Login_List_Table extends List_Table_Abstract {
         return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . " " . esc_html__('ago', 'faulh') . '</div>';
     }
 
+    /**
+     * 
+     * Get string for login status.
+     * 
+     * TODO::Remove parameters - low priority
+     * @param int $time_last_seen_unix
+     * @param string $login_status
+     * @return boolean|string offline, online or idle
+     */
     private function get_online_status($time_last_seen_unix, $login_status) {
 
         $time_last_seen_unix = absint($time_last_seen_unix);
@@ -229,6 +290,9 @@ abstract class Login_List_Table extends List_Table_Abstract {
         return $online_status;
     }
 
+    /**
+     * Overrides
+     */
     public function column_default($item, $column_name) {
         $timezone = $this->get_timezone();
 

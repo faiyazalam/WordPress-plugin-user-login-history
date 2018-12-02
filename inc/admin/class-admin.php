@@ -19,8 +19,6 @@ use User_Login_History\Inc\Admin\Settings as Admin_Settings;
  */
 class Admin {
 
-    const INTERVAL_FOR_TRANSIENT = 120;
-
     /**
      * The ID of this plugin.
      *
@@ -212,9 +210,8 @@ class Admin {
         );
 
         add_screen_option($option, $args);
-
+//TODO:: rename $this->list_table to $this->Login_List_Table - low priority
         $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
-
         $this->list_table->process_bulk_action();
         $this->list_table->process_single_action();
 
