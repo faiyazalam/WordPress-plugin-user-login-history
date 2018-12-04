@@ -44,7 +44,7 @@ class Admin {
     private $plugin_text_domain;
 
     /**
-     * Variables used for DI
+     * Variables to store instance of other classes.
      */
     private $User_Profile;
     private $Login_List_Csv;

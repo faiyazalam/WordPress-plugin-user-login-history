@@ -2,28 +2,62 @@
 
 namespace User_Login_History\Inc\Admin;
 
+/**
+ * Admin specific settings.
+ */
 use User_Login_History\Inc\Admin\Settings_Api;
 use User_Login_History as NS;
 
 class Settings {
 
-    private $settings_api;
+    /**
+     * The ID of this plugin.
+     *
+     * @access   private
+     * @var      string    $plugin_name    The ID of this plugin.
+     */
     private $plugin_name;
-    private $plugin_text_domain;
+
+    /**
+     * The version of this plugin.
+     *
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
     private $version;
 
-    function __construct($plugin, $version, $plugin_text_domain, Settings_Api $settings_api) {
-        $this->settings_api = $settings_api;
+    /**
+     * The text domain of this plugin.
+     *
+     * @access   private
+     * @var      string    $plugin_text_domain    The text domain of this plugin.
+     */
+    private $plugin_text_domain;
+
+    /**
+     * Holds the instance of Settings_Api
+     * @var Settings_Api 
+     */
+    private $Settings_Api;
+
+    function __construct($plugin, $version, $plugin_text_domain, Settings_Api $Settings_Api) {
+        $this->Settings_Api = $Settings_Api;
         $this->plugin_name = $plugin;
         $this->plugin_text_domain = $plugin_text_domain;
     }
 
+    /**
+     * Hooked with admin_init action
+     */
     function admin_init() {
-        $this->settings_api->set_sections($this->get_settings_sections());
-        $this->settings_api->set_fields($this->get_settings_fields());
-        $this->settings_api->admin_init();
+        $this->Settings_Api->set_sections($this->get_settings_sections());
+        $this->Settings_Api->set_fields($this->get_settings_fields());
+        $this->Settings_Api->admin_init();
     }
 
+    /**
+     * Hooked with admin_menu action
+     */
     function admin_menu() {
         add_options_page(NS\PLUGIN_NAME, NS\PLUGIN_NAME, 'manage_options', $this->plugin_name . "-settings", array($this, 'plugin_page'));
     }
@@ -85,14 +119,26 @@ class Settings {
         return $settings_fields;
     }
 
+    /**
+     * Get all the basics settings.
+     * @return mixed
+     */
     private function get_basic_settings() {
         return get_option($this->plugin_name . "_basics");
     }
 
+    /**
+     * Get all the advanced settings.
+     * @return mixed
+     */
     private function get_advanced_settings() {
         return get_option($this->plugin_name . "_advanced");
     }
 
+    /**
+     * Get duration for online and idle statuses.
+     * @return array
+     */
     public function get_online_duration() {
         $settings = $this->get_basic_settings();
         $minute_online = !empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
@@ -100,15 +146,22 @@ class Settings {
         return array('online' => $minute_online, 'idle' => $minute_idle);
     }
 
+    /**
+     * Check if the geo tracker setting is enabled.
+     * @return bool
+     */
     public function is_geo_tracker_enabled() {
         $options = $this->get_advanced_settings();
         return (!empty($options['is_geo_tracker_enabled']) && 'on' == $options['is_geo_tracker_enabled']);
     }
 
-    function plugin_page() {
+    /**
+     * Render the admin settings page.
+     */
+    public function plugin_page() {
         echo '<div class="wrap">';
-        $this->settings_api->show_navigation();
-        $this->settings_api->show_forms();
+        $this->Settings_Api->show_navigation();
+        $this->Settings_Api->show_forms();
         echo '</div>';
     }
 

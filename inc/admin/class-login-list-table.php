@@ -167,6 +167,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
             $where_query .= " AND `FaUserLogin`.`login_status` = '" . $login_status_value . "'";
         }
 
+        //TODO::add where query for country code and browser version
         $where_query = apply_filters('faulh_admin_prepare_where_query', $where_query);
         return $where_query;
     }
@@ -187,7 +188,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
     }
 
     /**
-     * Overwrites
+     * Overrides
      */
     public function get_columns() {
         $columns = array(
@@ -212,7 +213,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
     }
 
     /**
-     * Overwrites
+     * Overrides
      */
     public function get_sortable_columns() {
         $columns = array(
@@ -235,7 +236,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
     }
 
     /**
-     * Overwrites
+     * Overrides
      */
     public function column_time_last_seen($item) {
         $column_name = 'time_last_seen';
@@ -292,6 +293,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
     /**
      * Overrides
+     * TODO::add columns for country code and browser version
      */
     public function column_default($item, $column_name) {
         $timezone = $this->get_timezone();

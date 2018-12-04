@@ -7,10 +7,7 @@ use User_Login_History\Inc\Core\Activator;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
 /**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
+ * Network Blog Management Functionality.
  *
  * @link       http://userloginhistory.com
  *
@@ -20,7 +17,7 @@ class Network_Blog_Manager {
 
     /**
      * Create table whenever a new blog is created.
-     * 
+     * Hooked with wpmu_new_blog action
      * @access public
      */
     public function on_create_blog($blog_id, $user_id, $domain, $path, $site_id, $meta) {
@@ -38,7 +35,7 @@ class Network_Blog_Manager {
 
     /**
      * Drop table whenever a blog is deleted.
-     * 
+     * Hooked with deleted_blog action
      * @access public
      */
     public function deleted_blog($blog_id) {

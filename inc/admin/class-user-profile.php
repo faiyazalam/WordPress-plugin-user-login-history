@@ -2,6 +2,9 @@
 
 namespace User_Login_History\Inc\Admin;
 
+/**
+ * Add Timezone dropdown on user profile page in admin.
+ */
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 use User_Login_History\Inc\Common\Abstracts\User_Profile as User_Profile_Abstract;
 

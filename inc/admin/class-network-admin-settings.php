@@ -2,17 +2,60 @@
 
 namespace User_Login_History\Inc\Admin;
 
+/**
+ * Network admnin settings.
+ */
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
 class Network_Admin_Settings {
 
+    /**
+     * The ID of this plugin.
+     *
+     * @access   private
+     * @var      string    $plugin_name    The ID of this plugin.
+     */
     private $plugin_name;
+
+    /**
+     * The version of this plugin.
+     *
+     * @access   private
+     * @var      string    $version    The current version of this plugin.
+     */
     private $version;
+
+    /**
+     * The text domain of this plugin.
+     *
+     * @access   private
+     * @var      string    $plugin_text_domain    The text domain of this plugin.
+     */
     private $plugin_text_domain;
+
+    /**
+     * Form name to be used in html form.
+     * @var string 
+     */
     private $form_name;
+
+    /**
+     * Form nonce to be used in html form.
+     * @var string 
+     */
     private $form_nonce_name;
+
+    /**
+     * Settings name to be used to save network settings only.
+     * @var string 
+     */
     private $settings_name;
+
+    /**
+     * Holds the instance of Admin Notice
+     * @var Admin_Notice 
+     */
     private $Admin_Notice;
 
     /**
@@ -30,6 +73,10 @@ class Network_Admin_Settings {
         $this->Admin_Notice = $Admin_Notice;
     }
 
+    /**
+     * Validate form submission.
+     * @return bool
+     */
     private function is_form_submitted() {
         return isset($_POST[$this->get_form_name()]) && !empty($_POST[$this->get_form_nonce_name()]) && wp_verify_nonce($_POST[$this->get_form_nonce_name()], $this->get_form_nonce_name()) && current_user_can('administrator');
     }
@@ -62,7 +109,7 @@ class Network_Admin_Settings {
     }
 
     /**
-     * The callback function for the action hook - network_admin_menu.
+     * Hooked with network_admin_menu action
      */
     public function admin_menu() {
         add_submenu_page(
@@ -109,16 +156,6 @@ class Network_Admin_Settings {
      * @param $setting string optional setting name
      */
     public function get_settings($setting = '') {
-        //TODO: Rename $settings because this is  global and can be modified from outside of the class.
-        global $settings;
-
-        if (isset($settings)) {
-            if ($setting) {
-                return isset($settings[$setting]) ? maybe_unserialize($settings[$setting]) : null;
-            }
-            return $settings;
-        }
-
         $settings = wp_parse_args(get_site_option($this->settings_name), array(
             'block_user' => null,
             'block_user_message' => 'Please contact website administrator.',
@@ -129,11 +166,20 @@ class Network_Admin_Settings {
         }
         return $settings;
     }
-    
+
+    /**
+     * Get block user settings
+     * @return bool
+     * TODO::Test if this function works correctly
+     */
     public function get_block_user() {
         return $this->get_settings('block_user');
     }
-    
+
+    /**
+     * Get message for block user settings.
+     * @return string
+     */
     public function get_block_user_message() {
         return $this->get_settings('block_user_message');
     }
