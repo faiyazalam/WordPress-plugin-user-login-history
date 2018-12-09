@@ -6,11 +6,11 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
 Requires at least: 4.9.0
 Requires PHP: 5.5
-Tested up to: 4.9.6
-Stable tag: 1.6
+Tested up to: 5.0
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Version: 1.7.0
+Version: 1.8.0
 
 Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
 
@@ -104,6 +104,11 @@ Yes.
 7. Shortcode - User login list table for frontend
 
 == Changelog ==
+
+= 1.8.0(release date) =
+
+* Improved code - **Namespace** used.
+* Minor bugs fixes.
 
 = 1.7.0(release date) =
 * Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
