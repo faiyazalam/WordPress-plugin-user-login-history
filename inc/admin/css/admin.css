@@ -1,1 +1,178 @@
-#advanced_search{display: none}
+.faulh_container {
+  border: solid 1px #ddd;
+  background: #fff;
+  padding: 20px;
+}
+.faulh_container input[type="text"],
+.faulh_container .hasDatepicker {
+  min-height: 30px;
+  background-color: #fff;
+  border: solid 1px #e0e0e0;
+  vertical-align: top;
+}
+.faulh_container .basic_search select {
+  min-height: 30px;
+  vertical-align: top;
+  float: right;
+  width: 18.5%;
+}
+.faulh_container .basic_search input.hasDatepicker {
+  width: 40%;
+  width: 40%;
+  background-image: url(images/cal.png);
+  background-position: 98% center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+#faulh_advanced_search {
+  width: 100%;
+  float: left;
+  display: none;
+  padding: 0 12px;
+  margin-top: 15px;
+  border: solid 1px #e0e0e0;
+  box-sizing: border-box;
+  background-color: #fbfbfb;
+  border-bottom: 0;
+}
+.faulh_container #faulh_show_hide_advanced_search {
+  display: inline-block;
+  background-color: #efefef;
+  border: solid 1px #e0e0e0;
+  text-decoration: none;
+  padding: 5px 20px;
+  font-size: 13px;
+  color: #000;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+  cursor: pointer;
+  float: right;
+}
+.faulh_container #faulh_show_hide_advanced_search:hover {
+  background-color: #ddd;
+}
+
+.faulh_container #faulh_advanced_search > div {
+  width: 46%;
+  float: left;
+  border-bottom: solid 1px #efefef;
+  padding: 10px 0;
+}
+.faulh_container #faulh_advanced_search:after {
+  content: "";
+  clear: both;
+  display: block;
+}
+.faulh_container #faulh_advanced_search > div label {
+  font-size: 13px;
+  color: #000;
+  line-height: 28px;
+  display: inline-block;
+}
+.faulh_container #faulh_advanced_search > div label + input,
+.faulh_container #faulh_advanced_search > div label + select {
+  float: right;
+  width: 50%;
+  background-color: #fff;
+  border: solid 1px #e0e0e0;
+  min-height: 30px;
+}
+.faulh_container #faulh_advanced_search > div:nth-child(2n) {
+  width: 46%;
+  padding-left: 8%;
+}
+
+.faulh_container form > fieldset {
+  display: block;
+  border-top: solid 1px #ddd;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.faulh_container form > fieldset > *,
+.edit-link {
+  display: inline-block;
+  background-color: #efefef;
+  border: solid 1px #e0e0e0;
+  text-decoration: none;
+  padding: 5px 20px;
+  font-size: 13px !important;
+  color: #000;
+  text-transform: uppercase;
+  margin: 0px;
+  vertical-align: top;
+  line-height: 20px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.edit-link {
+  background-color: #fff;
+  vertical-align: initial;
+}
+.faulh_container form > fieldset > *:hover {
+  background-color: #ddd;
+}
+
+.faulh_container .faulh-cancel-btn {
+  background-color: #fff;
+  color: #f00;
+}
+
+.is_status_online:before {
+  background-color: rgb(90, 206, 90);
+  content: "";
+  margin-right: 3px;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.is_status_offline:before {
+  background-color: rgb(255, 106, 68);
+  content: "";
+  margin-right: 3px;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+
+/*MY CUSTOM CSS - START*/
+.faulh_admin_table table {
+  margin-top: 20px;
+  width: auto;
+  min-width: 100%;
+  white-space: nowrap;
+}
+
+.faulh_admin_table form {
+  overflow: auto;
+  max-width: 100%;
+}
+.faulh_admin_table {
+  position: relative;
+  padding: 30px 0;
+}
+.tablenav {
+  left: 0;
+  right: 0;
+  position: absolute;
+}
+
+.top {
+  top: 0;
+}
+.bottom {
+  bottom: -10px;
+}
+
+.tablenav
+
+@media (max-width: 767px) {
+  .faulh_admin_table {
+    padding: 50px 0;
+  }
+}
+/*MY CUSTOM CSS - END*/

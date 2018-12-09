@@ -5,10 +5,10 @@
     <hr>
     <div><?php echo $this->list_table->timezone_edit_link() ?></div>
     <hr>
-    <form method="post">
-        <input type="hidden" name="<?php echo $this->list_table->get_bulk_action_form() ?>" value="">
-        <?php
-        $this->list_table->display();
-        ?>
-    </form>
+    <div class="faulh_admin_table">
+        <form method="post">
+            <input type="hidden" name="<?php echo $this->list_table->get_bulk_action_form() ?>" value="">
+            <?php $this->list_table->display(); ?>
+        </form>
+    </div>
 </div>
