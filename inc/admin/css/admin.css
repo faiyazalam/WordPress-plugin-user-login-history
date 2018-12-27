@@ -108,6 +108,11 @@
 .edit-link {
   background-color: #fff;
   vertical-align: initial;
+  color: #0073aa;
+}
+
+.edit-link:hover {
+  background-color: #ddd;
 }
 .faulh_container form > fieldset > *:hover {
   background-color: #ddd;
@@ -115,7 +120,7 @@
 
 .faulh_container .faulh-cancel-btn {
   background-color: #fff;
-  color: #f00;
+  color: #0073aa;
 }
 
 .is_status_online:before {
