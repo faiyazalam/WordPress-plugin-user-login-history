@@ -12,7 +12,7 @@ use User_Login_History\Inc\Admin\Network_Admin_Settings;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Admin\Network_Blog_Manager;
 use User_Login_History\Inc\Admin\Settings_Api;
-use User_Login_History\Inc\Admin\Login_List_Csv;
+use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Frontend\Frontend;
 use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
 
@@ -106,7 +106,7 @@ class Init {
         $Admin_Notice = new Admin_Notice($this->get_plugin_name());
         $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version());
         $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), new Settings_Api());
-        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
+        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $User_Profile, new Listing_Table_Csv(), $Admin_Setting, $Admin_Notice);
         $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $Admin_Notice);
 
         if (is_network_admin()) {

@@ -12,8 +12,7 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
  *
  * @author    Er Faiyaz Alam
  */
-//TODO:: Rename class to Listing_Table_Csv
-final class Login_List_Csv {
+final class Listing_Table_Csv {
 
     /**
      * Holds the instance of the class which is implemented with Admin_Csv
@@ -27,8 +26,7 @@ final class Login_List_Csv {
      */
     private $unknown_symbol = '---';
 
-    //TODO::Rename this function to set_listing_table
-    public function set_login_list_object(Admin_Csv_Interface $Admin_Csv_Interface) {
+    public function set_Listing_Table(Admin_Csv_Interface $Admin_Csv_Interface) {
         $this->Listing_Table = $Admin_Csv_Interface;
     }
 

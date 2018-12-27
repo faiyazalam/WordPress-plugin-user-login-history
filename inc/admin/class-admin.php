@@ -3,7 +3,7 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History AS NS;
-use User_Login_History\Inc\Admin\Login_List_Csv;
+use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Admin\Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\Network_Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\User_Profile;
@@ -39,7 +39,7 @@ class Admin {
      * Variables to store instance of other classes.
      */
     private $User_Profile;
-    private $Login_List_Csv;
+    private $Listing_Table_Csv;
     private $Admin_Settings;
     private $Admin_Notice;
 
@@ -50,13 +50,13 @@ class Admin {
      * @param       string $version            The version of this plugin.
      */
     public function __construct(
-    $plugin_name, $version, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
+    $plugin_name, $version, User_Profile $User_Profile, Listing_Table_Csv $Listing_Table_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
     ) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
         $this->User_Profile = $User_Profile;
-        $this->Login_List_Csv = $Login_List_Csv;
+        $this->Listing_Table_Csv = $Listing_Table_Csv;
         $this->Admin_Notice = $Admin_Notice;
         $this->Admin_Settings = $Admin_Settings;
     }
@@ -75,14 +75,14 @@ class Admin {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
             $Login_List = $this->get_Login_List_Table();
 
-            $this->Login_List_Csv->set_login_list_object($Login_List);
+            $this->Listing_Table_Csv->set_Listing_Table($Login_List);
 
-            if (!$this->Login_List_Csv->is_request_for_csv()) {
+            if (!$this->Listing_Table_Csv->is_request_for_csv()) {
                 return;
             }
 
             $Login_List->set_timezone($this->User_Profile->get_user_timezone());
-            $this->Login_List_Csv->init();
+            $this->Listing_Table_Csv->init();
         }
     }
 
