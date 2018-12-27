@@ -35,17 +35,15 @@ abstract class User_Profile {
      * @var      string    $user_id
      */
     protected $user_id;
-    protected $plugin_text_domain;
 
     /**
      * Initialize the class and set its properties.
      *
      * @var      string    $plugin_name       The name of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain) {
+    public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->plugin_text_domain = $plugin_text_domain;
     }
 
     /**

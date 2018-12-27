@@ -32,14 +32,6 @@ class Frontend {
      * @var      string    $version    The current version of this plugin.
      */
     private $version;
-
-    /**
-     * The text domain of this plugin.
-     *
-     * @access   private
-     * @var      string    $plugin_text_domain    The text domain of this plugin.
-     */
-    private $plugin_text_domain;
     private $User_Profile;
     private $List_Table;
 
@@ -48,13 +40,11 @@ class Frontend {
      *
      * @param       string $plugin_name        The name of this plugin.
      * @param       string $version            The version of this plugin.
-     * @param       string $plugin_text_domain The text domain of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain, List_Table $List_Table, UserProfileAbstract $User_Profile) {
+    public function __construct($plugin_name, $version, List_Table $List_Table, UserProfileAbstract $User_Profile) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->plugin_text_domain = $plugin_text_domain;
         $this->List_Table = $List_Table;
         $this->User_Profile = $User_Profile;
     }

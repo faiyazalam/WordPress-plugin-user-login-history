@@ -134,8 +134,8 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
      */
     public function get_columns() {
         $columns = array_merge(parent::get_columns(), array(
-            'blog_id' => esc_html__('Blog ID', $this->plugin_text_domain),
-            'is_super_admin' => esc_html__('Super Admin', $this->plugin_text_domain),
+            'blog_id' => esc_html__('Blog ID', 'faulh'),
+            'is_super_admin' => esc_html__('Super Admin', 'faulh'),
         ));
 
         return apply_filters($this->plugin_name . "_network_admin_login_list_get_columns", $columns);
@@ -227,7 +227,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
         $delete_nonce = wp_create_nonce($this->delete_action_nonce);
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->delete_action, absint($item['blog_id']), absint($item['id']), $delete_nonce),
+            'delete' => sprintf('<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">%s</a>', esc_attr($_REQUEST['page']), $this->delete_action, absint($item['blog_id']), absint($item['id']), $delete_nonce, esc_html__('Delete', 'faulh')),
         );
 
         return $title . $this->row_actions($actions);
@@ -257,7 +257,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
             return;
         }
 
-        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $message = esc_html__('Please try again.', 'faulh');
         $status = FALSE;
         switch ($this->current_action()) {
             case 'bulk-delete':
@@ -272,7 +272,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                     }
 
                     if ($status) {
-                        $message = esc_html__('Selected record(s) deleted.', $this->plugin_text_domain);
+                        $message = esc_html__('Selected record(s) deleted.', 'faulh');
                     }
                 }
 
@@ -290,7 +290,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                 }
 
                 if ($status) {
-                    $message = esc_html__('All records deleted.', $this->plugin_text_domain);
+                    $message = esc_html__('All records deleted.', 'faulh');
                     Db_Helper::query('COMMIT');
                 } else {
                     Db_Helper::query('ROLLBACK');
@@ -319,7 +319,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
             return;
         }
 
-        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $message = esc_html__('Please try again.', 'faulh');
         $status = FALSE;
 
         switch ($this->current_action()) {
@@ -328,7 +328,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                 $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
                 restore_current_blog();
                 if ($status) {
-                    $message = esc_html__('Selected record deleted.', $this->plugin_text_domain);
+                    $message = esc_html__('Selected record deleted.', 'faulh');
                 }
 
                 break;

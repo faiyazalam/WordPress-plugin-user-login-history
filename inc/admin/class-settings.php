@@ -27,23 +27,14 @@ class Settings {
     private $version;
 
     /**
-     * The text domain of this plugin.
-     *
-     * @access   private
-     * @var      string    $plugin_text_domain    The text domain of this plugin.
-     */
-    private $plugin_text_domain;
-
-    /**
      * Holds the instance of Settings_Api
      * @var Settings_Api 
      */
     private $Settings_Api;
 
-    function __construct($plugin, $version, $plugin_text_domain, Settings_Api $Settings_Api) {
+    function __construct($plugin, $version, Settings_Api $Settings_Api) {
         $this->Settings_Api = $Settings_Api;
         $this->plugin_name = $plugin;
-        $this->plugin_text_domain = $plugin_text_domain;
     }
 
     /**
@@ -109,7 +100,7 @@ class Settings {
                 array(
                     'name' => 'is_geo_tracker_enabled',
                     'label' => esc_html__('Geo Tracker', 'faulh') . "<br>" . esc_html__('(Not Recommended)', 'faulh'),
-                    'desc' => esc_html__('Enable tracking of country and timezone. This functionality is dependent on a free third-party API service, hence not recommended. For more info, see the "Help" page under the plugin menu.', 'faulh'),
+                    'desc' => esc_html__('Enable tracking of country and timezone.', 'faulh') . "<br>" . esc_html__('This functionality is dependent on a free third-party API service, hence not recommended.', 'faulh'),
                     'type' => 'checkbox',
                     'default' => FALSE,
                 ),
@@ -160,6 +151,7 @@ class Settings {
      */
     public function plugin_page() {
         echo '<div class="wrap">';
+        \User_Login_History\Inc\Common\Helpers\Template::head(esc_html__('Settings', 'faulh'));
         $this->Settings_Api->show_navigation();
         $this->Settings_Api->show_forms();
         echo '</div>';

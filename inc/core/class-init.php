@@ -51,14 +51,6 @@ class Init {
     protected $version;
 
     /**
-     * The text domain of the plugin.
-     *
-     * @access   protected
-     * @var      string    $version    The current version of the plugin.
-     */
-    protected $plugin_text_domain;
-
-    /**
      * Initialize and define the core functionality of the plugin.
      */
     public function __construct() {
@@ -112,10 +104,10 @@ class Init {
     private function define_admin_hooks() {
 
         $Admin_Notice = new Admin_Notice($this->get_plugin_name());
-        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), new Settings_Api());
-        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
-        $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $Admin_Notice);
+        $User_Profile = new User_Profile($this->get_plugin_name(), $this->get_version());
+        $Admin_Setting = new AdminSettings($this->get_plugin_name(), $this->get_version(), new Settings_Api());
+        $Admin = new Admin($this->get_plugin_name(), $this->get_version(), $User_Profile, new Login_List_Csv(), $Admin_Setting, $Admin_Notice);
+        $Network_Admin_Settings = new Network_Admin_Settings($this->get_plugin_name(), $this->get_version(), $Admin_Notice);
 
         if (is_network_admin()) {
             $Network_Blog_Manager = new Network_Blog_Manager();
@@ -172,9 +164,9 @@ class Init {
         if (is_admin()) {
             return;
         }
-        $List_Table = new Frontend_Login_List_Table($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-        $User_Profile = new FrontendUserProfile($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain());
-        $plugin_public = new Frontend($this->get_plugin_name(), $this->get_version(), $this->get_plugin_text_domain(), $List_Table, $User_Profile);
+        $List_Table = new Frontend_Login_List_Table($this->get_plugin_name(), $this->get_version());
+        $User_Profile = new FrontendUserProfile($this->get_plugin_name(), $this->get_version());
+        $plugin_public = new Frontend($this->get_plugin_name(), $this->get_version(), $List_Table, $User_Profile);
         $this->loader->add_shortcode('user-login-history', $plugin_public, 'shortcode_user_table'); //old-shortcode
         $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table'); //new shortcode
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');

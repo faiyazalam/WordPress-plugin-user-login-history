@@ -27,14 +27,6 @@ class Network_Admin_Settings {
     private $version;
 
     /**
-     * The text domain of this plugin.
-     *
-     * @access   private
-     * @var      string    $plugin_text_domain    The text domain of this plugin.
-     */
-    private $plugin_text_domain;
-
-    /**
      * Form name to be used in html form.
      * @var string 
      */
@@ -65,7 +57,7 @@ class Network_Admin_Settings {
      * @param      array    $args       The overridden arguments.
      * @param      string    $plugin_name       The name of this plugin.
      */
-    function __construct($plugin_name, $version, $plugin_text_domain, Admin_Notice $Admin_Notice) {
+    function __construct($plugin_name, $version, Admin_Notice $Admin_Notice) {
         $this->plugin_name = $plugin_name;
         $this->form_name = $this->plugin_name . '_network_admin_setting_submit';
         $this->form_nonce_name = $this->plugin_name . '_network_admin_setting_nonce';
@@ -138,10 +130,10 @@ class Network_Admin_Settings {
         }
 
         if ($this->update_settings()) {
-            $message = esc_html__('Settings updated successfully.', $this->plugin_name);
+            $message = esc_html__('Settings updated successfully.', 'faulh');
             $status = TRUE;
         } else {
-            $message = esc_html__('Please try again.', $this->plugin_name);
+            $message = esc_html__('Please try again.', 'faulh');
             $status = FALSE;
         }
 

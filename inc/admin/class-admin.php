@@ -36,14 +36,6 @@ class Admin {
     private $version;
 
     /**
-     * The text domain of this plugin.
-     *
-     * @access   private
-     * @var      string    $plugin_text_domain    The text domain of this plugin.
-     */
-    private $plugin_text_domain;
-
-    /**
      * Variables to store instance of other classes.
      */
     private $User_Profile;
@@ -56,15 +48,13 @@ class Admin {
      *
      * @param       string $plugin_name        The name of this plugin.
      * @param       string $version            The version of this plugin.
-     * @param       string $plugin_text_domain The text domain of this plugin.
      */
     public function __construct(
-    $plugin_name, $version, $plugin_text_domain, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
+    $plugin_name, $version, User_Profile $User_Profile, Login_List_Csv $Login_List_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
     ) {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->plugin_text_domain = $plugin_text_domain;
         $this->User_Profile = $User_Profile;
         $this->Login_List_Csv = $Login_List_Csv;
         $this->Admin_Notice = $Admin_Notice;
@@ -83,7 +73,7 @@ class Admin {
      */
     private function csv_export_login_list() {
         if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
-            $Login_List = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
+            $Login_List = $this->get_Login_List_Table();
 
             $this->Login_List_Csv->set_login_list_object($Login_List);
 
@@ -179,7 +169,7 @@ class Admin {
         $hook = add_menu_page(
                 esc_html__('Login List', 'faulh'), NS\PLUGIN_NAME, 'manage_options', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
         );
-        add_submenu_page($menu_slug, esc_html__('Login List', $this->plugin_text_domain), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_login_list'));
+        add_submenu_page($menu_slug, esc_html__('Login List', 'faulh'), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_login_list'));
 
         add_action("load-$hook", array($this, 'screen_option'));
     }
@@ -204,22 +194,29 @@ class Admin {
     public function screen_option() {
         $option = 'per_page';
         $args = array(
-            'label' => __('Show Records Per Page', $this->plugin_text_domain),
+            'label' => __('Show Records Per Page', 'faulh'),
             'default' => 20,
             'option' => $this->plugin_name . '_rows_per_page'
         );
 
         add_screen_option($option, $args);
-//TODO:: rename $this->list_table to $this->Login_List_Table - low priority
-        $this->list_table = is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->plugin_text_domain, $this->Admin_Notice);
-        $this->list_table->process_bulk_action();
-        $this->list_table->process_single_action();
+        $this->Login_List_Table = $this->get_Login_List_Table();
+        $this->Login_List_Table->process_bulk_action();
+        $this->Login_List_Table->process_single_action();
 
         $online_duration = $this->Admin_Settings->get_online_duration();
-        $this->list_table->set_online_duration($online_duration['online']);
-        $this->list_table->set_idle_duration($online_duration['idle']);
-        $this->list_table->set_timezone($this->User_Profile->get_user_timezone());
-        $this->list_table->prepare_items();
+        $this->Login_List_Table->set_online_duration($online_duration['online']);
+        $this->Login_List_Table->set_idle_duration($online_duration['idle']);
+        $this->Login_List_Table->set_timezone($this->User_Profile->get_user_timezone());
+        $this->Login_List_Table->prepare_items();
+    }
+
+    /**
+     * Get the instance of the login list table class.
+     * @return Login_List_Table
+     */
+    private function get_Login_List_Table() {
+        return is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->Admin_Notice);
     }
 
 }

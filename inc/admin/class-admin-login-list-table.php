@@ -95,7 +95,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 
         $delete_nonce = wp_create_nonce($this->delete_action_nonce);
         $actions = array(
-            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), $this->delete_action, absint($item['id']), $delete_nonce),
+            'delete' => sprintf('<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">%s</a>', esc_attr($_REQUEST['page']), $this->delete_action, absint($item['id']), $delete_nonce, esc_html__('Delete', 'faulh')),
         );
         return $title . $this->row_actions($actions);
     }
@@ -117,7 +117,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
             return;
         }
 
-        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $message = esc_html__('Please try again.', 'faulh');
         $status = FALSE;
 
         switch ($this->current_action()) {
@@ -127,7 +127,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
                 if (!empty($_POST['bulk-action-ids'])) {
                     $status = Db_Helper::delete_rows_by_table_and_ids($this->table, $_POST['bulk-action-ids']);
                     if ($status) {
-                        $message = esc_html__('Selected record(s) deleted.', $this->plugin_text_domain);
+                        $message = esc_html__('Selected record(s) deleted.', 'faulh');
                     }
                 }
 
@@ -137,7 +137,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 
                 $status = Db_Helper::truncate_table($this->table);
                 if ($status) {
-                    $message = esc_html__('All record(s) deleted.', $this->plugin_text_domain);
+                    $message = esc_html__('All record(s) deleted.', 'faulh');
                 }
                 break;
         }
@@ -159,12 +159,12 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 
         $id = absint($_GET['record_id']);
         $status = FALSE;
-        $message = esc_html__('Please try again.', $this->plugin_text_domain);
+        $message = esc_html__('Please try again.', 'faulh');
         switch ($this->current_action()) {
             case $this->delete_action:
                 $status = Db_Helper::delete_rows_by_table_and_ids($this->table, array($id));
                 if ($status) {
-                    $message = esc_html__('Record deleted.', $this->plugin_text_domain);
+                    $message = esc_html__('Record deleted.', 'faulh');
                 }
                 break;
         }

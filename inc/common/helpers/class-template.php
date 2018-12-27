@@ -84,13 +84,15 @@ class Template {
         $h = "<h1>" . NS\PLUGIN_NAME . " " . NS\PLUGIN_VERSION . " " . esc_html__('(Basic Version)', 'faulh') . "</h1>";
         $h .= "<div>";
 
-        if (!empty($author_urls['wordpress'])) {
-            $h .= "<a href='" . $author_urls['wordpress']['url'] . "' target='_blank'> " . esc_html__('About Author', 'faulh') . "</a>";
-
-            if (!empty($author_urls['paypal'])) {
-                $h .= " | <a href='" . $author_urls['paypal']['url'] . "' target='_blank'> " . $author_urls['paypal']['label'] . "</a>";
+        if (!empty($author_urls) && is_array($author_urls)) {
+            foreach ($author_urls as $key => $author_url) {
+                if ($key > 0) {
+                    $h .= " | ";
+                }
+                $h .= "<a href='" . $author_url['url'] . "' target='_blank'> " . $author_url['label'] . "</a>";
             }
         }
+
         $h .= "</div>";
 
         if (!empty($page)) {
@@ -163,13 +165,11 @@ class Template {
      */
     static public function plugin_author_links() {
         return array(
-            'stackoverflow' => array('url' => 'http://stackoverflow.com/users/4380588/faiyaz-alam', 'label' => 'Stack Overflow'),
-            'wordpress' => array('url' => 'https://profiles.wordpress.org/faiyazalam', 'label' => 'WordPress'),
-            'github' => array('url' => 'https://github.com/faiyazalam', 'label' => 'GitHub'),
-            'linkedin' => array('url' => 'https://www.linkedin.com/in/er-faiyaz-alam-0704219a', 'label' => 'Linkedin'),
-            'upwork' => array('url' => 'https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/', 'label' => 'Upwork'),
-            'peopleperhour' => array('url' => 'https://www.peopleperhour.com/freelancer/er-faiyaz/php-cakephp-zend-magento-moodle-tot/1016456', 'label' => 'People Per Hour'),
-            'paypal' => array('url' => 'https://www.paypal.me/erfaiyazalam/', 'label' => esc_html__('Donate', 'faulh')),
+            array('key' => 'userloginhistory', 'url' => 'http://userloginhistory.com/', 'label' => 'Website'),
+            array('key' => 'linkedin', 'url' => 'https://www.linkedin.com/in/er-faiyaz-alam-0704219a', 'label' => 'Linkedin'),
+            array('key' => 'upwork', 'url' => 'https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/', 'label' => 'Upwork'),
+            array('key' => 'peopleperhour', 'url' => 'https://www.peopleperhour.com/freelancer/er-faiyaz/php-cakephp-zend-magento-moodle-tot/1016456', 'label' => 'People Per Hour'),
+            array('key' => 'paypal', 'url' => 'https://www.paypal.me/erfaiyazalam/', 'label' => esc_html__('Donate', 'faulh')),
         );
     }
 

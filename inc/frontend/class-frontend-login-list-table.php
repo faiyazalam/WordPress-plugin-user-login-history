@@ -47,7 +47,6 @@ class Frontend_Login_List_Table {
      */
     private $plugin_name;
     private $version;
-    private $plugin_text_domain;
 
     /**
      * Number of records to be fetched from table.
@@ -133,10 +132,9 @@ class Frontend_Login_List_Table {
      *
      * @param      string    $plugin_name       The name of this plugin.
      */
-    public function __construct($plugin_name, $version, $plugin_text_domain) {
+    public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->plugin_text_domain = $plugin_text_domain;
         $this->page_number = !empty($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) ? absint($_REQUEST[self::DEFALUT_QUERY_ARG_PAGE_NUMBER]) : self::DEFALUT_PAGE_NUMBER;
         $this->set_table_name();
     }
@@ -340,21 +338,21 @@ class Frontend_Login_List_Table {
      */
     public function get_columns() {
         $columns = array(
-            'user_id' => esc_html__('User ID', $this->plugin_text_domain),
-            'username' => esc_html__('Username', $this->plugin_text_domain),
-            'role' => esc_html__('Role', $this->plugin_text_domain),
-            'old_role' => esc_html__('Old Role', $this->plugin_text_domain),
-            'browser' => esc_html__('Browser', $this->plugin_text_domain),
-            'operating_system' => esc_html__('Operating System', $this->plugin_text_domain),
-            'ip_address' => esc_html__('IP Address', $this->plugin_text_domain),
-            'timezone' => esc_html__('Timezone', $this->plugin_text_domain),
-            'country_name' => esc_html__('Country', $this->plugin_text_domain),
-            'user_agent' => esc_html__('User Agent', $this->plugin_text_domain),
-            'duration' => esc_html__('Duration', $this->plugin_text_domain),
-            'time_last_seen' => esc_html__('Last Seen', $this->plugin_text_domain),
-            'time_login' => esc_html__('Login', $this->plugin_text_domain),
-            'time_logout' => esc_html__('Logout', $this->plugin_text_domain),
-            'login_status' => esc_html__('Login Status', $this->plugin_text_domain),
+            'user_id' => esc_html__('User ID', 'faulh'),
+            'username' => esc_html__('Username', 'faulh'),
+            'role' => esc_html__('Role', 'faulh'),
+            'old_role' => esc_html__('Old Role', 'faulh'),
+            'browser' => esc_html__('Browser', 'faulh'),
+            'operating_system' => esc_html__('Operating System', 'faulh'),
+            'ip_address' => esc_html__('IP Address', 'faulh'),
+            'timezone' => esc_html__('Timezone', 'faulh'),
+            'country_name' => esc_html__('Country', 'faulh'),
+            'user_agent' => esc_html__('User Agent', 'faulh'),
+            'duration' => esc_html__('Duration', 'faulh'),
+            'time_last_seen' => esc_html__('Last Seen', 'faulh'),
+            'time_login' => esc_html__('Login', 'faulh'),
+            'time_logout' => esc_html__('Logout', 'faulh'),
+            'login_status' => esc_html__('Login Status', 'faulh'),
         );
         $columns = apply_filters('faulh_public_get_columns', $columns);
         return $columns;
@@ -532,7 +530,7 @@ class Frontend_Login_List_Table {
      * @access public
      */
     public function no_items() {
-        esc_html_e('No items found.');
+        esc_html_e('No items found.', 'faulh');
     }
 
     /**

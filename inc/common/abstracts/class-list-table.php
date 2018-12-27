@@ -44,15 +44,6 @@ abstract class List_Table extends \WP_List_Table {
      * @var      string    $version    The current version of this plugin.
      */
     protected $version;
-
-    /**
-     * The text domain of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $plugin_text_domain    The text domain of this plugin.
-     */
-    protected $plugin_text_domain;
     protected $timezone;
     protected $unknown_symbol = '<span aria-hidden="true">—</span>';
     protected $table;
@@ -63,12 +54,10 @@ abstract class List_Table extends \WP_List_Table {
     protected $csv_field_name = 'csv';
     protected $csv_nonce_name = 'csv_nonce';
 
-    public function __construct($plugin_name, $version, $plugin_text_domain, $args = array()) {
+    public function __construct($plugin_name, $version, $args = array()) {
         parent::__construct($args);
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->plugin_text_domain = $plugin_text_domain;
-
         $this->init();
     }
 
@@ -150,7 +139,7 @@ abstract class List_Table extends \WP_List_Table {
      */
     public function timezone_edit_link() {
         $timezone = empty($this->get_timezone()) ? self::DL : $this->get_timezone();
-        return esc_html__('This table is showing time in the timezone', $this->plugin_text_domain) . " - <strong>" . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a>";
+        return esc_html__('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a>";
     }
 
     public function get_all_rows() {

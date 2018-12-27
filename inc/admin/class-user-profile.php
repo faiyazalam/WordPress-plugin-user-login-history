@@ -15,7 +15,7 @@ class User_Profile extends User_Profile_Abstract {
      */
     public function show_extra_profile_fields($user) {
         ?>
-        <h3 id="<?php echo $this->plugin_name ?>"><?php esc_html_e('User Login History', $this->plugin_text_domain) ?></h3>
+        <h3 id="<?php echo $this->plugin_name ?>"><?php esc_html_e('User Login History', 'faulh') ?></h3>
 
         <table class="faulh-form-table">
             <tr class="<?php echo "user-" . $this->get_usermeta_key_timezone() . "-wrap" ?>">
@@ -27,7 +27,7 @@ class User_Profile extends User_Profile_Abstract {
                         Template_Helper::dropdown_timezones($this->get_user_timezone());
                         ?>
                     </select>
-                    <div><?php esc_html_e('This is used to convert date-time (e.g. login time, last seen time etc.) on the listing table.', $this->plugin_text_domain) ?></div>
+                    <div><?php esc_html_e('This is used to convert date-time (e.g. login time, last seen time etc.) on the listing table.', 'faulh') ?></div>
                 </td>
             </tr>
 
