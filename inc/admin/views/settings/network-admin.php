@@ -2,28 +2,32 @@
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 ?>
-<div class="wrap faulhSettingPage">
+<div class="wrap">
     <?php echo Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?>
     <form method="post">
         <input type="hidden" name="<?php echo $this->get_form_name(); ?>" >
-        <fieldset>
-            <div class="mt20">
-                <label class="infoBlockUser"> <strong><?php esc_html_e('Block User', 'faulh') ?></strong></label>
-                <label for="block_user">
-                    <input style="margin-left: 134px" id="block_user" type="checkbox" <?php checked($this->get_settings('block_user'), 1); ?>  name="block_user" value="<?php echo esc_attr($this->get_settings('block_user')); ?>" size="50" />
-                    <?php esc_html_e('User will not be able to login on another blog on the network.', 'faulh'); ?>
-                </label>   
-            </div>
-            <div class="mt20">&nbsp;</div>
-            <div class="mt20">
-                <label for="block_user_message" style="float: left">
-                    <strong><?php esc_html_e('Message for Blocked User', 'faulh'); ?></strong>
-                </label>
-                <textarea  style="float: right; margin-right: 693px" id="block_user_message" name="block_user_message"><?php echo esc_attr($this->get_settings('block_user_message')); ?></textarea>
-            </div>
-        </fieldset>
-
+        <table class="form-table">
+            <tbody>
+                <tr>
+                    <th scope="row"><?php esc_html_e('Block User', 'faulh') ?></th>
+                    <td>
+                        <label>
+                            <input name="block_user" type="checkbox" id="block_user" value="<?php echo esc_attr($this->get_settings('block_user')); ?>" <?php checked($this->get_settings('block_user'), 1); ?>>
+                            <?php esc_html_e('User will not be able to login on another blog on the network.', 'faulh'); ?>
+                        </label>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><?php esc_html_e('Message for Blocked User', 'faulh'); ?></th>
+                    <td>
+                        <textarea name="block_user_message" id="block_user_message" cols="45" rows="5"><?php echo esc_attr($this->get_settings('block_user_message')); ?></textarea>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
         <?php wp_nonce_field($this->get_form_nonce_name(), $this->get_form_nonce_name()); ?>
-        <?php submit_button(); ?>
+        <p class="submit">
+            <?php submit_button(); ?>
+        </p>	
     </form>
 </div>

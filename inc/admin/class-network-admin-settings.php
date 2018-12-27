@@ -89,7 +89,13 @@ class Network_Admin_Settings {
             $settings['block_user_message'] = sanitize_textarea_field($_POST['block_user_message']);
         }
 
-        return !empty($settings) ? update_site_option($this->settings_name, $settings) : delete_site_option($this->settings_name);
+        if (!empty($settings)) {
+            update_site_option($this->settings_name, $settings);
+        } else {
+            delete_site_option($this->settings_name);
+        }
+
+        return TRUE;
     }
 
     public function get_form_name() {
