@@ -78,8 +78,7 @@ user_agent text NOT NULL,
 geo_response text NOT NULL, 
 login_status varchar(50) NOT NULL, 
 is_super_admin INT(1) NOT NULL, 
-PRIMARY KEY  (id),
-INDEX faulh_user_traker_index (session_token,user_id)
+PRIMARY KEY  (id)
 ) $charset_collate;";
 
         Db_Helper::dbDelta($sql);
