@@ -5,6 +5,7 @@ namespace User_Login_History\Inc\Admin;
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
+use User_Login_History\Inc\Common\Helpers\Tool as Tool_Helper;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
@@ -134,10 +135,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
      */
     public function get_columns() {
         $columns = array_merge(parent::get_columns(), array(
-            'blog_id' => esc_html__('Blog ID', 'faulh'),
             'is_super_admin' => esc_html__('Super Admin', 'faulh'),
         ));
-
+        $columns = Tool_Helper::array_insert_after($columns, 'user_id', array('blog_id' => esc_html__('Blog ID', 'faulh')));
         return apply_filters($this->plugin_name . "_network_admin_login_list_get_columns", $columns);
     }
 
