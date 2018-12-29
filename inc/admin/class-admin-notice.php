@@ -46,7 +46,7 @@ class Admin_Notice {
      * @param string $type Any message type string. This will be used as a class attribute. Default is success.
      */
     public function add_notice($message, $type = 'success') {
-        $notices = get_transient($this->transient_name_name);
+        $notices = get_transient($this->transient_name);
         if ($notices === false) {
             $new_notices[] = array($message, $type);
             set_transient($this->transient_name, $new_notices, self::TRANSIENT_INTERVAL);
