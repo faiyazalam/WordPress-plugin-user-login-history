@@ -14,6 +14,7 @@ class User_Profile extends User_Profile_Abstract {
      * Hooked with show_user_profile action action
      */
     public function show_extra_profile_fields($user) {
+        $this->set_user_id($user->ID);
         ?>
         <h3 id="<?php echo $this->plugin_name ?>"><?php esc_html_e('User Login History', 'faulh') ?></h3>
 
@@ -36,16 +37,6 @@ class User_Profile extends User_Profile_Abstract {
     }
 
     /**
-     * Hooked with user_profile_update_errors action
-     */
-    public function user_profile_update_errors($errors, $update, $user) {
-        global $pagenow;
-        if (in_array($pagenow, array('user-edit.php', 'profile.php')) && empty($_POST[$this->get_usermeta_key_timezone()])) {
-            $errors->add($this->plugin_name . "_user_timezone_error", sprintf(esc_html__('%1$sERROR%2$s: Please select a timezone.', 'faulh'), "<strong>", "</strong>"));
-        }
-    }
-
-    /**
      * Hooked with edit_user_profile_update action
      */
     public function update_profile_fields($user_id) {
@@ -53,6 +44,8 @@ class User_Profile extends User_Profile_Abstract {
         if (!current_user_can('edit_user', $user_id)) {
             return false;
         }
+        $this->set_user_id($user_id);
+
         $this->update_usermeta_key_timezone();
         $this->delete_old_usermeta_key_timezone();
     }

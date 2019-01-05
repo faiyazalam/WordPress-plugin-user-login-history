@@ -147,7 +147,6 @@ class Init {
         $this->loader->add_action('init', $User_Profile, 'init');
         $this->loader->add_action('show_user_profile', $User_Profile, 'show_extra_profile_fields');
         $this->loader->add_action('edit_user_profile', $User_Profile, 'show_extra_profile_fields');
-        $this->loader->add_action('user_profile_update_errors', $User_Profile, 'user_profile_update_errors', 10, 3);
         $this->loader->add_action('personal_options_update', $User_Profile, 'update_profile_fields');
         $this->loader->add_action('edit_user_profile_update', $User_Profile, 'update_profile_fields');
 

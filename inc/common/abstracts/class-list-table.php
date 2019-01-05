@@ -44,14 +44,58 @@ abstract class List_Table extends \WP_List_Table {
      * @var      string    $version    The current version of this plugin.
      */
     protected $version;
+
+    /**
+     * Holds timezone.
+     * @var string 
+     */
     protected $timezone;
+
+    /**
+     * Holds symbol to display for unknown value.
+     * @var string|HTML 
+     */
     protected $unknown_symbol = '<span aria-hidden="true">—</span>';
     protected $table;
+
+    /**
+     * Some properties to be used in HTML form and its processing actions
+     */
+
+    /**
+     * Form name for bulk action
+     * @var string 
+     */
     protected $bulk_action_form;
+
+    /**
+     * Delete action name
+     * @var string 
+     */
     protected $delete_action;
+
+    /**
+     * Delete action nonce
+     * @var string 
+     */
     protected $delete_action_nonce;
+
+    /**
+     * Bulk action nonce
+     * @var string 
+     */
     protected $bulk_action_nonce;
+
+    /**
+     * CSV field name
+     * @var string 
+     */
     protected $csv_field_name = 'csv';
+
+    /**
+     * CSV field nonce
+     * @var string 
+     */
     protected $csv_nonce_name = 'csv_nonce';
 
     public function __construct($plugin_name, $version, $args = array()) {
@@ -65,22 +109,6 @@ abstract class List_Table extends \WP_List_Table {
         $this->set_bulk_action_form($this->_args['singular'] . "_form");
         $this->set_delete_action_nonce($this->_args['singular'] . "_delete_none");
         $this->set_bulk_action_nonce('bulk-' . $this->_args['plural']);
-    }
-
-    protected function set_csv_field_name($name) {
-        $this->csv_field_name = $name;
-    }
-
-    public function get_csv_field_name() {
-        return $this->csv_field_name;
-    }
-
-    protected function set_csv_nonce_name($name) {
-        $this->csv_nonce_name = $name;
-    }
-
-    public function get_csv_nonce_name() {
-        return $this->csv_nonce_name;
     }
 
     public function set_unknown_symbol($unknown_symbol) {
@@ -98,7 +126,7 @@ abstract class List_Table extends \WP_List_Table {
      * @param string $timezone
      */
     public function set_timezone($timezone = '') {
-        $this->timezone = $timezone;
+        $this->timezone = !empty($timezone) ? $timezone : self::DEFAULT_TIMEZONE;
     }
 
     /**
@@ -108,7 +136,7 @@ abstract class List_Table extends \WP_List_Table {
      * @return string
      */
     public function get_timezone() {
-        return !empty($this->timezone) ? $this->timezone : self::DEFAULT_TIMEZONE;
+        return $this->timezone;
     }
 
     /**
@@ -138,12 +166,30 @@ abstract class List_Table extends \WP_List_Table {
      * @return string
      */
     public function timezone_edit_link() {
-        $timezone = empty($this->get_timezone()) ? self::DL : $this->get_timezone();
         return esc_html__('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a>";
     }
 
     public function get_all_rows() {
         return $this->get_rows(0);
+    }
+
+    /**
+     * Some functions to be used in HTML form and its processing actions
+     */
+    protected function set_csv_field_name($name) {
+        $this->csv_field_name = $name;
+    }
+
+    public function get_csv_field_name() {
+        return $this->csv_field_name;
+    }
+
+    protected function set_csv_nonce_name($name) {
+        $this->csv_nonce_name = $name;
+    }
+
+    public function get_csv_nonce_name() {
+        return $this->csv_nonce_name;
     }
 
     public function get_bulk_action_form() {

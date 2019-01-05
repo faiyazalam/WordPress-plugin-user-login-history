@@ -107,8 +107,7 @@ abstract class User_Profile {
 
     /**
      * Delete old user meta data for old version.
-     * @param int $user_id
-     * @access private
+     * @access protected
      */
     protected function delete_old_usermeta_key_timezone() {
         if (empty($this->get_user_id())) {
@@ -120,9 +119,16 @@ abstract class User_Profile {
         }
     }
 
+    /**
+     * Update user meta timezone.
+     * @access protected
+     */
     protected function update_usermeta_key_timezone() {
+
         if (!empty($_POST[$this->get_usermeta_key_timezone()])) {
             update_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone(), $_POST[$this->get_usermeta_key_timezone()]);
+        } else {
+            delete_user_meta($this->get_user_id(), $this->get_usermeta_key_timezone());
         }
     }
 

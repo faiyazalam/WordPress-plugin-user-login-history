@@ -19,7 +19,6 @@ class User_Profile extends User_Profile_Abstract {
             return FALSE;
         }
 
-
         $this->update_usermeta_key_timezone();
         $this->delete_old_usermeta_key_timezone($this->get_user_id());
 
@@ -27,10 +26,15 @@ class User_Profile extends User_Profile_Abstract {
         exit;
     }
 
+    /**
+     * Validate the request for timezone update
+     * 
+     * @access private
+     */
     private function is_valid_request_for_update() {
         $key = $this->plugin_name . "_update_user_timezone";
         $nonce = "_wpnonce";
-        return isset($_POST[$key]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $key) && $this->get_user_id() && current_user_can('edit_user', $this->get_user_id()) && is_user_logged_in();
+        return isset($_POST[$key]) && !empty($_POST[$nonce]) && wp_verify_nonce($_POST[$nonce], $key) && $this->get_user_id() && current_user_can('edit_user', $this->get_user_id());
     }
 
 }
