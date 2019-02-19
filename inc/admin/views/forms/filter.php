@@ -8,8 +8,8 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
         <input type="hidden" name="<?php echo $this->Login_List_Table->get_csv_field_name() ?>" id="csv" value="">
         <input type="hidden" name="_wpnonce" id="csv_nonce" value="<?php echo wp_create_nonce($this->Login_List_Table->get_csv_nonce_name()) ?>">
         <div class="basic_search">
-            <input readonly autocomplete="off" placeholder="<?php esc_html_e("From", 'faulh') ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
-            <input readonly autocomplete="off" placeholder="<?php esc_html_e("To", 'faulh') ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" >
+            <input class="date-input" readonly autocomplete="off" placeholder="<?php esc_html_e("From", 'faulh') ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr($_GET['date_from']) : "" ?>" >
+            <input class="date-input" readonly autocomplete="off" placeholder="<?php esc_html_e("To", 'faulh') ?>" name="date_to" id="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr($_GET['date_to']) : "" ?>" >
             <select  name="date_type" >
                 <?php Template_Helper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : NULL); ?>
             </select>

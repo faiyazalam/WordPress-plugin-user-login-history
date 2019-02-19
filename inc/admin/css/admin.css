@@ -4,7 +4,7 @@
   padding: 20px;
 }
 .faulh_container input[type="text"],
-.faulh_container .hasDatepicker {
+.date-input {
   min-height: 30px;
   background-color: #fff;
   border: solid 1px #e0e0e0;
@@ -16,13 +16,13 @@
   float: right;
   width: 18.5%;
 }
-.faulh_container .basic_search input.hasDatepicker {
-  width: 40%;
+.date-input {
   width: 40%;
   background-image: url(images/cal.png);
   background-position: 98% center;
   background-repeat: no-repeat;
   background-size: 16px;
+  background-color: white !important;
 }
 #faulh_advanced_search {
   width: 100%;
