@@ -143,6 +143,16 @@
   border-radius: 50%;
 }
 
+.is_status_idle:before {
+  background-color: rgb(204, 204, 204);
+  content: "";
+  margin-right: 3px;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
 
 /*MY CUSTOM CSS - START*/
 .faulh_admin_table table {

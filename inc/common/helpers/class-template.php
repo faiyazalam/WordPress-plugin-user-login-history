@@ -167,9 +167,7 @@ class Template {
         return array(
             array('key' => 'userloginhistory', 'url' => 'http://userloginhistory.com/', 'label' => 'Official Website'),
             array('key' => 'linkedin', 'url' => 'https://www.linkedin.com/in/er-faiyaz-alam-0704219a', 'label' => 'Linkedin'),
-            array('key' => 'upwork', 'url' => 'https://www.upwork.com/o/profiles/users/_~01737016f9bf37a62b/', 'label' => 'Upwork'),
             array('key' => 'peopleperhour', 'url' => 'https://www.peopleperhour.com/freelancer/er-faiyaz/php-cakephp-zend-magento-moodle-tot/1016456', 'label' => 'People Per Hour'),
-            array('key' => 'fiverr', 'url' => 'https://www.fiverr.com/erfaiyazalam', 'label' => 'Fiverr'),
             array('key' => 'paypal', 'url' => 'https://www.paypal.me/erfaiyazalam/', 'label' => esc_html__('Donate', 'faulh')),
         );
     }
