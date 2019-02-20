@@ -38,7 +38,7 @@ define(__NAMESPACE__ . '\NS', __NAMESPACE__ . '\\');
 
 define(NS . 'USER_LOGIN_HISTORY', 'faulh');
 
-define(NS . 'PLUGIN_VERSION', '1.8.0');
+define(NS . 'PLUGIN_VERSION', '2.0.0');
 
 define(NS . 'USER_LOGIN_HISTORY_DIR', plugin_dir_path(__FILE__));
 
