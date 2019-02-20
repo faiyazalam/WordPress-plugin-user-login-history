@@ -6,11 +6,11 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
 Requires at least: 4.9.0
 Requires PHP: 5.5
-Tested up to: 5.0
-Stable tag: 1.7.0
+Tested up to: 5.0.3
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Version: 1.8.0
+Version: 2.0.0
 
 Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
 
@@ -68,6 +68,85 @@ Do you want to translate this plugin to another language?
 I recommend using [POEdit](http://poedit.net/) or if you prefer to do it straight from the WordPress admin interface use [Loco Translate](https://wordpress.org/plugins/loco-translate/).
 When you’re done, send us the file(s) and I’ll add it to the official plugin. You can also translate the plugin [Online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
 
+= How to use the plugin? =
+
+1. To see all the tracked records in admin, click on the plugin menu shown in the left sidebar.
+
+1. To see all the tracked records of current logged in users in frontend, use the following shortcode:
+
+**Basic Usage of Shortcode**:
+
+In your template file:
+
+<pre><code>&lt;?php echo do_shortcode('[user_login_history]'); ?&gt;</code></pre>
+
+In your content:
+
+<pre><code>[user_login_history]</code></pre>
+
+**Advanced Usage of Shortcode**:
+
+In your template file:
+
+<pre><code>&lt;?php echo do_shortcode("[user_login_history limit='20' reset_link='custom-uri' columns='ip_address,time_login' date_format='Y-m-d' time_format='H:i:s']"); ?&gt;</code></pre>
+
+In your content:
+
+<pre><code>[user_login_history limit='20' reset_link='custom-uri' columns='ip_address,time_login' date_format='Y-m-d' time_format='H:i:s']</code></pre>
+
+
+
+= Shortcode Parameters =
+Here is the list of all the parameters that you can use in the shortcode. All the parameters are optional.
+
+1. title - Title of the listing table. Default is: empty string
+
+1. limit - Number of records per page. Default is: 20
+
+1. reset_link - Custom URI of the listing page. For the input "my-login-history", it will render a reset link with the following URL:
+www.example.com/my-login-history
+Default is the full permalink of the current post or page.
+
+1. date_format - A valid date format. Default is:
+<pre><code>Y-m-d</code></pre>
+
+1. time_format - A valid time format. Default is:
+<pre><code>H:i:s</code></pre>
+
+1. show_timezone_selector - Whether you want to show timezone selector or not. Any value other than "true" will be treated as "false". Default is:
+true
+
+1. columns - List of column keys used to render columns on the listing table. Default keys are:
+<pre><code>operating_system,browser,time_login,time_logout</code></pre>
+
+1. Available Column Keys:
+<pre><code>user_id,username,role,old_role,ip_address,country_name,browser,operating_system,timezone,user_agent,duration,time_last_seen,time_login,time_logout,login_status</code></pre>
+
+
+= Deprecated Shortcode (Since 1.7.0) =
+<pre><code>[user-login-history]</code></pre>
+
+
+= Geo Tracking =
+
+The plugin uses [a free third party service](https://tools.keycdn.com/geo) to detect country and timezone based on IP address. Many projects are using this free service due to which sometimes the server of the service provider becomes slow. This may affect the login functionality of your website. Hence it is recommended that you do not enable this functionallity unless you have paid service or reliable service. If you have a paid service, you can contact us to integrate it.
+
+
+= Login Statuses =
+
+1. Logged in - If user gets logged in successfully.
+
+1. Logged out - If user clicks on logout button and gets logged out successfully.
+
+1. Failed - If user enters invalid credentials.
+
+1. Blocked - This is used for multisite network. By default, a user can login to any blog and then wordpress redirects to the blog on which the user is associated. The plugin saves login info at the blog on which the user logged in but cannot not save the information of the blog on which wordpress redirects the user. You can prevent this behavior by using the plugin setting.
+
+1. Unknown - Since we have added a new column "Login Status" in the version 1.7.0, its value will be empty in the database table after upgrading to 1.7.0. To filter such records, you can use this status.
+
+**Note** - In case, a user logs in with "Remember Me" and then closes his browser without doing logout, it will show the login status as "Logged in".
+
+
 = Bug Fixes =
 
 If you find any bug, please create a topic with a step by step description to reproduce the bug.
@@ -122,7 +201,15 @@ Yes.
 
 == Upgrade Notice ==
 
+= 2.0.0 =
+
+1. Improved UI/UX of the listing table
+1. Improved code structure
+1. Fixed some minor bugs
+1. Removed about us and help pages
+
 = 1.0 <= 1.7.0 =
+
 After upgrading, you have to do the following changes:
 1. Update your timezone from your profile edit page.
 1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]
