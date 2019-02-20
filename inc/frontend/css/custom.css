@@ -8,3 +8,12 @@ and open the template in the editor.
     Author     : faiyaz
 */
 
+
+.date-inputss {
+  width: 40%;
+  background-image: url(images/cal.png) !important;
+  background-position: 98% center !important;
+  background-repeat: no-repeat !important;
+  background-size: 32px !important;
+  background-color: white !important;
+}
