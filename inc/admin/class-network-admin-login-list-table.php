@@ -103,7 +103,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
                     . " FaUserLogin.user_agent,"
                     . " FaUserLogin.login_status,"
                     . " FaUserLogin.is_super_admin,"
-                    . " UserMeta.meta_value, "
+                    . " UserMeta.meta_value as role, "
                     . " TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,"
                     . " $blog_id as blog_id"
                     . " FROM $table  AS FaUserLogin"

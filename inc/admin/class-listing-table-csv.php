@@ -91,7 +91,7 @@ final class Listing_Table_Csv {
                     continue;
                 }
 
-                $record[$fieldLabel] = $this->Listing_Table->column_default($row, $fieldName);
+                $record[$fieldName] = $this->Listing_Table->column_default($row, $fieldName);
             }
 
             if (0 == $i) {
