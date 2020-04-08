@@ -279,16 +279,24 @@ class Frontend_Login_List_Table {
                 . " WHERE 1 ";
 
         $where_query = $this->prepare_where_query();
+
         if ($where_query) {
             $sql .= $where_query;
         }
 
         if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $direction = !empty($_REQUEST['order']) ? $_REQUEST['order'] : ' ASC';
+            $sanitize_sql_orderby = sanitize_sql_orderby($_REQUEST['orderby'] . " " . $direction);
+            if ($sanitize_sql_orderby) {
+                $sql .= " ORDER BY " . $sanitize_sql_orderby;
+            }
         } else {
             $sql .= ' ORDER BY FaUserLogin.time_login DESC';
         }
+
+
+
+
 
         if ($this->limit > 0) {
             $sql .= " LIMIT $this->limit";

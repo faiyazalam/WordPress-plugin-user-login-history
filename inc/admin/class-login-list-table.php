@@ -9,6 +9,7 @@ use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+use User_Login_History\Inc\Common\Helpers;
 
 /**
  * Base class to handle admin and network admin login listing functionality.
@@ -325,10 +326,11 @@ abstract class Login_List_Table extends List_Table_Abstract {
                     $user_data = get_userdata($item['user_id']);
                 }
 
-                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : esc_html(implode(',', $user_data->roles));
+                return $this->is_empty($user_data->roles) ? $this->get_unknown_symbol() : Helpers\Tool::getRoleNamesByKeys($user_data->roles);
+
 
             case 'old_role':
-                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : esc_html($item[$column_name]);
+		return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : Helpers\Tool::getRoleNamesByKeys($item[$column_name]);
 
             case 'browser':
 

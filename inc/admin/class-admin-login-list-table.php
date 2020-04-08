@@ -41,12 +41,23 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
         if ($where_query) {
             $sql .= $where_query;
         }
+
         if (!empty($_REQUEST['orderby'])) {
-            $sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $direction = !empty($_REQUEST['order']) ? $_REQUEST['order'] : ' ASC';
+            $sanitize_sql_orderby = sanitize_sql_orderby($_REQUEST['orderby'] . " " . $direction);
+            if ($sanitize_sql_orderby) {
+                $sql .= " ORDER BY " . $sanitize_sql_orderby;
+            }
         } else {
             $sql .= ' ORDER BY id DESC';
         }
+
+
+
+
+
+
+
 
         if ($per_page > 0) {
             $sql .= " LIMIT $per_page";

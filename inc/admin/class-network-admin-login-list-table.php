@@ -178,13 +178,18 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
      * @return mixed
      */
     public function get_rows($per_page = 20, $page_number = 1) {
-
         if (!empty($_REQUEST['orderby'])) {
-            $this->rows_sql .= ' ORDER BY ' . esc_sql($_REQUEST['orderby']);
-            $this->rows_sql .= !empty($_REQUEST['order']) ? ' ' . esc_sql($_REQUEST['order']) : ' ASC';
+            $direction = !empty($_REQUEST['order']) ? $_REQUEST['order'] : ' ASC';
+            $sanitize_sql_orderby = sanitize_sql_orderby($_REQUEST['orderby'] . " " . $direction);
+            if ($sanitize_sql_orderby) {
+                $this->rows_sql .= " ORDER BY " . $sanitize_sql_orderby;
+            }
         } else {
             $this->rows_sql .= ' ORDER BY time_login DESC';
         }
+
+
+
 
         if ($per_page > 0) {
             $this->rows_sql .= " LIMIT $per_page";
