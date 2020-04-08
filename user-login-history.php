@@ -30,6 +30,12 @@ namespace User_Login_History;
 if (!defined('WPINC')) {
     die;
 }
+
+if (defined('User_Login_History_Pro\NS')) {
+    return;
+}
+
+
 /**
  * Plugin Constants
  */
@@ -93,12 +99,12 @@ class User_Login_History {
      */
     public static function init() {
 
-        if (null === self::$init) {
-            self::$init = new Inc\Core\Init();
-            self::$init->run();
-        }
+	if (null === self::$init) {
+	    self::$init = new Inc\Core\Init();
+	    self::$init->run();
+	}
 
-        return self::$init;
+	return self::$init;
     }
 
 }
