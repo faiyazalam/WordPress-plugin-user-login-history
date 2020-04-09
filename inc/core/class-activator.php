@@ -32,7 +32,6 @@ class Activator {
             wp_die('This plugin requires a minmum PHP Version of ' . $min_php);
         }
 
-        global $wpdb;
         if (is_multisite() && $network_wide) {
 
             // Get all blogs from current network the network and activate plugin on each one
@@ -69,17 +68,32 @@ time_last_seen datetime NOT NULL,
 ip_address varchar(200) NOT NULL,
 browser varchar(200) NOT NULL,
 browser_version varchar(100) NOT NULL,
-operating_system varchar(200) NOT NULL,
+operating_system varchar(100) NOT NULL,
 country_name varchar(200) NOT NULL,
 country_code varchar(200) NOT NULL,
 timezone varchar(200) NOT NULL,
-old_role varchar(200) NOT NULL, 
+old_role varchar(200) NOT NULL,
 user_agent text NOT NULL, 
 geo_response text NOT NULL, 
-login_status varchar(50) NOT NULL, 
-is_super_admin INT(1) NOT NULL, 
-PRIMARY KEY  (id)
-) $charset_collate;";
+login_status varchar(50) NOT NULL,
+is_super_admin INT(1) NOT NULL,
+PRIMARY KEY  (id),
+INDEX idx_session_token_user_id (session_token,user_id),
+INDEX idx_session_token (session_token),
+INDEX idx_user_id (user_id),
+INDEX idx_username (username),
+INDEX idx_time_login (time_login),
+INDEX idx_time_logout (time_logout),
+INDEX idx_time_last_seen (time_last_seen),
+INDEX idx_ip_address (ip_address),
+INDEX idx_browser (browser),
+INDEX idx_operating_system (operating_system),
+INDEX idx_country_name (country_name),
+INDEX idx_timezone (timezone),
+INDEX idx_old_role (old_role),
+INDEX idx_login_status (login_status),
+INDEX idx_is_super_admin (is_super_admin)
+) $charset_collate ENGINE=MyISAM;";
 
         Db_Helper::dbDelta($sql);
     }

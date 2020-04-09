@@ -10,7 +10,6 @@ Tested up to: 5.0.3
 Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Version: 2.0.0
 
 Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
 

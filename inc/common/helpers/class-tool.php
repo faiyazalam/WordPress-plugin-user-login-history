@@ -52,7 +52,7 @@ class Tool {
             $names[] = translate_user_role($editable_role['name']);
         }
 
-        return implode("<br>", $names);
+        return implode(", ", $names);
     }
 
 }

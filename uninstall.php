@@ -28,6 +28,9 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
     exit;
 }
 
+if (defined('User_Login_History_Pro\NS')) {
+    return;
+}
 
 if (!function_exists('faulh_delete_plugin_options')) {
 
