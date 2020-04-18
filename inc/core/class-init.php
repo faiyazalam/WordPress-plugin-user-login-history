@@ -166,8 +166,7 @@ class Init {
         $List_Table = new Frontend_Login_List_Table($this->get_plugin_name(), $this->get_version());
         $User_Profile = new FrontendUserProfile($this->get_plugin_name(), $this->get_version());
         $plugin_public = new Frontend($this->get_plugin_name(), $this->get_version(), $List_Table, $User_Profile);
-        $this->loader->add_shortcode('user-login-history', $plugin_public, 'shortcode_user_table'); //old-shortcode
-        $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table'); //new shortcode
+        $this->loader->add_shortcode('user_login_history', $plugin_public, 'shortcode_user_table');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
 

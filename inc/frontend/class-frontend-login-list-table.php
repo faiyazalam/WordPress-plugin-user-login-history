@@ -5,6 +5,7 @@ namespace User_Login_History\Inc\Frontend;
 use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Date_Time as DateTimeHelper;
 use User_Login_History\Inc\Common\Helpers\Db AS DbHelper;
+use User_Login_History\Inc\Common\Helpers;
 use User_Login_History\Inc\Common\Helpers\Error_Log as ErrorLogHelper;
 
 /**
@@ -689,7 +690,7 @@ class Frontend_Login_List_Table {
                 return human_time_diff(strtotime($item['time_login']), strtotime($item['time_last_seen']));
 
             case 'login_status':
-                $login_statuses = Faulh_Template_Helper::login_statuses();
+                $login_statuses = Helpers\Template::login_statuses();
                 return !empty($login_statuses[$item[$column_name]]) ? $login_statuses[$item[$column_name]] : $unknown;
 
             case 'user_agent':
