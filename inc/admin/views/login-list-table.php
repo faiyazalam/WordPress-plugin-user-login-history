@@ -9,7 +9,16 @@
     <div class="faulh_admin_table">
         <form method="post">
             <input type="hidden" name="<?php echo $this->Login_List_Table->get_bulk_action_form() ?>" value="">
+            <div class="wrapper1">
+                <div class="content1"></div>
+            </div>
+
+            <div class="wrapper2">
+                <div class="content1" style="width: 1145px;">
             <?php $this->Login_List_Table->display(); ?>
+             </div>
+            </div>   
+ 
         </form>
     </div>
 </div>

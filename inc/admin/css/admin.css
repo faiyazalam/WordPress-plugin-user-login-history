@@ -190,4 +190,14 @@
     padding: 50px 0;
   }
 }
+
+/********* Css for scroller Top and Bottom ********/
+
+.wrapper1, .wrapper2{width: 100%; border: none 0px RED;
+overflow-x: scroll; overflow-y:hidden;}
+.wrapper1{height: 20px; margin-top:20px;}
+.wrapper2{min-height:210px; height: auto; overflow-y: none !important;}
+.content1 {width:2188px; height: auto; min-height: 100px; }
+.content2 {width:2188px; height: 200px; }
+
 /*MY CUSTOM CSS - END*/

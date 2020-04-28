@@ -58,4 +58,21 @@
     }
     return false;
   });
+  
+  /* Custom Scroll-bar at top and bottom */
+   $(function(){
+    $(".content1, .content2").width($(".faulh_user_logins").width());
+    $(".wrapper1").scroll(function(){
+        $(".wrapper2")
+            .scrollLeft($(".wrapper1").scrollLeft());
+    });
+    $(".wrapper2").scroll(function(){
+        $(".wrapper1")
+            .scrollLeft($(".wrapper2").scrollLeft());
+    });
+});
+
+/****** Scroller Top and Bottom start *******/
+  
+  
 })(jQuery);
