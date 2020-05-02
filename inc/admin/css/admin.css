@@ -201,3 +201,7 @@ overflow-x: scroll; overflow-y:hidden;}
 .content2 {width:2188px; height: 200px; }
 
 /*MY CUSTOM CSS - END*/
+th.sortable a, th.sorted a{
+  display: flex;
+  padding: 15px;     
+}
