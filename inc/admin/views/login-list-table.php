@@ -15,10 +15,10 @@
 
             <div class="wrapper2">
                 <div class="content1" style="width: 1145px;">
-            <?php $this->Login_List_Table->display(); ?>
-             </div>
+                    <?php $this->Login_List_Table->display(); ?>
+                </div>
             </div>   
- 
+
         </form>
     </div>
 </div>

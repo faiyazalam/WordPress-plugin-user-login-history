@@ -18,7 +18,7 @@
         <?php
         if (!empty($attributes['show_timezone_selector']) && "true" == $attributes['show_timezone_selector']) {
             ?>
-            <div><?php require(plugin_dir_path(dirname(__FILE__)) . 'views/forms/timezone.php'); ?></div>
+        <div><?php require(plugin_dir_path(dirname(__FILE__)) . 'views/forms/timezone.php'); ?></div>
             <?php
         }
         ?>

@@ -50,7 +50,7 @@ class Admin {
      * @param       string $version            The version of this plugin.
      */
     public function __construct(
-    $plugin_name, $version, User_Profile $User_Profile, Listing_Table_Csv $Listing_Table_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
+            $plugin_name, $version, User_Profile $User_Profile, Listing_Table_Csv $Listing_Table_Csv, Admin_Settings $Admin_Settings, Admin_Notice $Admin_Notice
     ) {
 
         $this->plugin_name = $plugin_name;

@@ -22,7 +22,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
             <div><label for="operating_system" ><?php esc_html_e("Operating System", 'faulh') ?></label><input  id="operating_system" placeholder="<?php esc_html_e("Enter Operating System", 'faulh') ?>" name="operating_system" value="<?php echo isset($_GET['operating_system']) ? esc_attr($_GET['operating_system']) : "" ?>" ></div>
             <div><label for="ip_address" ><?php esc_html_e("IP Address", 'faulh') ?></label><input id="ip_address" placeholder="<?php esc_html_e("Enter IP Address", 'faulh') ?>" name="ip_address" value="<?php echo isset($_GET['ip_address']) ? esc_attr($_GET['ip_address']) : "" ?>" ></div>
             <?php if (is_network_admin()) { ?>
-                <div><label for="blog_id" ><?php esc_html_e("Blog ID", 'faulh') ?></label><input id="blog_id" placeholder="<?php esc_html_e("Blog ID", 'faulh') ?>" name="blog_id" value="<?php echo isset($_GET['blog_id']) ? esc_attr($_GET['blog_id']) : "" ?>" ></div>
+            <div><label for="blog_id" ><?php esc_html_e("Blog ID", 'faulh') ?></label><input id="blog_id" placeholder="<?php esc_html_e("Blog ID", 'faulh') ?>" name="blog_id" value="<?php echo isset($_GET['blog_id']) ? esc_attr($_GET['blog_id']) : "" ?>" ></div>
                 <?php
             }
             ?>
@@ -39,7 +39,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
                     wp_dropdown_roles($selected_role);
                     ?>
                     <?php if (is_network_admin()) { ?>
-                        <option value="superadmin" <?php selected($selected_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", 'faulh') ?></option>
+                    <option value="superadmin" <?php selected($selected_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", 'faulh') ?></option>
                     <?php } ?>
                 </select></div>
             <div><label for="old_role" ><?php esc_html_e("Old Role", 'faulh') ?></label><select id="old_role"  name="old_role">
@@ -49,7 +49,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
                     wp_dropdown_roles($selected_old_role);
                     ?>
                     <?php if (is_network_admin()) { ?>
-                        <option value="superadmin" <?php selected($selected_old_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", 'faulh') ?></option>  <?php } ?>
+                    <option value="superadmin" <?php selected($selected_old_role, "superadmin"); ?> ><?php esc_html_e("Super Administrator", 'faulh') ?></option>  <?php } ?>
                 </select></div>
             <div><label for="login_status" ><?php esc_html_e("Login Status", 'faulh') ?></label><select id="login_status" name="login_status">
                     <option value=""><?php esc_html_e('Select Login Status', 'faulh') ?></option>
@@ -58,16 +58,16 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
                     <?php Template_Helper::dropdown_login_statuses($selected_login_status); ?>
                 </select></div>
             <?php if (is_network_admin()) { ?>
-                <div><label for="is_super_admin" ><?php esc_html_e("Super Admin", 'faulh') ?></label>
-                    <select id="is_super_admin" name="is_super_admin" >
-                        <option value=""><?php esc_html_e('Select Super Admin', 'faulh') ?></option>
+                    <div><label for="is_super_admin" ><?php esc_html_e("Super Admin", 'faulh') ?></label>
+                        <select id="is_super_admin" name="is_super_admin" >
+                            <option value=""><?php esc_html_e('Select Super Admin', 'faulh') ?></option>
 
-                        <?php
-                        Template_Helper::dropdown_is_super_admin(isset($_GET['is_super_admin']) ? $_GET['is_super_admin'] : NULL);
+                            <?php
+                            Template_Helper::dropdown_is_super_admin(isset($_GET['is_super_admin']) ? $_GET['is_super_admin'] : NULL);
                         ?>
-                    </select>
-                </div>
-            <?php } ?>
+                        </select>
+                    </div>
+                <?php } ?>
 
         </div>
 

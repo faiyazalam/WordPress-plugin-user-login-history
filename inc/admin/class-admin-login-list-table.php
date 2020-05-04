@@ -52,13 +52,6 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
             $sql .= ' ORDER BY id DESC';
         }
 
-
-
-
-
-
-
-
         if ($per_page > 0) {
             $sql .= " LIMIT $per_page";
             $sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;

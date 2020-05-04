@@ -330,7 +330,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
 
             case 'old_role':
-		return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : Helpers\Tool::getRoleNamesByKeys($item[$column_name]);
+                return $this->is_empty($item[$column_name]) ? $this->get_unknown_symbol() : Helpers\Tool::getRoleNamesByKeys($item[$column_name]);
 
             case 'browser':
 

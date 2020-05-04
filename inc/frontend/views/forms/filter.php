@@ -15,7 +15,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 
         <div style="margin-top:20px; text-align: right">
             <?php if ($reset_URL) { ?>
-                <a style="margin-right:10px" href="<?php echo $reset_URL ?>" ><?php esc_html_e('RESET', 'faulh'); ?></a>
+            <a style="margin-right:10px" href="<?php echo $reset_URL ?>" ><?php esc_html_e('RESET', 'faulh'); ?></a>
             <?php } ?>
             <input class="" id="submit" type="submit" name="submit" value="<?php esc_html_e('FILTER', 'faulh') ?>" />
         </div>
