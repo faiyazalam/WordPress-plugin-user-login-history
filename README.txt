@@ -4,7 +4,7 @@ This is an UNSTABLE version. To download STABLE version, visit: https://wordpres
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
-Requires at least: 4.9.0
+Requires at least: 5.0.0
 Requires PHP: 5.5
 Tested up to: 5.0.3
 Stable tag: 2.0.0
@@ -35,9 +35,9 @@ The plugin helps you to track any visitor\'s login details with the following at
 
 = Some More Useful Features =
 
-1. **Preferable Timezone** - You can select your preferred timezone to be used for the listing table.
-1. **Shortcode** - The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user. You can use the shortcodes `<?php echo do_shortcode['user-login-history'] ?>` and `[user-login-history]` in your template file and content respectively. For more detail, please see the help page under plugin menu.
-1. **Multisite Network (Since version 1.7.0)** - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
+1. **Preferable Timezone (Depreciated since 2.0.0)** - You can select your preferred timezone to be used for the listing table.
+1. **Shortcode** - The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user only. 
+1. **Multisite Network** - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
 1. **Advanced Search Filter**
 1. **CSV Export**
 
@@ -65,7 +65,9 @@ You can download the language files from [here](https://translate.wordpress.org/
 Do you want to translate this plugin to another language?
 
 I recommend using [POEdit](http://poedit.net/) or if you prefer to do it straight from the WordPress admin interface use [Loco Translate](https://wordpress.org/plugins/loco-translate/).
-When you’re done, send us the file(s) and I’ll add it to the official plugin. You can also translate the plugin [Online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
+When you’re done, post your file on this [issue](https://github.com/faiyazalam/WordPress-plugin-user-login-history/issues/6)
+. 
+You can also translate the plugin [online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
 
 = How to use the plugin? =
 
@@ -122,10 +124,6 @@ true
 <pre><code>user_id,username,role,old_role,ip_address,country_name,browser,operating_system,timezone,user_agent,duration,time_last_seen,time_login,time_logout,login_status</code></pre>
 
 
-= Deprecated Shortcode (Since 1.7.0) =
-<pre><code>[user-login-history]</code></pre>
-
-
 = Geo Tracking =
 
 The plugin uses [a free third party service](https://tools.keycdn.com/geo) to detect country and timezone based on IP address. Many projects are using this free service due to which sometimes the server of the service provider becomes slow. This may affect the login functionality of your website. Hence it is recommended that you do not enable this functionallity unless you have paid service or reliable service. If you have a paid service, you can contact us to integrate it.
@@ -161,7 +159,7 @@ profile, front end registration, manager, report, statistics, activity, user rol
 
 1. Upload the plugin files to the `/wp-content/plugins/user-login-history` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the 'Plugins' screen in WordPress.
-1. Use the Settings->User Login History screen to configure the plugin.
+1. (Optional) Use the Settings->User Login History screen to configure the plugin.
 
 == Frequently Asked Questions ==
 
@@ -170,6 +168,29 @@ No.
 
 = Is it compatible with WordPress multisite network? =
 Yes.
+
+= Where to see login list in admin? =
+Just click on "User Login History" menu on the left sidebar.
+
+= What is the use case of Online/Idle settings? =
+There is a "Last Seen" column in the admin listing page.
+There you will see a circle with different colors:
+red - offline
+grey - idle
+green - online
+
+You can change its settings.
+
+The default setting is as follows:
+
+online: 2 min
+idle: 30 min
+
+It means that:
+1)the column "last seen" will show green color for the users who are active for 0-2 minutes.
+2)the column "last seen" will show grey color for the users who are inactive for 2-30 minutes.
+3)the column "last seen" will show red color for the users who are inactive for at-least 30 minutes.
+
 
 == Screenshots ==
 
@@ -183,17 +204,33 @@ Yes.
 
 == Changelog ==
 
-= 1.8.0(release date) =
+= 2.0.0 (release date) =
 
-* Improved code - **Namespace** used.
+* Improved UI/UX of the listing table in admin panel.
+* Code refactoring.
 * Minor bugs fixes.
 
-= 1.7.0(release date) =
+= 1.7.4(3rd April, 2020) =
+* Fixed some permission issue on dashboard menu
+* Implemented horizontal scroll bar on the listing table in backend
+* Replaced role key with role name on the listing table
+
+= 1.7.3(25th August, 2019) =
+* Fixed index size limit issue
+
+= 1.7.2(18th August, 2019) =
+* Fixed some performance issues
+
+= 1.7.1(16th March, 2019) =
+* Fixed SQL bug in order by clause
+
+= 1.7.0(4th June, 2018) =
 * Compatible with **Multisite Network** - Now this plugin supports WordPress Multisite with multi-networks and multi-blogs.
 * Added the column **Login Status** - This is used to check whether the user is logged in, logged out, failed login or blocked login.
 * Added the option **Last Seen Time** in the filter forms.
 * Added the column **Super Admin** - This is used only for multisite network.
 * Deprecated the shortcode [user-login-history].
+* Added new shortcode [user_login_history] with customizable parameters.
 * Date range validation on the filter forms.
 * Date and Time format of the user login listing table can be changed from the general settings.
 * Improved design of the listing tables.
@@ -202,10 +239,7 @@ Yes.
 
 = 2.0.0 =
 
-1. Improved UI/UX of the listing table
-1. Improved code structure
-1. Fixed some minor bugs
-1. Removed about us and help pages
+1. We have removed about us page and help page from the plugin menu. You can read the documentation in the plugin description on the WordPress plugin directory itself.
 
 = 1.0 <= 1.7.0 =
 
