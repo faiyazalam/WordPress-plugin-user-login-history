@@ -111,7 +111,7 @@ class Network_Admin_Settings {
      */
     public function admin_menu() {
         add_submenu_page(
-                'settings.php', NS\PLUGIN_NAME, NS\PLUGIN_NAME, 'manage_options', $this->plugin_name . '-setting', array($this, 'screen')
+                'settings.php', NS\PLUGIN_NAME, NS\PLUGIN_NAME, 'administrator', $this->plugin_name . '-setting', array($this, 'screen')
         );
     }
 

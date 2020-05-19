@@ -7,7 +7,6 @@ use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Admin\Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\Network_Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\User_Profile;
-use User_Login_History\Inc\Common\Helpers\Request as RequestHelper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Admin\Settings as Admin_Settings;
@@ -72,7 +71,7 @@ class Admin {
      * Exports the login list in csv format
      */
     private function csv_export_login_list() {
-        if ($this->is_plugin_login_list_page() && current_user_can('administrator')) {
+        if ($this->is_plugin_login_list_page()) {
             $Login_List = $this->get_Login_List_Table();
 
             $this->Listing_Table_Csv->set_Listing_Table($Login_List);
@@ -87,11 +86,12 @@ class Admin {
     }
 
     /**
-     * Checks if the current page is the login listing page or not. 
+     * Checks whether the current page is the login listing page. 
      * @return bool
      */
     private function is_plugin_login_list_page() {
-        return RequestHelper::is_current_page_by_file_name() && !empty($_GET['page']) && $this->get_plugin_login_list_page_slug() == $_GET['page'];
+        global $pagenow, $plugin_page;
+        return "admin.php" == $pagenow && $this->plugin_name . "-login-listing" == $plugin_page;
     }
 
     /**
@@ -106,27 +106,27 @@ class Admin {
      * Enqueue scripts for the login list page only.
      */
     private function enqueue_scripts_for_plugin_login_list_page() {
-        if (!$this->is_plugin_login_list_page()) {
-            return FALSE;
+        if ($this->is_plugin_login_list_page()) {
+            wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
+            wp_enqueue_script($this->plugin_name . '-admin', plugin_dir_url(__FILE__) . 'js/admin.js', array(), $this->version, 'all');
+            wp_localize_script($this->plugin_name . '-admin', 'admin_custom_object', array(
+                'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
+                'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
+                'admin_url' => admin_url(),
+                'plugin_name' => $this->plugin_name,
+                'show_advanced_filters' => esc_html__('Show Advanced Filters', 'faulh'),
+                'hide_advanced_filters' => esc_html__('Hide Advanced Filters', 'faulh'),
+            ));
         }
-
-        wp_enqueue_script($this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url(__FILE__) . 'js/jquery-ui.min.js', array(), $this->version, 'all');
-        wp_enqueue_script($this->plugin_name . '-admin-custom', plugin_dir_url(__FILE__) . 'js/custom.js', array(), $this->version, 'all');
-        wp_localize_script($this->plugin_name . '-admin-custom', 'admin_custom_object', array(
-            'delete_confirm_message' => esc_html__('Are your sure?', 'faulh'),
-            'invalid_date_range_message' => esc_html__('Please provide a valid date range.', 'faulh'),
-            'admin_url' => admin_url(),
-            'plugin_name' => $this->plugin_name,
-            'show_advanced_filters' => esc_html__('Show Advanced Filters', 'faulh'),
-            'hide_advanced_filters' => esc_html__('Hide Advanced Filters', 'faulh'),
-        ));
     }
 
     /**
      * Enqueue styles for the user profile page only.
      */
     private function enqueue_styles_for_user_profile() {
-        if (RequestHelper::is_current_page_by_file_name('profile') || RequestHelper::is_current_page_by_file_name('user-edit')) {
+        global $pagenow;
+
+        if ("profile.php" == $pagenow) {
             wp_enqueue_style($this->plugin_name . '-user-profile.css', plugin_dir_url(__FILE__) . 'css/user-profile.css', array(), $this->version, 'all');
         }
     }
@@ -136,11 +136,20 @@ class Admin {
      * @return null
      */
     private function enqueue_styles_for_plugin_login_list_page() {
-        if (!$this->is_plugin_login_list_page()) {
-            return FALSE;
+
+        global $pagenow, $plugin_page;
+
+        if ("admin.php" == $pagenow && $this->plugin_name . "-pro" == $plugin_page) {
+            wp_enqueue_style($this->plugin_name . '-admin-bt', '//maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css', array(), $this->version, 'all');
+            wp_enqueue_style($this->plugin_name . '-admin-fa', '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', array(), $this->version, 'all');
+            wp_enqueue_style($this->plugin_name . '-admin-gf', '//fonts.googleapis.com/css?family=Poppins&display=swap', array(), $this->version, 'all');
+            wp_enqueue_style($this->plugin_name . '-admin-gp', plugin_dir_url(__FILE__) . 'css/go-pro.css', array(), $this->version, 'all');
         }
-        wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
-        wp_enqueue_style($this->plugin_name . '-admin', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
+
+        if ($this->is_plugin_login_list_page()) {
+            wp_enqueue_style($this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url(__FILE__) . 'css/jquery-ui.min.css', array(), $this->version, 'all');
+            wp_enqueue_style($this->plugin_name . '-admin', plugin_dir_url(__FILE__) . 'css/admin.css', array(), $this->version, 'all');
+        }
     }
 
     /**
@@ -167,9 +176,10 @@ class Admin {
 
         $menu_slug = $this->get_plugin_login_list_page_slug();
         $hook = add_menu_page(
-                esc_html__('Login List', 'faulh'), NS\PLUGIN_NAME, 'manage_options', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
+                esc_html__('Login List', 'faulh'), NS\PLUGIN_NAME, 'administrator', $menu_slug, array($this, 'render_login_list'), plugin_dir_url(__FILE__) . 'images/icon.png', 30
         );
-        add_submenu_page($menu_slug, esc_html__('Login List', 'faulh'), esc_html__('Login List', 'faulh'), 'manage_options', $menu_slug, array($this, 'render_login_list'));
+        add_submenu_page($menu_slug, esc_html__('Login List', 'faulh'), esc_html__('Login List', 'faulh'), 'administrator', $menu_slug, array($this, 'render_login_list'));
+        add_submenu_page($menu_slug, esc_html__('Pro Features', 'faulh'), esc_html__('Pro Features', 'faulh'), 'administrator', $this->plugin_name . '-pro', array($this, 'render_pro'));
 
         add_action("load-$hook", array($this, 'screen_option'));
     }
@@ -179,6 +189,13 @@ class Admin {
      */
     public function render_login_list() {
         require plugin_dir_path(dirname(__FILE__)) . 'admin/views/login-list-table.php';
+    }
+
+    /**
+     * Render the login listing page
+     */
+    public function render_pro() {
+        require plugin_dir_path(dirname(__FILE__)) . 'admin/views/pro.php';
     }
 
     /**

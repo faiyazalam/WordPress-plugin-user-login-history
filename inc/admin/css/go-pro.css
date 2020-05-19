@@ -1,0 +1,18 @@
+body{background: #f1f1f1 !important;}
+
+.box{width: 100%;
+     border: 1px solid #e2e2e2;
+     margin-top: 59px;
+     background: #fff;
+     font-family: 'Poppins', sans-serif !important;
+     margin-bottom: 17px;
+     box-shadow: #e6e6e6 0px 0px 5px 0px;
+     padding-top: 0px;}
+
+.img{padding: 0px 0px 0px 0px;width: 70px; text-align: center; font-size: 30px; background: #fff; margin: 0px auto;}
+.img .fa{color: #1394d7; }
+.heading-1{padding: 0px 0px 0px 0px; width: 100%;text-align: center; font-size:16px; font-weight: bold;}
+.text{padding: 10px 15px 20px 15px; width: 100%; font-size: 13px; text-align: center;}
+.text-center{text-align: center;}
+button.button-edit{font-size:20px;}
+.icon{margin-top:-30px;margin-bottom: 20px; border: 1px solid #e2e2e2;padding: 10px; }
