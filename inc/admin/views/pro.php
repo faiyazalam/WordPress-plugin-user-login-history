@@ -57,7 +57,7 @@ $chunked_features = array_chunk($all_features, 3);
     <h1><?php echo NS\PLUGIN_NAME ?> (<?php echo esc_html__('Pro Version', 'faulh') ?>) <?php echo esc_html__('Features', 'faulh') ?></h1>
     <br>
     <!--    TODO::Change URL of subscribe link-->
-    <p style="font-size: 20px"><?php echo esc_html__('The pro version is under testing phase and will be released soon.', 'faulh') ?> <?php echo sprintf(esc_html__('Please %1$sSUBSCRIBE%2$s to get notification as soon as we release it.', 'faulh'), "<a target='_blank' href='https://www.userloginhistory.com/contact?utm_source=plugin'>", "</a>"); ?></p>
+    <p style="font-size: 20px"><?php echo esc_html__('The pro version is under testing phase and will be released soon.', 'faulh') ?> <?php echo sprintf(esc_html__('Please %1$sSUBSCRIBE%2$s to get notification as soon as we release it.', 'faulh'), "<a target='_blank' href='//www.userloginhistory.com/?utm_source=plugin#subscribeSection'>", "</a>"); ?></p>
     <div class="clearfix">
         <div class="container-fluid">
             <?php
