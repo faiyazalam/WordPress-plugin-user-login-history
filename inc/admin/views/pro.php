@@ -70,7 +70,7 @@ $chunked_features = array_chunk($all_features, 3);
                             <div class="col-lg-12">
                                 <div class="box">  
                                     <div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo $feature['icon'] ?>"></i></div></div>
-                                    <div class="heading-1 pull-left"><?php echo $feature['title'] ?></div>
+                                    <div class="heading-1 pull-left"><?php echo strtoupper($feature['title']) ?></div>
                                     <div class="clearfix"></div>
                                     <div style="height: 100px" class="text"><?php echo $feature['description'] ?></div>
                                 </div>  
