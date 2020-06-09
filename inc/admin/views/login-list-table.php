@@ -1,6 +1,8 @@
 <div class="wrap">
     <?php \User_Login_History\Inc\Common\Helpers\Template::head(esc_html__('Login List', 'faulh')); ?>
-
+    <?php if (is_multisite() && is_network_admin()) { ?>
+        <h2><?php echo esc_html__('(This page has been depreciated and will be removed in upcoming version)', 'faulh') ?></h2>
+    <?php } ?>
     <hr>
     <div><?php require(plugin_dir_path(dirname(__FILE__)) . 'views/forms/filter.php'); ?></div>
     <hr>

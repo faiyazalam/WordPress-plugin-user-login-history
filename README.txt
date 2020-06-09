@@ -5,7 +5,7 @@ Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
 Requires at least: 5.0.0
-Requires PHP: 5.5
+Requires PHP: 5.6
 Tested up to: 5.4.1
 Stable tag: 2.0.0
 License: GPLv2 or later

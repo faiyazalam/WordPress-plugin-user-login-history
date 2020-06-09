@@ -4,6 +4,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 ?>
 <div class="wrap">
     <?php echo Template_Helper::head(esc_html__('Network Settings', 'faulh')) ?>
+    <h2><?php echo esc_html__('(This page has been depreciated and will be removed in upcoming version)', 'faulh') ?></h2>
     <form method="post">
         <input type="hidden" name="<?php echo $this->get_form_name(); ?>" >
         <table class="form-table">

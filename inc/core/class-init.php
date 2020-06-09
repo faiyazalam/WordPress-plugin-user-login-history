@@ -121,6 +121,8 @@ class Init {
         $Login_Tracker->set_message_for_cross_blog_login($Network_Admin_Settings->get_block_user_message());
 
         $this->loader->add_action('admin_init', $Admin, 'admin_init');
+        $this->loader->add_action('admin_init', $Admin, 'check_update_version');
+
 
         if (is_network_admin()) {
             $this->loader->add_action('admin_init', $Network_Admin_Settings, 'update');

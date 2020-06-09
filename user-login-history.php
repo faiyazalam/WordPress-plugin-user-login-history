@@ -99,12 +99,12 @@ class User_Login_History {
      */
     public static function init() {
 
-	if (null === self::$init) {
-	    self::$init = new Inc\Core\Init();
-	    self::$init->run();
-	}
+        if (null === self::$init) {
+            self::$init = new Inc\Core\Init();
+            self::$init->run();
+        }
 
-	return self::$init;
+        return self::$init;
     }
 
 }

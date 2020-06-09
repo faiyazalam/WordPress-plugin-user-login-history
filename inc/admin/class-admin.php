@@ -3,6 +3,8 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History AS NS;
+use User_Login_History\Inc\Core\Activator;
+use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Admin\Admin_Login_List_Table;
 use User_Login_History\Inc\Admin\Network_Admin_Login_List_Table;
@@ -234,6 +236,39 @@ class Admin {
      */
     private function get_Login_List_Table() {
         return is_network_admin() ? new Network_Admin_Login_List_Table($this->plugin_name, $this->version, $this->Admin_Notice) : new Admin_Login_List_Table($this->plugin_name, $this->version, $this->Admin_Notice);
+    }
+
+    /**
+     * Check if update available.
+     * If yes, update DB.
+     * 
+     */
+    public function check_update_version() {
+        if (!current_user_can('update_plugins')) {
+            return;
+        }
+        // Current version
+        $current_version = get_option(NS\PLUGIN_OPTION_NAME_VERSION);
+        //If the version is older
+        if ($current_version && version_compare($current_version, $this->version, '<')) {
+
+            if (!function_exists('is_plugin_active_for_network')) {
+                require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+            }
+
+            if (is_plugin_active_for_network(NS\PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER)) {
+                $blog_ids = Db_Helper::get_blog_ids_by_site_id();
+                foreach ($blog_ids as $blog_id) {
+                    switch_to_blog($blog_id);
+                    Activator::create_table();
+                    Activator::update_options();
+                }
+                restore_current_blog();
+            } else {
+                Activator::create_table();
+                Activator::update_options();
+            }
+        }
     }
 
 }
