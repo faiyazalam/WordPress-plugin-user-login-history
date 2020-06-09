@@ -32,12 +32,11 @@ if (defined('User_Login_History_Pro\NS')) {
     return;
 }
 
-if (!function_exists('faulh_delete_plugin_options')) {
+if (!function_exists('faulh_delete_options')) {
 
-    function faulh_delete_plugin_options($prefix = '') {
-        if (empty($prefix)) {
-            return;
-        }
+    function faulh_delete_options() {
+        $prefix = "faulh";
+
         $options = array(
             'fa_userloginhostory_version',
             $prefix . "_basics",
@@ -51,40 +50,42 @@ if (!function_exists('faulh_delete_plugin_options')) {
 
 }
 
+if (!function_exists('faulh_delete_user_metadata')) {
 
-
-if (!function_exists('faulh_uninstall_plugin')) {
-
-    function faulh_uninstall_plugin() {
-        $plugin_name = 'faulh';
-        $table_name = 'fa_user_logins';
-
+    function faulh_delete_user_metadata() {
         global $wpdb;
-        if (is_multisite()) {
-            $blog_ids = faulh_get_blogs_of_current_network();
-            foreach ($blog_ids as $blog_id) {
-                switch_to_blog($blog_id);
-                $wpdb->query("DROP TABLE IF EXISTS " . $wpdb->prefix . $table_name);
-                faulh_delete_plugin_options($plugin_name);
-            }
-            restore_current_blog();
-        } else {
-            $wpdb->query("DROP TABLE " . $wpdb->prefix . $table_name);
-            faulh_delete_plugin_options($plugin_name);
-        }
+        $plugin_name = "faulh";
 
         $user_meta_keys = array(
             $plugin_name . "_timezone",
             $plugin_name . "_rows_per_page",
+            $plugin_name . "_last_seen_time",
             "managetoplevel_page_" . $plugin_name . "-login-listingcolumnshidden",
         );
+
         $sql_in = "'" . implode("', '", $user_meta_keys) . "'";
 
         $wpdb->query("DELETE FROM $wpdb->usermeta WHERE meta_key IN ($sql_in)");
+
+        if ($wpdb->last_error) {
+            faulh_error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+        }
     }
 
 }
 
+if (!function_exists('faulh_drop_tables')) {
+
+    function faulh_drop_tables() {
+        global $wpdb;
+        $wpdb->query("DROP TABLE IF EXISTS " . $wpdb->prefix . 'fa_user_logins');
+
+        if ($wpdb->last_error) {
+            faulh_error_log("last error:" . $wpdb->last_error . " last query:" . $wpdb->last_query);
+        }
+    }
+
+}
 
 if (!function_exists('faulh_get_blogs_of_current_network')) {
 
@@ -104,11 +105,31 @@ if (!function_exists('faulh_error_log')) {
 
     function faulh_error_log($message = '') {
         ini_set('error_log', WP_CONTENT_DIR . '/user-login-history.log');
-        error_log("Error While Uninstalling: " . $message);
+        error_log("Error While Uninstalling the plugin: " . $message);
     }
 
 }
 
 
+if (!function_exists('faulh_uninstall_plugin')) {
+
+    function faulh_uninstall_plugin() {
+        faulh_delete_user_metadata();
+
+        if (is_multisite()) {
+            $blog_ids = faulh_get_blogs_of_current_network();
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
+                faulh_delete_options();
+                faulh_drop_tables();
+            }
+            restore_current_blog();
+        } else {
+            faulh_delete_options();
+            faulh_drop_tables();
+        }
+    }
+
+}
 
 faulh_uninstall_plugin();
