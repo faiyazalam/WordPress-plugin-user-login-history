@@ -6,7 +6,7 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
 Requires at least: 5.0.0
 Requires PHP: 5.5
-Tested up to: 5.0.3
+Tested up to: 5.4.1
 Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -65,7 +65,7 @@ You can download the language files from [here](https://translate.wordpress.org/
 Do you want to translate this plugin to another language?
 
 I recommend using [POEdit](http://poedit.net/) or if you prefer to do it straight from the WordPress admin interface use [Loco Translate](https://wordpress.org/plugins/loco-translate/).
-When you’re done, post your file on this [issue](https://github.com/faiyazalam/WordPress-plugin-user-login-history/issues/6)
+When you’re done, post your file on this [issue](https://github.com/faiyazalam/WordPress-plugin-user-login-history/issues/6).
 . 
 You can also translate the plugin [online](https://translate.wordpress.org/projects/wp-plugins/user-login-history).
 
@@ -118,15 +118,15 @@ Default is the full permalink of the current post or page.
 true
 
 1. columns - List of column keys used to render columns on the listing table. Default keys are:
-<pre><code>operating_system,browser,time_login,time_logout</code></pre>
+<pre><code>operating_system, browser, time_login, time_logout</code></pre>
 
 1. Available Column Keys:
-<pre><code>user_id,username,role,old_role,ip_address,country_name,browser,operating_system,timezone,user_agent,duration,time_last_seen,time_login,time_logout,login_status</code></pre>
+<pre><code>user_id, username, role, old_role, ip_address, country_name, browser, operating_system, timezone, user_agent, duration, time_last_seen, time_login, time_logout, login_status</code></pre>
 
 
 = Geo Tracking =
 
-The plugin uses [a free third party service](https://tools.keycdn.com/geo) to detect country and timezone based on IP address. Many projects are using this free service due to which sometimes the server of the service provider becomes slow. This may affect the login functionality of your website. Hence it is recommended that you do not enable this functionallity unless you have paid service or reliable service. If you have a paid service, you can contact us to integrate it.
+The plugin uses [a free third party service](https://tools.keycdn.com/geo) to detect country and timezone based on IP address. Many projects are using this free service due to which sometimes the server of the service provider becomes slow. This may affect the login functionality of your website. Hence it is recommended that you do not enable this functionallity unless you have paid service or reliable service. If you have a paid service, you can [contact us](https://userloginhistory.com/contact/) to integrate it.
 
 
 = Login Statuses =
@@ -170,14 +170,14 @@ No.
 Yes.
 
 = Where to see login list in admin? =
-Just click on "User Login History" menu on the left sidebar.
+After activating the plugin, just re-login and then click on "User Login History" menu on the left sidebar to see the login list.
 
-= What is the use case of Online/Idle settings? =
+= What does the setting "online/idle minutes" actually do? =
 There is a "Last Seen" column in the admin listing page.
 There you will see a circle with different colors:
-red - offline
-grey - idle
-green - online
+red is for offline users
+grey is for idle users
+green is for online users
 
 You can change its settings.
 
@@ -204,7 +204,7 @@ It means that:
 
 == Changelog ==
 
-= 2.0.0 (release date) =
+= 2.0.0 (9th June 2020) =
 
 * Improved UI/UX of the listing table in admin panel.
 * Code refactoring.
