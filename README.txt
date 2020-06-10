@@ -204,7 +204,7 @@ It means that:
 
 == Changelog ==
 
-= 2.0.0 (9th June 2020) =
+= 2.0.0 (10th June 2020) =
 
 * Improved UI/UX of the listing table in admin panel.
 * Code refactoring.
