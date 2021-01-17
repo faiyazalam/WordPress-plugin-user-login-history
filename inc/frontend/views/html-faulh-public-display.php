@@ -1,12 +1,12 @@
 <?php
 /**
- * Provide a public-facing view for the plugin
+ * Frontend View Functionality
  *
- * This file is used to markup the public-facing aspects of the plugin.
- *
- * @link       http://userloginhistory.com
- *
- * @author    Er Faiyaz Alam
+ * @category Plugin
+ * @package  User_Login_History
+ * @author   Faiyaz Alam <contactfaiyazalam@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
+ * @link     http://userloginhistory.com
  */
 ?>
 

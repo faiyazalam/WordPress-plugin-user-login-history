@@ -1,4 +1,13 @@
 <?php
+/**
+ * Backend Functionality.
+ *
+ * @category Plugin
+ * @package  User_Login_History
+ * @author   Faiyaz Alam <contactfaiyazalam@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
+ * @link     http://userloginhistory.com
+ */
 
 namespace User_Login_History\Inc\Common\Abstracts;
 
@@ -8,215 +17,304 @@ use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Helpers\Validation as Validation_Helper;
 
-/**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @link       http://userloginhistory.com
- * @since      1.0.0
- *
- * @author    Er Faiyaz Alam
- */
-if (!class_exists('WP_List_Table')) {
-    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+if ( ! class_exists( 'WP_List_Table' ) ) {
+	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 
+/**
+ * Backend Functionality.
+ */
 abstract class List_Table extends \WP_List_Table {
 
-    const DEFAULT_TIMEZONE = 'UTC';
+	const DEFAULT_TIMEZONE = 'UTC';
 
-    /**
-     * The ID of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $plugin_name    The ID of this plugin.
-     */
-    protected $plugin_name;
+	/**
+	 * The ID of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @var      string    $plugin_name    The ID of this plugin.
+	 */
+	protected $plugin_name;
 
-    /**
-     * The version of this plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     * @var      string    $version    The current version of this plugin.
-     */
-    protected $version;
+	/**
+	 * The version of this plugin.
+	 *
+	 * @since    1.0.0
+	 * @var      string    $version    The current version of this plugin.
+	 */
+	protected $version;
 
-    /**
-     * Holds timezone.
-     * @var string 
-     */
-    protected $timezone;
+	/**
+	 * Holds timezone.
+	 *
+	 * @var string
+	 */
+	protected $timezone;
 
-    /**
-     * Holds symbol to display for unknown value.
-     * @var string|HTML 
-     */
-    protected $unknown_symbol = '<span aria-hidden="true">—</span>';
-    protected $table;
+	/**
+	 * Holds symbol to display for unknown value.
+	 *
+	 * @var string|HTML
+	 */
+	protected $unknown_symbol = '<span aria-hidden="true">—</span>';
 
-    /**
-     * Some properties to be used in HTML form and its processing actions
-     */
+	/**
+	 * The table name.
+	 *
+	 * @var string
+	 */
+	protected $table;
 
-    /**
-     * Form name for bulk action
-     * @var string 
-     */
-    protected $bulk_action_form;
+	/**
+	 * Some properties to be used in HTML form and its processing actions
+	 */
 
-    /**
-     * Delete action name
-     * @var string 
-     */
-    protected $delete_action;
+	/**
+	 * Form name for bulk action
+	 *
+	 * @var string
+	 */
+	protected $bulk_action_form;
 
-    /**
-     * Delete action nonce
-     * @var string 
-     */
-    protected $delete_action_nonce;
+	/**
+	 * Delete action name
+	 *
+	 * @var string
+	 */
+	protected $delete_action;
 
-    /**
-     * Bulk action nonce
-     * @var string 
-     */
-    protected $bulk_action_nonce;
+	/**
+	 * Delete action nonce
+	 *
+	 * @var string
+	 */
+	protected $delete_action_nonce;
 
-    /**
-     * CSV field name
-     * @var string 
-     */
-    protected $csv_field_name = 'csv';
+	/**
+	 * Bulk action nonce
+	 *
+	 * @var string
+	 */
+	protected $bulk_action_nonce;
 
-    /**
-     * CSV field nonce
-     * @var string 
-     */
-    protected $csv_nonce_name = 'csv_nonce';
+	/**
+	 * CSV field name
+	 *
+	 * @var string
+	 */
+	protected $csv_field_name = 'csv';
 
-    public function __construct($plugin_name, $version, $args = array()) {
-        parent::__construct($args);
-        $this->plugin_name = $plugin_name;
-        $this->version = $version;
-        $this->init();
-    }
+	/**
+	 * CSV field nonce
+	 *
+	 * @var string
+	 */
+	protected $csv_nonce_name = 'csv_nonce';
 
-    public function init() {
-        $this->set_bulk_action_form($this->_args['singular'] . "_form");
-        $this->set_delete_action_nonce($this->_args['singular'] . "_delete_none");
-        $this->set_bulk_action_nonce('bulk-' . $this->_args['plural']);
-    }
+	/**
+	 * Initialize the class and set its properties.
+	 *
+	 * @param string $plugin_name The name of this plugin.
+	 * @param string $version The version of this plugin.
+	 * @param array  $args The arguments.
+	 */
+	public function __construct( $plugin_name, $version, $args = array() ) {
+		parent::__construct( $args );
+		$this->plugin_name = $plugin_name;
+		$this->version     = $version;
+		$this->init();
+	}
 
-    public function set_unknown_symbol($unknown_symbol) {
-        $this->unknown_symbol = $unknown_symbol;
-    }
+	/**
+	 * Hooked with init action.
+	 */
+	public function init() {
+		$this->set_bulk_action_form( $this->_args['singular'] . '_form' );
+		$this->set_delete_action_nonce( $this->_args['singular'] . '_delete_none' );
+		$this->set_bulk_action_nonce( 'bulk-' . $this->_args['plural'] );
+	}
 
-    public function get_unknown_symbol() {
-        return $this->unknown_symbol;
-    }
+	/**
+	 * Set unknown symbol.
+	 *
+	 * @param type $unknown_symbol The symbol.
+	 * @return $this
+	 */
+	public function set_unknown_symbol( $unknown_symbol ) {
+		$this->unknown_symbol = $unknown_symbol;
+		return $this;
+	}
 
-    /**
-     * Sets the timezone to be used for table listing.
-     * 
-     * @access public
-     * @param string $timezone
-     */
-    public function set_timezone($timezone = '') {
-        $this->timezone = !empty($timezone) ? $timezone : self::DEFAULT_TIMEZONE;
-    }
+	/**
+	 * Get unknown symbol.
+	 *
+	 * @return string
+	 */
+	public function get_unknown_symbol() {
+		return $this->unknown_symbol;
+	}
 
-    /**
-     * Gets the timezone to be used for table listing.
-     * 
-     * @access public
-     * @return string
-     */
-    public function get_timezone() {
-        return $this->timezone;
-    }
+	/**
+	 * Sets the timezone to be used for table listing.
+	 *
+	 * @param string $timezone The timezone.
+	 */
+	public function set_timezone( $timezone = '' ) {
+		$this->timezone = ! empty( $timezone ) ? $timezone : self::DEFAULT_TIMEZONE;
+	}
 
-    /**
-     * Handles data query and filter, sorting, and pagination.
-     * 
-     * @access public
-     */
-    public function prepare_items() {
-        $this->_column_headers = $this->get_column_info();
-        $per_page = $this->get_items_per_page($this->plugin_name . '_rows_per_page');
+	/**
+	 * Gets the timezone to be used for table listing.
+	 *
+	 * @return string The timezone.
+	 */
+	public function get_timezone() {
+		return $this->timezone;
+	}
 
-        $this->set_pagination_args(array(
-            'total_items' => $this->record_count(),
-            'per_page' => $per_page
-        ));
+	/**
+	 * Handles data query and filter, sorting, and pagination.
+	 */
+	public function prepare_items() {
+		$this->_column_headers = $this->get_column_info();
+		$per_page              = $this->get_items_per_page( $this->plugin_name . '_rows_per_page' );
 
-        $this->items = $this->get_rows($per_page, $this->get_pagenum());
-    }
+		$this->set_pagination_args(
+			array(
+				'total_items' => $this->record_count(),
+				'per_page'    => $per_page,
+			)
+		);
 
-    protected function is_empty($value = '') {
-        return Validation_Helper::isEmpty($value);
-    }
+		$this->items = $this->get_rows( $per_page, $this->get_pagenum() );
+	}
 
-    /**
-     * Time-zone edit link
-     * 
-     * @return string
-     */
-    public function timezone_edit_link() {
-        return esc_html__('This table is showing time in the timezone', 'faulh') . " - <strong>" . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . "#" . $this->plugin_name . "'>" . esc_html__('Edit', 'faulh') . "</a>";
-    }
+	/**
+	 * Check if value is empty.
+	 *
+	 * @param mixed $value The value.
+	 * @return bool
+	 */
+	protected function is_empty( $value = '' ) {
+		return Validation_Helper::is_empty( $value );
+	}
 
-    public function get_all_rows() {
-        return $this->get_rows(0);
-    }
+	/**
+	 * Time-zone edit link.
+	 *
+	 * @return string
+	 */
+	public function timezone_edit_link() {
+		return esc_html__( 'This table is showing time in the timezone', 'faulh' ) . ' - <strong>' . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . '#' . $this->plugin_name . "'>" . esc_html__( 'Edit', 'faulh' ) . '</a>';
+	}
 
-    /**
-     * Some functions to be used in HTML form and its processing actions
-     */
-    protected function set_csv_field_name($name) {
-        $this->csv_field_name = $name;
-    }
+	/**
+	 * Get all the rows.
+	 *
+	 * @return array
+	 */
+	public function get_all_rows() {
+		return $this->get_rows( 0 );
+	}
 
-    public function get_csv_field_name() {
-        return $this->csv_field_name;
-    }
+	/**
+	 * Setter.
+	 *
+	 * @param string $value The value.
+	 * @return $this
+	 */
+	protected function set_csv_field_name( $value ) {
+		$this->csv_field_name = $value;
+		return $this;
+	}
 
-    protected function set_csv_nonce_name($name) {
-        $this->csv_nonce_name = $name;
-    }
+	/**
+	 * Getter.
+	 *
+	 * @return string
+	 */
+	public function get_csv_field_name() {
+		return $this->csv_field_name;
+	}
 
-    public function get_csv_nonce_name() {
-        return $this->csv_nonce_name;
-    }
+	/**
+	 * Setter.
+	 *
+	 * @param string $value The value.
+	 * @return $this
+	 */
+	protected function set_csv_nonce_name( $value ) {
+		$this->csv_nonce_name = $value;
+		return $this;
+	}
 
-    public function get_bulk_action_form() {
-        return $this->bulk_action_form;
-    }
+	/**
+	 * Getter.
+	 *
+	 * @return string
+	 */
+	public function get_csv_nonce_name() {
+		return $this->csv_nonce_name;
+	}
 
-    public function get_bulk_action_nonce() {
-        return $this->bulk_action_nonce;
-    }
+	/**
+	 * Getter.
+	 *
+	 * @return string
+	 */
+	public function get_bulk_action_form() {
+		return $this->bulk_action_form;
+	}
 
-    public function get_delete_action_nonce() {
-        return $this->delete_action_nonce;
-    }
+	/**
+	 * Getter.
+	 *
+	 * @return string
+	 */
+	public function get_bulk_action_nonce() {
+		return $this->bulk_action_nonce;
+	}
 
-    public function set_bulk_action_form($value) {
-        $this->bulk_action_form = $value;
-        return $this;
-    }
+	/**
+	 * Getter.
+	 *
+	 * @return string
+	 */
+	public function get_delete_action_nonce() {
+		return $this->delete_action_nonce;
+	}
 
-    public function set_bulk_action_nonce($value) {
-        $this->bulk_action_nonce = $value;
-        return $this;
-    }
+	/**
+	 * Setter.
+	 *
+	 * @param string $value The value.
+	 * @return $this
+	 */
+	public function set_bulk_action_form( $value ) {
+		$this->bulk_action_form = $value;
+		return $this;
+	}
 
-    public function set_delete_action_nonce($value) {
-        $this->delete_action_nonce = $value;
-        return $this;
-    }
+	/**
+	 * Setter.
+	 *
+	 * @param string $value The value.
+	 * @return $this
+	 */
+	public function set_bulk_action_nonce( $value ) {
+		$this->bulk_action_nonce = $value;
+		return $this;
+	}
+
+	/**
+	 * Setter.
+	 *
+	 * @param string $value The value.
+	 * @return $this
+	 */
+	public function set_delete_action_nonce( $value ) {
+		$this->delete_action_nonce = $value;
+		return $this;
+	}
 
 }

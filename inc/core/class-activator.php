@@ -1,4 +1,13 @@
 <?php
+/**
+ * Backend Functionality.
+ *
+ * @category Plugin
+ * @package  User_Login_History
+ * @author   Faiyaz Alam <contactfaiyazalam@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
+ * @link     http://userloginhistory.com
+ */
 
 namespace User_Login_History\Inc\Core;
 
@@ -6,58 +15,59 @@ use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
 /**
- * Fired during plugin activation
+ * Fired during plugin activation.
  *
  * This class defines all code necessary to run during the plugin's activation.
- *
- * @link       http://userloginhistory.com
- *
- * @author     Er Faiyaz Alam
  * */
 class Activator {
 
-    /**
-     * Short Description.
-     *
-     * Long Description.
-     *
-     */
-    public static function activate($network_wide) {
 
-        $min_php = '5.6.0';
+	/**
+	 * Do DB related stuff during plugin activation.
+	 *
+	 * @param bool $network_wide The network wide value.
+	 */
+	public static function activate( $network_wide ) {
 
-        // Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
-        if (version_compare(PHP_VERSION, $min_php, '<')) {
-            deactivate_plugins(plugin_basename(__FILE__));
-            wp_die('This plugin requires a minmum PHP Version of ' . $min_php);
-        }
+		$min_php = '5.6.40';
 
-        if (is_multisite() && $network_wide) {
+		// Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
+		if ( version_compare( PHP_VERSION, $min_php, '<' ) ) {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+			wp_die( 'This plugin requires a minmum PHP Version of ' . $min_php );
+		}
 
-            // Get all blogs from current network the network and activate plugin on each one
+		if ( is_multisite() && $network_wide ) {
 
-            $blog_ids = Db_Helper::get_blog_ids_by_site_id();
+			// Get all blogs from current network the network and activate plugin on each one.
 
-            foreach ($blog_ids as $blog_id) {
-                switch_to_blog($blog_id);
-                self::create_table();
-                self::update_options();
-            }
-            restore_current_blog();
-        } else {
+			$blog_ids = Db_Helper::get_blog_ids_by_site_id();
 
-            self::create_table();
+			foreach ( $blog_ids as $blog_id ) {
+				switch_to_blog( $blog_id );
+				self::create_table();
+				self::update_options();
+			}
+			restore_current_blog();
+		} else {
 
-            self::update_options();
-        }
-    }
+			self::create_table();
 
-    public static function create_table() {
-        global $wpdb;
-        $charset_collate = $wpdb->get_charset_collate();
-        $table = $wpdb->prefix . NS\PLUGIN_TABLE_FA_USER_LOGINS;
+			self::update_options();
+		}
+	}
 
-        $sql = "CREATE TABLE $table (
+	/**
+	 * Create table.
+	 *
+	 * @global type $wpdb
+	 */
+	public static function create_table() {
+		global $wpdb;
+		$charset_collate = $wpdb->get_charset_collate();
+		$table           = $wpdb->prefix . NS\PLUGIN_TABLE_FA_USER_LOGINS;
+
+		$sql = "CREATE TABLE $table (
 id int(11) NOT NULL AUTO_INCREMENT,
 session_token varchar(100) NOT NULL,
 user_id int(11) NOT NULL,
@@ -95,16 +105,14 @@ INDEX idx_login_status (login_status),
 INDEX idx_is_super_admin (is_super_admin)
 ) $charset_collate ENGINE=MyISAM;";
 
-        Db_Helper::dbDelta($sql);
-    }
+		Db_Helper::db_delta( $sql );
+	}
 
-    /**
-     * Update plugin options.
-     * 
-     * @access public
-     */
-    public static function update_options() {
-        update_option(NS\PLUGIN_OPTION_NAME_VERSION, NS\PLUGIN_VERSION);
-    }
+	/**
+	 * Update plugin options.
+	 */
+	public static function update_options() {
+		update_option( NS\PLUGIN_OPTION_NAME_VERSION, NS\PLUGIN_VERSION );
+	}
 
 }

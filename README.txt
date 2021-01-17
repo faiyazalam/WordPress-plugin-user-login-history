@@ -3,11 +3,11 @@ This is an UNSTABLE version. To download STABLE version, visit: https://wordpres
 === User Login History ===
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
-Tags: login,log,online,duration,report,failed,user,history,track,admin,tool
+Tags: login,statistics,online,timesheet
 Requires at least: 5.0.0
-Requires PHP: 5.6
-Tested up to: 5.4.1
-Stable tag: 2.0.0
+Requires PHP: 5.6.40
+Tested up to: 5.6.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,7 +35,7 @@ The plugin helps you to track any visitor\'s login details with the following at
 
 = Some More Useful Features =
 
-1. **Preferable Timezone (Depreciated since 2.0.0)** - You can select your preferred timezone to be used for the listing table.
+1. **Preferable Timezone (DEPRECATED! Will be removed in 3.0)** - You can select your preferred timezone to be used for the listing table.
 1. **Shortcode** - The plugin comes with a customizable shortcode that you can use in your template or content to view the login history of current logged in user only. 
 1. **Multisite Network** - On the network admin area, you can see the listing table which shows all the records fetched from all the blogs of the current network. 
 1. **Advanced Search Filter**
@@ -204,7 +204,7 @@ It means that:
 
 == Changelog ==
 
-= 2.0.0 (9th June 2020) =
+= 2.0.0 (10th June 2020) =
 
 * Improved UI/UX of the listing table in admin panel.
 * Code refactoring.
