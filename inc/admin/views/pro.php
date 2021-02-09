@@ -92,8 +92,8 @@ $chunked_features = array_chunk( $all_features, 3 );
 			?>
 			<div class="row">
 				<div class="text-center">
-		<a href="https://www.userloginhistory.com/features" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'faulh' ); ?></a>
-		<a href="https://www.userloginhistory.com/pricing" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'faulh' ); ?></a>
+		<a href="<?php echo NS\PLUGIN_FEATURE_LINK ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'faulh' ); ?></a>
+		<a href="<?php echo NS\PLUGIN_GO_PRO_LINK ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'faulh' ); ?></a>
 				</div>
 			</div>  
 		</div>

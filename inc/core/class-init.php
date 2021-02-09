@@ -119,6 +119,7 @@ class Init {
 
 		$this->loader->add_action( 'admin_init', $admin, 'admin_init' );
 		$this->loader->add_action( 'admin_init', $admin, 'check_update_version' );
+		$this->loader->add_action( 'plugin_action_links_' . (NS\PLUGIN_BASENAME), $admin, 'add_action_links' );
 
 		if ( is_network_admin() ) {
 			$this->loader->add_action( 'admin_init', $network_admin_settings, 'update' );

@@ -314,5 +314,12 @@ class Admin {
 			}
 		}
 	}
+ 
+ public function add_action_links($actions) {
+        $links = array(
+            sprintf('<a target="_blank" href="%s">%s</a>', NS\PLUGIN_GO_PRO_LINK, esc_html__('Buy Pro', 'faulh')),
+        );
+        return array_merge($actions, $links);
+    }
 
 }

@@ -58,6 +58,8 @@ define( NS . 'PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins' );
 define( NS . 'DEFAULT_IS_STATUS_ONLINE_MIN', '2' );
 define( NS . 'DEFAULT_IS_STATUS_IDLE_MIN', '30' );
 define( NS . 'PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER', basename( __DIR__ ) . '/' . basename( __FILE__ ) );
+define( NS . 'PLUGIN_GO_PRO_LINK', "https://www.userloginhistory.com/pricing?ref=plugin" );
+define( NS . 'PLUGIN_FEATURE_LINK', "https://www.userloginhistory.com/features?ref=plugin" );
 
 /**
  * Autoload Classes
@@ -127,3 +129,5 @@ $min_php = '5.6.20';
 if ( version_compare( PHP_VERSION, $min_php, '>=' ) ) {
 	wp_user_login_history_init();
 }
+
+ 
