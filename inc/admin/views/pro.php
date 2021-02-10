@@ -15,7 +15,7 @@ use User_Login_History as NS;
 $all_features = array(
 	array(
 		'title'       => 'AUTO LOGOUT',
-		'description' => 'Automatically logout users every x minute. You can also specify roles. This feature is built on WordPress Cron Job.',
+		'description' => 'Automatically logout idle users every x minute. You can also specify roles. This feature is built on WordPress Cron Job.',
 		'icon'        => 'fa-sign-out',
 	),
 	array(

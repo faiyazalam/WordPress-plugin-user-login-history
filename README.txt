@@ -39,7 +39,7 @@ The plugin helps you to track any visitor\'s login details with the following at
 
 The [User Login History Free Version](https://www.userloginhistory.com/) plugin has all the basic features that will help you to know your website visitors. The [User Login History Pro Version](https://www.userloginhistory.com/features 'View All Features') plugin has some more premium and useful features along with all the basic features.
 
-1. **AUTO LOGOUT [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Automatically logout users every 'X' minute.
+1. **AUTO LOGOUT [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Automatically logout idle users every 'X' minute.
 You can also specify roles.
 This feature is built on WordPress Cron Job.
 1. **IP ADDRESS CONTROL [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Allows you to control of masking and hiding of user's IP address.
@@ -124,7 +124,7 @@ Default is the full permalink of the current post or page.
 1. show_timezone_selector - Whether you want to show timezone selector or not. Any value other than "true" will be treated as "false". Default is:
 true
 
-1. roles [Pro Feature]:
+1. roles [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' ):
 It allows you to set role(s) in the shortcode parameter so that you can see the login list of other users who belong to the role(s). 
 <pre><code>[user_login_history roles='administrator, editor']</code></pre>
 
