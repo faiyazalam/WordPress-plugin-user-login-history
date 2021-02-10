@@ -15,7 +15,7 @@ use User_Login_History as NS;
 $all_features = array(
 	array(
 		'title'       => 'AUTO LOGOUT',
-		'description' => 'Automatically logout users every x minutes. You can also specify roles. This feature is built on WordPress Cron Job.',
+		'description' => 'Automatically logout users every x minute. You can also specify roles. This feature is built on WordPress Cron Job.',
 		'icon'        => 'fa-sign-out',
 	),
 	array(
@@ -39,7 +39,7 @@ $all_features = array(
 		'icon'        => 'fa-users',
 	),
 	array(
-		'title'       => 'CSV SEPERATOR',
+		'title'       => 'CSV SEPARATOR',
 		'description' => 'Allows you to enter a CSV separator for CSV export.',
 		'icon'        => 'fa-file',
 	),
