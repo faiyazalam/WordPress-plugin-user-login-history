@@ -49,8 +49,7 @@ class Geo {
 	 * @return string The response from geo API.
 	 */
 	public static function get_geo_location() {
-
-		$defaults = array( 'timeout' => 5 );
+		$defaults = array( 'timeout' => 5, "headers"=>array("User-Agent"=>"keycdn-tools:". get_site_url()));
 		$args     = apply_filters( 'faulh_remote_get_args', $defaults );
 		$r        = wp_parse_args( $args, $defaults );
 		$response = wp_remote_get( self::GEO_API_URL . self::get_ip(), $r );
