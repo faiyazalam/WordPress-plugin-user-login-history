@@ -110,7 +110,7 @@ class Db {
 	 * @param string $table The table name.
 	 * @param [int]  $ids The record IDs.
 	 */
-	public static function delete_rows_by_table_and_ids( $table = '', $ids ) {
+	public static function delete_rows_by_table_and_ids( string $table = '', array $ids = [] ) {
 		if ( empty( $table ) || empty( $ids ) ) {
 			return false;
 		}
