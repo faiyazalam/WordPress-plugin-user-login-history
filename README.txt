@@ -1,13 +1,11 @@
-This is an UNSTABLE version. To download STABLE version, visit: https://WordPress.org/plugins/user-login-history/
-
 === User Login History ===
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
-Tags: login,statistics,online,timesheet
+Tags: login log,rename admin,brute force indicator,security, history
 Requires at least: 5.0.0
 Requires PHP: 5.6.40
-Tested up to: 5.6.1
-Stable tag: 2.0.1
+Tested up to: 6.1.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -215,6 +213,10 @@ It means that:
 7. Shortcode - User login list table for frontend
 
 == Changelog ==
+
+= 2.1.0 (17th February 2021) =
+
+* Fixed geo location [issue](https://wordpress.org/support/topic/no-geo-location-user-agent-not-properly-defined/)
 
 = 2.0.1 (10th February 2021) =
 
