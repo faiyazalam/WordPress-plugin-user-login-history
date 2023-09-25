@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login log,rename admin,brute force indicator,security, history
 Requires at least: 5.0.0
 Requires PHP: 5.6.40
-Tested up to: 6.1.1
+Tested up to: 6.2.2
 Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -213,6 +213,10 @@ It means that:
 7. Shortcode - User login list table for frontend
 
 == Changelog ==
+
+= 2.1.1 (21st May 2023) =
+
+* Fixed error [issue](https://wordpress.org/support/topic/plugin-error-2-1-0/)
 
 = 2.1.0 (17th February 2021) =
 
