@@ -276,10 +276,8 @@ class Frontend_Login_List_Table {
 		global $wpdb;
 		$sql = ' SELECT'
 				. ' FaUserLogin.*, '
-				. ' UserMeta.meta_value as role, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration'
+				. ' TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration'
 				. ' FROM ' . $this->table . '  AS FaUserLogin'
-				. " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-				. " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
 				. ' WHERE 1 ';
 
 		$where_query = $this->prepare_where_query();
@@ -322,8 +320,6 @@ class Frontend_Login_List_Table {
 		$sql = ' SELECT'
 				. ' COUNT(FaUserLogin.id) as total '
 				. ' FROM ' . $this->table . '  AS FaUserLogin'
-				. " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-				. " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
 				. ' WHERE 1 ';
 
 		$where_query = $this->prepare_where_query();
