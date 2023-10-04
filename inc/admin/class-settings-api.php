@@ -108,7 +108,9 @@ class Settings_Api {
 
 			if ( isset( $section['desc'] ) && ! empty( $section['desc'] ) ) {
 				$section['desc'] = '<div class="inside">' . $section['desc'] . '</div>';
-				$callback        = create_function( '', 'echo "' . str_replace( '"', '\"', $section['desc'] ) . '";' );
+				$callback        = function () use ($section) {
+					echo str_replace('"', '\"', $section['desc']);
+				};
 			} elseif ( isset( $section['callback'] ) ) {
 				$callback = $section['callback'];
 			} else {
