@@ -112,19 +112,14 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 					. ' FaUserLogin.user_agent,'
 					. ' FaUserLogin.login_status,'
 					. ' FaUserLogin.is_super_admin,'
-					. ' UserMeta.meta_value as role, '
 					. ' TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,'
 					. " $blog_id as blog_id"
 					. " FROM $table  AS FaUserLogin"
-					. " LEFT JOIN $wpdb->usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-					. " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
 					. ' WHERE 1 ';
 
 			$this->count_sql .= ' SELECT'
 					. ' COUNT(FaUserLogin.id) AS count'
 					. " FROM $table  AS FaUserLogin"
-					. " LEFT JOIN $wpdb->usermeta AS UserMeta ON (UserMeta.user_id=FaUserLogin.user_id"
-					. " AND UserMeta.meta_key LIKE '" . $blog_prefix . "capabilities' )"
 					. ' WHERE 1 ';
 
 			if ( $where_query ) {
@@ -137,6 +132,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		$this->rows_sql  = "SELECT * FROM ({$this->rows_sql}) AS FaUserLoginAllRows";
 		$this->count_sql = "SELECT SUM(count) as total FROM ({$this->count_sql}) AS FaUserLoginCount";
+
 	}
 
 	/**

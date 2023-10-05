@@ -137,10 +137,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
 			}
 		}
 
-		if ( ! empty( $_GET['role'] ) ) {
-			$where_query .= " AND `UserMeta`.`meta_value` LIKE '%" . esc_sql( $_GET['role'] ) . "%'";
-		}
-
 		if ( ! empty( $_GET['date_type'] ) ) {
 			$user_profile   = new User_Profile( $this->plugin_name, $this->version );
 			$input_timezone = $user_profile->get_user_timezone();
@@ -235,7 +231,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
 			'duration'         => array( 'duration', false ),
 		);
 
-		return $columns;
 	}
 
 	/**

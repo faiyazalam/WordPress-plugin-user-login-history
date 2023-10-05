@@ -41,16 +41,6 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 					<option value="unknown" <?php selected( $selected_timezone, 'unknown' ); ?> ><?php esc_html_e( 'Unknown', 'faulh' ); ?></option>
 					<?php Template_Helper::dropdown_timezones( $selected_timezone ); ?>
 				</select></div>
-			<div><label for="role" ><?php esc_html_e( 'Current Role', 'faulh' ); ?></label><select id="role"  name="role">
-					<option value=""><?php esc_html_e( 'Select Current Role', 'faulh' ); ?></option>
-					<?php
-					$selected_role = isset( $_GET['role'] ) ? $_GET['role'] : null;
-					wp_dropdown_roles( $selected_role );
-					?>
-					<?php if ( is_network_admin() ) { ?>
-					<option value="superadmin" <?php selected( $selected_role, 'superadmin' ); ?> ><?php esc_html_e( 'Super Administrator', 'faulh' ); ?></option>
-					<?php } ?>
-				</select></div>
 			<div><label for="old_role" ><?php esc_html_e( 'Old Role', 'faulh' ); ?></label><select id="old_role"  name="old_role">
 					<option value=""><?php esc_html_e( 'Select Old Role', 'faulh' ); ?></option>
 					<?php

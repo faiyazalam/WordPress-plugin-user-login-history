@@ -1,11 +1,11 @@
 === User Login History ===
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
-Tags: login log,rename admin,brute force indicator,security, history
+Tags: login log,login activity,brute force indicator,security,history,tool
 Requires at least: 5.0.0
 Requires PHP: 5.6.40
-Tested up to: 6.1.1
-Stable tag: 2.1.1
+Tested up to: 6.3.1
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -213,6 +213,15 @@ It means that:
 7. Shortcode - User login list table for frontend
 
 == Changelog ==
+
+= 2.1.2 (05th October 2023) =
+
+* Code refactoring for the settings page
+* Removed the role filter to improve the sql query performance
+
+= 2.1.1 (21st May 2023) =
+
+* Fixed error [issue](https://wordpress.org/support/topic/plugin-error-2-1-0/)
 
 = 2.1.0 (17th February 2021) =
 

@@ -37,13 +37,12 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		$table = $wpdb->prefix . $this->table;
 		$sql   = ' SELECT'
 				. ' FaUserLogin.*, '
-				. ' UserMeta.meta_value as role, TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration'
+				. ' TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration'
 				. ' FROM ' . $table . '  AS FaUserLogin'
-				. " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-				. " AND UserMeta.meta_key LIKE  '" . $wpdb->prefix . "capabilities' )"
 				. ' WHERE 1 ';
 
 		$where_query = $this->prepare_where_query();
+
 		if ( $where_query ) {
 			$sql .= $where_query;
 		}
@@ -78,10 +77,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		$sql   = ' SELECT'
 				. ' COUNT(FaUserLogin.id) AS total'
 				. ' FROM ' . $table . ' AS FaUserLogin'
-				. " LEFT JOIN $wpdb->usermeta AS UserMeta ON ( UserMeta.user_id=FaUserLogin.user_id"
-				. " AND UserMeta.meta_key LIKE '" . $wpdb->prefix . "capabilities' )"
 				. ' WHERE 1 ';
-
 		$where_query = $this->prepare_where_query();
 
 		if ( $where_query ) {
