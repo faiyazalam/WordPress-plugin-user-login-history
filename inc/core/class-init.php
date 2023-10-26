@@ -31,6 +31,21 @@ use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
  */
 class Init {
 
+
+	/**
+	 * The plugin name.
+	 *
+	 * @var      string    $plugin_name    The plugin name.
+	 */
+	protected $plugin_name;
+
+	/**
+	 * The plugin text domain.
+	 *
+	 * @var      string    $plugin_text_domain    The plugin text domain.
+	 */
+	protected $plugin_text_domain;
+
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
 	 * the plugin.
