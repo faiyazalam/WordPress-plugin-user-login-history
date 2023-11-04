@@ -30,8 +30,6 @@ use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
  * Defines internationalization, admin-specific hooks, and public-facing site hooks.
  */
 class Init {
-
-
 	/**
 	 * The plugin name.
 	 *

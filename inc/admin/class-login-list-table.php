@@ -376,7 +376,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 				return $time_login ? $time_login : $this->get_unknown_symbol();
 
 			case 'time_logout':
-				if ( $this->is_empty( $item['user_id'] ) || ! ( strtotime( $item[ $column_name ] ) > 0 ) ) {
+				if ( $this->is_empty( $item['user_id'] ) || ! ( strtotime( (string)$item[ $column_name ] ) > 0 ) ) {
 					return $this->get_unknown_symbol();
 				}
 				$time_logout = Date_Time_Helper::convert_format( Date_Time_Helper::convert_timezone( $item[ $column_name ], '', $timezone ) );
