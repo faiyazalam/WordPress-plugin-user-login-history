@@ -70,6 +70,8 @@ class Admin {
 	 */
 	private $admin_notice;
 
+	private $login_list_table;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
