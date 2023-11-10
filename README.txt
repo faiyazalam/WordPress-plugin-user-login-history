@@ -3,7 +3,7 @@ Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login log,login activity,brute force indicator,security,history,tool
 Requires at least: 5.0.0
-Requires PHP: 5.6.40
+Requires PHP: 7.4
 Tested up to: 6.4.1
 Stable tag: 2.1.3
 License: GPLv2 or later

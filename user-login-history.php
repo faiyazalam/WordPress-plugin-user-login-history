@@ -123,7 +123,7 @@ function wp_user_login_history_init() {
 	return User_Login_History::init();
 }
 
-$min_php = '5.6.20';
+$min_php = '7.4';
 
 // Check the minimum required PHP version and run the plugin.
 if ( version_compare( PHP_VERSION, $min_php, '>=' ) ) {
