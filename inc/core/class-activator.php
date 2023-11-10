@@ -29,7 +29,7 @@ class Activator {
 	 */
 	public static function activate( $network_wide ) {
 
-		$min_php = '5.6.40';
+		$min_php = '7.4';
 
 		// Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
 		if ( version_compare( PHP_VERSION, $min_php, '<' ) ) {
