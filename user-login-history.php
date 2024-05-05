@@ -65,6 +65,7 @@ define( NS . 'PLUGIN_FEATURE_LINK', "https://www.userloginhistory.com/features?r
  * Autoload Classes
  */
 require_once USER_LOGIN_HISTORY_DIR . 'inc/libraries/autoloader.php';
+require_once USER_LOGIN_HISTORY_DIR.'inc/common/vendors/csv/autoload.php';
 
 /**
  * Register Activation and Deactivation Hooks

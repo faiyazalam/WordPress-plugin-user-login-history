@@ -92,10 +92,10 @@ final class Listing_Table_Csv {
 			exit;
 		}
 
+		$csv = \League\Csv\Writer::createFromString();
 		$this->listing_table->set_unknown_symbol( $this->unknown_symbol );
 		$columns = $this->listing_table->get_columns();
 
-		$fp     = fopen( 'php://output', 'w' );
 		$i      = 0;
 		$record = array();
 		foreach ( $data as $row ) {
@@ -109,14 +109,15 @@ final class Listing_Table_Csv {
 			}
 
 			if ( 0 == $i ) {
-				fputcsv( $fp, array_keys( $record ) );
+				$csv->insertOne(array_keys( $record ) );
+
 			}
 
-			fputcsv( $fp, $record );
+			$csv->insertOne( $record );
+
 			$i++;
 		}
-
-		fclose( $fp );
+		echo $csv->toString(); 
 		die();
 	}
 
