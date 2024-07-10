@@ -223,6 +223,7 @@ class Admin {
 		);
 		add_submenu_page( $menu_slug, esc_html__( 'Login List', 'faulh' ), esc_html__( 'Login List', 'faulh' ), 'administrator', $menu_slug, array( $this, 'render_login_list' ) );
 		add_submenu_page( $menu_slug, esc_html__( 'Pro Features', 'faulh' ), esc_html__( 'Pro Features', 'faulh' ), 'administrator', $this->plugin_name . '-pro', array( $this, 'render_pro' ) );
+		add_submenu_page( $menu_slug, esc_html__( 'More Plugins', 'faulh' ), esc_html__( 'More Plugins', 'faulh' ), 'administrator', $this->plugin_name . '-more-plugins', array( $this, 'render_more_plugins' ) );
 
 		add_action( "load-$hook", array( $this, 'screen_option' ) );
 	}
@@ -239,6 +240,14 @@ class Admin {
 	 */
 	public function render_pro() {
 		require plugin_dir_path( dirname( __FILE__ ) ) . 'admin/views/pro.php';
+	}
+
+	/**
+	 * Render the more plugins page.
+	 */
+	public function render_more_plugins()
+	{
+		require plugin_dir_path(dirname(__FILE__)) . 'admin/views/more_plugins.php';
 	}
 
 	/**
