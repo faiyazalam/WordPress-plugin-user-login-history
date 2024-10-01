@@ -177,7 +177,7 @@ class Template {
 		return array(
 			array(
 				'key'   => 'userloginhistory',
-				'url'   => 'http://userloginhistory.com/',
+				'url'   => 'https://userloginhistory.com/',
 				'label' => esc_html__('Official Website', 'faulh'),
 				'title' => esc_html__('Visit Plugin Official Website', 'faulh')
 			),
@@ -189,7 +189,7 @@ class Template {
 			),
 			array(
 				'key'   => 'pro',
-				'url'   => 'https://www.userloginhistory.com/pricing/',
+				'url'   => 'https://userloginhistory.com/pricing/',
 				'label' => esc_html__( 'BUY PRO VERSION', 'faulh' ),
 				'title' => esc_html__( 'Buy pro version', 'faulh' )
 			),

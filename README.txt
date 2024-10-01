@@ -29,27 +29,27 @@ The plugin helps you to track any visitor\'s login details with the following at
 1. **IP Address**
 1. **Country Name and Country Code** (Based on IP Address)
 1. **Timezone** (Based on IP Address)
-1. **Mobile [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Whether the user loggedin with a mobile (e.g. tablet and mobile phone) device.
-1. **Proxy IP [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Whether the user loggedin from a proxy IP.
+1. **Mobile [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Whether the user loggedin with a mobile (e.g. tablet and mobile phone) device.
+1. **Proxy IP [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Whether the user loggedin from a proxy IP.
 
 = Features =
 
-The [User Login History Free Version](https://www.userloginhistory.com/) plugin has all the basic features that will help you to know your website visitors. The [User Login History Pro Version](https://www.userloginhistory.com/features 'View All Features') plugin has some more premium and useful features along with all the basic features.
+The [User Login History Free Version](https://userloginhistory.com/) plugin has all the basic features that will help you to know your website visitors. The [User Login History Pro Version](https://userloginhistory.com/features 'View All Features') plugin has some more premium and useful features along with all the basic features.
 
-1. **AUTO LOGOUT [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Automatically logout idle users every 'X' minute.
+1. **AUTO LOGOUT [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Automatically logout idle users every 'X' minute.
 You can also specify roles.
 This feature is built on WordPress Cron Job.
-1. **IP ADDRESS CONTROL [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Allows you to control of masking and hiding of user's IP address.
-1. **EMAIL ALERT [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Allows you to get notified via email for success/failed login.
+1. **IP ADDRESS CONTROL [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Allows you to control of masking and hiding of user's IP address.
+1. **EMAIL ALERT [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Allows you to get notified via email for success/failed login.
 You can also specify roles and modify email templates.
-1. **AUTO DELETE OLD RECORDS [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Automatically delete the records older than 'X' days.
+1. **AUTO DELETE OLD RECORDS [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Automatically delete the records older than 'X' days.
 You can also specify the roles.
 This feature is built on WordPress Cron Job.
-1. **TRACK SPECIFIC ROLES [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Allows you to track specific roles only.
-1. **CSV SEPARATOR [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Allows you to enter a CSV separator for CSV export.
-1. **REPORT - TIMESHEET [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Generate a timesheet report
-1. **REPORT -  NO LOGIN LIST [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Generate a report of users who have not login for a given date range
-1. **REPORT - LOGIN DEVICE [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' )** - Generate report of login count based on IP address
+1. **TRACK SPECIFIC ROLES [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Allows you to track specific roles only.
+1. **CSV SEPARATOR [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Allows you to enter a CSV separator for CSV export.
+1. **REPORT - TIMESHEET [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Generate a timesheet report
+1. **REPORT -  NO LOGIN LIST [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Generate a report of users who have not login for a given date range
+1. **REPORT - LOGIN DEVICE [(Pro Feature)](https://userloginhistory.com/features 'View All Features' )** - Generate report of login count based on IP address
 1. **LOGIN TIME TRACKER** - Tracks the date and time of user's login, logout, last seen, etc.
 1. **LOGIN STATUS TRACKER** - Tracks user's login status to check if the user is logged in, logged out, failed, etc.
 1. **ONLINE STATUS TRACKER** - Tracks user's online status to check if the user is online, idle or offline.
@@ -121,7 +121,7 @@ Default is the full permalink of the current post or page.
 1. show_timezone_selector - Whether you want to show timezone selector or not. Any value other than "true" will be treated as "false". Default is:
 true
 
-1. roles [(Pro Feature)](https://www.userloginhistory.com/features 'View All Features' ):
+1. roles [(Pro Feature)](https://userloginhistory.com/features 'View All Features' ):
 It allows you to set role(s) in the shortcode parameter so that you can see the login list of other users who belong to the role(s). 
 <pre><code>[user_login_history roles='administrator, editor']</code></pre>
 
