@@ -121,8 +121,8 @@ class Init {
 
 		if ( is_network_admin() ) {
 			$network_blog_manager = new Network_Blog_Manager();
-			$this->loader->add_action( 'wpmu_new_blog', $network_blog_manager, 'on_create_blog', 10, 6 );
-			$this->loader->add_action( 'deleted_blog', $network_blog_manager, 'deleted_blog', 10, 1 );
+			$this->loader->add_action( 'wp_insert_site', $network_blog_manager, 'on_create_blog', 10, 1 );
+			$this->loader->add_action( 'wp_delete_site', $network_blog_manager, 'deleted_blog', 10, 1 );
 		}
 
 		$login_tracker = new Login_Tracker( $this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS );
