@@ -5,7 +5,7 @@ Tags: login log,login activity,brute force indicator,security,history,tool
 Requires at least: 5.0.0
 Requires PHP: 8.1.2
 Tested up to: 6.5.5
-Stable tag: 2.1.5
+Stable tag: 2.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -212,6 +212,10 @@ It means that:
 7. Shortcode - User login list table for frontend
 
 == Changelog ==
+
+= 2.1.6 (1st October 2024) =
+
+* Improvements in external links.
 
 = 2.1.5 (10th July 2024) =
 
