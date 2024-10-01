@@ -203,7 +203,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 	 * @overridden
 	 */
 	public function get_sortable_columns() {
-		return apply_filters( $this->plugin_name . '_admin_login_list_get_columns', parent::get_sortable_columns() );
+		return apply_filters( $this->plugin_name . '_admin_login_list_get_sortable_columns', parent::get_sortable_columns() );
 	}
 
 }

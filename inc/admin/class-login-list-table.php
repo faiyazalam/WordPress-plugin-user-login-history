@@ -306,7 +306,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
 		if ( $new_column_data ) {
 			return $new_column_data;
 		}
-		$country_code = in_array( strtolower( $item['country_code'] ), array( '', $this->get_unknown_symbol() ) ) ? $this->get_unknown_symbol() : $item['country_code'];
 
 		switch ( $column_name ) {
 
