@@ -117,7 +117,7 @@ final class Listing_Table_Csv {
 
 			$i++;
 		}
-		echo $csv->toString(); 
+		$csv->output(); 
 		die();
 	}
 

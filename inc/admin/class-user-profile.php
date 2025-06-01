@@ -28,11 +28,11 @@ class User_Profile extends User_Profile_Abstract {
 	public function show_extra_profile_fields( $user ) {
 		$this->set_user_id( $user->ID );
 		?>
-		<table class="faulh-form-table" id="<?php echo $this->plugin_name; ?>">
-			<tr class="<?php echo 'user-' . $this->get_usermeta_key_timezone() . '-wrap'; ?>">
-				<th><label for="<?php echo $this->get_usermeta_key_timezone(); ?>"><?php esc_html_e( 'Timezone', 'faulh' ); ?></label></th>
+		<table class="faulh-form-table" id="<?php echo esc_attr($this->plugin_name); ?>">
+			<tr class="<?php echo esc_attr('user-' . $this->get_usermeta_key_timezone() . '-wrap'); ?>">
+				<th><label for="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>"><?php esc_html_e( 'Timezone', 'faulh' ); ?></label></th>
 				<td>
-					<select required="required" id="<?php echo $this->get_usermeta_key_timezone(); ?>" name="<?php echo $this->get_usermeta_key_timezone(); ?>">
+					<select required="required" id="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>" name="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>">
 						<option value=""><?php esc_html_e( 'Select Timezone', 'faulh' ); ?></option>
 						<?php
 						Template_Helper::dropdown_timezones( $this->get_user_timezone() );
