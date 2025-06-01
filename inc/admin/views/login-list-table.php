@@ -15,11 +15,11 @@
 	<hr>
 	<div><?php require plugin_dir_path( dirname( __FILE__ ) ) . 'views/forms/filter.php'; ?></div>
 	<hr>
-	<div><?php echo $this->login_list_table->timezone_edit_link(); ?></div>
+	<div><?php echo wp_kses_post($this->login_list_table->timezone_edit_link()); ?></div>
 	<hr>
 	<div class="faulh_admin_table">
 		<form method="post">
-			<input type="hidden" name="<?php echo $this->login_list_table->get_bulk_action_form(); ?>" value="">
+			<input type="hidden" name="<?php echo esc_attr($this->login_list_table->get_bulk_action_form()); ?>" value="">
 			<div class="wrapper1">
 				<div class="content1"></div>
 			</div>

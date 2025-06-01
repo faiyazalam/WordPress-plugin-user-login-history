@@ -389,7 +389,7 @@ class Frontend_Login_List_Table {
 	 * Display the pagination link.
 	 */
 	private function display_pagination() {
-		echo $this->pagination_links;
+		echo wp_kses_post($this->pagination_links);
 	}
 
 	/**
@@ -454,7 +454,7 @@ class Frontend_Login_List_Table {
 			} else {
 				$column_header = $columns[ $allowed_column ];
 			}
-			echo "<th>$column_header</th>";
+			printf( '<th>%s</th>', wp_kses_post( $column_header ) );
 		}
 	}
 
@@ -545,7 +545,8 @@ class Frontend_Login_List_Table {
 	public function single_row_columns( $item ) {
 		$allowed_columns = $this->get_allowed_columns();
 		foreach ( $allowed_columns as $column_name ) {
-			echo '<td>' . $this->column_default( $item, $column_name ) . '</td>';
+			$column_content = $this->column_default( $item, $column_name );
+			echo "<td>".wp_kses_post( $column_content )."</td>";
 		}
 	}
 

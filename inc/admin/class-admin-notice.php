@@ -76,7 +76,7 @@ class Admin_Notice {
 		if ( false !== $notices ) {
 			foreach ( $notices as $notice ) {
 				if ( ! empty( $notice[1] && ! empty( $notice[0] ) ) ) {
-					echo '<div class="notice notice-' . $notice[1] . ' is-dismissible"><p>' . $notice[0] . '</p></div>';
+					echo '<div class="notice notice-' . esc_attr($notice[1]) . ' is-dismissible"><p>' . esc_html($notice[0]) . '</p></div>';
 				}
 			}
 			delete_transient( $this->transient_name );

@@ -9,9 +9,9 @@
  * @link     http://userloginhistory.com
  */
 ?>
-<div class="<?php echo $this->plugin_name . '-wrapper'; ?>">
+<div class="<?php echo esc_attr($this->plugin_name . '-wrapper'); ?>">
 	<?php do_action( 'faulh_public_before_search_form' ); ?>
-	<?php echo ! empty( $attributes['title'] ) ? "<div class='" . $this->plugin_name . "-listing_title'>" . $attributes['title'] . '</div>' : ''; ?>
+	<?php echo ! empty( $attributes['title'] ) ? "<div class='" . esc_attr($this->plugin_name) . "-listing_title'>" . esc_html($attributes['title']) . '</div>' : ''; ?>
 	<div><?php require plugin_dir_path( dirname( __FILE__ ) ) . 'views/forms/filter.php'; ?></div>
 	<?php do_action( 'faulh_public_after_search_form' ); ?>
 	<hr>
