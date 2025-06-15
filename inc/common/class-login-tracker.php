@@ -245,7 +245,7 @@ class Login_Tracker {
 		$this->login_status             = self::LOGIN_STATUS_BLOCK;
 		$this->current_loggedin_blog_id = get_current_blog_id();
 		wp_logout();
-		wp_die( $this->get_message_for_cross_blog_login() );
+		wp_die( esc_html($this->get_message_for_cross_blog_login()) );
 	}
 
 	/**

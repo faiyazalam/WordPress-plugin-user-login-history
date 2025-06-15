@@ -63,7 +63,7 @@ $all_features = array(
 $chunked_features = array_chunk( $all_features, 3 );
 ?>
 <div class="wrap">
-	<h1><?php echo NS\PLUGIN_NAME; ?> (<?php echo esc_html__( 'Pro Version', 'faulh' ); ?>) <?php echo esc_html__( 'Features', 'faulh' ); ?></h1>
+	<h1><?php echo esc_html(NS\PLUGIN_NAME); ?> (<?php echo esc_html__( 'Pro Version', 'faulh' ); ?>) <?php echo esc_html__( 'Features', 'faulh' ); ?></h1>
 	<br>
 
 	<div class="clearfix">
@@ -77,10 +77,10 @@ $chunked_features = array_chunk( $all_features, 3 );
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="box">  
-									<div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo $feature['icon']; ?>"></i></div></div>
-									<div class="heading-1 pull-left"><?php echo strtoupper( $feature['title'] ); ?></div>
+									<div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo esc_attr($feature['icon']); ?>"></i></div></div>
+									<div class="heading-1 pull-left"><?php echo esc_html(strtoupper( $feature['title'] )); ?></div>
 									<div class="clearfix"></div>
-									<div style="height: 100px" class="text"><?php echo $feature['description']; ?></div>
+									<div style="height: 100px" class="text"><?php echo esc_html($feature['description']); ?></div>
 								</div>  
 							</div>
 						</div>
@@ -92,8 +92,8 @@ $chunked_features = array_chunk( $all_features, 3 );
 			?>
 			<div class="row">
 				<div class="text-center">
-		<a href="<?php echo NS\PLUGIN_FEATURE_LINK ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'faulh' ); ?></a>
-		<a href="<?php echo NS\PLUGIN_GO_PRO_LINK ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'faulh' ); ?></a>
+		<a href="<?php echo esc_url(NS\PLUGIN_FEATURE_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'faulh' ); ?></a>
+		<a href="<?php echo esc_url(NS\PLUGIN_GO_PRO_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'faulh' ); ?></a>
 				</div>
 			</div>  
 		</div>

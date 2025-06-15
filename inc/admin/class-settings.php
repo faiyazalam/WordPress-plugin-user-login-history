@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Backend Functionality
  *
@@ -17,7 +18,8 @@ use User_Login_History as NS;
 /**
  * Admin specific settings.
  */
-class Settings {
+class Settings
+{
 
 	/**
 	 * The ID of this plugin.
@@ -47,7 +49,8 @@ class Settings {
 	 * @param string       $version       The version of this plugin.
 	 * @param Settings_Api $settings_api  The settings object.
 	 */
-	public function __construct( $plugin_name, $version, Settings_Api $settings_api ) {
+	public function __construct($plugin_name, $version, Settings_Api $settings_api)
+	{
 		$this->version      = $version;
 		$this->plugin_name  = $plugin_name;
 		$this->settings_api = $settings_api;
@@ -56,17 +59,19 @@ class Settings {
 	/**
 	 * Hooked with admin_init action.
 	 */
-	public function admin_init() {
-		$this->settings_api->set_sections( $this->get_settings_sections() );
-		$this->settings_api->set_fields( $this->get_settings_fields() );
+	public function admin_init()
+	{
+		$this->settings_api->set_sections($this->get_settings_sections());
+		$this->settings_api->set_fields($this->get_settings_fields());
 		$this->settings_api->admin_init();
 	}
 
 	/**
 	 * Hooked with admin_menu action.
 	 */
-	public function admin_menu() {
-		add_options_page( NS\PLUGIN_NAME, NS\PLUGIN_NAME, 'administrator', $this->plugin_name . '-settings', array( $this, 'plugin_page' ) );
+	public function admin_menu()
+	{
+		add_options_page(esc_html(NS\PLUGIN_NAME), esc_html(NS\PLUGIN_NAME), 'administrator', sanitize_key($this->plugin_name . '-settings'), array($this, 'plugin_page'));
 	}
 
 	/**
@@ -74,15 +79,16 @@ class Settings {
 	 *
 	 * @return array
 	 */
-	public function get_settings_sections() {
+	public function get_settings_sections()
+	{
 		$sections = array(
 			array(
 				'id'    => $this->plugin_name . '_basics',
-				'title' => esc_html__( 'Basic Settings', 'faulh' ),
+				'title' => esc_html__('Basic Settings', 'faulh'),
 			),
 			array(
 				'id'    => $this->plugin_name . '_advanced',
-				'title' => esc_html__( 'Advanced Settings', 'faulh' ),
+				'title' => esc_html__('Advanced Settings', 'faulh'),
 			),
 		);
 		return $sections;
@@ -93,35 +99,42 @@ class Settings {
 	 *
 	 * @return array
 	 */
-	public function get_settings_fields() {
+	public function get_settings_fields()
+	{
 		$settings_fields = array(
 			$this->plugin_name . '_basics'   => array(
 				array(
 					'name'              => 'is_status_online',
-					'label'             => esc_html__( 'Online', 'faulh' ),
-					'desc'              => esc_html__( 'Maximum number of minutes for online users. Default is', 'faulh' ) . ' ' . NS\DEFAULT_IS_STATUS_ONLINE_MIN,
+					'label'             => esc_html__('Online', 'faulh'),
+					'desc' => wp_sprintf(
+						esc_html__('Maximum number of minutes for online users. Default is %s', 'faulh'),
+						esc_html(NS\DEFAULT_IS_STATUS_ONLINE_MIN)
+					),
 					'min'               => 1,
 					'step'              => '1',
 					'type'              => 'number',
-					'default'           => NS\DEFAULT_IS_STATUS_ONLINE_MIN,
+					'default'           => esc_html(NS\DEFAULT_IS_STATUS_ONLINE_MIN),
 					'sanitize_callback' => 'absint',
 				),
 				array(
 					'name'              => 'is_status_idle',
-					'label'             => esc_html__( 'Idle', 'faulh' ),
-					'desc'              => esc_html__( 'Maximum number of minutes for idle users. This should be greater than that of online users. Default is', 'faulh' ) . ' ' . NS\DEFAULT_IS_STATUS_IDLE_MIN,
+					'label'             => esc_html__('Idle', 'faulh'),
+					'desc' => wp_sprintf(
+						esc_html__('Maximum number of minutes for idle users. This should be greater than that of online users. Default is %s', 'faulh'),
+						esc_html(NS\DEFAULT_IS_STATUS_IDLE_MIN)
+					),
 					'min'               => 1,
 					'step'              => '1',
 					'type'              => 'number',
-					'default'           => NS\DEFAULT_IS_STATUS_IDLE_MIN,
+					'default'           => esc_html(NS\DEFAULT_IS_STATUS_IDLE_MIN),
 					'sanitize_callback' => 'absint',
 				),
 			),
 			$this->plugin_name . '_advanced' => array(
 				array(
 					'name'    => 'is_geo_tracker_enabled',
-					'label'   => esc_html__( 'Geo Tracker', 'faulh' ) . '<br>' . esc_html__( '(Not Recommended)', 'faulh' ),
-					'desc'    => esc_html__( 'Enable tracking of country and timezone.', 'faulh' ) . '<br>' . esc_html__( 'This functionality is dependent on a free third-party API service, hence not recommended.', 'faulh' ),
+					'label'   => esc_html__('Geo Tracker', 'faulh') . '<br>' . esc_html__('(Not Recommended)', 'faulh'),
+					'desc'    => esc_html__('Enable tracking of country and timezone.', 'faulh') . '<br>' . esc_html__('This functionality is dependent on a free third-party API service, hence not recommended.', 'faulh'),
 					'type'    => 'checkbox',
 					'default' => false,
 				),
@@ -136,8 +149,9 @@ class Settings {
 	 *
 	 * @return mixed
 	 */
-	private function get_basic_settings() {
-		return get_option( $this->plugin_name . '_basics' );
+	private function get_basic_settings()
+	{
+		return get_option($this->plugin_name . '_basics');
 	}
 
 	/**
@@ -145,8 +159,9 @@ class Settings {
 	 *
 	 * @return mixed
 	 */
-	private function get_advanced_settings() {
-		return get_option( $this->plugin_name . '_advanced' );
+	private function get_advanced_settings()
+	{
+		return get_option($this->plugin_name . '_advanced');
 	}
 
 	/**
@@ -154,10 +169,11 @@ class Settings {
 	 *
 	 * @return array
 	 */
-	public function get_online_duration() {
+	public function get_online_duration()
+	{
 		$settings      = $this->get_basic_settings();
-		$minute_online = ! empty( $settings['is_status_online'] ) ? absint( $settings['is_status_online'] ) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-		$minute_idle   = ! empty( $settings['is_status_idle'] ) ? absint( $settings['is_status_idle'] ) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
+		$minute_online = ! empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
+		$minute_idle   = ! empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
 		return array(
 			'online' => $minute_online,
 			'idle'   => $minute_idle,
@@ -169,20 +185,21 @@ class Settings {
 	 *
 	 * @return bool
 	 */
-	public function is_geo_tracker_enabled() {
+	public function is_geo_tracker_enabled()
+	{
 		$options = $this->get_advanced_settings();
-		return ( ! empty( $options['is_geo_tracker_enabled'] ) && 'on' == $options['is_geo_tracker_enabled'] );
+		return (! empty($options['is_geo_tracker_enabled']) && 'on' == $options['is_geo_tracker_enabled']);
 	}
 
 	/**
 	 * Render the admin settings page.
 	 */
-	public function plugin_page() {
+	public function plugin_page()
+	{
 		echo '<div class="wrap">';
-		\User_Login_History\Inc\Common\Helpers\Template::head( esc_html__( 'Settings', 'faulh' ) );
+		\User_Login_History\Inc\Common\Helpers\Template::head(esc_html__('Settings', 'faulh'));
 		$this->settings_api->show_navigation();
 		$this->settings_api->show_forms();
 		echo '</div>';
 	}
-
 }

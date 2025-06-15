@@ -14,7 +14,7 @@
  * Plugin Name:       User Login History
  * Plugin URI:        http://userloginhistory.com/home/
  * Description:       Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
- * Version:           2.1.6
+ * Version:           2.1.7
  * Author:            Er Faiyaz Alam
  * Author URI:        http://userloginhistory.com/
  * License:           GPL-2.0+
@@ -43,7 +43,7 @@ define( __NAMESPACE__ . '\NS', __NAMESPACE__ . '\\' );
 
 define( NS . 'USER_LOGIN_HISTORY', 'faulh' );
 
-define( NS . 'PLUGIN_VERSION', '2.1.6' );
+define( NS . 'PLUGIN_VERSION', '2.1.7' );
 
 define( NS . 'USER_LOGIN_HISTORY_DIR', plugin_dir_path( __FILE__ ) );
 

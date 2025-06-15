@@ -14,8 +14,8 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 <div class="faulh_container">
 	<form id="filter_form" method="get">
 		<input type="hidden" name="page" value="<?php echo esc_attr( $_GET['page'] ); ?>" />
-		<input type="hidden" name="<?php echo $this->login_list_table->get_csv_field_name(); ?>" id="csv" value="">
-		<input type="hidden" name="_wpnonce" id="csv_nonce" value="<?php echo wp_create_nonce( $this->login_list_table->get_csv_nonce_name() ); ?>">
+		<input type="hidden" name="<?php echo esc_attr($this->login_list_table->get_csv_field_name()); ?>" id="csv" value="">
+		<input type="hidden" name="_wpnonce" id="csv_nonce" value="<?php echo esc_attr(wp_create_nonce( $this->login_list_table->get_csv_nonce_name() )); ?>">
 		<div class="basic_search">
 			<input class="date-input" readonly autocomplete="off" placeholder="<?php esc_html_e( 'From', 'faulh' ); ?>" id="date_from" name="date_from" value="<?php echo isset( $_GET['date_from'] ) ? esc_attr( $_GET['date_from'] ) : ''; ?>" >
 			<input class="date-input" readonly autocomplete="off" placeholder="<?php esc_html_e( 'To', 'faulh' ); ?>" name="date_to" id="date_to" value="<?php echo isset( $_GET['date_to'] ) ? esc_attr( $_GET['date_to'] ) : ''; ?>" >
@@ -74,7 +74,7 @@ use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 			<a class="faulh-cancel-btn" href="<?php echo esc_url( 'admin.php?page=' . $_GET['page'] ); ?>"><?php esc_html_e( 'CANCEL', 'faulh' ); ?></a>
 			<input id="submit" type="submit" name="submit" value="<?php esc_html_e( 'FILTER', 'faulh' ); ?>" />
 			<a id="download_csv_link" href="javascript::void(0)"><?php esc_html_e( 'DOWNLOAD CSV', 'faulh' ); ?></a> 
-			<a id="<?php echo $this->plugin_name; ?>_show_hide_advanced_search" href="#"><?php esc_html_e( 'Show Advanced Filters', 'faulh' ); ?></a>
+			<a id="<?php echo esc_attr($this->plugin_name); ?>_show_hide_advanced_search" href="#"><?php esc_html_e( 'Show Advanced Filters', 'faulh' ); ?></a>
 		</fieldset>
 
 	</form>
