@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login log,login activity,brute force indicator,security,history,tool
 Requires at least: 5.0.0
 Requires PHP: 8.1.2
-Tested up to: 6.5.5
+Tested up to: 6.8.1
 Stable tag: 2.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -216,6 +216,7 @@ It means that:
 = 2.1.7 (15th June 2025) =
 
 * Fixed potential security issues by properly escaping all dynamic output.
+* Code refactoring.
 
 = 2.1.6 (1st October 2024) =
 
