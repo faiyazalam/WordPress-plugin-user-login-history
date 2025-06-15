@@ -215,7 +215,7 @@ It means that:
 
 = 2.1.7 (15th June 2025) =
 
-* Code refactoring.
+* Fixed potential security issues by properly escaping all dynamic output.
 
 = 2.1.6 (1st October 2024) =
 
