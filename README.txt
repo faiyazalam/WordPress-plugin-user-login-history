@@ -4,8 +4,8 @@ Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login log,login activity,brute force indicator,security,history,tool
 Requires at least: 5.0.0
 Requires PHP: 8.1.2
-Tested up to: 6.8.1
-Stable tag: 2.1.7
+Tested up to: 6.9
+Stable tag: 2.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -212,6 +212,12 @@ It means that:
 7. Shortcode - User login list table for frontend
 
 == Changelog ==
+
+= 2.1.8 (6th March 2026) =
+
+* [Security] Improved SQL queries against injection attacks on the network admin login listing page.
+* [UI] Refined admin login listing page styles.
+
 
 = 2.1.7 (15th June 2025) =
 
