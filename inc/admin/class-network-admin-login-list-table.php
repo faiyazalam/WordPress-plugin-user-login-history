@@ -67,7 +67,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 * @return array
 	 */
 	private function get_blog_ids_for_where_clause() {
-		return ! empty( $_GET['blog_id'] ) && $_GET['blog_id'] > 0 ? array( $_GET['blog_id'] ) : Db_Helper::get_blog_ids_by_site_id();
+		return ! empty( $_GET['blog_id'] ) && is_numeric($_GET['blog_id']) && $_GET['blog_id'] > 0 ? array( absint( $_GET['blog_id'] ) ) : Db_Helper::get_blog_ids_by_site_id();
 	}
 
 	/**
@@ -81,13 +81,22 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		$i        = 0;
 		$blog_ids = $this->get_blog_ids_for_where_clause();
+
 		foreach ( $blog_ids as $blog_id ) {
+			$blog_id = absint( $blog_id );
+			if ( 0 === $blog_id ) {
+				continue;
+			}
+
 			$blog_prefix = $wpdb->get_blog_prefix( $blog_id );
 			$table       = $blog_prefix . $this->table;
 
 			if ( ! $this->is_plugin_active_for_network && ! Db_Helper::is_table_exist( $table ) ) {
 				continue;
 			}
+
+			$table = '`' . str_replace( '`', '``', $table ) . '`';
+
 
 			if ( 0 < $i ) {
 				$this->rows_sql  .= ' UNION ALL';
@@ -289,12 +298,14 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			case 'bulk-delete-all-admin':
 				Db_Helper::query( 'START TRANSACTION' );
 				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
-				foreach ( $blog_ids as $blog_id ) {
-					switch_to_blog( $blog_id );
-					$status = Db_Helper::truncate_table( $this->table );
-					restore_current_blog();
-					if ( ! $status ) {
-						break;
+				if(is_array($blog_ids)  && !empty( $blog_ids ) ) {
+					foreach ( $blog_ids as $blog_id ) {
+						switch_to_blog( $blog_id );
+						$status = Db_Helper::truncate_table( $this->table );
+						restore_current_blog();
+						if ( ! $status ) {
+							break;
+						}
 					}
 				}
 
