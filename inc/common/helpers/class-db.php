@@ -161,12 +161,12 @@ class Db {
 	 * Get a column value after running a given sql query.
 	 *
 	 * @param string $sql The sql query.
-	 * @return boolean|array
+	 * @return boolean
 	 */
 	public static function get_col( $sql = '' ) {
 
 		if ( empty( $sql ) ) {
-			return false;
+			return;
 		}
 
 		global $wpdb;
@@ -185,11 +185,12 @@ class Db {
 	 * Get blog ids by site id.
 	 *
 	 * @param int $site_id The site id.
-	 * @return boolean|array
+	 * @return boolean
 	 */
 	public static function get_blog_ids_by_site_id( $site_id = null ) {
 
 		if ( is_null( $site_id ) ) {
+
 			$site_id = get_current_network_id();
 		}
 
