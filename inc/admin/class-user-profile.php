@@ -30,15 +30,15 @@ class User_Profile extends User_Profile_Abstract {
 		?>
 		<table class="faulh-form-table" id="<?php echo esc_attr($this->plugin_name); ?>">
 			<tr class="<?php echo esc_attr('user-' . $this->get_usermeta_key_timezone() . '-wrap'); ?>">
-				<th><label for="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>"><?php esc_html_e( 'Timezone', 'faulh' ); ?></label></th>
+				<th><label for="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>"><?php esc_html_e( 'Timezone', 'user-login-history' ); ?></label></th>
 				<td>
 					<select required="required" id="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>" name="<?php echo esc_attr($this->get_usermeta_key_timezone()); ?>">
-						<option value=""><?php esc_html_e( 'Select Timezone', 'faulh' ); ?></option>
+						<option value=""><?php esc_html_e( 'Select Timezone', 'user-login-history' ); ?></option>
 						<?php
 						Template_Helper::dropdown_timezones( $this->get_user_timezone() );
 						?>
 					</select>
-					<div><?php esc_html_e( 'This is used to convert date-time (e.g. login time, last seen time etc.) on the user login history listing table.', 'faulh' ); ?></div>
+					<div><?php esc_html_e( 'This is used to convert date-time (e.g. login time, last seen time etc.) on the user login history listing table.', 'user-login-history' ); ?></div>
 				</td>
 			</tr>
 

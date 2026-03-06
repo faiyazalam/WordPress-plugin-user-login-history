@@ -149,12 +149,12 @@ class Admin {
 				$this->plugin_name . '-admin',
 				'admin_custom_object',
 				array(
-					'delete_confirm_message'     => esc_html__( 'Are your sure?', 'faulh' ),
-					'invalid_date_range_message' => esc_html__( 'Please provide a valid date range.', 'faulh' ),
+					'delete_confirm_message'     => esc_html__( 'Are your sure?', 'user-login-history' ),
+					'invalid_date_range_message' => esc_html__( 'Please provide a valid date range.', 'user-login-history' ),
 					'admin_url'                  => admin_url(),
 					'plugin_name'                => $this->plugin_name,
-					'show_advanced_filters'      => esc_html__( 'Show Advanced Filters', 'faulh' ),
-					'hide_advanced_filters'      => esc_html__( 'Hide Advanced Filters', 'faulh' ),
+					'show_advanced_filters'      => esc_html__( 'Show Advanced Filters', 'user-login-history' ),
+					'hide_advanced_filters'      => esc_html__( 'Hide Advanced Filters', 'user-login-history' ),
 				)
 			);
 		}
@@ -213,7 +213,7 @@ class Admin {
 
 		$menu_slug = $this->get_plugin_login_list_page_slug();
 		$hook      = add_menu_page(
-			esc_html__( 'Login List', 'faulh' ),
+			esc_html__( 'Login List', 'user-login-history' ),
 			NS\PLUGIN_NAME,
 			'administrator',
 			$menu_slug,
@@ -221,9 +221,9 @@ class Admin {
 			plugin_dir_url( __FILE__ ) . 'images/icon.png',
 			30
 		);
-		add_submenu_page( $menu_slug, esc_html__( 'Login List', 'faulh' ), esc_html__( 'Login List', 'faulh' ), 'administrator', $menu_slug, array( $this, 'render_login_list' ) );
-		add_submenu_page( $menu_slug, esc_html__( 'Pro Features', 'faulh' ), esc_html__( 'Pro Features', 'faulh' ), 'administrator', $this->plugin_name . '-pro', array( $this, 'render_pro' ) );
-		add_submenu_page( $menu_slug, esc_html__( 'More Plugins', 'faulh' ), esc_html__( 'More Plugins', 'faulh' ), 'administrator', $this->plugin_name . '-more-plugins', array( $this, 'render_more_plugins' ) );
+		add_submenu_page( $menu_slug, esc_html__( 'Login List', 'user-login-history' ), esc_html__( 'Login List', 'user-login-history' ), 'administrator', $menu_slug, array( $this, 'render_login_list' ) );
+		add_submenu_page( $menu_slug, esc_html__( 'Pro Features', 'user-login-history' ), esc_html__( 'Pro Features', 'user-login-history' ), 'administrator', $this->plugin_name . '-pro', array( $this, 'render_pro' ) );
+		add_submenu_page( $menu_slug, esc_html__( 'More Plugins', 'user-login-history' ), esc_html__( 'More Plugins', 'user-login-history' ), 'administrator', $this->plugin_name . '-more-plugins', array( $this, 'render_more_plugins' ) );
 
 		add_action( "load-$hook", array( $this, 'screen_option' ) );
 	}
@@ -268,7 +268,7 @@ class Admin {
 	public function screen_option() {
 		$option = 'per_page';
 		$args   = array(
-			'label'   => __( 'Show Records Per Page', 'faulh' ),
+			'label'   => __( 'Show Records Per Page', 'user-login-history' ),
 			'default' => 20,
 			'option'  => $this->plugin_name . '_rows_per_page',
 		);
@@ -328,7 +328,7 @@ class Admin {
  
  public function add_action_links($actions) {
         $links = array(
-            sprintf('<a target="_blank" href="%s">%s</a>', esc_url(NS\PLUGIN_GO_PRO_LINK), esc_html__('Buy Pro', 'faulh')),
+            sprintf('<a target="_blank" href="%s">%s</a>', esc_url(NS\PLUGIN_GO_PRO_LINK), esc_html__('Buy Pro', 'user-login-history')),
         );
         return array_merge($actions, $links);
     }

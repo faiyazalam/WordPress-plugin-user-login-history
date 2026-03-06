@@ -99,7 +99,7 @@ class Frontend {
 			$this->plugin_name . '-public-custom.js',
 			'public_custom_object',
 			array(
-				'invalid_date_range_message' => esc_html__( 'Please provide a valid date range.', 'faulh' ),
+				'invalid_date_range_message' => esc_html__( 'Please provide a valid date range.', 'user-login-history' ),
 			)
 		);
 	}

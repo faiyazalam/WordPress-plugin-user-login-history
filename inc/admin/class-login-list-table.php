@@ -180,8 +180,8 @@ abstract class Login_List_Table extends List_Table_Abstract {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'bulk-delete'           => esc_html__( 'Delete Selected Records', 'faulh' ),
-			'bulk-delete-all-admin' => esc_html__( 'Delete All Records', 'faulh' ),
+			'bulk-delete'           => esc_html__( 'Delete Selected Records', 'user-login-history' ),
+			'bulk-delete-all-admin' => esc_html__( 'Delete All Records', 'user-login-history' ),
 		);
 
 		return $actions;
@@ -193,21 +193,21 @@ abstract class Login_List_Table extends List_Table_Abstract {
 	public function get_columns() {
 		return array(
 			'cb'               => '<input type="checkbox" />',
-			'user_id'          => esc_html__( 'User ID', 'faulh' ),
-			'username'         => esc_html__( 'Username', 'faulh' ),
-			'role'             => esc_html__( 'Role', 'faulh' ),
-			'old_role'         => esc_html__( 'Old Role', 'faulh' ),
-			'browser'          => esc_html__( 'Browser', 'faulh' ),
-			'operating_system' => esc_html__( 'Operating System', 'faulh' ),
-			'ip_address'       => esc_html__( 'IP Address', 'faulh' ),
-			'timezone'         => esc_html__( 'Timezone', 'faulh' ),
-			'country_name'     => esc_html__( 'Country', 'faulh' ),
-			'user_agent'       => esc_html__( 'User Agent', 'faulh' ),
-			'duration'         => esc_html__( 'Duration', 'faulh' ),
-			'time_last_seen'   => esc_html__( 'Last Seen', 'faulh' ),
-			'time_login'       => esc_html__( 'Login', 'faulh' ),
-			'time_logout'      => esc_html__( 'Logout', 'faulh' ),
-			'login_status'     => esc_html__( 'Login Status', 'faulh' ),
+			'user_id'          => esc_html__( 'User ID', 'user-login-history' ),
+			'username'         => esc_html__( 'Username', 'user-login-history' ),
+			'role'             => esc_html__( 'Role', 'user-login-history' ),
+			'old_role'         => esc_html__( 'Old Role', 'user-login-history' ),
+			'browser'          => esc_html__( 'Browser', 'user-login-history' ),
+			'operating_system' => esc_html__( 'Operating System', 'user-login-history' ),
+			'ip_address'       => esc_html__( 'IP Address', 'user-login-history' ),
+			'timezone'         => esc_html__( 'Timezone', 'user-login-history' ),
+			'country_name'     => esc_html__( 'Country', 'user-login-history' ),
+			'user_agent'       => esc_html__( 'User Agent', 'user-login-history' ),
+			'duration'         => esc_html__( 'Duration', 'user-login-history' ),
+			'time_last_seen'   => esc_html__( 'Last Seen', 'user-login-history' ),
+			'time_login'       => esc_html__( 'Login', 'user-login-history' ),
+			'time_logout'      => esc_html__( 'Logout', 'user-login-history' ),
+			'login_status'     => esc_html__( 'Login Status', 'user-login-history' ),
 		);
 	}
 
@@ -257,7 +257,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
 		$human_time_diff = human_time_diff( $time_last_seen_unix );
 		$is_online_str   = $this->get_online_status( $time_last_seen_unix, $item['login_status'] );
-		return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . ' ' . esc_html__( 'ago', 'faulh' ) . '</div>';
+		return "<div class='is_status_$is_online_str' title = '$time_last_seen'>" . $human_time_diff . ' ' . esc_html__( 'ago', 'user-login-history' ) . '</div>';
 	}
 
 	/**
@@ -392,7 +392,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 					return $this->get_unknown_symbol();
 				}
 
-				return human_time_diff( $time_last_seen_unix ) . ' ' . esc_html__( 'ago', 'faulh' ) . " ($time_last_seen)";
+				return human_time_diff( $time_last_seen_unix ) . ' ' . esc_html__( 'ago', 'user-login-history' ) . " ($time_last_seen)";
 
 			case 'user_agent':
 				return $this->is_empty( $item[ $column_name ] ) ? $this->get_unknown_symbol() : esc_html( $item[ $column_name ] );

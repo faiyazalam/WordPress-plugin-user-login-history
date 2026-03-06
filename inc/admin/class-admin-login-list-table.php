@@ -106,7 +106,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 
 		$delete_nonce = wp_create_nonce( $this->delete_action_nonce );
 		$actions      = array(
-			'delete' => sprintf( '<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">%s</a>', esc_attr( $_REQUEST['page'] ), $this->delete_action, absint( $item['id'] ), $delete_nonce, esc_html__( 'Delete', 'faulh' ) ),
+			'delete' => sprintf( '<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">%s</a>', esc_attr( $_REQUEST['page'] ), $this->delete_action, absint( $item['id'] ), $delete_nonce, esc_html__( 'Delete', 'user-login-history' ) ),
 		);
 		return $title . $this->row_actions( $actions );
 	}
@@ -133,7 +133,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			return;
 		}
 
-		$message = esc_html__( 'Please try again.', 'faulh' );
+		$message = esc_html__( 'Please try again.', 'user-login-history' );
 		$status  = false;
 
 		switch ( $this->current_action() ) {
@@ -142,7 +142,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 				if ( ! empty( $_POST['bulk-action-ids'] ) ) {
 					$status = Db_Helper::delete_rows_by_table_and_ids( $this->table, $_POST['bulk-action-ids'] );
 					if ( $status ) {
-						$message = esc_html__( 'Selected record(s) deleted.', 'faulh' );
+						$message = esc_html__( 'Selected record(s) deleted.', 'user-login-history' );
 					}
 				}
 
@@ -151,7 +151,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			case 'bulk-delete-all-admin':
 				$status = Db_Helper::truncate_table( $this->table );
 				if ( $status ) {
-					$message = esc_html__( 'All record(s) deleted.', 'faulh' );
+					$message = esc_html__( 'All record(s) deleted.', 'user-login-history' );
 				}
 				break;
 		}
@@ -173,12 +173,12 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 
 		$id      = absint( $_GET['record_id'] );
 		$status  = false;
-		$message = esc_html__( 'Please try again.', 'faulh' );
+		$message = esc_html__( 'Please try again.', 'user-login-history' );
 		switch ( $this->current_action() ) {
 			case $this->delete_action:
 				$status = Db_Helper::delete_rows_by_table_and_ids( $this->table, array( $id ) );
 				if ( $status ) {
-					$message = esc_html__( 'Record deleted.', 'faulh' );
+					$message = esc_html__( 'Record deleted.', 'user-login-history' );
 				}
 				break;
 		}

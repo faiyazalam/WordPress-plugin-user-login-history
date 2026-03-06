@@ -218,8 +218,8 @@ class Frontend_Login_List_Table {
 			array(
 				'base'      => add_query_arg( self::DEFALUT_QUERY_ARG_PAGE_NUMBER, '%#%' ),
 				'format'    => '',
-				'prev_text' => esc_html__( '&laquo;', 'faulh' ),
-				'next_text' => esc_html__( '&raquo;', 'faulh' ),
+				'prev_text' => esc_html__( '&laquo;', 'user-login-history' ),
+				'next_text' => esc_html__( '&raquo;', 'user-login-history' ),
 				'total'     => ceil( $this->record_count() / $this->limit ),
 				'current'   => $this->page_number,
 			)
@@ -340,21 +340,21 @@ class Frontend_Login_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'user_id'          => esc_html__( 'User ID', 'faulh' ),
-			'username'         => esc_html__( 'Username', 'faulh' ),
-			'role'             => esc_html__( 'Role', 'faulh' ),
-			'old_role'         => esc_html__( 'Old Role', 'faulh' ),
-			'browser'          => esc_html__( 'Browser', 'faulh' ),
-			'operating_system' => esc_html__( 'Operating System', 'faulh' ),
-			'ip_address'       => esc_html__( 'IP Address', 'faulh' ),
-			'timezone'         => esc_html__( 'Timezone', 'faulh' ),
-			'country_name'     => esc_html__( 'Country', 'faulh' ),
-			'user_agent'       => esc_html__( 'User Agent', 'faulh' ),
-			'duration'         => esc_html__( 'Duration', 'faulh' ),
-			'time_last_seen'   => esc_html__( 'Last Seen', 'faulh' ),
-			'time_login'       => esc_html__( 'Login', 'faulh' ),
-			'time_logout'      => esc_html__( 'Logout', 'faulh' ),
-			'login_status'     => esc_html__( 'Login Status', 'faulh' ),
+			'user_id'          => esc_html__( 'User ID', 'user-login-history' ),
+			'username'         => esc_html__( 'Username', 'user-login-history' ),
+			'role'             => esc_html__( 'Role', 'user-login-history' ),
+			'old_role'         => esc_html__( 'Old Role', 'user-login-history' ),
+			'browser'          => esc_html__( 'Browser', 'user-login-history' ),
+			'operating_system' => esc_html__( 'Operating System', 'user-login-history' ),
+			'ip_address'       => esc_html__( 'IP Address', 'user-login-history' ),
+			'timezone'         => esc_html__( 'Timezone', 'user-login-history' ),
+			'country_name'     => esc_html__( 'Country', 'user-login-history' ),
+			'user_agent'       => esc_html__( 'User Agent', 'user-login-history' ),
+			'duration'         => esc_html__( 'Duration', 'user-login-history' ),
+			'time_last_seen'   => esc_html__( 'Last Seen', 'user-login-history' ),
+			'time_login'       => esc_html__( 'Login', 'user-login-history' ),
+			'time_logout'      => esc_html__( 'Logout', 'user-login-history' ),
+			'login_status'     => esc_html__( 'Login Status', 'user-login-history' ),
 		);
   
 		return apply_filters( 'faulh_public_get_columns', $columns );
@@ -466,7 +466,7 @@ class Frontend_Login_List_Table {
 	public function display() {
 		$allowed_columns = $this->get_allowed_columns();
 		if ( empty( $allowed_columns ) ) {
-			esc_html_e( 'No columns is selected to display.', 'faulh' );
+			esc_html_e( 'No columns is selected to display.', 'user-login-history' );
 			return;
 		}
 		?>
@@ -523,7 +523,7 @@ class Frontend_Login_List_Table {
 	 * Message to be displayed when there are no items
 	 */
 	public function no_items() {
-		esc_html_e( 'No items found.', 'faulh' );
+		esc_html_e( 'No items found.', 'user-login-history' );
 	}
 
 	/**
@@ -660,7 +660,7 @@ class Frontend_Login_List_Table {
 					return $unknown_symbol;
 				}
 				$human_time_diff = human_time_diff( $time_last_seen_unix );
-				return "<div title = '$time_last_seen'>" . $human_time_diff . ' ' . esc_html__( 'ago', 'faulh' ) . '</div>';
+				return "<div title = '$time_last_seen'>" . $human_time_diff . ' ' . esc_html__( 'ago', 'user-login-history' ) . '</div>';
 
 			case 'duration':
 				return human_time_diff( strtotime( $item['time_login'] ), strtotime( $item['time_last_seen'] ) );
