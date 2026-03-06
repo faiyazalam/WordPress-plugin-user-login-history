@@ -106,7 +106,8 @@ class Settings
 				array(
 					'name'              => 'is_status_online',
 					'label'             => esc_html__('Online', 'user-login-history'),
-					'desc' => wp_sprintf(
+					'desc'              => wp_sprintf(
+						/* translators: %s: Default online timeout in minutes. */
 						esc_html__('Maximum number of minutes for online users. Default is %s', 'user-login-history'),
 						esc_html(NS\DEFAULT_IS_STATUS_ONLINE_MIN)
 					),
@@ -119,7 +120,8 @@ class Settings
 				array(
 					'name'              => 'is_status_idle',
 					'label'             => esc_html__('Idle', 'user-login-history'),
-					'desc' => wp_sprintf(
+					'desc'              => wp_sprintf(
+						/* translators: %s: Default idle timeout in minutes. */
 						esc_html__('Maximum number of minutes for idle users. This should be greater than that of online users. Default is %s', 'user-login-history'),
 						esc_html(NS\DEFAULT_IS_STATUS_IDLE_MIN)
 					),

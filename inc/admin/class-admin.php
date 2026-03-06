@@ -143,8 +143,7 @@ class Admin {
 	 */
 	private function enqueue_scripts_for_plugin_login_list_page() {
 		if ( $this->is_plugin_login_list_page() ) {
-			wp_enqueue_script( $this->plugin_name . '-admin-jquery-ui.min', plugin_dir_url( __FILE__ ) . 'js/jquery-ui.min.js', array(), $this->version, 'all' );
-			wp_enqueue_script( $this->plugin_name . '-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array(), $this->version, 'all' );
+			wp_enqueue_script( $this->plugin_name . '-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery', 'jquery-ui-datepicker'), $this->version, 'all' );
 			wp_localize_script(
 				$this->plugin_name . '-admin',
 				'admin_custom_object',
