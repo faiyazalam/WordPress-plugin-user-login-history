@@ -25,6 +25,8 @@ use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Frontend\Frontend;
 use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
 
+if (! defined('ABSPATH')) exit;
+
 /**
  * The core plugin class.
  * Defines internationalization, admin-specific hooks, and public-facing site hooks.

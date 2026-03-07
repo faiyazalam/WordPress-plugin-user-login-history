@@ -8,6 +8,7 @@
  * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  * @link     http://userloginhistory.com
  */
+if (! defined('ABSPATH')) exit;
 ?>
 <div class="<?php echo esc_attr($this->plugin_name . '-wrapper'); ?>">
 	<?php do_action( 'faulh_public_before_search_form' ); ?>

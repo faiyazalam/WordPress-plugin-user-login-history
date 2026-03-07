@@ -10,6 +10,7 @@
  */
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+if (! defined('ABSPATH')) exit;
 ?>
 <div class="faulh_container">
 	<form id="filter_form" method="get">

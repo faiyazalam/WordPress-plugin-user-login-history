@@ -11,6 +11,8 @@
 
 namespace User_Login_History\Inc\Core;
 
+if (! defined('ABSPATH')) exit;
+
 /**
  * Define the internationalization functionality.
  *

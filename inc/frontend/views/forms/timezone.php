@@ -10,6 +10,7 @@
  */
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+if (! defined('ABSPATH')) exit;
 ?>
 <form method="post" id="<?php echo esc_attr($this->plugin_name); ?>_update_user_timezone">
 	<fieldset>

@@ -8,7 +8,7 @@
  * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  * @link     http://userloginhistory.com
  */
-
+if (! defined('ABSPATH')) exit;
 ?>
 <div class="wrap">
 	<?php \User_Login_History\Inc\Common\Helpers\Template::head( esc_html__( 'Login List', 'user-login-history' ) ); ?>

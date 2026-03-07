@@ -10,6 +10,7 @@
  */
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+if (! defined('ABSPATH')) exit;
 ?>
 <div class="wrap">
 	<?php Template_Helper::head( esc_html__( 'Network Settings', 'user-login-history' ) ); ?>

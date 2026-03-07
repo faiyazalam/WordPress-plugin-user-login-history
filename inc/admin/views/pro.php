@@ -10,6 +10,7 @@
  */
 
 use User_Login_History as NS;
+if (! defined('ABSPATH')) exit;
 ?>
 <?php
 $all_features = array(

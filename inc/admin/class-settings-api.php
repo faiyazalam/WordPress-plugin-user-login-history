@@ -12,7 +12,7 @@ namespace User_Login_History\Inc\Admin;
  * @link https://tareq.co Tareq Hasan
  * @example example/oop-example.php How to use the class
  */
-
+if (! defined('ABSPATH')) exit;
 class Settings_Api {
 
 	/**

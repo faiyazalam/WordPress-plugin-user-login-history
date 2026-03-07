@@ -22,6 +22,7 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Admin\Settings as Admin_Settings;
 
+if (! defined('ABSPATH')) exit;
 /**
  * Backend Functionality.
  */
