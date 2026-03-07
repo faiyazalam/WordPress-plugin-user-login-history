@@ -58,7 +58,6 @@ if ( ! function_exists( 'faulh_delete_user_metadata' ) ) {
 	 * Delete the user metadata.
 	 */
 	function faulh_delete_user_metadata() {
-		global $wpdb;
 		$plugin_name = 'faulh';
 
 		$user_meta_keys = array(
@@ -68,12 +67,8 @@ if ( ! function_exists( 'faulh_delete_user_metadata' ) ) {
 			'managetoplevel_page_' . $plugin_name . '-login-listingcolumnshidden',
 		);
 
-		$sql_in = "'" . implode( "', '", $user_meta_keys ) . "'";
-
-		$wpdb->query( "DELETE FROM $wpdb->usermeta WHERE meta_key IN ($sql_in)" );
-
-		if ( $wpdb->last_error ) {
-			faulh_error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query );
+		foreach ( $user_meta_keys as $user_meta_key ) {
+			delete_metadata( 'user', 0, $user_meta_key, '', true );
 		}
 	}
 }
@@ -85,45 +80,9 @@ if ( ! function_exists( 'faulh_drop_tables' ) ) {
 	 */
 	function faulh_drop_tables() {
 		global $wpdb;
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'fa_user_logins' );
-
-		if ( $wpdb->last_error ) {
-			faulh_error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query );
-		}
+		$wpdb->query($wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . 'fa_user_logins' ));
 	}
 }
-
-if ( ! function_exists( 'faulh_get_blogs_of_current_network' ) ) {
-
-	/**
-	 * Get blogs of the current network.
-	 *
-	 * @return mixed
-	 */
-	function faulh_get_blogs_of_current_network() {
-		global $wpdb;
-		$sql    = "SELECT blog_id FROM $wpdb->blogs WHERE site_id = " . get_current_network_id() . '  ORDER BY blog_id ASC';
-		$result = $wpdb->get_col( $sql );
-		if ( $wpdb->last_error ) {
-			faulh_error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query );
-		}
-		return $result;
-	}
-}
-
-if ( ! function_exists( 'faulh_error_log' ) ) {
-
-	/**
-	 * Log the error message.
-	 *
-	 * @param string $message The message.
-	 */
-	function faulh_error_log( $message = '' ) {
-		ini_set( 'error_log', WP_CONTENT_DIR . '/user-login-history.log' );
-		error_log( 'Error While Uninstalling the plugin: ' . $message );
-	}
-}
-
 
 if ( ! function_exists( 'faulh_uninstall_plugin' ) ) {
 
@@ -134,7 +93,9 @@ if ( ! function_exists( 'faulh_uninstall_plugin' ) ) {
 		faulh_delete_user_metadata();
 
 		if ( is_multisite() ) {
-			$blog_ids = faulh_get_blogs_of_current_network();
+			$blog_ids = get_sites([
+				'fields' => 'ids',
+			]);
 			foreach ( $blog_ids as $blog_id ) {
 				switch_to_blog( $blog_id );
 				faulh_delete_options();

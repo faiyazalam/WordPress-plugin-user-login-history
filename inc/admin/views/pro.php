@@ -63,7 +63,7 @@ $all_features = array(
 $chunked_features = array_chunk( $all_features, 3 );
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html(NS\PLUGIN_NAME); ?> (<?php echo esc_html__( 'Pro Version', 'faulh' ); ?>) <?php echo esc_html__( 'Features', 'faulh' ); ?></h1>
+	<h1><?php echo esc_html(NS\PLUGIN_NAME); ?> (<?php echo esc_html__( 'Pro Version', 'user-login-history' ); ?>) <?php echo esc_html__( 'Features', 'user-login-history' ); ?></h1>
 	<br>
 
 	<div class="clearfix">
@@ -92,8 +92,8 @@ $chunked_features = array_chunk( $all_features, 3 );
 			?>
 			<div class="row">
 				<div class="text-center">
-		<a href="<?php echo esc_url(NS\PLUGIN_FEATURE_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'faulh' ); ?></a>
-		<a href="<?php echo esc_url(NS\PLUGIN_GO_PRO_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'faulh' ); ?></a>
+		<a href="<?php echo esc_url(NS\PLUGIN_FEATURE_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'user-login-history' ); ?></a>
+		<a href="<?php echo esc_url(NS\PLUGIN_GO_PRO_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'user-login-history' ); ?></a>
 				</div>
 			</div>  
 		</div>

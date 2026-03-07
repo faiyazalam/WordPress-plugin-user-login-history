@@ -18,12 +18,12 @@
     }
 </style>
 <div class="wrap">
-    <h1><?php echo esc_html__('More Useful Plugins', 'faulh'); ?></h1>
+    <h1><?php echo esc_html__('More Useful Plugins', 'user-login-history'); ?></h1>
     <div class="plugin-list">
         <div class="plugin-item">
-            <h2><?php echo esc_html__('Countera - Track post view count by user and date for better insights.', 'faulh'); ?></h2>
-            <p><?php echo esc_html__('Countera is a lightweight and efficient plugin that helps you track and display the number of views each of your posts receives.', 'faulh'); ?></p>
-            <a target="_blank" href="<?php echo esc_url('https://wordpress.org/plugins/countera/'); ?>" class="button button-primary"><?php esc_html_e('Free Download', 'faulh'); ?></a>
+            <h2><?php echo esc_html__('Countera - Track post view count by user and date for better insights.', 'user-login-history'); ?></h2>
+            <p><?php echo esc_html__('Countera is a lightweight and efficient plugin that helps you track and display the number of views each of your posts receives.', 'user-login-history'); ?></p>
+            <a target="_blank" href="<?php echo esc_url('https://wordpress.org/plugins/countera/'); ?>" class="button button-primary"><?php esc_html_e('Free Download', 'user-login-history'); ?></a>
         </div>       
     </div>
 </div>

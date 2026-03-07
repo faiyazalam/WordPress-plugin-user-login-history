@@ -151,10 +151,10 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		$columns = array_merge(
 			parent::get_columns(),
 			array(
-				'is_super_admin' => esc_html__( 'Super Admin', 'faulh' ),
+				'is_super_admin' => esc_html__( 'Super Admin', 'user-login-history' ),
 			)
 		);
-		$columns = Tool_Helper::array_insert_after( $columns, 'user_id', array( 'blog_id' => esc_html__( 'Blog ID', 'faulh' ) ) );
+		$columns = Tool_Helper::array_insert_after( $columns, 'user_id', array( 'blog_id' => esc_html__( 'Blog ID', 'user-login-history' ) ) );
 		return apply_filters( $this->plugin_name . '_network_admin_login_list_get_columns', $columns );
 	}
 
@@ -246,7 +246,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		$delete_nonce = wp_create_nonce( $this->delete_action_nonce );
 		$actions      = array(
-			'delete' => sprintf( '<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">%s</a>', esc_attr( $_REQUEST['page'] ), $this->delete_action, absint( $item['blog_id'] ), absint( $item['id'] ), $delete_nonce, esc_html__( 'Delete', 'faulh' ) ),
+			'delete' => sprintf( '<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">%s</a>', esc_attr( $_REQUEST['page'] ), $this->delete_action, absint( $item['blog_id'] ), absint( $item['id'] ), $delete_nonce, esc_html__( 'Delete', 'user-login-history' ) ),
 		);
 
 		return $title . $this->row_actions( $actions );
@@ -276,7 +276,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			return;
 		}
 
-		$message = esc_html__( 'Please try again.', 'faulh' );
+		$message = esc_html__( 'Please try again.', 'user-login-history' );
 		$status  = false;
 		switch ( $this->current_action() ) {
 			case 'bulk-delete':
@@ -290,18 +290,19 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 					}
 
 					if ( $status ) {
-						$message = esc_html__( 'Selected record(s) deleted.', 'faulh' );
+						$message = esc_html__( 'Selected record(s) deleted.', 'user-login-history' );
 					}
 				}
 
 				break;
 			case 'bulk-delete-all-admin':
-				Db_Helper::query( 'START TRANSACTION' );
+				global $wpdb;
+				$wpdb->query( 'START TRANSACTION' );
 				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
 				if(is_array($blog_ids)  && !empty( $blog_ids ) ) {
 					foreach ( $blog_ids as $blog_id ) {
 						switch_to_blog( $blog_id );
-						$status = Db_Helper::truncate_table( $this->table );
+						$status = $wpdb->query($wpdb->prepare( "TRUNCATE TABLE %i", $wpdb->prefix . $this->table)) ;
 						restore_current_blog();
 						if ( ! $status ) {
 							break;
@@ -310,10 +311,10 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 				}
 
 				if ( $status ) {
-					$message = esc_html__( 'All records deleted.', 'faulh' );
-					Db_Helper::query( 'COMMIT' );
+					$message = esc_html__( 'All records deleted.', 'user-login-history' );
+					$wpdb->query( 'COMMIT' );
 				} else {
-					Db_Helper::query( 'ROLLBACK' );
+					$wpdb->query( 'ROLLBACK' );
 				}
 
 				break;
@@ -339,7 +340,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			return;
 		}
 
-		$message = esc_html__( 'Please try again.', 'faulh' );
+		$message = esc_html__( 'Please try again.', 'user-login-history' );
 		$status  = false;
 
 		switch ( $this->current_action() ) {
@@ -348,7 +349,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 				$status = Db_Helper::delete_rows_by_table_and_ids( $this->table, array( $id ) );
 				restore_current_blog();
 				if ( $status ) {
-					$message = esc_html__( 'Selected record deleted.', 'faulh' );
+					$message = esc_html__( 'Selected record deleted.', 'user-login-history' );
 				}
 
 				break;

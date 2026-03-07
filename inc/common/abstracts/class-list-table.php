@@ -205,7 +205,7 @@ abstract class List_Table extends \WP_List_Table {
 	 * @return string
 	 */
 	public function timezone_edit_link() {
-		return esc_html__( 'This table is showing time in the timezone', 'faulh' ) . ' - <strong>' . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . '#' . $this->plugin_name . "'>" . esc_html__( 'Edit', 'faulh' ) . '</a>';
+		return esc_html__( 'This table is showing time in the timezone', 'user-login-history' ) . ' - <strong>' . $this->get_timezone() . "</strong>&nbsp;<a class='edit-link' href='" . get_edit_user_link() . '#' . $this->plugin_name . "'>" . esc_html__( 'Edit', 'user-login-history' ) . '</a>';
 	}
 
 	/**

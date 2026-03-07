@@ -68,7 +68,7 @@ class Template
 	public static function head($page = '')
 	{
 		$author_urls = self::plugin_author_links();
-		$h           = '<h1>' . esc_html(NS\PLUGIN_NAME) . ' ' . esc_html(NS\PLUGIN_VERSION) . ' ' . esc_html__('(Basic Version)', 'faulh') . '</h1>';
+		$h           = '<h1>' . esc_html(NS\PLUGIN_NAME) . ' ' . esc_html(NS\PLUGIN_VERSION) . ' ' . esc_html__('(Basic Version)', 'user-login-history') . '</h1>';
 		$h          .= '<div>';
 
 		foreach ($author_urls as $key => $author_url) {
@@ -125,8 +125,8 @@ class Template
 	public static function super_admin_statuses()
 	{
 		return array(
-			'yes' => esc_html__('Yes', 'faulh'),
-			'no'  => esc_html__('No', 'faulh'),
+			'yes' => esc_html__('Yes', 'user-login-history'),
+			'no'  => esc_html__('No', 'user-login-history'),
 		);
 	}
 
@@ -138,9 +138,9 @@ class Template
 	public static function time_field_types()
 	{
 		return array(
-			'login'     => esc_html__('Login', 'faulh'),
-			'logout'    => esc_html__('Logout', 'faulh'),
-			'last_seen' => esc_html__('Last Seen', 'faulh'),
+			'login'     => esc_html__('Login', 'user-login-history'),
+			'logout'    => esc_html__('Logout', 'user-login-history'),
+			'last_seen' => esc_html__('Last Seen', 'user-login-history'),
 		);
 	}
 
@@ -152,13 +152,13 @@ class Template
 	public static function login_statuses()
 	{
 		$types = array(
-			Login_Tracker::LOGIN_STATUS_LOGIN  => esc_html__('Logged In', 'faulh'),
-			Login_Tracker::LOGIN_STATUS_LOGOUT => esc_html__('Logged Out', 'faulh'),
-			Login_Tracker::LOGIN_STATUS_FAIL   => esc_html__('Failed', 'faulh'),
+			Login_Tracker::LOGIN_STATUS_LOGIN  => esc_html__('Logged In', 'user-login-history'),
+			Login_Tracker::LOGIN_STATUS_LOGOUT => esc_html__('Logged Out', 'user-login-history'),
+			Login_Tracker::LOGIN_STATUS_FAIL   => esc_html__('Failed', 'user-login-history'),
 		);
 
 		if (is_multisite()) {
-			$types[Login_Tracker::LOGIN_STATUS_BLOCK] = esc_html__('Blocked', 'faulh');
+			$types[Login_Tracker::LOGIN_STATUS_BLOCK] = esc_html__('Blocked', 'user-login-history');
 		}
 		return $types;
 	}
@@ -174,20 +174,20 @@ class Template
 			array(
 				'key'   => 'userloginhistory',
 				'url'   => 'https://userloginhistory.com/',
-				'label' => esc_html__('Official Website', 'faulh'),
-				'title' => esc_html__('Visit Plugin Official Website', 'faulh')
+				'label' => esc_html__('Official Website', 'user-login-history'),
+				'title' => esc_html__('Visit Plugin Official Website', 'user-login-history')
 			),
 			array(
 				'key'   => 'paypal',
 				'url'   => 'https://www.paypal.me/erfaiyazalam/',
-				'label' => esc_html__('Donate', 'faulh'),
-				'title' => esc_html__('Donate and Support Us', 'faulh'),
+				'label' => esc_html__('Donate', 'user-login-history'),
+				'title' => esc_html__('Donate and Support Us', 'user-login-history'),
 			),
 			array(
 				'key'   => 'pro',
 				'url'   => 'https://userloginhistory.com/pricing/',
-				'label' => esc_html__('BUY PRO VERSION', 'faulh'),
-				'title' => esc_html__('Buy pro version', 'faulh')
+				'label' => esc_html__('BUY PRO VERSION', 'user-login-history'),
+				'title' => esc_html__('Buy pro version', 'user-login-history')
 			),
 		);
 	}

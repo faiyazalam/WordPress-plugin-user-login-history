@@ -11,7 +11,7 @@
 
 ?>
 <div class="wrap">
-	<?php \User_Login_History\Inc\Common\Helpers\Template::head( esc_html__( 'Login List', 'faulh' ) ); ?>
+	<?php \User_Login_History\Inc\Common\Helpers\Template::head( esc_html__( 'Login List', 'user-login-history' ) ); ?>
 	<hr>
 	<div><?php require plugin_dir_path( dirname( __FILE__ ) ) . 'views/forms/filter.php'; ?></div>
 	<hr>

@@ -84,11 +84,11 @@ class Settings
 		$sections = array(
 			array(
 				'id'    => $this->plugin_name . '_basics',
-				'title' => esc_html__('Basic Settings', 'faulh'),
+				'title' => esc_html__('Basic Settings', 'user-login-history'),
 			),
 			array(
 				'id'    => $this->plugin_name . '_advanced',
-				'title' => esc_html__('Advanced Settings', 'faulh'),
+				'title' => esc_html__('Advanced Settings', 'user-login-history'),
 			),
 		);
 		return $sections;
@@ -105,9 +105,10 @@ class Settings
 			$this->plugin_name . '_basics'   => array(
 				array(
 					'name'              => 'is_status_online',
-					'label'             => esc_html__('Online', 'faulh'),
-					'desc' => wp_sprintf(
-						esc_html__('Maximum number of minutes for online users. Default is %s', 'faulh'),
+					'label'             => esc_html__('Online', 'user-login-history'),
+					'desc'              => wp_sprintf(
+						/* translators: %s: Default online timeout in minutes. */
+						esc_html__('Maximum number of minutes for online users. Default is %s', 'user-login-history'),
 						esc_html(NS\DEFAULT_IS_STATUS_ONLINE_MIN)
 					),
 					'min'               => 1,
@@ -118,9 +119,10 @@ class Settings
 				),
 				array(
 					'name'              => 'is_status_idle',
-					'label'             => esc_html__('Idle', 'faulh'),
-					'desc' => wp_sprintf(
-						esc_html__('Maximum number of minutes for idle users. This should be greater than that of online users. Default is %s', 'faulh'),
+					'label'             => esc_html__('Idle', 'user-login-history'),
+					'desc'              => wp_sprintf(
+						/* translators: %s: Default idle timeout in minutes. */
+						esc_html__('Maximum number of minutes for idle users. This should be greater than that of online users. Default is %s', 'user-login-history'),
 						esc_html(NS\DEFAULT_IS_STATUS_IDLE_MIN)
 					),
 					'min'               => 1,
@@ -133,8 +135,8 @@ class Settings
 			$this->plugin_name . '_advanced' => array(
 				array(
 					'name'    => 'is_geo_tracker_enabled',
-					'label'   => esc_html__('Geo Tracker', 'faulh') . '<br>' . esc_html__('(Not Recommended)', 'faulh'),
-					'desc'    => esc_html__('Enable tracking of country and timezone.', 'faulh') . '<br>' . esc_html__('This functionality is dependent on a free third-party API service, hence not recommended.', 'faulh'),
+					'label'   => esc_html__('Geo Tracker', 'user-login-history') . '<br>' . esc_html__('(Not Recommended)', 'user-login-history'),
+					'desc'    => esc_html__('Enable tracking of country and timezone.', 'user-login-history') . '<br>' . esc_html__('This functionality is dependent on a free third-party API service, hence not recommended.', 'user-login-history'),
 					'type'    => 'checkbox',
 					'default' => false,
 				),
@@ -197,7 +199,7 @@ class Settings
 	public function plugin_page()
 	{
 		echo '<div class="wrap">';
-		\User_Login_History\Inc\Common\Helpers\Template::head(esc_html__('Settings', 'faulh'));
+		\User_Login_History\Inc\Common\Helpers\Template::head(esc_html__('Settings', 'user-login-history'));
 		$this->settings_api->show_navigation();
 		$this->settings_api->show_forms();
 		echo '</div>';

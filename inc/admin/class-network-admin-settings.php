@@ -157,10 +157,10 @@ class Network_Admin_Settings {
 		}
 
 		if ( $this->update_settings() ) {
-			$message = esc_html__( 'Settings updated successfully.', 'faulh' );
+			$message = esc_html__( 'Settings updated successfully.', 'user-login-history' );
 			$status  = true;
 		} else {
-			$message = esc_html__( 'Please try again.', 'faulh' );
+			$message = esc_html__( 'Please try again.', 'user-login-history' );
 			$status  = false;
 		}
 

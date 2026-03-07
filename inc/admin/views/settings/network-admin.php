@@ -12,22 +12,22 @@
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 ?>
 <div class="wrap">
-	<?php Template_Helper::head( esc_html__( 'Network Settings', 'faulh' ) ); ?>
+	<?php Template_Helper::head( esc_html__( 'Network Settings', 'user-login-history' ) ); ?>
 	<form method="post">
 		<input type="hidden" name="<?php echo esc_attr($this->get_form_name()); ?>" >
 		<table class="form-table">
 			<tbody>
 				<tr>
-					<th scope="row"><?php esc_html_e( 'Block User', 'faulh' ); ?></th>
+					<th scope="row"><?php esc_html_e( 'Block User', 'user-login-history' ); ?></th>
 					<td>
 						<label>
 							<input name="block_user" type="checkbox" id="block_user" value="<?php echo esc_attr( $this->get_settings( 'block_user' ) ); ?>" <?php checked( $this->get_settings( 'block_user' ), 1 ); ?>>
-							<?php esc_html_e( 'User will not be able to login on another blog on the network.', 'faulh' ); ?>
+							<?php esc_html_e( 'User will not be able to login on another blog on the network.', 'user-login-history' ); ?>
 						</label>
 					</td>
 				</tr>
 				<tr>
-					<th scope="row"><?php esc_html_e( 'Message for Blocked User', 'faulh' ); ?></th>
+					<th scope="row"><?php esc_html_e( 'Message for Blocked User', 'user-login-history' ); ?></th>
 					<td>
 						<textarea name="block_user_message" id="block_user_message" cols="45" rows="5"><?php echo esc_attr( $this->get_settings( 'block_user_message' ) ); ?></textarea>
 					</td>
