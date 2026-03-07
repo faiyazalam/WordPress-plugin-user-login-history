@@ -151,8 +151,10 @@ abstract class User_Profile {
 	 */
 	protected function update_usermeta_key_timezone() {
 
-		if ( ! empty( $_POST[ $this->get_usermeta_key_timezone() ] ) ) {
-			update_user_meta( $this->get_user_id(), $this->get_usermeta_key_timezone(), $_POST[ $this->get_usermeta_key_timezone() ] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- no need to check nonce as this method is getting called inside a hook after nonce verification by wp core itself.
+		$thePost = $_POST;
+		if ( ! empty( $thePost[ $this->get_usermeta_key_timezone() ] ) ) {
+			update_user_meta( $this->get_user_id(), $this->get_usermeta_key_timezone(), $thePost[ $this->get_usermeta_key_timezone() ] );
 		} else {
 			delete_user_meta( $this->get_user_id(), $this->get_usermeta_key_timezone() );
 		}

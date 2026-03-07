@@ -38,7 +38,7 @@ class Geo {
 
 		foreach ( $https as $http ) {
 			if ( ! empty( $_SERVER[ $http ] ) ) {
-				return $_SERVER[ $http ];
+				return sanitize_text_field(wp_unslash($_SERVER[ $http ]));
 			}
 		}
 	}

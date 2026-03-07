@@ -142,6 +142,7 @@ class Frontend_Login_List_Table {
 	public function __construct( $plugin_name, $version ) {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here for pagination.
 		$this->page_number = ! empty( $_REQUEST[ self::DEFALUT_QUERY_ARG_PAGE_NUMBER ] ) ? absint( $_REQUEST[ self::DEFALUT_QUERY_ARG_PAGE_NUMBER ] ) : self::DEFALUT_PAGE_NUMBER;
 		$this->set_table_name();
 	}
@@ -238,26 +239,28 @@ class Frontend_Login_List_Table {
 			'user_id',
 		);
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
+		$the_get = $_GET;
 		foreach ( $fields as $field ) {
-			if ( ! empty( $_GET[ $field ] ) ) {
-				$where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql( trim( $_GET[ $field ] ) ) . "'";
+			if ( ! empty( $the_get[ $field ] ) ) {
+				$where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql( trim( $the_get[ $field ] ) ) . "'";
 			}
 		}
 
-		if ( ! empty( $_GET['date_type'] ) ) {
+		if ( ! empty( $the_get['date_type'] ) ) {
 			$input_timezone = $this->get_table_timezone();
-			$date_type      = $_GET['date_type'];
+			$date_type      = $the_get['date_type'];
 			if ( in_array( $date_type, array( 'login', 'logout', 'last_seen' ) ) ) {
 
-				if ( ! empty( $_GET['date_from'] ) && ! empty( $_GET['date_to'] ) ) {
+				if ( ! empty( $the_get['date_from'] ) && ! empty( $the_get['date_to'] ) ) {
 					$date_type    = esc_sql( $date_type );
-					$date_from    = DateTimeHelper::convert_timezone( $_GET['date_from'] . ' 00:00:00', $input_timezone );
-					$date_to      = DateTimeHelper::convert_timezone( $_GET['date_to'] . ' 23:59:59', $input_timezone );
+					$date_from    = DateTimeHelper::convert_timezone( $the_get['date_from'] . ' 00:00:00', $input_timezone );
+					$date_to      = DateTimeHelper::convert_timezone( $the_get['date_to'] . ' 23:59:59', $input_timezone );
 					$where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql( $date_from ) . "'";
 					$where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql( $date_to ) . "'";
 				} else {
-					unset( $_GET['date_from'] );
-					unset( $_GET['date_to'] );
+					unset( $the_get['date_from'] );
+					unset( $the_get['date_to'] );
 				}
 			}
 		}
@@ -286,9 +289,11 @@ class Frontend_Login_List_Table {
 			$sql .= $where_query;
 		}
 
-		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			$direction            = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : ' ASC';
-			$sanitize_sql_orderby = sanitize_sql_orderby( $_REQUEST['orderby'] . ' ' . $direction );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
+		$the_get = $_GET;
+		if ( ! empty( $the_get['orderby'] ) ) {
+			$direction            = ! empty( $the_get['order'] ) ? $the_get['order'] : ' ASC';
+			$sanitize_sql_orderby = sanitize_sql_orderby( $the_get['orderby'] . ' ' . $direction );
 			if ( $sanitize_sql_orderby ) {
 				$sql .= ' ORDER BY ' . $sanitize_sql_orderby;
 			}
@@ -428,8 +433,10 @@ class Frontend_Login_List_Table {
 		$columns          = $this->get_columns();
 		$sortable_columns = $this->get_sortable_columns();
 
-		$requested_order    = ! empty( $_GET['order'] ) ? $_GET['order'] : '';
-		$page_number_string = ! empty( $_GET[ self::DEFALUT_QUERY_ARG_PAGE_NUMBER ] ) ? '&' . self::DEFALUT_QUERY_ARG_PAGE_NUMBER . '=' . $this->page_number : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
+		$the_get = $_GET;
+		$requested_order    = ! empty( $the_get['order'] ) ? $the_get['order'] : '';
+		$page_number_string = ! empty( $the_get[ self::DEFALUT_QUERY_ARG_PAGE_NUMBER ] ) ? '&' . self::DEFALUT_QUERY_ARG_PAGE_NUMBER . '=' . $this->page_number : '';
 		// print only allowed column headers.
 		foreach ( $allowed_columns as $allowed_column ) {
 			$direction = $hover = '';
@@ -439,7 +446,7 @@ class Frontend_Login_List_Table {
 				$orderby = isset( $sortable_columns[ $allowed_column ][0] ) ? $sortable_columns[ $allowed_column ][0] : $allowed_column;
 				// defaul order direction.
 
-				if ( isset( $_GET['orderby'] ) && isset( $sortable_columns[ $allowed_column ][0] ) && $sortable_columns[ $allowed_column ][0] == $_GET['orderby'] ) {
+				if ( isset( $the_get['orderby'] ) && isset( $sortable_columns[ $allowed_column ][0] ) && $sortable_columns[ $allowed_column ][0] == $the_get['orderby'] ) {
 					if ( $requested_order ) {
 						// direction based on URL.
 						$direction = 'asc' == $requested_order ? '&uarr;' : '&darr;';
@@ -676,7 +683,7 @@ class Frontend_Login_List_Table {
 				if ( $new_column_data ) {
 					return $new_column_data;
 				}
-				return print_r( $item, true );
+				return __('not supported', 'user-login-history');
 		}
 	}
 

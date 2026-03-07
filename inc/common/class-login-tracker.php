@@ -277,7 +277,7 @@ class Login_Tracker {
 			'browser_version'  => $browser_helper->getVersion(),
 			'operating_system' => $browser_helper->getPlatform(),
 			'old_role'         => ! empty( $user->roles ) ? implode( ',', $user->roles ) : '',
-			'user_agent'       => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : $unknown,
+			'user_agent'       => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : $unknown,
 			'login_status'     => $status,
 			'is_super_admin'   => is_multisite() ? is_super_admin( $user_id ) : false,
 		);

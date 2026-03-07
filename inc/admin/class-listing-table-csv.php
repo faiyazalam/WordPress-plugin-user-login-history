@@ -60,7 +60,7 @@ final class Listing_Table_Csv {
 	 * @return string
 	 */
 	private function get_suffix() {
-		return 'login_list_' . date( 'n-j-y_H-i' );
+		return 'login_list_' . wp_date( 'n-j-y_H-i' );
 	}
 
 	/**
