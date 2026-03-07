@@ -26,8 +26,8 @@ class Error_Log {
 	 * @param string $file The filepath.
 	 */
 	public static function error_log( $message = '', $line = '', $file = '' ) {
-		ini_set( 'error_log', WP_CONTENT_DIR . self::ERROR_LOG_FILE . '-' . date( 'Y-m-d' ) . '.log' );
-		error_log( "$message at line:" . $line . ' file:' . $file );
+		$log_file = WP_CONTENT_DIR . '/user-login-history-errors.log';
+		$entry    = '[' . current_time( 'mysql' ) . '] ' . $message . PHP_EOL;
+		file_put_contents( $log_file, $entry, FILE_APPEND | LOCK_EX );
 	}
-
 }
