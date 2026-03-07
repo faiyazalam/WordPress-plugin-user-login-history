@@ -47,8 +47,16 @@ class Date_Time {
 	 * @return string
 	 */
 	public static function get_current_date_time( $format = '', $timezone = '' ) {
-		date_default_timezone_set( $timezone ? $timezone : self::DEFAULT_TIMEZONE );
-		return date( $format ? $format : self::DEFAULT_FORMAT );
+		$format          = $format ? $format : self::DEFAULT_FORMAT;
+		$timezone_string = $timezone ? $timezone : self::DEFAULT_TIMEZONE;
+
+		try {
+			$timezone_object = new \DateTimeZone( $timezone_string );
+		} catch ( \Exception $exception ) {
+			$timezone_object = new \DateTimeZone( self::DEFAULT_TIMEZONE );
+		}
+
+		return wp_date( $format, null, $timezone_object );
 	}
 
 	/**
@@ -57,15 +65,22 @@ class Date_Time {
 	 * @return array The array containing all the timezones.
 	 */
 	public static function get_timezone_list() {
-		$current_default_timezone = date_default_timezone_get();
-		$zones_array              = array();
-		$timestamp                = time();
+		$zones_array = array();
+		$timestamp   = time();
+
 		foreach ( timezone_identifiers_list() as $key => $zone ) {
-			date_default_timezone_set( $zone );
-			$zones_array[ $key ]['zone']          = $zone;
-			$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT ' . date( 'P', $timestamp );
+			$zones_array[ $key ]['zone'] = $zone;
+
+			try {
+				$timezone_object                    = new \DateTimeZone( $zone );
+				$date_time                          = new \DateTime( '@' . $timestamp );
+				$date_time->setTimezone( $timezone_object );
+				$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT ' . $date_time->format( 'P' );
+			} catch ( \Exception $exception ) {
+				$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT +00:00';
+			}
 		}
-		date_default_timezone_set( $current_default_timezone ? $current_default_timezone : self::DEFAULT_TIMEZONE );
+
 		return $zones_array;
 	}
 
@@ -89,7 +104,7 @@ class Date_Time {
 			$date = new \DateTime( $input_datetime, new \DateTimeZone( $input_timezone ) );
 			$date->setTimezone( new \DateTimeZone( $output_timezone ) );
 			return $date->format( self::DEFAULT_FORMAT );
-		} catch ( Exception $exc ) {
+		} catch ( \Exception $exc ) {
 			Error_Log::error_log( 'Error while converting timezone. Error message: ' . $exc->getMessage() . ", input timezone: $input_timezone, output_timezone: $output_timezone input_datetime: $input_datetime", __LINE__, __FILE__ );
 			return false;
 		}
