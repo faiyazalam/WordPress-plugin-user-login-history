@@ -50,7 +50,8 @@ class Network_Blog_Manager
 	{
 		$blog_id = $old_site->blog_id;
 		switch_to_blog($blog_id);
-		Db_Helper::drop_table(NS\PLUGIN_TABLE_FA_USER_LOGINS);
+		global $wpdb;
+		$wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $wpdb->prefix . 'fa_user_logins' ));
 		restore_current_blog();
 	}
 }

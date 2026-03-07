@@ -40,27 +40,6 @@ class Db {
 	}
 
 	/**
-	 * Run a given query.
-	 *
-	 * @param string $sql The sql query.
-	 * @return boolean
-	 */
-	public static function query( $sql = '' ) {
-		if ( empty( $sql ) ) {
-			return false;
-		}
-		global $wpdb;
-
-		$wpdb->query( $sql );
-
-		if ( $wpdb->last_error ) {
-			Error_Log::error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query );
-			return false;
-		}
-		return ! empty( $wpdb->insert_id ) ? $wpdb->insert_id : true;
-	}
-
-	/**
 	 * Get results.
 	 *
 	 * @param string $sql The sql query to be run.
@@ -125,36 +104,6 @@ class Db {
 			return false;
 		}
 		return $status;
-	}
-
-	/**
-	 * Truncate a table.
-	 *
-	 * @param string $table The table name.
-	 * @return boolean
-	 */
-	public static function truncate_table( $table = '' ) {
-
-		if ( empty( $table ) ) {
-			return false;
-		}
-		global $wpdb;
-		return self::query( "TRUNCATE {$wpdb->prefix}$table" );
-	}
-
-	/**
-	 * Drop table.
-	 *
-	 * @param string $table The table name.
-	 * @return boolean
-	 */
-	public static function drop_table( $table = '' ) {
-		if ( empty( $table ) ) {
-			return false;
-		}
-
-		global $wpdb;
-		return self::query( "DROP TABLE IF EXISTS {$wpdb->prefix}$table" );
 	}
 
 	/**
@@ -232,9 +181,7 @@ class Db {
 			return false;
 		}
 		global $wpdb;
-
-		$query = $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $table ) );
-		return $wpdb->get_var( $query ) == $table;
+		return $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($table))) === $table;
 	}
 
 	/**

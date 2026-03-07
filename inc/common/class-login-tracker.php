@@ -327,10 +327,13 @@ class Login_Tracker {
 		$table         = $wpdb->get_blog_prefix( $this->current_loggedin_blog_id ) . $this->table;
 		$current_date  = Date_Time_Helper::get_current_date_time();
 		$session_token = wp_get_session_token();
-
-		$sql = "update $table set time_last_seen='$current_date' where session_token = '$session_token' and user_id = '{$current_user->ID}' ";
-
-		Db_Helper::query( $sql );
+		$wpdb->update(
+			$table,
+			array('time_last_seen' => $current_date),
+			array('session_token' => $session_token, 'user_id' => $current_user->ID),
+			array('%s'),
+			array('%s', '%d')
+		);
 
 		$data = array(
 			'time_last_seen' => $current_date,
@@ -363,9 +366,13 @@ class Login_Tracker {
 		$time_logout  = Date_Time_Helper::get_current_date_time();
 		$login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
 		$table        = $wpdb->get_blog_prefix( $this->current_loggedin_blog_id ) . $this->table;
-		$sql          = "update $table  set time_logout='$time_logout', time_last_seen='$time_logout', login_status = '" . $login_status . "' where session_token = '" . $session_token . "' ";
-
-		Db_Helper::query( $sql );
+		$wpdb->update(
+			$table,
+			array('time_logout' => $time_logout, 'time_last_seen' => $time_logout, 'login_status' => $login_status),
+			array('session_token' => $session_token),
+			array('%s', '%s', '%s'),
+			array('%s')
+		);
 
 		$data = array(
 			'time_logout'    => $time_logout,

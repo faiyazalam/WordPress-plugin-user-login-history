@@ -296,12 +296,13 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 				break;
 			case 'bulk-delete-all-admin':
-				Db_Helper::query( 'START TRANSACTION' );
+				global $wpdb;
+				$wpdb->query( 'START TRANSACTION' );
 				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
 				if(is_array($blog_ids)  && !empty( $blog_ids ) ) {
 					foreach ( $blog_ids as $blog_id ) {
 						switch_to_blog( $blog_id );
-						$status = Db_Helper::truncate_table( $this->table );
+						$status = $wpdb->query($wpdb->prepare( "TRUNCATE TABLE %i", $wpdb->prefix . $this->table)) ;
 						restore_current_blog();
 						if ( ! $status ) {
 							break;
@@ -311,9 +312,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 				if ( $status ) {
 					$message = esc_html__( 'All records deleted.', 'user-login-history' );
-					Db_Helper::query( 'COMMIT' );
+					$wpdb->query( 'COMMIT' );
 				} else {
-					Db_Helper::query( 'ROLLBACK' );
+					$wpdb->query( 'ROLLBACK' );
 				}
 
 				break;

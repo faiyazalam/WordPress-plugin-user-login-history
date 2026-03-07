@@ -149,7 +149,8 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 				break;
 
 			case 'bulk-delete-all-admin':
-				$status = Db_Helper::truncate_table( $this->table );
+				global $wpdb;
+				$status = $wpdb->query($wpdb->prepare('TRUNCATE TABLE %i', $wpdb->prefix . $this->table));
 				if ( $status ) {
 					$message = esc_html__( 'All record(s) deleted.', 'user-login-history' );
 				}

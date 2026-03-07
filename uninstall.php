@@ -80,8 +80,7 @@ if ( ! function_exists( 'faulh_drop_tables' ) ) {
 	 */
 	function faulh_drop_tables() {
 		global $wpdb;
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.SchemaChange -- Intentional schema change: dropping plugin table on uninstall.
-		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'fa_user_logins' );
+		$wpdb->query($wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . 'fa_user_logins' ));
 	}
 }
 
