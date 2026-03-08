@@ -78,38 +78,6 @@ class Network_Admin_Settings {
 	}
 
 	/**
-	 * Validate form submission.
-	 *
-	 * @return bool
-	 */
-	private function is_form_submitted() {
-		return isset( $_POST[ $this->get_form_name() ] ) && ! empty( $_POST[ $this->get_form_nonce_name() ] ) && wp_verify_nonce( $_POST[ $this->get_form_nonce_name() ], $this->get_form_nonce_name() ) && current_user_can( 'administrator' );
-	}
-
-	/**
-	 * Update the settings.
-	 */
-	private function update_settings() {
-
-		$settings = array();
-
-		if ( isset( $_POST['block_user'] ) ) {
-			$settings['block_user'] = 1;
-		}
-		if ( isset( $_POST['block_user_message'] ) ) {
-			$settings['block_user_message'] = sanitize_textarea_field( $_POST['block_user_message'] );
-		}
-
-		if ( ! empty( $settings ) ) {
-			update_site_option( $this->settings_name, $settings );
-		} else {
-			delete_site_option( $this->settings_name );
-		}
-
-		return true;
-	}
-
-	/**
 	 * Get the form name.
 	 *
 	 * @return string
@@ -151,21 +119,50 @@ class Network_Admin_Settings {
 	/**
 	 * Check nonce and form submission and then update the settings.
 	 */
-	public function update() {
-		if ( ! $this->is_form_submitted() ) {
-			return;
+	public function update()
+	{
+
+		if (!isset($_POST[$this->get_form_name()])) {
+			return false;
 		}
 
-		if ( $this->update_settings() ) {
-			$message = esc_html__( 'Settings updated successfully.', 'user-login-history' );
-			$status  = true;
+		if (empty($_POST[$this->get_form_nonce_name()])) {
+			return false;
+		}
+
+		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[$this->get_form_nonce_name()])), $this->get_form_nonce_name())) {
+			return false;
+		}
+
+
+		if (!current_user_can('administrator')) {
+			return false;
+		}
+
+		$settings = array();
+
+		if (isset($_POST['block_user'])) {
+			$settings['block_user'] = 1;
+		}
+		if (isset($_POST['block_user_message'])) {
+			$settings['block_user_message'] = sanitize_textarea_field(wp_unslash($_POST['block_user_message']));
+		}
+
+		if (! empty($settings)) {
+			$status =	update_site_option($this->settings_name, $settings);
 		} else {
-			$message = esc_html__( 'Please try again.', 'user-login-history' );
-			$status  = false;
+			$status =	delete_site_option($this->settings_name);
 		}
 
-		$this->admin_notice->add_notice( $message, $status ? 'success' : 'error' );
-		wp_safe_redirect( esc_url( network_admin_url( 'settings.php?page=' . $_GET['page'] ) ) );
+
+		if ($status) {
+			$message = esc_html__('Settings updated successfully.', 'user-login-history');
+		} else {
+			$message = esc_html__('Please try again.', 'user-login-history');
+		}
+
+		$this->admin_notice->add_notice($message, $status ? 'success' : 'error');
+		wp_safe_redirect(esc_url(network_admin_url('settings.php?page=' . sanitize_text_field(wp_unslash($_GET['page']??"")))));
 		exit;
 	}
 

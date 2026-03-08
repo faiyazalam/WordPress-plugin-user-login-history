@@ -12,15 +12,18 @@
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 if (! defined('ABSPATH')) exit;
+
+// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to prefill the form.
+$faulh_the_get = $_GET;
 ?>
 <form name="<?php echo esc_attr($this->plugin_name . '-search-form'); ?>" method="get" action="" id="<?php echo esc_attr($this->plugin_name . '-search-form'); ?>">
 	<fieldset>
 
-		<input class="date-inputss" style="width:39%;display: inline-block" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr(__('From', 'user-login-history')); ?>" id="date_from" name="date_from" value="<?php echo isset($_GET['date_from']) ? esc_attr(sanitize_text_field($_GET['date_from'])) : ''; ?>">
-		<input class="date-inputss" style="width:39%;display: inline-block" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr(__('To', 'user-login-history')); ?>" id="date_to" name="date_to" value="<?php echo isset($_GET['date_to']) ? esc_attr(sanitize_text_field($_GET['date_to'])) : ''; ?>">
+		<input class="date-inputss" style="width:39%;display: inline-block" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr(__('From', 'user-login-history')); ?>" id="date_from" name="date_from" value="<?php echo isset($faulh_the_get['date_from']) ? esc_attr(sanitize_text_field($faulh_the_get['date_from'])) : ''; ?>">
+		<input class="date-inputss" style="width:39%;display: inline-block" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr(__('To', 'user-login-history')); ?>" id="date_to" name="date_to" value="<?php echo isset($faulh_the_get['date_to']) ? esc_attr(sanitize_text_field($faulh_the_get['date_to'])) : ''; ?>">
 		<select name="date_type">
 			<?php
-			Template_Helper::dropdown_time_field_types(isset($_GET['date_type']) ? $_GET['date_type'] : null);
+			Template_Helper::dropdown_time_field_types(isset($faulh_the_get['date_type']) ? $faulh_the_get['date_type'] : null);
 			?>
 		</select>
 

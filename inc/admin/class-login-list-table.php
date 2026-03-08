@@ -131,40 +131,43 @@ abstract class Login_List_Table extends List_Table_Abstract {
 			'old_role',
 		);
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
+		$the_get = $_GET;
+
 		foreach ( $fields as $field ) {
-			if ( ! empty( $_GET[ $field ] ) ) {
-				$where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql( trim( $_GET[ $field ] ) ) . "'";
+			if ( ! empty( $the_get[ $field ] ) ) {
+				$where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql( trim( $the_get[ $field ] ) ) . "'";
 			}
 		}
 
-		if ( ! empty( $_GET['date_type'] ) ) {
+		if ( ! empty( $the_get['date_type'] ) ) {
 			$user_profile   = new User_Profile( $this->plugin_name, $this->version );
 			$input_timezone = $user_profile->get_user_timezone();
-			$date_type      = $_GET['date_type'];
+			$date_type      = $the_get['date_type'];
 
 			if ( in_array( $date_type, array_keys( Template_Helper::time_field_types() ) ) ) {
 
 				$key_date_from = 'date_from';
 				$key_date_to   = 'date_to';
 
-				if ( ! empty( $_GET[ $key_date_from ] ) && ! empty( $_GET[ $key_date_to ] ) ) {
+				if ( ! empty( $the_get[ $key_date_from ] ) && ! empty( $the_get[ $key_date_to ] ) ) {
 					$date_type = esc_sql( $date_type );
-					$date_from = Date_Time_Helper::convert_timezone( $_GET[ $key_date_from ] . ' 00:00:00', $input_timezone );
-					$date_to   = Date_Time_Helper::convert_timezone( $_GET[ $key_date_to ] . ' 23:59:59', $input_timezone );
+					$date_from = Date_Time_Helper::convert_timezone( $the_get[ $key_date_from ] . ' 00:00:00', $input_timezone );
+					$date_to   = Date_Time_Helper::convert_timezone( $the_get[ $key_date_to ] . ' 23:59:59', $input_timezone );
 
 					if ( $date_from && $date_to ) {
 						$where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql( $date_from ) . "'";
 						$where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql( $date_to ) . "'";
 					}
 				} else {
-					unset( $_GET[ $key_date_from ] );
-					unset( $_GET[ $key_date_to ] );
+					unset( $the_get[ $key_date_from ] );
+					unset( $the_get[ $key_date_to ] );
 				}
 			}
 		}
 
-		if ( ! empty( $_GET['login_status'] ) ) {
-			$login_status       = $_GET['login_status'];
+		if ( ! empty( $the_get['login_status'] ) ) {
+			$login_status       = $the_get['login_status'];
 			$login_status_value = strtolower( $login_status ) == 'unknown' ? '' : esc_sql( $login_status );
 			$where_query       .= " AND `FaUserLogin`.`login_status` = '" . $login_status_value . "'";
 		}
@@ -419,7 +422,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 				return $super_admin_statuses[ $item[ $column_name ] ? 'yes' : 'no' ];
 
 			default:
-				return print_r( $item, true );
+				return __( 'not supported', 'user-login-history' );
 		}
 	}
 
