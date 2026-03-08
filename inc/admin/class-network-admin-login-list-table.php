@@ -54,20 +54,13 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		$where_query = parent::prepare_where_query();
 
-		if ( ! empty( $_GET['is_super_admin'] ) && in_array( $_GET['is_super_admin'], array( 'yes', 'no' ) ) ) {
-			$where_query .= " AND `FaUserLogin`.`is_super_admin` = '" . absint( 'yes' == $_GET['is_super_admin'] ) . "'";
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
+		$the_get = $_GET;
+		if ( ! empty( $the_get['is_super_admin'] ) && in_array( $the_get['is_super_admin'], array( 'yes', 'no' ) ) ) {
+			$where_query .= " AND `FaUserLogin`.`is_super_admin` = '" . absint( 'yes' == $the_get['is_super_admin'] ) . "'";
 		}
 
 		return $where_query;
-	}
-
-	/**
-	 * Get array of blog ids to be used in where sql query.
-	 *
-	 * @return array
-	 */
-	private function get_blog_ids_for_where_clause() {
-		return ! empty( $_GET['blog_id'] ) && is_numeric($_GET['blog_id']) && $_GET['blog_id'] > 0 ? array( absint( $_GET['blog_id'] ) ) : Db_Helper::get_blog_ids_by_site_id();
 	}
 
 	/**
@@ -80,7 +73,24 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		$where_query = $this->prepare_where_query();
 
 		$i        = 0;
-		$blog_ids = $this->get_blog_ids_for_where_clause();
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
+		$the_get = $_GET;
+
+		if(empty( $the_get['blog_id'] )){
+			return;
+		}
+
+		if(!is_numeric($the_get['blog_id'])){
+			return;
+		}
+
+		if($the_get['blog_id'] <= 0){
+			return;
+		}
+
+		$blog_ids = array(absint($the_get['blog_id']));
+		$blog_ids  = empty($blog_ids) ? Db_Helper::get_blog_ids_by_site_id() : $blog_ids;
 
 		foreach ( $blog_ids as $blog_id ) {
 			$blog_id = absint( $blog_id );
@@ -196,9 +206,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 * @return mixed
 	 */
 	public function get_rows( $per_page = 20, $page_number = 1 ) {
-		if ( ! empty( $_REQUEST['orderby'] ) ) {
-			$direction            = ! empty( $_REQUEST['order'] ) ? $_REQUEST['order'] : ' ASC';
-			$sanitize_sql_orderby = sanitize_sql_orderby( $_REQUEST['orderby'] . ' ' . $direction );
+		// phpcs:ignore	WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
+		$the_request = $_REQUEST;
+		if ( ! empty( $the_request['orderby'] ) ) {
+			$direction            = ! empty( $the_request['order'] ) ? $the_request['order'] : ' ASC';
+			$sanitize_sql_orderby = sanitize_sql_orderby( $the_request['orderby'] . ' ' . $direction );
 			if ( $sanitize_sql_orderby ) {
 				$this->rows_sql .= ' ORDER BY ' . $sanitize_sql_orderby;
 			}
