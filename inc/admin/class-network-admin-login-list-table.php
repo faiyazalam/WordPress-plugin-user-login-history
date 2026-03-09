@@ -51,16 +51,18 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 * Prepares the where clause.
 	 */
 	public function prepare_where_query() {
-
-		$where_query = parent::prepare_where_query();
+		$where = parent::prepare_where_query();
+		$where['where_query'] = $where['where_query'] ?? "";
+		$where['where_query_values'] = $where['where_query_values'] ?? [];
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_get = $_GET;
-		if ( ! empty( $the_get['is_super_admin'] ) && in_array( $the_get['is_super_admin'], array( 'yes', 'no' ) ) ) {
-			$where_query .= " AND `FaUserLogin`.`is_super_admin` = '" . absint( 'yes' == $the_get['is_super_admin'] ) . "'";
+		if ( ! empty( $the_get['is_super_admin'] ) && in_array( $the_get['is_super_admin'], array( 'yes', 'no' ), true ) ) {
+			$where['where_query'] .= " AND `FaUserLogin`.`is_super_admin` = %d";
+			$where['where_query_values'][] = absint( 'yes' == $the_get['is_super_admin'] );
 		}
 
-		return $where_query;
+		return $where;
 	}
 
 	/**
@@ -320,6 +322,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 				break;
 			case 'bulk-delete-all-admin':
 				global $wpdb;
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
 				$wpdb->query( 'START TRANSACTION' );
 				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
 				if(is_array($blog_ids)  && !empty( $blog_ids ) ) {
@@ -335,9 +338,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 				if ( $status ) {
 					$message = esc_html__( 'All records deleted.', 'user-login-history' );
-					$wpdb->query( 'COMMIT' );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
+				$wpdb->query( 'COMMIT' );
 				} else {
-					$wpdb->query( 'ROLLBACK' );
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
+				$wpdb->query( 'ROLLBACK' );
 				}
 
 				break;

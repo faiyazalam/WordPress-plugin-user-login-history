@@ -114,29 +114,31 @@ abstract class Login_List_Table extends List_Table_Abstract {
 	/**
 	 * Prepares the where query.
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function prepare_where_query() {
 
 		$where_query = '';
+		$where_query_values = array();
 
 		$fields = array(
-			'user_id',
-			'username',
-			'browser',
-			'operating_system',
-			'ip_address',
-			'timezone',
-			'country_name',
-			'old_role',
+			'user_id'=>'%d',
+			'username'=>'%s',
+			'browser'=>'%s',
+			'operating_system'=>'%s',
+			'ip_address'=>'%s',
+			'timezone'=>'%s',
+			'country_name'=>'%s',
+			'old_role'=>'%s',
 		);
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
 		$the_get = $_GET;
 
-		foreach ( $fields as $field ) {
+		foreach ( $fields as $field => $field_type ) {
 			if ( ! empty( $the_get[ $field ] ) ) {
-				$where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql( trim( $the_get[ $field ] ) ) . "'";
+				$where_query .= " AND `FaUserLogin`.`$field` = $field_type";
+				$where_query_values[] = $the_get[ $field ];
 			}
 		}
 
@@ -145,19 +147,19 @@ abstract class Login_List_Table extends List_Table_Abstract {
 			$input_timezone = $user_profile->get_user_timezone();
 			$date_type      = $the_get['date_type'];
 
-			if ( in_array( $date_type, array_keys( Template_Helper::time_field_types() ) ) ) {
-
+			if (in_array($date_type, array_keys(Template_Helper::time_field_types()), true)) {
 				$key_date_from = 'date_from';
 				$key_date_to   = 'date_to';
 
 				if ( ! empty( $the_get[ $key_date_from ] ) && ! empty( $the_get[ $key_date_to ] ) ) {
-					$date_type = esc_sql( $date_type );
 					$date_from = Date_Time_Helper::convert_timezone( $the_get[ $key_date_from ] . ' 00:00:00', $input_timezone );
 					$date_to   = Date_Time_Helper::convert_timezone( $the_get[ $key_date_to ] . ' 23:59:59', $input_timezone );
 
 					if ( $date_from && $date_to ) {
-						$where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql( $date_from ) . "'";
-						$where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql( $date_to ) . "'";
+						$where_query .= " AND `FaUserLogin`.`time_$date_type` >= %s";
+						$where_query .= " AND `FaUserLogin`.`time_$date_type` <= %s";
+						$where_query_values[] = $date_from;
+						$where_query_values[] = $date_to;
 					}
 				} else {
 					unset( $the_get[ $key_date_from ] );
@@ -168,12 +170,14 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
 		if ( ! empty( $the_get['login_status'] ) ) {
 			$login_status       = $the_get['login_status'];
-			$login_status_value = strtolower( $login_status ) == 'unknown' ? '' : esc_sql( $login_status );
-			$where_query       .= " AND `FaUserLogin`.`login_status` = '" . $login_status_value . "'";
+			$login_status_value = strtolower( $login_status ) == 'unknown' ? '' : $login_status;
+			$where_query       .= " AND `FaUserLogin`.`login_status` = %s";
+			$where_query_values[] = $login_status_value;
 		}
 
 		$where_query = apply_filters( 'faulh_admin_prepare_where_query', $where_query );
-		return $where_query;
+		$where_query_values = apply_filters( 'faulh_admin_prepare_where_query_values', $where_query_values );
+		return [ 'where_query'=>$where_query, 'where_query_values'=>$where_query_values ];
 	}
 
 	/**

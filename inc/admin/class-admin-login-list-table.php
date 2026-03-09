@@ -41,7 +41,9 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 				. ' FROM ' . $table . '  AS FaUserLogin'
 				. ' WHERE 1 ';
 
-		$where_query = $this->prepare_where_query();
+		$where = $this->prepare_where_query();
+		$where_query = $where['where_query'] ?? "";
+		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
 			$sql .= $where_query;
@@ -64,7 +66,8 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			$sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
 		}
 
-		return Db_Helper::get_results( $sql );
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $sql is built internally with placeholders, not from user input.
+		return $wpdb->get_results($wpdb->prepare($sql, $where_query_values), ARRAY_A);
 	}
 
 	/**
@@ -76,17 +79,22 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 	public function record_count() {
 		global $wpdb;
 		$table = $wpdb->prefix . $this->table;
+
 		$sql   = ' SELECT'
 				. ' COUNT(FaUserLogin.id) AS total'
 				. ' FROM ' . $table . ' AS FaUserLogin'
 				. ' WHERE 1 ';
-		$where_query = $this->prepare_where_query();
+
+
+		$where = $this->prepare_where_query();
+		$where_query = $where['where_query'] ?? "";
+		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
 			$sql .= $where_query;
 		}
 
-		return Db_Helper::get_var( $sql );
+		return $wpdb->get_var($wpdb->prepare($sql, $where_query_values));
 	}
 
 	/**

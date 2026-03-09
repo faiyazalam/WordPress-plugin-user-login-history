@@ -234,30 +234,28 @@ class Frontend_Login_List_Table {
 	 */
 	public function prepare_where_query() {
 		$where_query = '';
-
-		$fields = array(
-			'user_id',
-		);
+		$where_query_values = array();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
 		$the_get = $_GET;
-		foreach ( $fields as $field ) {
-			if ( ! empty( $the_get[ $field ] ) ) {
-				$where_query .= " AND `FaUserLogin`.`$field` = '" . esc_sql( trim( $the_get[ $field ] ) ) . "'";
-			}
+		if (! empty($the_get['user_id'])) {
+			$where_query .= " AND `FaUserLogin`.`user_id` = %d";
+			$where_query_values[] = get_current_user_id();
 		}
+		
 
 		if ( ! empty( $the_get['date_type'] ) ) {
 			$input_timezone = $this->get_table_timezone();
 			$date_type      = $the_get['date_type'];
-			if ( in_array( $date_type, array( 'login', 'logout', 'last_seen' ) ) ) {
-
+			if ( in_array( $date_type, array( 'login', 'logout', 'last_seen' ), true ) ) {
 				if ( ! empty( $the_get['date_from'] ) && ! empty( $the_get['date_to'] ) ) {
-					$date_type    = esc_sql( $date_type );
 					$date_from    = DateTimeHelper::convert_timezone( $the_get['date_from'] . ' 00:00:00', $input_timezone );
 					$date_to      = DateTimeHelper::convert_timezone( $the_get['date_to'] . ' 23:59:59', $input_timezone );
-					$where_query .= " AND `FaUserLogin`.`time_$date_type` >= '" . esc_sql( $date_from ) . "'";
-					$where_query .= " AND `FaUserLogin`.`time_$date_type` <= '" . esc_sql( $date_to ) . "'";
+					$where_query .= " AND `FaUserLogin`.`time_$date_type` >= %s";
+					$where_query .= " AND `FaUserLogin`.`time_$date_type` <= %s";
+
+					$where_query_values[] = $date_from;
+					$where_query_values[] = $date_to;
 				} else {
 					unset( $the_get['date_from'] );
 					unset( $the_get['date_to'] );
@@ -265,8 +263,14 @@ class Frontend_Login_List_Table {
 			}
 		}
 
+
 		$where_query = apply_filters( 'faulh_public_prepare_where_query', $where_query );
-		return $where_query;
+		$where_query_values = apply_filters( 'faulh_public_prepare_where_query_values', $where_query_values );
+
+		return [
+			'where_query' => $where_query,
+			'where_query_values' => $where_query_values,
+		];
 	}
 
 	/**
@@ -283,7 +287,9 @@ class Frontend_Login_List_Table {
 				. ' FROM ' . $this->table . '  AS FaUserLogin'
 				. ' WHERE 1 ';
 
-		$where_query = $this->prepare_where_query();
+		$where = $this->prepare_where_query();
+		$where_query = $where['where_query'] ?? "";
+		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
 			$sql .= $where_query;
@@ -305,9 +311,8 @@ class Frontend_Login_List_Table {
 			$sql .= " LIMIT $this->limit";
 			$sql .= ' OFFSET   ' . ( $this->page_number - 1 ) * $this->limit;
 		}
-		$result = $wpdb->get_results( $sql, 'ARRAY_A' );
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $where_query_values ), 'ARRAY_A' );
 		if ( '' != $wpdb->last_error ) {
-
 			ErrorLogHelper::error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query, __LINE__, __FILE__ );
 		}
 
