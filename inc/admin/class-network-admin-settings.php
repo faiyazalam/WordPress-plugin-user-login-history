@@ -101,8 +101,8 @@ class Network_Admin_Settings {
 	public function admin_menu() {
 		add_submenu_page(
 			'settings.php',
-			esc_html(NS\PLUGIN_NAME),
-			esc_html(NS\PLUGIN_NAME),
+			esc_html(FAULH_PLUGIN_NAME),
+			esc_html(FAULH_PLUGIN_NAME),
 			'administrator',
 			sanitize_key($this->plugin_name . '-setting'),
 			array( $this, 'screen' )

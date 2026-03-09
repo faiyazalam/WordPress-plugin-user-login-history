@@ -71,7 +71,7 @@ class Settings
 	 */
 	public function admin_menu()
 	{
-		add_options_page(esc_html(NS\PLUGIN_NAME), esc_html(NS\PLUGIN_NAME), 'administrator', sanitize_key($this->plugin_name . '-settings'), array($this, 'plugin_page'));
+		add_options_page(esc_html(FAULH_PLUGIN_NAME), esc_html(FAULH_PLUGIN_NAME), 'administrator', sanitize_key($this->plugin_name . '-settings'), array($this, 'plugin_page'));
 	}
 
 	/**
@@ -109,12 +109,12 @@ class Settings
 					'desc'              => wp_sprintf(
 						/* translators: %s: Default online timeout in minutes. */
 						esc_html__('Maximum number of minutes for online users. Default is %s', 'user-login-history'),
-						esc_html(NS\DEFAULT_IS_STATUS_ONLINE_MIN)
+						esc_html(FAULH_DEFAULT_IS_STATUS_ONLINE_MIN)
 					),
 					'min'               => 1,
 					'step'              => '1',
 					'type'              => 'number',
-					'default'           => esc_html(NS\DEFAULT_IS_STATUS_ONLINE_MIN),
+					'default'           => esc_html(FAULH_DEFAULT_IS_STATUS_ONLINE_MIN),
 					'sanitize_callback' => 'absint',
 				),
 				array(
@@ -123,12 +123,12 @@ class Settings
 					'desc'              => wp_sprintf(
 						/* translators: %s: Default idle timeout in minutes. */
 						esc_html__('Maximum number of minutes for idle users. This should be greater than that of online users. Default is %s', 'user-login-history'),
-						esc_html(NS\DEFAULT_IS_STATUS_IDLE_MIN)
+						esc_html(FAULH_DEFAULT_IS_STATUS_IDLE_MIN)
 					),
 					'min'               => 1,
 					'step'              => '1',
 					'type'              => 'number',
-					'default'           => esc_html(NS\DEFAULT_IS_STATUS_IDLE_MIN),
+					'default'           => esc_html(FAULH_DEFAULT_IS_STATUS_IDLE_MIN),
 					'sanitize_callback' => 'absint',
 				),
 			),
@@ -174,8 +174,8 @@ class Settings
 	public function get_online_duration()
 	{
 		$settings      = $this->get_basic_settings();
-		$minute_online = ! empty($settings['is_status_online']) ? absint($settings['is_status_online']) : NS\DEFAULT_IS_STATUS_ONLINE_MIN;
-		$minute_idle   = ! empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : NS\DEFAULT_IS_STATUS_IDLE_MIN;
+		$minute_online = ! empty($settings['is_status_online']) ? absint($settings['is_status_online']) : FAULH_DEFAULT_IS_STATUS_ONLINE_MIN;
+		$minute_idle   = ! empty($settings['is_status_idle']) ? absint($settings['is_status_idle']) : FAULH_DEFAULT_IS_STATUS_IDLE_MIN;
 		return array(
 			'online' => $minute_online,
 			'idle'   => $minute_idle,

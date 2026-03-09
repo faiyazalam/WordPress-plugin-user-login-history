@@ -41,31 +41,25 @@ if ( defined( 'User_Login_History_Pro\NS' ) ) {
 define( __NAMESPACE__ . '\NS', __NAMESPACE__ . '\\' );
 
 
-define( NS . 'USER_LOGIN_HISTORY', 'faulh' );
-
-define( NS . 'PLUGIN_VERSION', '2.1.8' );
-
-define( NS . 'USER_LOGIN_HISTORY_DIR', plugin_dir_path( __FILE__ ) );
-
-define( NS . 'USER_LOGIN_HISTORY_URL', plugin_dir_url( __FILE__ ) );
-
-define( NS . 'PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-
-define( NS . 'PLUGIN_NAME', 'User Login History' );
-define( NS . 'PLUGIN_TEXT_DOMAIN', 'faulh' );
-define( NS . 'PLUGIN_OPTION_NAME_VERSION', 'fa_userloginhostory_version' );
-define( NS . 'PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins' );
-define( NS . 'DEFAULT_IS_STATUS_ONLINE_MIN', '2' );
-define( NS . 'DEFAULT_IS_STATUS_IDLE_MIN', '30' );
-define( NS . 'PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER', basename( __DIR__ ) . '/' . basename( __FILE__ ) );
-define( NS . 'PLUGIN_GO_PRO_LINK', "https://userloginhistory.com/pricing?ref=plugin" );
-define( NS . 'PLUGIN_FEATURE_LINK', "https://userloginhistory.com/features?ref=plugin" );
+define('FAULH', 'faulh');
+define('FAULH_PLUGIN_NAME', 'User Login History');
+define('FAULH_PLUGIN_VERSION', '2.1.8');
+define('FAULH_PHP_VERSION', '7.4');
+define('FAULH_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('FAULH_PLUGIN_BASENAME', plugin_basename(__FILE__));
+define('FAULH_PLUGIN_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
+define('FAULH_PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins');
+define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
+define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
+define('FAULH_PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER', basename(__DIR__) . '/' . basename(__FILE__));
+define('FAULH_PLUGIN_GO_PRO_LINK', "https://userloginhistory.com/pricing?ref=plugin");
+define('FAULH_PLUGIN_FEATURE_LINK', "https://userloginhistory.com/features?ref=plugin");
 
 /**
  * Autoload Classes
  */
-require_once USER_LOGIN_HISTORY_DIR . 'inc/libraries/autoloader.php';
-require_once USER_LOGIN_HISTORY_DIR.'inc/common/vendors/csv/autoload.php';
+require_once FAULH_PLUGIN_DIR . 'inc/libraries/autoloader.php';
+require_once FAULH_PLUGIN_DIR.'inc/common/vendors/csv/autoload.php';
 
 /**
  * Register Activation and Deactivation Hooks
@@ -124,10 +118,8 @@ function wp_user_login_history_init() {
 	return User_Login_History::init();
 }
 
-$min_php = '7.4';
-
 // Check the minimum required PHP version and run the plugin.
-if ( version_compare( PHP_VERSION, $min_php, '>=' ) ) {
+if ( version_compare( PHP_VERSION, FAULH_PHP_VERSION, '>=' ) ) {
 	wp_user_login_history_init();
 }
 

@@ -28,13 +28,10 @@ class Activator {
 	 * @param bool $network_wide The network wide value.
 	 */
 	public static function activate( $network_wide ) {
-
-		$min_php = '7.4';
-
 		// Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
-		if ( version_compare( PHP_VERSION, $min_php, '<' ) ) {
+		if ( version_compare( PHP_VERSION, FAULH_PHP_VERSION, '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( esc_html('This plugin requires a minmum PHP Version of ' . $min_php) );
+			wp_die( esc_html('This plugin requires a minmum PHP Version of ' . FAULH_PHP_VERSION) );
 		}
 
 		if ( is_multisite() && $network_wide ) {
@@ -65,7 +62,7 @@ class Activator {
 	public static function create_table() {
 		global $wpdb;
 		$charset_collate = $wpdb->get_charset_collate();
-		$table           = $wpdb->prefix . NS\PLUGIN_TABLE_FA_USER_LOGINS;
+		$table           = $wpdb->prefix . FAULH_PLUGIN_TABLE_FA_USER_LOGINS;
 
 		$sql = "CREATE TABLE $table (
 id int(11) NOT NULL AUTO_INCREMENT,
@@ -112,7 +109,7 @@ INDEX idx_is_super_admin (is_super_admin)
 	 * Update plugin options.
 	 */
 	public static function update_options() {
-		update_option( NS\PLUGIN_OPTION_NAME_VERSION, NS\PLUGIN_VERSION );
+		update_option( FAULH_PLUGIN_OPTION_NAME_VERSION, FAULH_PLUGIN_VERSION );
 	}
 
 }

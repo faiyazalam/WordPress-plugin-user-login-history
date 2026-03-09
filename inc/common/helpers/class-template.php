@@ -68,7 +68,7 @@ class Template
 	public static function head($page = '')
 	{
 		$author_urls = self::plugin_author_links();
-		$h           = '<h1>' . esc_html(NS\PLUGIN_NAME) . ' ' . esc_html(NS\PLUGIN_VERSION) . ' ' . esc_html__('(Basic Version)', 'user-login-history') . '</h1>';
+		$h           = '<h1>' . esc_html(FAULH_PLUGIN_NAME) . ' ' . esc_html(FAULH_PLUGIN_VERSION) . ' ' . esc_html__('(Basic Version)', 'user-login-history') . '</h1>';
 		$h          .= '<div>';
 
 		foreach ($author_urls as $key => $author_url) {

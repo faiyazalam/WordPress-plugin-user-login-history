@@ -32,7 +32,7 @@ class Network_Blog_Manager
 	{
 		$blog_id = $new_site->blog_id;
 
-		if (is_plugin_active_for_network(NS\PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER)) {
+		if (is_plugin_active_for_network(FAULH_PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER)) {
 			switch_to_blog($blog_id);
 			Activator::create_table();
 			Activator::update_options();

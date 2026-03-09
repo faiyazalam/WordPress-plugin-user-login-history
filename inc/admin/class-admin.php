@@ -213,7 +213,7 @@ class Admin {
 		$menu_slug = $this->get_plugin_login_list_page_slug();
 		$hook      = add_menu_page(
 			esc_html__( 'Login List', 'user-login-history' ),
-			NS\PLUGIN_NAME,
+			FAULH_PLUGIN_NAME,
 			'administrator',
 			$menu_slug,
 			array( $this, 'render_login_list' ),
@@ -302,7 +302,7 @@ class Admin {
 			return;
 		}
 		// Current version.
-		$current_version = get_option( NS\PLUGIN_OPTION_NAME_VERSION );
+		$current_version = get_option( FAULH_PLUGIN_OPTION_NAME_VERSION );
 		// If the version is older.
 		if ( $current_version && version_compare( $current_version, $this->version, '<' ) ) {
 
@@ -310,7 +310,7 @@ class Admin {
 				require_once ABSPATH . '/wp-admin/includes/plugin.php';
 			}
 
-			if ( is_plugin_active_for_network( NS\PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER ) ) {
+			if ( is_plugin_active_for_network( FAULH_PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER ) ) {
 				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
 				foreach ( $blog_ids as $blog_id ) {
 					switch_to_blog( $blog_id );
@@ -327,7 +327,7 @@ class Admin {
  
  public function add_action_links($actions) {
         $links = array(
-            sprintf('<a target="_blank" href="%s">%s</a>', esc_url(NS\PLUGIN_GO_PRO_LINK), esc_html__('Buy Pro', 'user-login-history')),
+            sprintf('<a target="_blank" href="%s">%s</a>', esc_url(FAULH_PLUGIN_GO_PRO_LINK), esc_html__('Buy Pro', 'user-login-history')),
         );
         return array_merge($actions, $links);
     }

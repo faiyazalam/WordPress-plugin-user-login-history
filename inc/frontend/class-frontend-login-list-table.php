@@ -197,7 +197,7 @@ class Frontend_Login_List_Table {
 	 */
 	private function set_table_name() {
 		global $wpdb;
-		$this->table = $wpdb->prefix . NS\PLUGIN_TABLE_FA_USER_LOGINS;
+		$this->table = $wpdb->prefix . FAULH_PLUGIN_TABLE_FA_USER_LOGINS;
 	}
 
 	/**

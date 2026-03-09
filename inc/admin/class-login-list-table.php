@@ -107,7 +107,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 	 */
 	public function init() {
 		parent::init();
-		$this->table         = NS\PLUGIN_TABLE_FA_USER_LOGINS;
+		$this->table         = FAULH_PLUGIN_TABLE_FA_USER_LOGINS;
 		$this->delete_action = $this->_args['singular'] . '_delete';
 	}
 
