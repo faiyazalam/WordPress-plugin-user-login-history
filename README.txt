@@ -1,7 +1,7 @@
 === User Login History ===
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
-Tags: login log,login activity,brute force indicator,security,history,tool
+Tags: login log,login activity,login tacker,brute force,history
 Requires at least: 5.0.0
 Requires PHP: 8.1.2
 Tested up to: 6.9
@@ -289,16 +289,3 @@ It means that:
 * Date range validation on the filter forms.
 * Date and Time format of the user login listing table can be changed from the general settings.
 * Improved design of the listing tables.
-
-== Upgrade Notice ==
-
-= 2.0.0 =
-
-1. We have removed about us page and help page from the plugin menu. You can read the documentation in the plugin description on the WordPress plugin directory itself.
-
-= 1.0 <= 1.7.0 =
-
-After upgrading, you have to do the following changes:
-1. Update your timezone from your profile edit page.
-1. Replace the old shortcode [user-login-history] with new shortcode [user_login_history]
-1. All the logged in users must be re-login otherwise last seen time and logout time will not be updated.

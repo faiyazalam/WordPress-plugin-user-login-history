@@ -179,9 +179,8 @@ class Admin {
 		global $pagenow, $plugin_page;
 
 		if ( 'admin.php' == $pagenow && $this->plugin_name . '-pro' == $plugin_page ) {
-			wp_enqueue_style( $this->plugin_name . '-admin-bt', '//maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css', array(), $this->version, 'all' );
-			wp_enqueue_style( $this->plugin_name . '-admin-fa', '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', array(), $this->version, 'all' );
-			wp_enqueue_style( $this->plugin_name . '-admin-gf', '//fonts.googleapis.com/css?family=Poppins&display=swap', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name . '-admin-bt', plugin_dir_url( __FILE__ ).'/css/bootstrap.min.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name . '-admin-fa', plugin_dir_url( __FILE__ ).'/css/font-awesome.min.css', array(), $this->version, 'all' );
 			wp_enqueue_style( $this->plugin_name . '-admin-gp', plugin_dir_url( __FILE__ ) . 'css/go-pro.css', array(), $this->version, 'all' );
 		}
 
