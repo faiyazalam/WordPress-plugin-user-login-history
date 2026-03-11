@@ -296,7 +296,11 @@ class Login_Tracker {
 			$data = array_merge( $data, $filtered_data );
 		}
 
-		if ( ! Db_Helper::insert( $this->table, $data ) ) {
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Insert login record, no WP native alternative for custom table.
+		if (false === $wpdb->insert($wpdb->prefix . $this->table, $data)) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Just ignoring WARNING.
+			error_log('Error saving login details: ' . $wpdb->last_error);
 			return;
 		}
 

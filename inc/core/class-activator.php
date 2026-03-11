@@ -36,9 +36,7 @@ class Activator {
 
 		if ( is_multisite() && $network_wide ) {
 
-			// Get all blogs from current network the network and activate plugin on each one.
-
-			$blog_ids = Db_Helper::get_blog_ids_by_site_id();
+			$blog_ids = get_sites(['fields' => 'ids']);
 
 			foreach ( $blog_ids as $blog_id ) {
 				switch_to_blog( $blog_id );

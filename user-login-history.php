@@ -51,7 +51,6 @@ define('FAULH_PLUGIN_OPTION_NAME_VERSION', 'fa_userloginhostory_version');
 define('FAULH_PLUGIN_TABLE_FA_USER_LOGINS', 'fa_user_logins');
 define('FAULH_DEFAULT_IS_STATUS_ONLINE_MIN', '2');
 define('FAULH_DEFAULT_IS_STATUS_IDLE_MIN', '30');
-define('FAULH_PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER', basename(__DIR__) . '/' . basename(__FILE__));
 define('FAULH_PLUGIN_GO_PRO_LINK', "https://userloginhistory.com/pricing?ref=plugin");
 define('FAULH_PLUGIN_FEATURE_LINK', "https://userloginhistory.com/features?ref=plugin");
 

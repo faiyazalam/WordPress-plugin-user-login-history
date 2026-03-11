@@ -11,12 +11,8 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
-use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Helpers\Tool as Tool_Helper;
-use User_Login_History\Inc\Admin\User_Profile;
-use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Table_Interface;
 
@@ -40,6 +36,20 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	private $count_sql = '';
 
 	/**
+	 * Holds the where clause values.
+	 * 
+	 * @var array
+	 */
+	private array $where_query_values = array();
+
+	/**
+	 * Holds the where clause.
+	 * 
+	 * @var string
+	 */
+	private string $where_query = '';
+
+	/**
 	 * Initialize.
 	 */
 	public function init() {
@@ -52,17 +62,15 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 */
 	public function prepare_where_query() {
 		$where = parent::prepare_where_query();
-		$where['where_query'] = $where['where_query'] ?? "";
-		$where['where_query_values'] = $where['where_query_values'] ?? [];
+		$this->where_query = $where['where_query'] ?? "";
+		$this->where_query_values = $where['where_query_values'] ?? [];
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_get = $_GET;
 		if ( ! empty( $the_get['is_super_admin'] ) && in_array( $the_get['is_super_admin'], array( 'yes', 'no' ), true ) ) {
-			$where['where_query'] .= " AND `FaUserLogin`.`is_super_admin` = %d";
-			$where['where_query_values'][] = absint( 'yes' == $the_get['is_super_admin'] );
+			$this->where_query .= " AND `FaUserLogin`.`is_super_admin` = %d";
+			$this->where_query_values[] = absint( 'yes' == $the_get['is_super_admin'] );
 		}
-
-		return $where;
 	}
 
 	/**
@@ -71,44 +79,43 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 * @global type $wpdb
 	 */
 	private function prepare_sql_queries() {
+		$this->prepare_where_query();
 		global $wpdb;
-		$where_query = $this->prepare_where_query();
 
 		$i        = 0;
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_get = $_GET;
 
-		if(empty( $the_get['blog_id'] )){
-			return;
-		}
-
-		if(!is_numeric($the_get['blog_id'])){
-			return;
-		}
-
-		if($the_get['blog_id'] <= 0){
-			return;
-		}
-
-		$blog_ids = array(absint($the_get['blog_id']));
-		$blog_ids  = empty($blog_ids) ? Db_Helper::get_blog_ids_by_site_id() : $blog_ids;
-
-		foreach ( $blog_ids as $blog_id ) {
-			$blog_id = absint( $blog_id );
-			if ( 0 === $blog_id ) {
-				continue;
+		if (!isset($the_get['blog_id'])) {
+			$blog_ids = get_sites(['fields' => 'ids']);
+		} else {
+			if (empty($the_get['blog_id'])) {
+				return;
 			}
 
+			if (!is_numeric($the_get['blog_id'])) {
+				return;
+			}
+
+			if ($the_get['blog_id'] <= 0) {
+				return;
+			}
+
+			$blog_id_to_filter = absint($the_get['blog_id']);
+
+			if (!get_site($blog_id_to_filter)) {
+				return;
+			}
+
+			$blog_ids = array($blog_id_to_filter);
+		}
+
+		foreach ( $blog_ids as $blog_id ) {
 			$blog_prefix = $wpdb->get_blog_prefix( $blog_id );
 			$table       = $blog_prefix . $this->table;
 
-			if ( ! $this->is_plugin_active_for_network && ! Db_Helper::is_table_exist( $table ) ) {
-				continue;
-			}
-
 			$table = '`' . str_replace( '`', '``', $table ) . '`';
-
 
 			if ( 0 < $i ) {
 				$this->rows_sql  .= ' UNION ALL';
@@ -143,9 +150,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 					. " FROM $table  AS FaUserLogin"
 					. ' WHERE 1 ';
 
-			if ( $where_query ) {
-				$this->rows_sql  .= $where_query;
-				$this->count_sql .= $where_query;
+			if ( $this->where_query ) {
+				$this->rows_sql  .= $this->where_query;
+				$this->count_sql .= $this->where_query;
 			}
 
 			$i++;
@@ -153,7 +160,6 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		$this->rows_sql  = "SELECT * FROM ({$this->rows_sql}) AS FaUserLoginAllRows";
 		$this->count_sql = "SELECT SUM(count) as total FROM ({$this->count_sql}) AS FaUserLoginCount";
-
 	}
 
 	/**
@@ -210,22 +216,26 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	public function get_rows( $per_page = 20, $page_number = 1 ) {
 		// phpcs:ignore	WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_request = $_REQUEST;
+		$sanitize_sql_orderby = sanitize_sql_orderby( "time_login DESC");
+
 		if ( ! empty( $the_request['orderby'] ) ) {
-			$direction            = ! empty( $the_request['order'] ) ? $the_request['order'] : ' ASC';
+			$direction            = ! empty( $the_request['order'] ) ? strtoupper($the_request['order']) : 'ASC';
+			$direction = in_array( $direction, array( 'ASC', 'DESC' ), true ) ? $direction : 'ASC';
 			$sanitize_sql_orderby = sanitize_sql_orderby( $the_request['orderby'] . ' ' . $direction );
-			if ( $sanitize_sql_orderby ) {
-				$this->rows_sql .= ' ORDER BY ' . $sanitize_sql_orderby;
-			}
-		} else {
-			$this->rows_sql .= ' ORDER BY time_login DESC';
+		}
+
+		if ( $sanitize_sql_orderby ) {
+			$this->rows_sql .= ' ORDER BY ' . $sanitize_sql_orderby;
 		}
 
 		if ( $per_page > 0 ) {
-			$this->rows_sql .= " LIMIT $per_page";
-			$this->rows_sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
+			$this->rows_sql .= " LIMIT " . absint($per_page);
+			$this->rows_sql .= " OFFSET " . absint(($page_number - 1) * $per_page);
 		}
 
-		return Db_Helper::get_results( $this->rows_sql );
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
+		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, $this->where_query_values ), ARRAY_A );
 	}
 
 	/**
@@ -234,7 +244,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 * @return null|string
 	 */
 	public function record_count() {
-		return Db_Helper::get_var( $this->count_sql );
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
+		return $wpdb->get_var($wpdb->prepare($this->count_sql, $this->where_query_values));
 	}
 
 	/**
@@ -324,7 +336,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 				global $wpdb;
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
 				$wpdb->query( 'START TRANSACTION' );
-				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
+				$blog_ids = get_sites(['fields' => 'ids']);
 				if(is_array($blog_ids)  && !empty( $blog_ids ) ) {
 					foreach ( $blog_ids as $blog_id ) {
 						switch_to_blog( $blog_id );
@@ -384,7 +396,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		$id      = absint( $_GET['record_id']??0 );
 		$blog_id = absint( $_GET['blog_id']??0 );
 
-		if ( ! Db_Helper::is_blog_exist( $blog_id ) ) {
+		$blog_ids = get_sites([
+			'site__in' => [$blog_id]
+		]);
+
+		if ( empty( $blog_ids ) ) {
 			return;
 		}
 

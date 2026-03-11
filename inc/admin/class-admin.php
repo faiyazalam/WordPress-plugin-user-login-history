@@ -310,8 +310,8 @@ class Admin {
 				require_once ABSPATH . '/wp-admin/includes/plugin.php';
 			}
 
-			if ( is_plugin_active_for_network( FAULH_PLUGIN_BOOTSTRAP_FILE_PATH_FROM_PLUGIN_FOLDER ) ) {
-				$blog_ids = Db_Helper::get_blog_ids_by_site_id();
+			if ( is_plugin_active_for_network( FAULH_PLUGIN_BASENAME ) ) {
+				$blog_ids = get_sites(['fields' => 'ids']);
 				foreach ( $blog_ids as $blog_id ) {
 					switch_to_blog( $blog_id );
 					Activator::create_table();
