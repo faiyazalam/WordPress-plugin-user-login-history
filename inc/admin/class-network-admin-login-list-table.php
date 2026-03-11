@@ -167,7 +167,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			)
 		);
 		$columns = Tool_Helper::array_insert_after( $columns, 'user_id', array( 'blog_id' => esc_html__( 'Blog ID', 'user-login-history' ) ) );
-		return apply_filters( $this->plugin_name . '_network_admin_login_list_get_columns', $columns );
+		return apply_filters( 'faulh_network_admin_login_list_get_columns', $columns );
 	}
 
 	/**
@@ -182,7 +182,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			)
 		);
 
-		return apply_filters( $this->plugin_name . '_network_admin_login_list_get_sortable_columns', $columns );
+		return apply_filters( 'faulh_network_admin_login_list_get_sortable_columns', $columns );
 	}
 
 	/**

@@ -311,6 +311,7 @@ class Frontend_Login_List_Table {
 			$sql .= " LIMIT $this->limit";
 			$sql .= ' OFFSET   ' . ( $this->page_number - 1 ) * $this->limit;
 		}
+		// phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
 		$result = $wpdb->get_results( $wpdb->prepare( $sql, $where_query_values ), 'ARRAY_A' );
 		if ( '' != $wpdb->last_error ) {
 			ErrorLogHelper::error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query, __LINE__, __FILE__ );
@@ -332,11 +333,15 @@ class Frontend_Login_List_Table {
 				. ' FROM ' . $this->table . '  AS FaUserLogin'
 				. ' WHERE 1 ';
 
-		$where_query = $this->prepare_where_query();
+		$where = $this->prepare_where_query();
+		$where_query = $where['where_query'] ?? "";
+		$where_query_values = $where['where_query_values'] ?? array();
+
 		if ( $where_query ) {
 			$sql .= $where_query;
 		}
-		$result = $wpdb->get_var( $sql );
+		// phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
+		$result = $wpdb->get_var( $wpdb->prepare( $sql, $where_query_values ) );
 		if ( '' != $wpdb->last_error ) {
 			ErrorLogHelper::error_log( 'last error:' . $wpdb->last_error . ' last query:' . $wpdb->last_query, __LINE__, __FILE__ );
 		}
@@ -592,7 +597,7 @@ class Frontend_Login_List_Table {
 		$date_time_format = $this->get_table_date_time_format();
 		$unknown          = 'unknown';
 		$unknown_symbol   = '----';
-		$new_column_data  = apply_filters( 'manage_faulh_public_custom_column', '', $item, $column_name );
+		$new_column_data  = apply_filters( 'faulh_manage_public_custom_column', '', $item, $column_name );
 		$country_code     = in_array( strtolower( $item['country_code'] ), array( '', $unknown ) ) ? $unknown : $item['country_code'];
 
 		switch ( $column_name ) {

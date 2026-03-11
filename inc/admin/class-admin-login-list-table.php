@@ -66,7 +66,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			$sql .= ' OFFSET   ' . ( $page_number - 1 ) * $per_page;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- $sql is built internally with placeholders, not from user input.
+		// phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching	 -- $sql is built internally with placeholders, not from user input.
 		return $wpdb->get_results($wpdb->prepare($sql, $where_query_values), ARRAY_A);
 	}
 
@@ -94,6 +94,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			$sql .= $where_query;
 		}
 
+		// phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching	-- already scaped.
 		return $wpdb->get_var($wpdb->prepare($sql, $where_query_values));
 	}
 
@@ -231,7 +232,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 	 * @overridden
 	 */
 	public function get_columns() {
-		return apply_filters( $this->plugin_name . '_admin_login_list_get_columns', parent::get_columns() );
+		return apply_filters( 'faulh_admin_login_list_get_columns', parent::get_columns() );
 	}
 
 	/**
@@ -240,7 +241,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 	 * @overridden
 	 */
 	public function get_sortable_columns() {
-		return apply_filters( $this->plugin_name . '_admin_login_list_get_sortable_columns', parent::get_sortable_columns() );
+		return apply_filters( 'faulh_admin_login_list_get_sortable_columns', parent::get_sortable_columns() );
 	}
 
 }

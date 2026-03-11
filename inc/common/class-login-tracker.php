@@ -327,6 +327,8 @@ class Login_Tracker {
 		$table         = $wpdb->get_blog_prefix( $this->current_loggedin_blog_id ) . $this->table;
 		$current_date  = Date_Time_Helper::get_current_date_time();
 		$session_token = wp_get_session_token();
+		
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Real-time last seen update, caching not applicable.
 		$wpdb->update(
 			$table,
 			array('time_last_seen' => $current_date),
@@ -366,6 +368,8 @@ class Login_Tracker {
 		$time_logout  = Date_Time_Helper::get_current_date_time();
 		$login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
 		$table        = $wpdb->get_blog_prefix( $this->current_loggedin_blog_id ) . $this->table;
+		
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Real-time last seen update, caching not applicable.
 		$wpdb->update(
 			$table,
 			array('time_logout' => $time_logout, 'time_last_seen' => $time_logout, 'login_status' => $login_status),

@@ -51,6 +51,7 @@ class Network_Blog_Manager
 		$blog_id = $old_site->blog_id;
 		switch_to_blog($blog_id);
 		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange	-- Intentional table drop on plugin uninstall, no WP native alternative.
 		$wpdb->query($wpdb->prepare('DROP TABLE IF EXISTS %i', $wpdb->prefix . 'fa_user_logins' ));
 		restore_current_blog();
 	}

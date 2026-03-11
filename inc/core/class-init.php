@@ -79,7 +79,6 @@ class Init {
 	 * Loads the following required dependencies for this plugin.
 	 *
 	 * - Loader - Orchestrates the hooks of the plugin.
-	 * - Internationalization_I18n - Defines internationalization functionality.
 	 * - Admin - Defines all hooks for the admin area.
 	 * - Frontend - Defines all hooks for the public side of the site.
 	 */

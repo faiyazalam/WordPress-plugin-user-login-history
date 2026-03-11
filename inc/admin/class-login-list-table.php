@@ -309,7 +309,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 	public function column_default( $item, $column_name ) {
 		$timezone = $this->get_timezone();
 
-		$new_column_data = apply_filters( 'manage_faulh_admin_custom_column', '', $item, $column_name );
+		$new_column_data = apply_filters( 'faulh_manage_admin_custom_column', '', $item, $column_name );
 		if ( $new_column_data ) {
 			return $new_column_data;
 		}
