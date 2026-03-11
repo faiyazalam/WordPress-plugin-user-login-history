@@ -87,12 +87,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_get = $_GET;
 
-		if (!isset($the_get['blog_id'])) {
+		if (empty($the_get['blog_id'])) {
 			$blog_ids = get_sites(['fields' => 'ids']);
 		} else {
-			if (empty($the_get['blog_id'])) {
-				return;
-			}
 
 			if (!is_numeric($the_get['blog_id'])) {
 				return;
@@ -153,7 +150,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			if ( $this->where_query ) {
 				$this->rows_sql  .= $this->where_query;
 				$this->count_sql .= $this->where_query;
-			}
+			 }
 
 			$i++;
 		}
@@ -235,7 +232,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, $this->where_query_values ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, [...$this->where_query_values, ...$this->where_query_values] ), ARRAY_A );
 	}
 
 	/**
@@ -246,7 +243,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	public function record_count() {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_var($wpdb->prepare($this->count_sql, $this->where_query_values));
+		return $wpdb->get_var($wpdb->prepare($this->count_sql, [...$this->where_query_values, ...$this->where_query_values]));
 	}
 
 	/**
