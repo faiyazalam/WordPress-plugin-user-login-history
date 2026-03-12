@@ -80,6 +80,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 */
 	private function prepare_sql_queries() {
 		$this->prepare_where_query();
+		$where_query_values = [];
 		global $wpdb;
 
 		$i = 0;
@@ -150,11 +151,13 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			if ( $this->where_query ) {
 				$this->rows_sql  .= $this->where_query;
 				$this->count_sql .= $this->where_query;
+				$where_query_values = array_merge( $where_query_values, $this->where_query_values );
 			}
 
 			++$i;
 		}
 
+		$this->where_query_values = $where_query_values;
 		$this->rows_sql  = "SELECT * FROM ({$this->rows_sql}) AS FaUserLoginAllRows";
 		$this->count_sql = "SELECT SUM(count) as total FROM ({$this->count_sql}) AS FaUserLoginCount";
 	}
@@ -232,7 +235,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, array( ...$this->where_query_values, ...$this->where_query_values ) ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, $this->where_query_values ), ARRAY_A );
 	}
 
 	/**
@@ -243,7 +246,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	public function record_count() {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_var( $wpdb->prepare( $this->count_sql, array( ...$this->where_query_values, ...$this->where_query_values ) ) );
+		return $wpdb->get_var( $wpdb->prepare( $this->count_sql, $this->where_query_values ) );
 	}
 
 	/**
