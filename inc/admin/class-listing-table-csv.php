@@ -132,6 +132,7 @@ final class Listing_Table_Csv {
 		}
 		wp_cache_flush_runtime();
 		rewind( $handle );
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw CSV binary stream output, escaping would corrupt the data.
 		echo stream_get_contents( $handle );
 		fclose( $handle );
 		die();

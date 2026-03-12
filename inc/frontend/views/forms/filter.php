@@ -18,25 +18,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to prefill the form.
 $faulh_the_get = $_GET;
 ?>
-<form name="<?php echo esc_attr( $this->plugin_name . '-search-form' ); ?>" method="get" action="" id="<?php echo esc_attr( $this->plugin_name . '-search-form' ); ?>">
+<form class="faulh-filter" name="<?php echo esc_attr( $this->plugin_name . '-search-form' ); ?>" method="get" action="" id="<?php echo esc_attr( $this->plugin_name . '-search-form' ); ?>">
 	<fieldset>
-
-		<input class="date-inputss" style="width:39%;display: inline-block" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr( __( 'From', 'user-login-history' ) ); ?>" id="date_from" name="date_from" value="<?php echo isset( $faulh_the_get['date_from'] ) ? esc_attr( sanitize_text_field( $faulh_the_get['date_from'] ) ) : ''; ?>">
-		<input class="date-inputss" style="width:39%;display: inline-block" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr( __( 'To', 'user-login-history' ) ); ?>" id="date_to" name="date_to" value="<?php echo isset( $faulh_the_get['date_to'] ) ? esc_attr( sanitize_text_field( $faulh_the_get['date_to'] ) ) : ''; ?>">
-		<select name="date_type">
-			<?php
-			Template_Helper::dropdown_time_field_types( isset( $faulh_the_get['date_type'] ) ? $faulh_the_get['date_type'] : null );
-			?>
-		</select>
-
-		<div style="margin-top:20px; text-align: right">
-			<?php if ( $reset_url ) { ?>
-				<a style="margin-right:10px" href="<?php echo esc_url( $reset_url ); ?>"><?php esc_html_e( 'RESET', 'user-login-history' ); ?></a>
-			<?php } ?>
-			<input class="" id="submit" type="submit" name="submit" value="<?php esc_html_e( 'FILTER', 'user-login-history' ); ?>" />
+		<div class="faulh-field faulh-date-field">
+			<label class="faulh-label" for="date_from"><?php esc_html_e( 'From', 'user-login-history' ); ?></label>
+			<input class="faulh-date-inputs" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr( __( 'From', 'user-login-history' ) ); ?>" id="date_from" name="date_from" value="<?php echo isset( $faulh_the_get['date_from'] ) ? esc_attr( sanitize_text_field( $faulh_the_get['date_from'] ) ) : ''; ?>">
 		</div>
-
-
+		<div class="faulh-field faulh-date-field">
+			<label class="faulh-label" for="date_to"><?php esc_html_e( 'To', 'user-login-history' ); ?></label>
+			<input class="faulh-date-inputs" readonly type="text" autocomplete="off" placeholder="<?php echo esc_attr( __( 'To', 'user-login-history' ) ); ?>" id="date_to" name="date_to" value="<?php echo isset( $faulh_the_get['date_to'] ) ? esc_attr( sanitize_text_field( $faulh_the_get['date_to'] ) ) : ''; ?>">
+		</div>
+		<div class="faulh-field">
+			<label class="faulh-label" for="date_type"><?php esc_html_e( 'Date Type', 'user-login-history' ); ?></label>
+			<select id="date_type" name="date_type">
+				<?php
+				Template_Helper::dropdown_time_field_types( isset( $faulh_the_get['date_type'] ) ? $faulh_the_get['date_type'] : null );
+				?>
+			</select>
+		</div>
+		<div class="faulh-filter-actions">
+			<?php if ( $reset_url ) { ?>
+				<a class="faulh-link" href="<?php echo esc_url( $reset_url ); ?>"><?php esc_html_e( 'RESET', 'user-login-history' ); ?></a>
+			<?php } ?>
+			<input class="faulh-button" id="submit" type="submit" name="submit" value="<?php esc_html_e( 'FILTER', 'user-login-history' ); ?>" />
+		</div>
 	</fieldset>
 	<?php do_action( 'faulh_public_listing_search_form' ); ?>
 </form>
