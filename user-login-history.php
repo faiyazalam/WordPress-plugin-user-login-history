@@ -15,6 +15,8 @@
  * Plugin URI:        http://userloginhistory.com/home/
  * Description:       Helps you to know your website's visitors by tracking their login related information like login/logout time, country, browser and many more.
  * Version:           2.1.8
+ * Requires at least: 5.3
+ * Requires PHP:      7.4
  * Author:            Er Faiyaz Alam
  * Author URI:        http://userloginhistory.com/
  * License:           GPL-2.0+

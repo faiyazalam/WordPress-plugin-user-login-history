@@ -11,11 +11,7 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
-use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
-use User_Login_History\Inc\Admin\User_Profile;
-use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Table_Interface;
 

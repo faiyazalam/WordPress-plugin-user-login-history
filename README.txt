@@ -2,7 +2,7 @@
 Contributors: faiyazalam,w3reign,nekokun,harm10
 Donate link: https://www.paypal.me/erfaiyazalam/
 Tags: login log,login activity,login tacker,brute force,history
-Requires at least: 5.0
+Requires at least: 5.3
 Requires PHP: 7.4
 Tested up to: 6.9
 Stable tag: 2.1.8

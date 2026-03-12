@@ -13,7 +13,6 @@
 namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Admin\Settings_Api;
-use User_Login_History as NS;
 
 /**
  * Admin specific settings.

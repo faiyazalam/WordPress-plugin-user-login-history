@@ -11,8 +11,6 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Admin\User_Profile;
 use User_Login_History\Inc\Common\Abstracts\List_Table as List_Table_Abstract;

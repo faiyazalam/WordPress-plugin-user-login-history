@@ -11,9 +11,6 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
-
 /**
  * Network admnin settings.
  */

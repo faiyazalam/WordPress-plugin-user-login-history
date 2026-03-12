@@ -14,7 +14,6 @@ namespace User_Login_History\Inc\Common\Helpers;
 
 use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Login_Tracker;
-use User_Login_History as NS;
 
 /**
  * Backend Functionality.

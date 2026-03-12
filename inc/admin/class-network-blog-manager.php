@@ -12,9 +12,7 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History as NS;
 use User_Login_History\Inc\Core\Activator;
-use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
 /**
  * Network Blog Management Functionality.

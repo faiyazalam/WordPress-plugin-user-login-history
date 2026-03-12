@@ -11,7 +11,6 @@
 
 namespace User_Login_History\Inc\Core;
 
-use User_Login_History as NS;
 use User_Login_History\Inc\Admin\Admin;
 use User_Login_History\Inc\Admin\Admin_Notice;
 use User_Login_History\Inc\Admin\User_Profile;

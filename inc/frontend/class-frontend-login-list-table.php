@@ -11,9 +11,7 @@
 
 namespace User_Login_History\Inc\Frontend;
 
-use User_Login_History as NS;
 use User_Login_History\Inc\Common\Helpers\Date_Time as DateTimeHelper;
-use User_Login_History\Inc\Common\Helpers\Db as DbHelper;
 use User_Login_History\Inc\Common\Helpers;
 use User_Login_History\Inc\Common\Helpers\Error_Log as ErrorLogHelper;
 
@@ -594,7 +592,7 @@ class Frontend_Login_List_Table {
 		$timezone         = $this->get_table_timezone();
 		$date_time_format = $this->get_table_date_time_format();
 		$unknown          = 'unknown';
-		$unknown_symbol   = '----';
+		$unknown_symbol   = '';
 		$new_column_data  = apply_filters( 'faulh_manage_public_custom_column', '', $item, $column_name );
 		$country_code     = in_array( strtolower( $item['country_code'] ), array( '', $unknown ) ) ? $unknown : $item['country_code'];
 
