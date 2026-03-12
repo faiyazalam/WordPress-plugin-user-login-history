@@ -252,6 +252,11 @@ and open the template in the editor.
   filter: brightness(0.9);
 }
 
+.faulh-wrapper span.page-numbers.current {
+  color: inherit;
+  font-weight: 700;
+}
+
 @media (max-width: 720px) {
   .faulh-wrapper {
     padding: 16px;
