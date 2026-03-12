@@ -58,7 +58,6 @@ define( 'FAULH_PLUGIN_FEATURE_LINK', 'https://userloginhistory.com/features?ref=
  * Autoload Classes
  */
 require_once FAULH_PLUGIN_DIR . 'inc/libraries/autoloader.php';
-require_once FAULH_PLUGIN_DIR . 'inc/common/vendors/csv/autoload.php';
 
 /**
  * Register Activation and Deactivation Hooks

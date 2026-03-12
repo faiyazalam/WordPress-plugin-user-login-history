@@ -50,8 +50,9 @@ final class Listing_Table_Csv {
 	 * Set content type in header.
 	 */
 	private function set_headers() {
-		header( 'Content-Type: text/csv' );
-		header( 'Content-Disposition: attachment;filename=' . $this->get_suffix() . '.csv' );
+		$filename = sanitize_file_name( $this->get_suffix() . '.csv' );
+		header( 'Content-Type: text/csv; charset=UTF-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 	}
 
 	/**
@@ -92,12 +93,16 @@ final class Listing_Table_Csv {
 			exit;
 		}
 
-		$csv = \League\Csv\Writer::createFromString();
+		$handle = fopen( 'php://temp', 'r+' );
+		if ( false === $handle ) {
+			return;
+		}
 		$this->listing_table->set_unknown_symbol( $this->unknown_symbol );
 		$columns = $this->listing_table->get_columns();
 
 		$i      = 0;
 		$record = array();
+		
 		foreach ( $data as $row ) {
 
 			foreach ( $columns as $field_name => $field_label ) {
@@ -109,15 +114,67 @@ final class Listing_Table_Csv {
 			}
 
 			if ( 0 == $i ) {
-				$csv->insertOne( array_keys( $record ) );
+				fputcsv( $handle, $this->escape_csv_record( array_keys( $record ) ), ',', '"', '\\' );
 
 			}
 
-			$csv->insertOne( $record );
+			fputcsv( $handle, $this->escape_csv_record( $record ), ',', '"', '\\' );
 
 			++$i;
 		}
-		$csv->output();
+		rewind( $handle );
+		echo stream_get_contents( $handle );
+		fclose( $handle );
 		die();
+	}
+
+	/**
+	 * Escape CSV formula injection characters.
+	 *
+	 * @param array $record CSV record.
+	 * @return array
+	 */
+	private function escape_csv_record( array $record ) {
+		foreach ( $record as $key => $value ) {
+			$record[ $key ] = $this->escape_csv_field( $value );
+		}
+
+		return $record;
+	}
+
+	/**
+	 * Escape a single CSV field if it looks like a formula.
+	 *
+	 * @param mixed $value CSV field value.
+	 * @return mixed
+	 */
+	private function escape_csv_field( string $value ): string {
+		// Decode HTML entities from DB storage
+		$value = html_entity_decode( $value, ENT_QUOTES, 'UTF-8' );
+
+		// Strip HTML tags
+		$value = wp_strip_all_tags( $value );
+
+		// Strip NULL bytes
+		$value = str_replace( "\0", '', $value );
+
+		if ( '' === $value ) {
+			return $value;
+		}
+
+		// Trim ALL unicode whitespace variants before checking first char
+		$trimmed = preg_replace( '/^[\pZ\pC]+/u', '', $value );
+
+		if ( '' === $trimmed ) {
+			return $value;
+		}
+
+		$dangerous_chars = array( '=', '-', '+', '@', '|', "\t", "\r", "\n" );
+
+		if ( in_array( $trimmed[0], $dangerous_chars, true ) ) {
+			return "'\t" . $value; // \t after quote breaks formula parsing in Excel/Sheets
+		}
+
+		return $value;
 	}
 }
