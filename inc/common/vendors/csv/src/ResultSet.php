@@ -33,478 +33,441 @@ use function iterator_count;
 /**
  * Represents the result set of a {@link Reader} processed by a {@link Statement}.
  */
-class ResultSet implements TabularDataReader, JsonSerializable
-{
-    /** @var array<string> */
-    protected array $header;
+class ResultSet implements TabularDataReader, JsonSerializable {
 
-    /* @var Iterator<array-key, array<array-key, mixed>> */
-    protected Iterator $records;
+	/** @var array<string> */
+	protected array $header;
 
-    /**
-     * @param Iterator|array<array-key, array<array-key, mixed>> $records
-     * @param array<string> $header
-     *
-     * @throws SyntaxError
-     */
-    public function __construct(Iterator|array $records, array $header = [])
-    {
-        if ($header !== array_filter($header, is_string(...))) {
-            throw SyntaxError::dueToInvalidHeaderColumnNames();
-        }
+	/* @var Iterator<array-key, array<array-key, mixed>> */
+	protected Iterator $records;
 
-        $this->header = array_values($this->validateHeader($header));
-        $this->records = match (true) {
-            $records instanceof Iterator => $records,
-            default => new ArrayIterator($records),
-        };
-    }
+	/**
+	 * @param Iterator|array<array-key, array<array-key, mixed>> $records
+	 * @param array<string>                                      $header
+	 *
+	 * @throws SyntaxError
+	 */
+	public function __construct( Iterator|array $records, array $header = array() ) {
+		if ( $header !== array_filter( $header, is_string( ... ) ) ) {
+			throw SyntaxError::dueToInvalidHeaderColumnNames();
+		}
 
-    /**
-     * @throws SyntaxError if the header syntax is invalid
-     */
-    protected function validateHeader(array $header): array
-    {
-        return match (true) {
-            $header !== array_unique($header) => throw SyntaxError::dueToDuplicateHeaderColumnNames($header),
-            [] !== array_filter(array_keys($header), fn (string|int $value) => !is_int($value) || $value < 0) => throw new SyntaxError('The header mapper indexes should only contain positive integer or 0.'),
-            default => $header,
-        };
-    }
+		$this->header  = array_values( $this->validateHeader( $header ) );
+		$this->records = match ( true ) {
+			$records instanceof Iterator => $records,
+			default => new ArrayIterator( $records ),
+		};
+	}
 
-    public function __destruct()
-    {
-        unset($this->records);
-    }
+	/**
+	 * @throws SyntaxError if the header syntax is invalid
+	 */
+	protected function validateHeader( array $header ): array {
+		return match ( true ) {
+			$header !== array_unique( $header ) => throw SyntaxError::dueToDuplicateHeaderColumnNames( $header ),
+			array() !== array_filter( array_keys( $header ), fn ( string|int $value ) => ! is_int( $value ) || $value < 0 ) => throw new SyntaxError( 'The header mapper indexes should only contain positive integer or 0.' ),
+			default => $header,
+		};
+	}
 
-    /**
-     * Returns a new instance from an object implementing the TabularDataReader interface.
-     *
-     * @throws SyntaxError
-     */
-    public static function createFromTabularDataReader(TabularDataReader $reader): self
-    {
-        return new self($reader->getRecords(), $reader->getHeader());
-    }
+	public function __destruct() {
+		unset( $this->records );
+	}
 
-    /**
-     * Returns a new instance from a collection without header..
-     *
-     * @throws SyntaxError
-     */
-    public static function createFromRecords(Iterator|array $records = []): self
-    {
-        return new self($records);
-    }
+	/**
+	 * Returns a new instance from an object implementing the TabularDataReader interface.
+	 *
+	 * @throws SyntaxError
+	 */
+	public static function createFromTabularDataReader( TabularDataReader $reader ): self {
+		return new self( $reader->getRecords(), $reader->getHeader() );
+	}
 
-    /**
-     * Returns the header associated with the result set.
-     *
-     * @return array<string>
-     */
-    public function getHeader(): array
-    {
-        return $this->header;
-    }
+	/**
+	 * Returns a new instance from a collection without header..
+	 *
+	 * @throws SyntaxError
+	 */
+	public static function createFromRecords( Iterator|array $records = array() ): self {
+		return new self( $records );
+	}
 
-    /**
-     * @throws SyntaxError
-     */
-    public function getIterator(): Iterator
-    {
-        return $this->getRecords();
-    }
+	/**
+	 * Returns the header associated with the result set.
+	 *
+	 * @return array<string>
+	 */
+	public function getHeader(): array {
+		return $this->header;
+	}
 
-    /**
-     * @param Closure(array<mixed>, array-key=): mixed $closure
-     */
-    public function each(Closure $closure): bool
-    {
-        foreach ($this as $offset => $record) {
-            if (false === $closure($record, $offset)) {
-                return false;
-            }
-        }
+	/**
+	 * @throws SyntaxError
+	 */
+	public function getIterator(): Iterator {
+		return $this->getRecords();
+	}
 
-        return true;
-    }
+	/**
+	 * @param Closure(array<mixed>, array-key=): mixed $closure
+	 */
+	public function each( Closure $closure ): bool {
+		foreach ( $this as $offset => $record ) {
+			if ( false === $closure( $record, $offset ) ) {
+				return false;
+			}
+		}
 
-    /**
-     * @param Closure(array<mixed>, array-key=): bool $closure
-     */
-    public function exists(Closure $closure): bool
-    {
-        foreach ($this as $offset => $record) {
-            if (true === $closure($record, $offset)) {
-                return true;
-            }
-        }
+		return true;
+	}
 
-        return false;
-    }
+	/**
+	 * @param Closure(array<mixed>, array-key=): bool $closure
+	 */
+	public function exists( Closure $closure ): bool {
+		foreach ( $this as $offset => $record ) {
+			if ( true === $closure( $record, $offset ) ) {
+				return true;
+			}
+		}
 
-    /**
-     * @param Closure(TInitial|null, array<mixed>, array-key=): TInitial $closure
-     * @param TInitial|null $initial
-     *
-     * @template TInitial
-     *
-     * @return TInitial|null
-     */
-    public function reduce(Closure $closure, mixed $initial = null): mixed
-    {
-        foreach ($this as $offset => $record) {
-            $initial = $closure($initial, $record, $offset);
-        }
+		return false;
+	}
 
-        return $initial;
-    }
+	/**
+	 * @param Closure(TInitial|null, array<mixed>, array-key=): TInitial $closure
+	 * @param TInitial|null                                              $initial
+	 *
+	 * @template TInitial
+	 *
+	 * @return TInitial|null
+	 */
+	public function reduce( Closure $closure, mixed $initial = null ): mixed {
+		foreach ( $this as $offset => $record ) {
+			$initial = $closure( $initial, $record, $offset );
+		}
 
-    /**
-     * @param positive-int $recordsCount
-     *
-     * @throws InvalidArgument
-     *
-     * @return iterable<TabularDataReader>
-     */
-    public function chunkBy(int $recordsCount): iterable
-    {
-        if ($recordsCount < 1) {
-            throw InvalidArgument::dueToInvalidChunkSize($recordsCount, __METHOD__);
-        }
+		return $initial;
+	}
 
-        $header = $this->getHeader();
-        $records = [];
-        $nbRecords = 0;
-        foreach ($this->getRecords() as $record) {
-            $records[] = $record;
-            ++$nbRecords;
-            if ($nbRecords === $recordsCount) {
-                yield new self($records, $header);
-            }
-        }
+	/**
+	 * @param positive-int $recordsCount
+	 *
+	 * @throws InvalidArgument
+	 *
+	 * @return iterable<TabularDataReader>
+	 */
+	public function chunkBy( int $recordsCount ): iterable {
+		if ( $recordsCount < 1 ) {
+			throw InvalidArgument::dueToInvalidChunkSize( $recordsCount, __METHOD__ );
+		}
 
-        if ([] !== $records) {
-            yield new self($records, $header);
-        }
-    }
+		$header    = $this->getHeader();
+		$records   = array();
+		$nbRecords = 0;
+		foreach ( $this->getRecords() as $record ) {
+			$records[] = $record;
+			++$nbRecords;
+			if ( $nbRecords === $recordsCount ) {
+				yield new self( $records, $header );
+			}
+		}
 
-    /**
-     * @param array<string> $headers
-     */
-    public function mapHeader(array $headers): TabularDataReader
-    {
-        return Statement::create()->process($this, $headers);
-    }
+		if ( array() !== $records ) {
+			yield new self( $records, $header );
+		}
+	}
 
-    public function filter(Closure $closure): TabularDataReader
-    {
-        return Statement::create()->where($closure)->process($this);
-    }
+	/**
+	 * @param array<string> $headers
+	 */
+	public function mapHeader( array $headers ): TabularDataReader {
+		return Statement::create()->process( $this, $headers );
+	}
 
-    public function slice(int $offset, int $length = null): TabularDataReader
-    {
-        return Statement::create()->offset($offset)->limit($length ?? -1)->process($this);
-    }
+	public function filter( Closure $closure ): TabularDataReader {
+		return Statement::create()->where( $closure )->process( $this );
+	}
 
-    public function sorted(Closure $orderBy): TabularDataReader
-    {
-        return Statement::create()->orderBy($orderBy)->process($this);
-    }
+	public function slice( int $offset, int $length = null ): TabularDataReader {
+		return Statement::create()->offset( $offset )->limit( $length ?? -1 )->process( $this );
+	}
 
-    public function select(string|int ...$columns): TabularDataReader
-    {
-        return Statement::create()->select(...$columns)->process($this);
-    }
+	public function sorted( Closure $orderBy ): TabularDataReader {
+		return Statement::create()->orderBy( $orderBy )->process( $this );
+	}
 
-    public function matching(string $expression): iterable
-    {
-        return FragmentFinder::create()->findAll($expression, $this);
-    }
+	public function select( string|int ...$columns ): TabularDataReader {
+		return Statement::create()->select( ...$columns )->process( $this );
+	}
 
-    public function matchingFirst(string $expression): ?TabularDataReader
-    {
-        return FragmentFinder::create()->findFirst($expression, $this);
-    }
+	public function matching( string $expression ): iterable {
+		return FragmentFinder::create()->findAll( $expression, $this );
+	}
 
-    /**
-     * @throws SyntaxError
-     * @throws FragmentNotFound
-     */
-    public function matchingFirstOrFail(string $expression): TabularDataReader
-    {
-        return FragmentFinder::create()->findFirstOrFail($expression, $this);
-    }
+	public function matchingFirst( string $expression ): ?TabularDataReader {
+		return FragmentFinder::create()->findFirst( $expression, $this );
+	}
 
-    /**
-     * @param array<string> $header
-     *
-     * @throws SyntaxError
-     *
-     * @return Iterator<array-key, array<array-key, mixed>>
-     */
-    public function getRecords(array $header = []): Iterator
-    {
-        return $this->combineHeader($this->prepareHeader($header));
-    }
+	/**
+	 * @throws SyntaxError
+	 * @throws FragmentNotFound
+	 */
+	public function matchingFirstOrFail( string $expression ): TabularDataReader {
+		return FragmentFinder::create()->findFirstOrFail( $expression, $this );
+	}
 
-    /**
-     * @template T of object
-     * @param class-string<T> $className
-     * @param array<string> $header
-     *
-     * @throws Exception
-     * @throws MappingFailed
-     * @throws TypeCastingFailed
-     * @return iterator<T>
-     */
-    public function getRecordsAsObject(string $className, array $header = []): Iterator
-    {
-        $header = $this->prepareHeader($header);
+	/**
+	 * @param array<string> $header
+	 *
+	 * @throws SyntaxError
+	 *
+	 * @return Iterator<array-key, array<array-key, mixed>>
+	 */
+	public function getRecords( array $header = array() ): Iterator {
+		return $this->combineHeader( $this->prepareHeader( $header ) );
+	}
 
-        return Denormalizer::assignAll(
-            $className,
-            $this->combineHeader($header),
-            $header
-        );
-    }
+	/**
+	 * @template T of object
+	 * @param class-string<T> $className
+	 * @param array<string>   $header
+	 *
+	 * @throws Exception
+	 * @throws MappingFailed
+	 * @throws TypeCastingFailed
+	 * @return iterator<T>
+	 */
+	public function getRecordsAsObject( string $className, array $header = array() ): Iterator {
+		$header = $this->prepareHeader( $header );
 
-    /**
-     * @param array<string> $header
-     *
-     * @throws SyntaxError
-     * @return array<string>
-     */
-    protected function prepareHeader(array $header): array
-    {
-        if ($header !== array_filter($header, is_string(...))) {
-            throw SyntaxError::dueToInvalidHeaderColumnNames();
-        }
+		return Denormalizer::assignAll(
+			$className,
+			$this->combineHeader( $header ),
+			$header
+		);
+	}
 
-        $header = $this->validateHeader($header);
-        if ([] === $header) {
-            $header = $this->header;
-        }
-        return $header;
-    }
+	/**
+	 * @param array<string> $header
+	 *
+	 * @throws SyntaxError
+	 * @return array<string>
+	 */
+	protected function prepareHeader( array $header ): array {
+		if ( $header !== array_filter( $header, is_string( ... ) ) ) {
+			throw SyntaxError::dueToInvalidHeaderColumnNames();
+		}
 
-    /**
-     * Combines the header to each record if present.
-     *
-     * @param array<array-key, string|int> $header
-     *
-     * @return Iterator<array-key, array<array-key, mixed>>
-     */
-    protected function combineHeader(array $header): Iterator
-    {
-        return match (true) {
-            [] === $header => $this->records,
-            default => new MapIterator($this->records, function (array $record) use ($header): array {
-                $assocRecord = [];
-                $row = array_values($record);
-                foreach ($header as $offset => $headerName) {
-                    $assocRecord[$headerName] = $row[$offset] ?? null;
-                }
+		$header = $this->validateHeader( $header );
+		if ( array() === $header ) {
+			$header = $this->header;
+		}
+		return $header;
+	}
 
-                return $assocRecord;
-            }),
-        };
-    }
+	/**
+	 * Combines the header to each record if present.
+	 *
+	 * @param array<array-key, string|int> $header
+	 *
+	 * @return Iterator<array-key, array<array-key, mixed>>
+	 */
+	protected function combineHeader( array $header ): Iterator {
+		return match ( true ) {
+			array() === $header => $this->records,
+			default => new MapIterator(
+				$this->records,
+				function ( array $record ) use ( $header ): array {
+					$assocRecord = array();
+					$row         = array_values( $record );
+					foreach ( $header as $offset => $headerName ) {
+						$assocRecord[ $headerName ] = $row[ $offset ] ?? null;
+					}
 
-    public function count(): int
-    {
-        return iterator_count($this->records);
-    }
+					return $assocRecord;
+				}
+			),
+		};
+	}
 
-    public function jsonSerialize(): array
-    {
-        return array_values([...$this->records]);
-    }
+	public function count(): int {
+		return iterator_count( $this->records );
+	}
 
-    public function first(): array
-    {
-        return $this->nth(0);
-    }
+	public function jsonSerialize(): array {
+		return array_values( array( ...$this->records ) );
+	}
 
-    public function value(int|string $column = 0): mixed
-    {
-        return match (true) {
-            is_string($column) => $this->first()[$column] ?? null,
-            default => array_values($this->first())[$column] ?? null,
-        };
-    }
+	public function first(): array {
+		return $this->nth( 0 );
+	}
 
-    public function nth(int $nth_record): array
-    {
-        if ($nth_record < 0) {
-            throw InvalidArgument::dueToInvalidRecordOffset($nth_record, __METHOD__);
-        }
+	public function value( int|string $column = 0 ): mixed {
+		return match ( true ) {
+			is_string( $column ) => $this->first()[ $column ] ?? null,
+			default => array_values( $this->first() )[ $column ] ?? null,
+		};
+	}
 
-        $iterator = new LimitIterator($this->getIterator(), $nth_record, 1);
-        $iterator->rewind();
+	public function nth( int $nth_record ): array {
+		if ( $nth_record < 0 ) {
+			throw InvalidArgument::dueToInvalidRecordOffset( $nth_record, __METHOD__ );
+		}
 
-        /** @var array|null $result */
-        $result = $iterator->current();
+		$iterator = new LimitIterator( $this->getIterator(), $nth_record, 1 );
+		$iterator->rewind();
 
-        return $result ?? [];
-    }
+		/** @var array|null $result */
+		$result = $iterator->current();
 
-    /**
-     * @param class-string $className
-     *
-     * @throws InvalidArgument
-     */
-    public function nthAsObject(int $nth, string $className, array $header = []): ?object
-    {
-        $header = $this->prepareHeader($header);
-        $record = $this->nth($nth);
-        if ([] === $record) {
-            return null;
-        }
+		return $result ?? array();
+	}
 
-        if ([] === $header || $this->header === $header) {
-            return Denormalizer::assign($className, $record);
-        }
+	/**
+	 * @param class-string $className
+	 *
+	 * @throws InvalidArgument
+	 */
+	public function nthAsObject( int $nth, string $className, array $header = array() ): ?object {
+		$header = $this->prepareHeader( $header );
+		$record = $this->nth( $nth );
+		if ( array() === $record ) {
+			return null;
+		}
 
-        $row = array_values($record);
-        $record = [];
-        foreach ($header as $offset => $headerName) {
-            $record[$headerName] = $row[$offset] ?? null;
-        }
+		if ( array() === $header || $this->header === $header ) {
+			return Denormalizer::assign( $className, $record );
+		}
 
-        return Denormalizer::assign($className, $record);
-    }
+		$row    = array_values( $record );
+		$record = array();
+		foreach ( $header as $offset => $headerName ) {
+			$record[ $headerName ] = $row[ $offset ] ?? null;
+		}
 
-    /**
-     * @param class-string $className
-     *
-     * @throws InvalidArgument
-     */
-    public function firstAsObject(string $className, array $header = []): ?object
-    {
-        return $this->nthAsObject(0, $className, $header);
-    }
+		return Denormalizer::assign( $className, $record );
+	}
 
-    public function fetchColumn(string|int $index = 0): Iterator
-    {
-        return $this->yieldColumn(
-            $this->getColumnIndex($index, 'offset', __METHOD__)
-        );
-    }
+	/**
+	 * @param class-string $className
+	 *
+	 * @throws InvalidArgument
+	 */
+	public function firstAsObject( string $className, array $header = array() ): ?object {
+		return $this->nthAsObject( 0, $className, $header );
+	}
 
-    /**
-     * @throws Exception
-     */
-    public function fetchColumnByName(string $name): Iterator
-    {
-        return $this->yieldColumn(
-            $this->getColumnIndexByValue($name, 'name', __METHOD__)
-        );
-    }
+	public function fetchColumn( string|int $index = 0 ): Iterator {
+		return $this->yieldColumn(
+			$this->getColumnIndex( $index, 'offset', __METHOD__ )
+		);
+	}
 
-    /**
-     * @throws Exception
-     */
-    public function fetchColumnByOffset(int $offset): Iterator
-    {
-        return $this->yieldColumn(
-            $this->getColumnIndexByKey($offset, 'offset', __METHOD__)
-        );
-    }
+	/**
+	 * @throws Exception
+	 */
+	public function fetchColumnByName( string $name ): Iterator {
+		return $this->yieldColumn(
+			$this->getColumnIndexByValue( $name, 'name', __METHOD__ )
+		);
+	}
 
-    protected function yieldColumn(string|int $offset): Generator
-    {
-        yield from new MapIterator(
-            new CallbackFilterIterator($this->records, fn (array $record): bool => isset($record[$offset])),
-            fn (array $record): string => $record[$offset]
-        );
-    }
+	/**
+	 * @throws Exception
+	 */
+	public function fetchColumnByOffset( int $offset ): Iterator {
+		return $this->yieldColumn(
+			$this->getColumnIndexByKey( $offset, 'offset', __METHOD__ )
+		);
+	}
 
-    /**
-     * Filters a column name against the header if any.
-     *
-     * @throws InvalidArgument if the field is invalid or not found
-     */
-    protected function getColumnIndex(string|int $field, string $type, string $method): string|int
-    {
-        return match (true) {
-            is_string($field) => $this->getColumnIndexByValue($field, $type, $method),
-            default => $this->getColumnIndexByKey($field, $type, $method),
-        };
-    }
+	protected function yieldColumn( string|int $offset ): Generator {
+		yield from new MapIterator(
+			new CallbackFilterIterator( $this->records, fn ( array $record ): bool => isset( $record[ $offset ] ) ),
+			fn ( array $record ): string => $record[ $offset ]
+		);
+	}
 
-    /**
-     * Returns the selected column name.
-     *
-     * @throws InvalidArgument if the column is not found
-     */
-    protected function getColumnIndexByValue(string $value, string $type, string $method): string
-    {
-        return match (true) {
-            false === array_search($value, $this->header, true) => throw InvalidArgument::dueToInvalidColumnIndex($value, $type, $method),
-            default => $value,
-        };
-    }
+	/**
+	 * Filters a column name against the header if any.
+	 *
+	 * @throws InvalidArgument if the field is invalid or not found
+	 */
+	protected function getColumnIndex( string|int $field, string $type, string $method ): string|int {
+		return match ( true ) {
+			is_string( $field ) => $this->getColumnIndexByValue( $field, $type, $method ),
+			default => $this->getColumnIndexByKey( $field, $type, $method ),
+		};
+	}
 
-    /**
-     * Returns the selected column name according to its offset.
-     *
-     * @throws InvalidArgument if the field is invalid or not found
-     */
-    protected function getColumnIndexByKey(int $index, string $type, string $method): int|string
-    {
-        return match (true) {
-            $index < 0 => throw InvalidArgument::dueToInvalidColumnIndex($index, $type, $method),
-            [] === $this->header => $index,
-            false !== ($value = array_search($index, array_flip($this->header), true)) => $value,
-            default => throw InvalidArgument::dueToInvalidColumnIndex($index, $type, $method),
-        };
-    }
+	/**
+	 * Returns the selected column name.
+	 *
+	 * @throws InvalidArgument if the column is not found
+	 */
+	protected function getColumnIndexByValue( string $value, string $type, string $method ): string {
+		return match ( true ) {
+			false === array_search( $value, $this->header, true ) => throw InvalidArgument::dueToInvalidColumnIndex( $value, $type, $method ),
+			default => $value,
+		};
+	}
 
-    public function fetchPairs($offset_index = 0, $value_index = 1): Iterator
-    {
-        $offset = $this->getColumnIndex($offset_index, 'offset', __METHOD__);
-        $value = $this->getColumnIndex($value_index, 'value', __METHOD__);
+	/**
+	 * Returns the selected column name according to its offset.
+	 *
+	 * @throws InvalidArgument if the field is invalid or not found
+	 */
+	protected function getColumnIndexByKey( int $index, string $type, string $method ): int|string {
+		return match ( true ) {
+			$index < 0 => throw InvalidArgument::dueToInvalidColumnIndex( $index, $type, $method ),
+			array() === $this->header => $index,
+			false !== ( $value = array_search( $index, array_flip( $this->header ), true ) ) => $value,
+			default => throw InvalidArgument::dueToInvalidColumnIndex( $index, $type, $method ),
+		};
+	}
 
-        $iterator = new MapIterator(
-            new CallbackFilterIterator($this->records, fn (array $record): bool => isset($record[$offset])),
-            fn (array $record): array => [$record[$offset], $record[$value] ?? null]
-        );
+	public function fetchPairs( $offset_index = 0, $value_index = 1 ): Iterator {
+		$offset = $this->getColumnIndex( $offset_index, 'offset', __METHOD__ );
+		$value  = $this->getColumnIndex( $value_index, 'value', __METHOD__ );
 
-        /** @var array{0:int|string, 1:string|null} $pair */
-        foreach ($iterator as $pair) {
-            yield $pair[0] => $pair[1];
-        }
-    }
+		$iterator = new MapIterator(
+			new CallbackFilterIterator( $this->records, fn ( array $record ): bool => isset( $record[ $offset ] ) ),
+			fn ( array $record ): array => array( $record[ $offset ], $record[ $value ] ?? null )
+		);
 
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @see ResultSet::nth()
-     * @deprecated since version 9.9.0
-     * @codeCoverageIgnore
-     */
-    public function fetchOne(int $nth_record = 0): array
-    {
-        return $this->nth($nth_record);
-    }
+		/** @var array{0:int|string, 1:string|null} $pair */
+		foreach ( $iterator as $pair ) {
+			yield $pair[0] => $pair[1];
+		}
+	}
 
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @see Reader::getRecordsAsObject()
-     * @deprecated Since version 9.15.0
-     * @codeCoverageIgnore
-     *
-     * @param class-string $className
-     * @param array<string> $header
-     *
-     * @throws Exception
-     * @throws MappingFailed
-     * @throws TypeCastingFailed
-     */
-    public function getObjects(string $className, array $header = []): Iterator
-    {
-        return $this->getRecordsAsObject($className, $header);
-    }
+	/**
+	 * DEPRECATION WARNING! This method will be removed in the next major point release.
+	 *
+	 * @see ResultSet::nth()
+	 * @deprecated since version 9.9.0
+	 * @codeCoverageIgnore
+	 */
+	public function fetchOne( int $nth_record = 0 ): array {
+		return $this->nth( $nth_record );
+	}
+
+	/**
+	 * DEPRECATION WARNING! This method will be removed in the next major point release.
+	 *
+	 * @see Reader::getRecordsAsObject()
+	 * @deprecated Since version 9.15.0
+	 * @codeCoverageIgnore
+	 *
+	 * @param class-string  $className
+	 * @param array<string> $header
+	 *
+	 * @throws Exception
+	 * @throws MappingFailed
+	 * @throws TypeCastingFailed
+	 */
+	public function getObjects( string $className, array $header = array() ): Iterator {
+		return $this->getRecordsAsObject( $className, $header );
+	}
 }

@@ -21,63 +21,59 @@ use function filter_var;
 /**
  * @implements TypeCasting<?float>
  */
-final class CastToFloat implements TypeCasting
-{
-    private readonly bool $isNullable;
-    private ?float $default = null;
+final class CastToFloat implements TypeCasting {
 
-    public function __construct(ReflectionProperty|ReflectionParameter $reflectionProperty)
-    {
-        $this->isNullable = $this->init($reflectionProperty);
-    }
+	private readonly bool $isNullable;
+	private ?float $default = null;
 
-    public function setOptions(int|float|null $default = null): void
-    {
-        $this->default = $default;
-    }
+	public function __construct( ReflectionProperty|ReflectionParameter $reflectionProperty ) {
+		$this->isNullable = $this->init( $reflectionProperty );
+	}
 
-    /**
-     * @throws TypeCastingFailed
-     */
-    public function toVariable(?string $value): ?float
-    {
-        if (null === $value) {
-            return match ($this->isNullable) {
-                true => $this->default,
-                false => throw TypeCastingFailed::dueToNotNullableType('float'),
-            };
-        }
+	public function setOptions( int|float|null $default = null ): void {
+		$this->default = $default;
+	}
 
-        $float = filter_var($value, Type::Float->filterFlag());
+	/**
+	 * @throws TypeCastingFailed
+	 */
+	public function toVariable( ?string $value ): ?float {
+		if ( null === $value ) {
+			return match ( $this->isNullable ) {
+				true => $this->default,
+				false => throw TypeCastingFailed::dueToNotNullableType( 'float' ),
+			};
+		}
 
-        return match ($float) {
-            false => throw TypeCastingFailed::dueToInvalidValue($value, Type::Float->value),
-            default => $float,
-        };
-    }
+		$float = filter_var( $value, Type::Float->filterFlag() );
 
-    private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): bool
-    {
-        if (null === $reflectionProperty->getType()) {
-            return true;
-        }
+		return match ( $float ) {
+			false => throw TypeCastingFailed::dueToInvalidValue( $value, Type::Float->value ),
+			default => $float,
+		};
+	}
 
-        $type = null;
-        $isNullable = false;
-        foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
-                $isNullable = true;
-            }
+	private function init( ReflectionProperty|ReflectionParameter $reflectionProperty ): bool {
+		if ( null === $reflectionProperty->getType() ) {
+			return true;
+		}
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Float)) {
-                $type = $found;
-            }
-        }
+		$type       = null;
+		$isNullable = false;
+		foreach ( Type::list( $reflectionProperty ) as $found ) {
+			if ( ! $isNullable && $found[1]->allowsNull() ) {
+				$isNullable = true;
+			}
 
-        if (null === $type) {
-            throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'float', 'null', 'mixed');
-        }
+			if ( null === $type && $found[0]->isOneOf( Type::Mixed, Type::Float ) ) {
+				$type = $found;
+			}
+		}
 
-        return $isNullable;
-    }
+		if ( null === $type ) {
+			throw throw MappingFailed::dueToTypeCastingUnsupportedType( $reflectionProperty, $this, 'float', 'null', 'mixed' );
+		}
+
+		return $isNullable;
+	}
 }

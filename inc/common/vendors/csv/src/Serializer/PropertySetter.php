@@ -20,25 +20,24 @@ use ReflectionProperty;
 /**
  * @internal
  */
-final class PropertySetter
-{
-    public function __construct(
-        private readonly ReflectionMethod|ReflectionProperty $accessor,
-        public readonly int $offset,
-        private readonly TypeCasting $cast,
-    ) {
-    }
+final class PropertySetter {
 
-    /**
-     * @throws ReflectionException
-     */
-    public function __invoke(object $object, ?string $value): void
-    {
-        $typeCastedValue = $this->cast->toVariable($value);
+	public function __construct(
+		private readonly ReflectionMethod|ReflectionProperty $accessor,
+		public readonly int $offset,
+		private readonly TypeCasting $cast,
+	) {
+	}
 
-        match (true) {
-            $this->accessor instanceof ReflectionMethod => $this->accessor->invoke($object, $typeCastedValue),
-            $this->accessor instanceof ReflectionProperty => $this->accessor->setValue($object, $typeCastedValue),
-        };
-    }
+	/**
+	 * @throws ReflectionException
+	 */
+	public function __invoke( object $object, ?string $value ): void {
+		$typeCastedValue = $this->cast->toVariable( $value );
+
+		match ( true ) {
+			$this->accessor instanceof ReflectionMethod => $this->accessor->invoke( $object, $typeCastedValue ),
+			$this->accessor instanceof ReflectionProperty => $this->accessor->setValue( $object, $typeCastedValue ),
+		};
+	}
 }

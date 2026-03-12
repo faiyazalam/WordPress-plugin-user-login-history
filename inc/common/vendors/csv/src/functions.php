@@ -24,9 +24,8 @@ namespace League\Csv;
  *
  * If no valid BOM sequence is found an empty string is returned
  */
-function bom_match(string $str): string
-{
-    return Info::fetchBOMSequence($str) ?? '';
+function bom_match( string $str ): string {
+	return Info::fetchBOMSequence( $str ) ?? '';
 }
 
 /**
@@ -42,9 +41,7 @@ function bom_match(string $str): string
  * Returns a associative array where each key represents
  * a submitted delimiter and each value the number CSV fields found
  * when processing at most $limit CSV records with the given delimiter
- *
  */
-function delimiter_detect(Reader $csv, array $delimiters, int $limit = 1): array
-{
-    return Info::getDelimiterStats($csv, $delimiters, $limit);
+function delimiter_detect( Reader $csv, array $delimiters, int $limit = 1 ): array {
+	return Info::getDelimiterStats( $csv, $delimiters, $limit );
 }

@@ -15,17 +15,17 @@ namespace League\Csv\Serializer;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
-final class MapCell
-{
-    /**
-     * @param class-string|string|null $cast
-     */
-    public function __construct(
-        public readonly string|int|null $column = null,
-        public readonly ?string $cast = null,
-        public readonly array $options = [],
-        public readonly bool $ignore = false,
-    ) {
-    }
+#[Attribute( Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY )]
+final class MapCell {
+
+	/**
+	 * @param class-string|string|null $cast
+	 */
+	public function __construct(
+		public readonly string|int|null $column = null,
+		public readonly ?string $cast = null,
+		public readonly array $options = array(),
+		public readonly bool $ignore = false,
+	) {
+	}
 }

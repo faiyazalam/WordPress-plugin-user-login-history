@@ -21,63 +21,59 @@ use function filter_var;
 /**
  * @implements TypeCasting<?int>
  */
-final class CastToInt implements TypeCasting
-{
-    private readonly bool $isNullable;
-    private ?int $default = null;
+final class CastToInt implements TypeCasting {
 
-    public function __construct(ReflectionProperty|ReflectionParameter $reflectionProperty)
-    {
-        $this->isNullable = $this->init($reflectionProperty);
-    }
+	private readonly bool $isNullable;
+	private ?int $default = null;
 
-    public function setOptions(?int $default = null): void
-    {
-        $this->default = $default;
-    }
+	public function __construct( ReflectionProperty|ReflectionParameter $reflectionProperty ) {
+		$this->isNullable = $this->init( $reflectionProperty );
+	}
 
-    /**
-     * @throws TypeCastingFailed
-     */
-    public function toVariable(?string $value): ?int
-    {
-        if (null === $value) {
-            return match ($this->isNullable) {
-                true => $this->default,
-                false => throw TypeCastingFailed::dueToNotNullableType('integer'),
-            };
-        }
+	public function setOptions( ?int $default = null ): void {
+		$this->default = $default;
+	}
 
-        $int = filter_var($value, Type::Int->filterFlag());
+	/**
+	 * @throws TypeCastingFailed
+	 */
+	public function toVariable( ?string $value ): ?int {
+		if ( null === $value ) {
+			return match ( $this->isNullable ) {
+				true => $this->default,
+				false => throw TypeCastingFailed::dueToNotNullableType( 'integer' ),
+			};
+		}
 
-        return match ($int) {
-            false => throw TypeCastingFailed::dueToInvalidValue($value, Type::Int->value),
-            default => $int,
-        };
-    }
+		$int = filter_var( $value, Type::Int->filterFlag() );
 
-    private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): bool
-    {
-        if (null === $reflectionProperty->getType()) {
-            return true;
-        }
+		return match ( $int ) {
+			false => throw TypeCastingFailed::dueToInvalidValue( $value, Type::Int->value ),
+			default => $int,
+		};
+	}
 
-        $type = null;
-        $isNullable = false;
-        foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
-                $isNullable = true;
-            }
+	private function init( ReflectionProperty|ReflectionParameter $reflectionProperty ): bool {
+		if ( null === $reflectionProperty->getType() ) {
+			return true;
+		}
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Int, Type::Float)) {
-                $type = $found;
-            }
-        }
+		$type       = null;
+		$isNullable = false;
+		foreach ( Type::list( $reflectionProperty ) as $found ) {
+			if ( ! $isNullable && $found[1]->allowsNull() ) {
+				$isNullable = true;
+			}
 
-        if (null === $type) {
-            throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'int', 'float', 'null', 'mixed');
-        }
+			if ( null === $type && $found[0]->isOneOf( Type::Mixed, Type::Int, Type::Float ) ) {
+				$type = $found;
+			}
+		}
 
-        return $isNullable;
-    }
+		if ( null === $type ) {
+			throw throw MappingFailed::dueToTypeCastingUnsupportedType( $reflectionProperty, $this, 'int', 'float', 'null', 'mixed' );
+		}
+
+		return $isNullable;
+	}
 }

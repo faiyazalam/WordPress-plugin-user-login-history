@@ -316,5 +316,4 @@ abstract class List_Table extends \WP_List_Table {
 		$this->delete_action_nonce = $value;
 		return $this;
 	}
-
 }

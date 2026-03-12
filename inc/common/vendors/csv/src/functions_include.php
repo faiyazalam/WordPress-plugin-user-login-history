@@ -9,6 +9,6 @@
  * file that was distributed with this source code.
  */
 
-if (!function_exists('League\Csv\bom_match')) {
-    require __DIR__.'/functions.php';
+if ( ! function_exists( 'League\Csv\bom_match' ) ) {
+	require __DIR__ . '/functions.php';
 }

@@ -10,7 +10,9 @@
  */
 
 use User_Login_History as NS;
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <?php
 $faulh_all_features = array(
@@ -64,7 +66,7 @@ $faulh_all_features = array(
 $faulh_chunked_features = array_chunk( $faulh_all_features, 3 );
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html(FAULH_PLUGIN_NAME); ?> (<?php echo esc_html__( 'Pro Version', 'user-login-history' ); ?>) <?php echo esc_html__( 'Features', 'user-login-history' ); ?></h1>
+	<h1><?php echo esc_html( FAULH_PLUGIN_NAME ); ?> (<?php echo esc_html__( 'Pro Version', 'user-login-history' ); ?>) <?php echo esc_html__( 'Features', 'user-login-history' ); ?></h1>
 	<br>
 
 	<div class="clearfix">
@@ -78,10 +80,10 @@ $faulh_chunked_features = array_chunk( $faulh_all_features, 3 );
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="box">  
-									<div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo esc_attr($faulh_feature['icon']); ?>"></i></div></div>
-									<div class="heading-1 pull-left"><?php echo esc_html(strtoupper( $faulh_feature['title'] )); ?></div>
+									<div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo esc_attr( $faulh_feature['icon'] ); ?>"></i></div></div>
+									<div class="heading-1 pull-left"><?php echo esc_html( strtoupper( $faulh_feature['title'] ) ); ?></div>
 									<div class="clearfix"></div>
-									<div style="height: 100px" class="text"><?php echo esc_html($faulh_feature['description']); ?></div>
+									<div style="height: 100px" class="text"><?php echo esc_html( $faulh_feature['description'] ); ?></div>
 								</div>  
 							</div>
 						</div>
@@ -93,8 +95,8 @@ $faulh_chunked_features = array_chunk( $faulh_all_features, 3 );
 			?>
 			<div class="row">
 				<div class="text-center">
-		<a href="<?php echo esc_url(FAULH_PLUGIN_FEATURE_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'user-login-history' ); ?></a>
-		<a href="<?php echo esc_url(FAULH_PLUGIN_GO_PRO_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'user-login-history' ); ?></a>
+		<a href="<?php echo esc_url( FAULH_PLUGIN_FEATURE_LINK ); ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'user-login-history' ); ?></a>
+		<a href="<?php echo esc_url( FAULH_PLUGIN_GO_PRO_LINK ); ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'user-login-history' ); ?></a>
 				</div>
 			</div>  
 		</div>

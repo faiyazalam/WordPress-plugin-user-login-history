@@ -72,8 +72,8 @@ class Date_Time {
 			$zones_array[ $key ]['zone'] = $zone;
 
 			try {
-				$timezone_object                    = new \DateTimeZone( $zone );
-				$date_time                          = new \DateTime( '@' . $timestamp );
+				$timezone_object = new \DateTimeZone( $zone );
+				$date_time       = new \DateTime( '@' . $timestamp );
 				$date_time->setTimezone( $timezone_object );
 				$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT ' . $date_time->format( 'P' );
 			} catch ( \Exception $exception ) {
@@ -109,5 +109,4 @@ class Date_Time {
 			return false;
 		}
 	}
-
 }

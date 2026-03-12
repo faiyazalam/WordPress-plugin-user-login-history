@@ -21,69 +21,68 @@ use function filter_var;
 /**
  * @implements TypeCasting<?bool>
  */
-final class CastToBool implements TypeCasting
-{
-    private readonly bool $isNullable;
-    private readonly Type $type;
-    private ?bool $default = null;
+final class CastToBool implements TypeCasting {
 
-    public function __construct(ReflectionProperty|ReflectionParameter $reflectionProperty)
-    {
-        [$this->type, $this->isNullable] = $this->init($reflectionProperty);
-    }
+	private readonly bool $isNullable;
+	private readonly Type $type;
+	private ?bool $default = null;
 
-    public function setOptions(bool $default = null): void
-    {
-        $this->default = $default;
-    }
+	public function __construct( ReflectionProperty|ReflectionParameter $reflectionProperty ) {
+		[$this->type, $this->isNullable] = $this->init( $reflectionProperty );
+	}
 
-    /**
-     * @throws TypeCastingFailed
-     */
-    public function toVariable(?string $value): ?bool
-    {
-        $returnValue = match (true) {
-            null !== $value => filter_var($value, Type::Bool->filterFlag()),
-            $this->isNullable => $this->default,
-            default => throw TypeCastingFailed::dueToNotNullableType('boolean'),
-        };
+	public function setOptions( bool $default = null ): void {
+		$this->default = $default;
+	}
 
-        return match (true) {
-            Type::True->equals($this->type) && true !== $returnValue && !$this->isNullable,
-            Type::False->equals($this->type) && false !== $returnValue && !$this->isNullable => throw TypeCastingFailed::dueToInvalidValue(match (true) {
-                null === $value => 'null',
-                '' === $value => 'empty string',
-                default => $value,
-            }, $this->type->value),
-            default => $returnValue,
-        };
-    }
+	/**
+	 * @throws TypeCastingFailed
+	 */
+	public function toVariable( ?string $value ): ?bool {
+		$returnValue = match ( true ) {
+			null !== $value => filter_var( $value, Type::Bool->filterFlag() ),
+			$this->isNullable => $this->default,
+			default => throw TypeCastingFailed::dueToNotNullableType( 'boolean' ),
+		};
 
-    /**
-     * @return array{0:Type, 1:bool}
-     */
-    private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): array
-    {
-        if (null === $reflectionProperty->getType()) {
-            return [Type::Mixed, true];
-        }
+		return match ( true ) {
+			Type::True->equals( $this->type ) && true !== $returnValue && ! $this->isNullable,
+			Type::False->equals( $this->type ) && false !== $returnValue && ! $this->isNullable => throw TypeCastingFailed::dueToInvalidValue(
+				match ( true ) {
+				null === $value => 'null',
+				'' === $value => 'empty string',
+				default => $value,
+				},
+				$this->type->value
+			),
+			default => $returnValue,
+		};
+	}
 
-        $type = null;
-        $isNullable = false;
-        foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
-                $isNullable = true;
-            }
+	/**
+	 * @return array{0:Type, 1:bool}
+	 */
+	private function init( ReflectionProperty|ReflectionParameter $reflectionProperty ): array {
+		if ( null === $reflectionProperty->getType() ) {
+			return array( Type::Mixed, true );
+		}
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Bool, Type::True, Type::False)) {
-                $type = $found;
-            }
-        }
+		$type       = null;
+		$isNullable = false;
+		foreach ( Type::list( $reflectionProperty ) as $found ) {
+			if ( ! $isNullable && $found[1]->allowsNull() ) {
+				$isNullable = true;
+			}
 
-        if (null === $type) {
-            throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, 'bool', 'mixed');
-        }
+			if ( null === $type && $found[0]->isOneOf( Type::Mixed, Type::Bool, Type::True, Type::False ) ) {
+				$type = $found;
+			}
+		}
 
-        return [$type[0], $isNullable];
-    }
+		if ( null === $type ) {
+			throw MappingFailed::dueToTypeCastingUnsupportedType( $reflectionProperty, $this, 'bool', 'mixed' );
+		}
+
+		return array( $type[0], $isNullable );
+	}
 }

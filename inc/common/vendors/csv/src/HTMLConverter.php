@@ -22,141 +22,131 @@ use function preg_match;
 /**
  * Converts tabular data into an HTML Table string.
  */
-class HTMLConverter
-{
-    /** table class attribute value. */
-    protected string $class_name = 'table-csv-data';
-    /** table id attribute value. */
-    protected string $id_value = '';
-    protected XMLConverter $xml_converter;
+class HTMLConverter {
 
-    public static function create(): self
-    {
-        return new self();
-    }
+	/** table class attribute value. */
+	protected string $class_name = 'table-csv-data';
+	/** table id attribute value. */
+	protected string $id_value = '';
+	protected XMLConverter $xml_converter;
 
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @throws DOMException
-     * @see HTMLConverterTest::create()
-     * @deprecated since version 9.7.0
-     */
-    public function __construct()
-    {
-        $this->xml_converter = XMLConverter::create()
-            ->rootElement('table')
-            ->recordElement('tr')
-            ->fieldElement('td')
-        ;
-    }
+	public static function create(): self {
+		return new self();
+	}
 
-    /**
-     * Converts a tabular data collection into an HTML table string.
-     *
-     * @param array<string> $header_record An optional array of headers outputted using the `<thead>` and `<th>` elements
-     * @param array<string> $footer_record An optional array of footers outputted using the `<tfoot>` and `<th>` elements
-     */
-    public function convert(iterable $records, array $header_record = [], array $footer_record = []): string
-    {
-        $doc = new DOMDocument('1.0');
-        if ([] === $header_record && [] === $footer_record) {
-            $table = $this->xml_converter->import($records, $doc);
-            $this->addHTMLAttributes($table);
-            $doc->appendChild($table);
+	/**
+	 * DEPRECATION WARNING! This method will be removed in the next major point release.
+	 *
+	 * @throws DOMException
+	 * @see HTMLConverterTest::create()
+	 * @deprecated since version 9.7.0
+	 */
+	public function __construct() {
+		$this->xml_converter = XMLConverter::create()
+			->rootElement( 'table' )
+			->recordElement( 'tr' )
+			->fieldElement( 'td' );
+	}
 
-            /** @var string $content */
-            $content = $doc->saveHTML();
+	/**
+	 * Converts a tabular data collection into an HTML table string.
+	 *
+	 * @param array<string> $header_record An optional array of headers outputted using the `<thead>` and `<th>` elements
+	 * @param array<string> $footer_record An optional array of footers outputted using the `<tfoot>` and `<th>` elements
+	 */
+	public function convert( iterable $records, array $header_record = array(), array $footer_record = array() ): string {
+		$doc = new DOMDocument( '1.0' );
+		if ( array() === $header_record && array() === $footer_record ) {
+			$table = $this->xml_converter->import( $records, $doc );
+			$this->addHTMLAttributes( $table );
+			$doc->appendChild( $table );
 
-            return $content;
-        }
+			/** @var string $content */
+			$content = $doc->saveHTML();
 
-        $table = $doc->createElement('table');
+			return $content;
+		}
 
-        $this->addHTMLAttributes($table);
-        $this->appendHeaderSection('thead', $header_record, $table);
-        $this->appendHeaderSection('tfoot', $footer_record, $table);
+		$table = $doc->createElement( 'table' );
 
-        $table->appendChild($this->xml_converter->rootElement('tbody')->import($records, $doc));
+		$this->addHTMLAttributes( $table );
+		$this->appendHeaderSection( 'thead', $header_record, $table );
+		$this->appendHeaderSection( 'tfoot', $footer_record, $table );
 
-        $doc->appendChild($table);
+		$table->appendChild( $this->xml_converter->rootElement( 'tbody' )->import( $records, $doc ) );
 
-        return (string) $doc->saveHTML();
-    }
+		$doc->appendChild( $table );
 
-    /**
-     * Creates a DOMElement representing an HTML table heading section.
-     *
-     * @throws DOMException
-     */
-    protected function appendHeaderSection(string $node_name, array $record, DOMElement $table): void
-    {
-        if ([] === $record) {
-            return;
-        }
+		return (string) $doc->saveHTML();
+	}
 
-        /** @var DOMDocument $ownerDocument */
-        $ownerDocument = $table->ownerDocument;
-        $node = $this->xml_converter
-            ->rootElement($node_name)
-            ->recordElement('tr')
-            ->fieldElement('th')
-            ->import([$record], $ownerDocument)
-        ;
+	/**
+	 * Creates a DOMElement representing an HTML table heading section.
+	 *
+	 * @throws DOMException
+	 */
+	protected function appendHeaderSection( string $node_name, array $record, DOMElement $table ): void {
+		if ( array() === $record ) {
+			return;
+		}
 
-        /** @var DOMElement $element */
-        foreach ($node->getElementsByTagName('th') as $element) {
-            $element->setAttribute('scope', 'col');
-        }
+		/** @var DOMDocument $ownerDocument */
+		$ownerDocument = $table->ownerDocument;
+		$node          = $this->xml_converter
+			->rootElement( $node_name )
+			->recordElement( 'tr' )
+			->fieldElement( 'th' )
+			->import( array( $record ), $ownerDocument );
 
-        $table->appendChild($node);
-    }
+		/** @var DOMElement $element */
+		foreach ( $node->getElementsByTagName( 'th' ) as $element ) {
+			$element->setAttribute( 'scope', 'col' );
+		}
 
-    /**
-     * Adds class and id attributes to an HTML tag.
-     */
-    protected function addHTMLAttributes(DOMElement $node): void
-    {
-        $node->setAttribute('class', $this->class_name);
-        $node->setAttribute('id', $this->id_value);
-    }
+		$table->appendChild( $node );
+	}
 
-    /**
-     * HTML table class name setter.
-     *
-     * @throws DOMException if the id_value contains any type of whitespace
-     */
-    public function table(string $class_name, string $id_value = ''): self
-    {
-        if (1 === preg_match(",\s,", $id_value)) {
-            throw new DOMException("The id attribute's value must not contain whitespace (spaces, tabs etc.)");
-        }
-        $clone = clone $this;
-        $clone->class_name = $class_name;
-        $clone->id_value = $id_value;
+	/**
+	 * Adds class and id attributes to an HTML tag.
+	 */
+	protected function addHTMLAttributes( DOMElement $node ): void {
+		$node->setAttribute( 'class', $this->class_name );
+		$node->setAttribute( 'id', $this->id_value );
+	}
 
-        return $clone;
-    }
+	/**
+	 * HTML table class name setter.
+	 *
+	 * @throws DOMException if the id_value contains any type of whitespace
+	 */
+	public function table( string $class_name, string $id_value = '' ): self {
+		if ( 1 === preg_match( ',\s,', $id_value ) ) {
+			throw new DOMException( "The id attribute's value must not contain whitespace (spaces, tabs etc.)" );
+		}
+		$clone             = clone $this;
+		$clone->class_name = $class_name;
+		$clone->id_value   = $id_value;
 
-    /**
-     * HTML tr record offset attribute setter.
-     */
-    public function tr(string $record_offset_attribute_name): self
-    {
-        $clone = clone $this;
-        $clone->xml_converter = $this->xml_converter->recordElement('tr', $record_offset_attribute_name);
+		return $clone;
+	}
 
-        return $clone;
-    }
+	/**
+	 * HTML tr record offset attribute setter.
+	 */
+	public function tr( string $record_offset_attribute_name ): self {
+		$clone                = clone $this;
+		$clone->xml_converter = $this->xml_converter->recordElement( 'tr', $record_offset_attribute_name );
 
-    /**
-     * HTML td field name attribute setter.
-     */
-    public function td(string $fieldname_attribute_name): self
-    {
-        $clone = clone $this;
-        $clone->xml_converter = $this->xml_converter->fieldElement('td', $fieldname_attribute_name);
+		return $clone;
+	}
 
-        return $clone;
-    }
+	/**
+	 * HTML td field name attribute setter.
+	 */
+	public function td( string $fieldname_attribute_name ): self {
+		$clone                = clone $this;
+		$clone->xml_converter = $this->xml_converter->fieldElement( 'td', $fieldname_attribute_name );
+
+		return $clone;
+	}
 }

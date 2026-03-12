@@ -8,18 +8,20 @@
  * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  * @link     http://userloginhistory.com
  */
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="wrap">
 	<?php \User_Login_History\Inc\Common\Helpers\Template::head( esc_html__( 'Login List', 'user-login-history' ) ); ?>
 	<hr>
-	<div><?php require plugin_dir_path( dirname( __FILE__ ) ) . 'views/forms/filter.php'; ?></div>
+	<div><?php require plugin_dir_path( __DIR__ ) . 'views/forms/filter.php'; ?></div>
 	<hr>
-	<div><?php echo wp_kses_post($this->login_list_table->timezone_edit_link()); ?></div>
+	<div><?php echo wp_kses_post( $this->login_list_table->timezone_edit_link() ); ?></div>
 	<hr>
 	<div class="faulh_admin_table">
 		<form method="post">
-			<input type="hidden" name="<?php echo esc_attr($this->login_list_table->get_bulk_action_form()); ?>" value="">
+			<input type="hidden" name="<?php echo esc_attr( $this->login_list_table->get_bulk_action_form() ); ?>" value="">
 			<div class="wrapper1">
 				<div class="content1"></div>
 			</div>

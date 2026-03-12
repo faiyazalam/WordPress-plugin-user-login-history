@@ -101,10 +101,10 @@ class Network_Admin_Settings {
 	public function admin_menu() {
 		add_submenu_page(
 			'settings.php',
-			esc_html(FAULH_PLUGIN_NAME),
-			esc_html(FAULH_PLUGIN_NAME),
+			esc_html( FAULH_PLUGIN_NAME ),
+			esc_html( FAULH_PLUGIN_NAME ),
 			'administrator',
-			sanitize_key($this->plugin_name . '-setting'),
+			sanitize_key( $this->plugin_name . '-setting' ),
 			array( $this, 'screen' )
 		);
 	}
@@ -119,50 +119,47 @@ class Network_Admin_Settings {
 	/**
 	 * Check nonce and form submission and then update the settings.
 	 */
-	public function update()
-	{
+	public function update() {
 
-		if (!isset($_POST[$this->get_form_name()])) {
+		if ( ! isset( $_POST[ $this->get_form_name() ] ) ) {
 			return false;
 		}
 
-		if (empty($_POST[$this->get_form_nonce_name()])) {
+		if ( empty( $_POST[ $this->get_form_nonce_name() ] ) ) {
 			return false;
 		}
 
-		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[$this->get_form_nonce_name()])), $this->get_form_nonce_name())) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $this->get_form_nonce_name() ] ) ), $this->get_form_nonce_name() ) ) {
 			return false;
 		}
 
-
-		if (!current_user_can('administrator')) {
+		if ( ! current_user_can( 'administrator' ) ) {
 			return false;
 		}
 
 		$settings = array();
 
-		if (isset($_POST['block_user'])) {
+		if ( isset( $_POST['block_user'] ) ) {
 			$settings['block_user'] = 1;
 		}
-		if (isset($_POST['block_user_message'])) {
-			$settings['block_user_message'] = sanitize_textarea_field(wp_unslash($_POST['block_user_message']));
+		if ( isset( $_POST['block_user_message'] ) ) {
+			$settings['block_user_message'] = sanitize_textarea_field( wp_unslash( $_POST['block_user_message'] ) );
 		}
 
-		if (! empty($settings)) {
-			$status =	update_site_option($this->settings_name, $settings);
+		if ( ! empty( $settings ) ) {
+			$status = update_site_option( $this->settings_name, $settings );
 		} else {
-			$status =	delete_site_option($this->settings_name);
+			$status = delete_site_option( $this->settings_name );
 		}
 
-
-		if ($status) {
-			$message = esc_html__('Settings updated successfully.', 'user-login-history');
+		if ( $status ) {
+			$message = esc_html__( 'Settings updated successfully.', 'user-login-history' );
 		} else {
-			$message = esc_html__('Please try again.', 'user-login-history');
+			$message = esc_html__( 'Please try again.', 'user-login-history' );
 		}
 
-		$this->admin_notice->add_notice($message, $status ? 'success' : 'error');
-		wp_safe_redirect(esc_url(network_admin_url('settings.php?page=' . sanitize_text_field(wp_unslash($_GET['page']??"")))));
+		$this->admin_notice->add_notice( $message, $status ? 'success' : 'error' );
+		wp_safe_redirect( esc_url( network_admin_url( 'settings.php?page=' . sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ) ) ) );
 		exit;
 	}
 
@@ -205,5 +202,4 @@ class Network_Admin_Settings {
 	public function get_block_user_message() {
 		return $this->get_settings( 'block_user_message' );
 	}
-
 }

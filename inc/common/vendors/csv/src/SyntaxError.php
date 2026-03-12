@@ -22,43 +22,38 @@ use function array_keys;
 /**
  * SyntaxError Exception.
  */
-class SyntaxError extends Exception
-{
-    /**
-     * @var array<string>
-     */
-    protected array $duplicateColumnNames = [];
+class SyntaxError extends Exception {
 
-    /**
-     * DEPRECATION WARNING! This class will be removed in the next major point release.
-     *
-     * @deprecated since version 9.7.0
-     */
-    public function __construct(string $message = '', int $code = 0, Throwable $previous = null)
-    {
-        parent::__construct($message, $code, $previous);
-    }
+	/**
+	 * @var array<string>
+	 */
+	protected array $duplicateColumnNames = array();
 
-    public static function dueToHeaderNotFound(int $offset): self
-    {
-        return new self('The header record does not exist or is empty at offset: `'.$offset.'`');
-    }
+	/**
+	 * DEPRECATION WARNING! This class will be removed in the next major point release.
+	 *
+	 * @deprecated since version 9.7.0
+	 */
+	public function __construct( string $message = '', int $code = 0, Throwable $previous = null ) {
+		parent::__construct( $message, $code, $previous );
+	}
 
-    public static function dueToInvalidHeaderColumnNames(): self
-    {
-        return new self('The header record contains non string colum names.');
-    }
+	public static function dueToHeaderNotFound( int $offset ): self {
+		return new self( 'The header record does not exist or is empty at offset: `' . $offset . '`' );
+	}
 
-    public static function dueToDuplicateHeaderColumnNames(array $header): self
-    {
-        $instance = new self('The header record contains duplicate column names.');
-        $instance->duplicateColumnNames = array_keys(array_filter(array_count_values($header), fn (int $value): bool => $value > 1));
+	public static function dueToInvalidHeaderColumnNames(): self {
+		return new self( 'The header record contains non string colum names.' );
+	}
 
-        return $instance;
-    }
+	public static function dueToDuplicateHeaderColumnNames( array $header ): self {
+		$instance                       = new self( 'The header record contains duplicate column names.' );
+		$instance->duplicateColumnNames = array_keys( array_filter( array_count_values( $header ), fn ( int $value ): bool => $value > 1 ) );
 
-    public function duplicateColumnNames(): array
-    {
-        return $this->duplicateColumnNames;
-    }
+		return $instance;
+	}
+
+	public function duplicateColumnNames(): array {
+		return $this->duplicateColumnNames;
+	}
 }

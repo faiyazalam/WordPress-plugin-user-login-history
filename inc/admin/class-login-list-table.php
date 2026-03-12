@@ -118,18 +118,18 @@ abstract class Login_List_Table extends List_Table_Abstract {
 	 */
 	public function prepare_where_query() {
 
-		$where_query = '';
+		$where_query        = '';
 		$where_query_values = array();
 
 		$fields = array(
-			'user_id'=>'%d',
-			'username'=>'%s',
-			'browser'=>'%s',
-			'operating_system'=>'%s',
-			'ip_address'=>'%s',
-			'timezone'=>'%s',
-			'country_name'=>'%s',
-			'old_role'=>'%s',
+			'user_id'          => '%d',
+			'username'         => '%s',
+			'browser'          => '%s',
+			'operating_system' => '%s',
+			'ip_address'       => '%s',
+			'timezone'         => '%s',
+			'country_name'     => '%s',
+			'old_role'         => '%s',
 		);
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
@@ -137,7 +137,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 
 		foreach ( $fields as $field => $field_type ) {
 			if ( ! empty( $the_get[ $field ] ) ) {
-				$where_query .= " AND `FaUserLogin`.`$field` = $field_type";
+				$where_query         .= " AND `FaUserLogin`.`$field` = $field_type";
 				$where_query_values[] = $the_get[ $field ];
 			}
 		}
@@ -147,7 +147,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 			$input_timezone = $user_profile->get_user_timezone();
 			$date_type      = $the_get['date_type'];
 
-			if (in_array($date_type, array_keys(Template_Helper::time_field_types()), true)) {
+			if ( in_array( $date_type, array_keys( Template_Helper::time_field_types() ), true ) ) {
 				$key_date_from = 'date_from';
 				$key_date_to   = 'date_to';
 
@@ -156,8 +156,8 @@ abstract class Login_List_Table extends List_Table_Abstract {
 					$date_to   = Date_Time_Helper::convert_timezone( $the_get[ $key_date_to ] . ' 23:59:59', $input_timezone );
 
 					if ( $date_from && $date_to ) {
-						$where_query .= " AND `FaUserLogin`.`time_$date_type` >= %s";
-						$where_query .= " AND `FaUserLogin`.`time_$date_type` <= %s";
+						$where_query         .= " AND `FaUserLogin`.`time_$date_type` >= %s";
+						$where_query         .= " AND `FaUserLogin`.`time_$date_type` <= %s";
 						$where_query_values[] = $date_from;
 						$where_query_values[] = $date_to;
 					}
@@ -169,15 +169,18 @@ abstract class Login_List_Table extends List_Table_Abstract {
 		}
 
 		if ( ! empty( $the_get['login_status'] ) ) {
-			$login_status       = $the_get['login_status'];
-			$login_status_value = strtolower( $login_status ) == 'unknown' ? '' : $login_status;
-			$where_query       .= " AND `FaUserLogin`.`login_status` = %s";
+			$login_status         = $the_get['login_status'];
+			$login_status_value   = strtolower( $login_status ) == 'unknown' ? '' : $login_status;
+			$where_query         .= ' AND `FaUserLogin`.`login_status` = %s';
 			$where_query_values[] = $login_status_value;
 		}
 
-		$where_query = apply_filters( 'faulh_admin_prepare_where_query', $where_query );
+		$where_query        = apply_filters( 'faulh_admin_prepare_where_query', $where_query );
 		$where_query_values = apply_filters( 'faulh_admin_prepare_where_query_values', $where_query_values );
-		return [ 'where_query'=>$where_query, 'where_query_values'=>$where_query_values ];
+		return array(
+			'where_query'        => $where_query,
+			'where_query_values' => $where_query_values,
+		);
 	}
 
 	/**
@@ -237,7 +240,6 @@ abstract class Login_List_Table extends List_Table_Abstract {
 			'login_status'     => array( 'login_status', false ),
 			'duration'         => array( 'duration', false ),
 		);
-
 	}
 
 	/**
@@ -382,7 +384,7 @@ abstract class Login_List_Table extends List_Table_Abstract {
 				return $time_login ? $time_login : $this->get_unknown_symbol();
 
 			case 'time_logout':
-				if ( $this->is_empty( $item['user_id'] ) || ! ( strtotime( (string)$item[ $column_name ] ) > 0 ) ) {
+				if ( $this->is_empty( $item['user_id'] ) || ! ( strtotime( (string) $item[ $column_name ] ) > 0 ) ) {
 					return $this->get_unknown_symbol();
 				}
 				$time_logout = Date_Time_Helper::convert_format( Date_Time_Helper::convert_timezone( $item[ $column_name ], '', $timezone ) );
@@ -429,5 +431,4 @@ abstract class Login_List_Table extends List_Table_Abstract {
 				return __( 'not supported', 'user-login-history' );
 		}
 	}
-
 }

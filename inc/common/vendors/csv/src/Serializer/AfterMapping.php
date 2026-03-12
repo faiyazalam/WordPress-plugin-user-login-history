@@ -15,14 +15,13 @@ namespace League\Csv\Serializer;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS)]
-final class AfterMapping
-{
-    /** @var array<string> $methods */
-    public readonly array $methods;
+#[Attribute( Attribute::TARGET_CLASS )]
+final class AfterMapping {
 
-    public function __construct(string ...$methods)
-    {
-        $this->methods = $methods;
-    }
+	/** @var array<string> $methods */
+	public readonly array $methods;
+
+	public function __construct( string ...$methods ) {
+		$this->methods = $methods;
+	}
 }

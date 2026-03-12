@@ -41,8 +41,8 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 				. ' FROM ' . $table . '  AS FaUserLogin'
 				. ' WHERE 1 ';
 
-		$where = $this->prepare_where_query();
-		$where_query = $where['where_query'] ?? "";
+		$where              = $this->prepare_where_query();
+		$where_query        = $where['where_query'] ?? '';
 		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
@@ -67,7 +67,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		}
 
 		// phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching	 -- $sql is built internally with placeholders, not from user input.
-		return $wpdb->get_results($wpdb->prepare($sql, $where_query_values), ARRAY_A);
+		return $wpdb->get_results( $wpdb->prepare( $sql, $where_query_values ), ARRAY_A );
 	}
 
 	/**
@@ -80,14 +80,13 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		global $wpdb;
 		$table = $wpdb->prefix . $this->table;
 
-		$sql   = ' SELECT'
+		$sql = ' SELECT'
 				. ' COUNT(FaUserLogin.id) AS total'
 				. ' FROM ' . $table . ' AS FaUserLogin'
 				. ' WHERE 1 ';
 
-
-		$where = $this->prepare_where_query();
-		$where_query = $where['where_query'] ?? "";
+		$where              = $this->prepare_where_query();
+		$where_query        = $where['where_query'] ?? '';
 		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
@@ -95,7 +94,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		}
 
 		// phpcs:ignore PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching	-- already scaped.
-		return $wpdb->get_var($wpdb->prepare($sql, $where_query_values));
+		return $wpdb->get_var( $wpdb->prepare( $sql, $where_query_values ) );
 	}
 
 	/**
@@ -115,16 +114,16 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			$title     = ! empty( $edit_link ) ? "<a href='" . $edit_link . "'>" . $username . '</a>' : '<strong>' . $username . '</strong>';
 		}
 
-		$delete_nonce = wp_create_nonce($this->delete_action_nonce);
+		$delete_nonce = wp_create_nonce( $this->delete_action_nonce );
 		$actions      = array(
 			'delete' => sprintf(
 				'<a href="?page=%s&action=%s&record_id=%s&_wpnonce=%s">%s</a>',
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
-				esc_attr(sanitize_text_field(isset($_REQUEST['page']) ? wp_unslash($_REQUEST['page']) : '')),
+				esc_attr( sanitize_text_field( isset( $_REQUEST['page'] ) ? wp_unslash( $_REQUEST['page'] ) : '' ) ),
 				$this->delete_action,
-				absint($item['id']),
+				absint( $item['id'] ),
 				$delete_nonce,
-				esc_html__('Delete', 'user-login-history')
+				esc_html__( 'Delete', 'user-login-history' )
 			),
 		);
 		return $title . $this->row_actions( $actions );
@@ -149,10 +148,10 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		$nonce = '_wpnonce';
 
 		if (
-			! isset($_POST[$this->get_bulk_action_form()])
-			|| empty($_POST[$nonce])
-			|| ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[$nonce])), $this->get_bulk_action_nonce())
-			|| ! current_user_can('administrator')
+			! isset( $_POST[ $this->get_bulk_action_form() ] )
+			|| empty( $_POST[ $nonce ] )
+			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce ] ) ), $this->get_bulk_action_nonce() )
+			|| ! current_user_can( 'administrator' )
 		) {
 			return;
 		}
@@ -165,8 +164,8 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			case 'bulk-delete':
 				if ( ! empty( $_POST['bulk-action-ids'] ) ) {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized with absint.
-					$ids = (array) wp_unslash($_POST['bulk-action-ids']);
-					$ids    = array_filter(array_map( 'absint', $ids ));
+					$ids    = (array) wp_unslash( $_POST['bulk-action-ids'] );
+					$ids    = array_filter( array_map( 'absint', $ids ) );
 					$status = Db_Helper::delete_rows_by_table_and_ids( $this->table, $ids );
 					if ( $status ) {
 						$message = esc_html__( 'Selected record(s) deleted.', 'user-login-history' );
@@ -177,7 +176,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 
 			case 'bulk-delete-all-admin':
 				global $wpdb;
-				$status = $wpdb->query($wpdb->prepare('TRUNCATE TABLE %i', $wpdb->prefix . $this->table));
+				$status = $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $wpdb->prefix . $this->table ) );
 				if ( $status ) {
 					$message = esc_html__( 'All record(s) deleted.', 'user-login-history' );
 				}
@@ -185,7 +184,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		}
 
 		$this->admin_notice->add_notice( $message, $status ? 'success' : 'error' );
-		$page = isset( $_GET['page'] ) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
 		wp_safe_redirect( esc_url( 'admin.php?page=' . $page ) );
 		exit;
 	}
@@ -197,13 +196,13 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		$nonce = '_wpnonce';
 
 		if (
-			empty($_GET['record_id'])
-			|| empty($_GET[$nonce])
+			empty( $_GET['record_id'] )
+			|| empty( $_GET[ $nonce ] )
 			|| ! wp_verify_nonce(
-				sanitize_text_field(wp_unslash($_GET[$nonce])),
+				sanitize_text_field( wp_unslash( $_GET[ $nonce ] ) ),
 				$this->get_delete_action_nonce()
 			)
-			|| ! current_user_can('administrator')
+			|| ! current_user_can( 'administrator' )
 		) {
 			return;
 		}
@@ -221,7 +220,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 		}
 
 		$this->admin_notice->add_notice( $message, $status ? 'success' : 'error' );
-		$page = isset( $_GET['page'] ) ? sanitize_text_field(wp_unslash($_GET['page'])) : '';
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
 		wp_safe_redirect( esc_url( 'admin.php?page=' . $page ) );
 		exit;
 	}
@@ -243,5 +242,4 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 	public function get_sortable_columns() {
 		return apply_filters( 'faulh_admin_login_list_get_sortable_columns', parent::get_sortable_columns() );
 	}
-
 }

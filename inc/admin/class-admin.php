@@ -22,7 +22,9 @@ use User_Login_History\Inc\Common\Interfaces\Admin_Csv;
 use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Admin\Settings as Admin_Settings;
 
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 /**
  * Backend Functionality.
  */
@@ -84,7 +86,12 @@ class Admin {
 	 * @param \User_Login_History\Inc\Admin\Admin_Notice $admin_notice The notice object.
 	 */
 	public function __construct(
-			$plugin_name, $version, User_Profile $user_profile, Listing_Table_Csv $listing_table_csv, Admin_Settings $admin_settings, Admin_Notice $admin_notice
+		$plugin_name,
+		$version,
+		User_Profile $user_profile,
+		Listing_Table_Csv $listing_table_csv,
+		Admin_Settings $admin_settings,
+		Admin_Notice $admin_notice
 	) {
 
 		$this->plugin_name       = $plugin_name;
@@ -144,7 +151,7 @@ class Admin {
 	 */
 	private function enqueue_scripts_for_plugin_login_list_page() {
 		if ( $this->is_plugin_login_list_page() ) {
-			wp_enqueue_script( $this->plugin_name . '-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array('jquery', 'jquery-ui-datepicker'), $this->version, 'all' );
+			wp_enqueue_script( $this->plugin_name . '-admin', plugin_dir_url( __FILE__ ) . 'js/admin.js', array( 'jquery', 'jquery-ui-datepicker' ), $this->version, 'all' );
 			wp_localize_script(
 				$this->plugin_name . '-admin',
 				'admin_custom_object',
@@ -179,8 +186,8 @@ class Admin {
 		global $pagenow, $plugin_page;
 
 		if ( 'admin.php' == $pagenow && $this->plugin_name . '-pro' == $plugin_page ) {
-			wp_enqueue_style( $this->plugin_name . '-admin-bt', plugin_dir_url( __FILE__ ).'/css/bootstrap.min.css', array(), $this->version, 'all' );
-			wp_enqueue_style( $this->plugin_name . '-admin-fa', plugin_dir_url( __FILE__ ).'/css/font-awesome.min.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name . '-admin-bt', plugin_dir_url( __FILE__ ) . '/css/bootstrap.min.css', array(), $this->version, 'all' );
+			wp_enqueue_style( $this->plugin_name . '-admin-fa', plugin_dir_url( __FILE__ ) . '/css/font-awesome.min.css', array(), $this->version, 'all' );
 			wp_enqueue_style( $this->plugin_name . '-admin-gp', plugin_dir_url( __FILE__ ) . 'css/go-pro.css', array(), $this->version, 'all' );
 		}
 
@@ -231,22 +238,21 @@ class Admin {
 	 * Render the login listing page
 	 */
 	public function render_login_list() {
-		require plugin_dir_path( dirname( __FILE__ ) ) . 'admin/views/login-list-table.php';
+		require plugin_dir_path( __DIR__ ) . 'admin/views/login-list-table.php';
 	}
 
 	/**
 	 * Render the login listing page
 	 */
 	public function render_pro() {
-		require plugin_dir_path( dirname( __FILE__ ) ) . 'admin/views/pro.php';
+		require plugin_dir_path( __DIR__ ) . 'admin/views/pro.php';
 	}
 
 	/**
 	 * Render the more plugins page.
 	 */
-	public function render_more_plugins()
-	{
-		require plugin_dir_path(dirname(__FILE__)) . 'admin/views/more_plugins.php';
+	public function render_more_plugins() {
+		require plugin_dir_path( __DIR__ ) . 'admin/views/more_plugins.php';
 	}
 
 	/**
@@ -311,7 +317,7 @@ class Admin {
 			}
 
 			if ( is_plugin_active_for_network( FAULH_PLUGIN_BASENAME ) ) {
-				$blog_ids = get_sites(['fields' => 'ids']);
+				$blog_ids = get_sites( array( 'fields' => 'ids' ) );
 				foreach ( $blog_ids as $blog_id ) {
 					switch_to_blog( $blog_id );
 					Activator::create_table();
@@ -324,12 +330,11 @@ class Admin {
 			}
 		}
 	}
- 
- public function add_action_links($actions) {
-        $links = array(
-            sprintf('<a target="_blank" href="%s">%s</a>', esc_url(FAULH_PLUGIN_GO_PRO_LINK), esc_html__('Buy Pro', 'user-login-history')),
-        );
-        return array_merge($actions, $links);
-    }
 
+	public function add_action_links( $actions ) {
+		$links = array(
+			sprintf( '<a target="_blank" href="%s">%s</a>', esc_url( FAULH_PLUGIN_GO_PRO_LINK ), esc_html__( 'Buy Pro', 'user-login-history' ) ),
+		);
+		return array_merge( $actions, $links );
+	}
 }

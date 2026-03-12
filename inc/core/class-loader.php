@@ -11,7 +11,9 @@
 
 namespace User_Login_History\Inc\Core;
 
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Register all actions and filters for the plugin.
@@ -129,5 +131,4 @@ class Loader {
 			add_shortcode( $hook['hook'], array( $hook['component'], $hook['callback'] ) );
 		}
 	}
-
 }

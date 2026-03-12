@@ -25,7 +25,9 @@ use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Frontend\Frontend;
 use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
 
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * The core plugin class.
@@ -66,9 +68,9 @@ class Init {
 	 */
 	public function __construct() {
 
-		$this->plugin_name        = FAULH;
-		$this->version            = FAULH_PLUGIN_VERSION;
-		$this->plugin_basename    = FAULH_PLUGIN_BASENAME;
+		$this->plugin_name     = FAULH;
+		$this->version         = FAULH_PLUGIN_VERSION;
+		$this->plugin_basename = FAULH_PLUGIN_BASENAME;
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();
@@ -111,7 +113,7 @@ class Init {
 
 		$this->loader->add_action( 'admin_init', $admin, 'admin_init' );
 		$this->loader->add_action( 'admin_init', $admin, 'check_update_version' );
-		$this->loader->add_action( 'plugin_action_links_' . (FAULH_PLUGIN_BASENAME), $admin, 'add_action_links' );
+		$this->loader->add_action( 'plugin_action_links_' . ( FAULH_PLUGIN_BASENAME ), $admin, 'add_action_links' );
 
 		if ( is_network_admin() ) {
 			$this->loader->add_action( 'admin_init', $network_admin_settings, 'update' );
@@ -195,5 +197,4 @@ class Init {
 	public function get_version() {
 		return $this->version;
 	}
-
 }

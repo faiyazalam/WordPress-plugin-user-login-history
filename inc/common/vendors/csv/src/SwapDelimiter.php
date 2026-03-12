@@ -24,72 +24,70 @@ use function stream_get_filters;
 
 use const PSFS_PASS_ON;
 
-final class SwapDelimiter extends php_user_filter
-{
-    private const FILTER_NAME = 'string.league.csv.delimiter';
-    public const MODE_READ = 'read';
-    public const MODE_WRITE = 'write';
-    private string $search;
-    private string $replace;
+final class SwapDelimiter extends php_user_filter {
 
-    public static function getFiltername(): string
-    {
-        return self::FILTER_NAME;
-    }
+	private const FILTER_NAME = 'string.league.csv.delimiter';
+	public const MODE_READ    = 'read';
+	public const MODE_WRITE   = 'write';
+	private string $search;
+	private string $replace;
 
-    /**
-     * Static method to register the class as a stream filter.
-     */
-    public static function register(): void
-    {
-        if (!in_array(self::FILTER_NAME, stream_get_filters(), true)) {
-            stream_filter_register(self::FILTER_NAME, self::class);
-        }
-    }
+	public static function getFiltername(): string {
+		return self::FILTER_NAME;
+	}
 
-    /**
-     * Static method to attach the stream filter to a CSV Reader or Writer instance.
-     */
-    public static function addTo(AbstractCsv $csv, string $inputDelimiter): void
-    {
-        self::register();
+	/**
+	 * Static method to register the class as a stream filter.
+	 */
+	public static function register(): void {
+		if ( ! in_array( self::FILTER_NAME, stream_get_filters(), true ) ) {
+			stream_filter_register( self::FILTER_NAME, self::class );
+		}
+	}
 
-        $csv->addStreamFilter(self::getFiltername(), [
-            'mb_separator' => $inputDelimiter,
-            'separator' => $csv->getDelimiter(),
-            'mode' => $csv instanceof Writer ? self::MODE_WRITE : self::MODE_READ,
-        ]);
-    }
+	/**
+	 * Static method to attach the stream filter to a CSV Reader or Writer instance.
+	 */
+	public static function addTo( AbstractCsv $csv, string $inputDelimiter ): void {
+		self::register();
 
-    public function onCreate(): bool
-    {
-        if (self::FILTER_NAME !== $this->filtername) {
-            return false;
-        }
+		$csv->addStreamFilter(
+			self::getFiltername(),
+			array(
+				'mb_separator' => $inputDelimiter,
+				'separator'    => $csv->getDelimiter(),
+				'mode'         => $csv instanceof Writer ? self::MODE_WRITE : self::MODE_READ,
+			)
+		);
+	}
 
-        if (!is_array($this->params)) {
-            return false;
-        }
+	public function onCreate(): bool {
+		if ( self::FILTER_NAME !== $this->filtername ) {
+			return false;
+		}
 
-        $mode = $this->params['mode'] ?? '';
-        [$this->search, $this->replace] = match ($mode) {
-            self::MODE_READ => [trim($this->params['mb_separator'] ?? ''), trim($this->params['separator'] ?? '')],
-            self::MODE_WRITE => [trim($this->params['separator'] ?? ''), trim($this->params['mb_separator'] ?? '')],
-            default => ['', ''],
-        };
+		if ( ! is_array( $this->params ) ) {
+			return false;
+		}
 
-        return !in_array('', [$this->replace, $this->search], true);
-    }
+		$mode                           = $this->params['mode'] ?? '';
+		[$this->search, $this->replace] = match ( $mode ) {
+			self::MODE_READ => array( trim( $this->params['mb_separator'] ?? '' ), trim( $this->params['separator'] ?? '' ) ),
+			self::MODE_WRITE => array( trim( $this->params['separator'] ?? '' ), trim( $this->params['mb_separator'] ?? '' ) ),
+			default => array( '', '' ),
+		};
 
-    public function filter($in, $out, &$consumed, bool $closing): int
-    {
-        while (null !== ($bucket = stream_bucket_make_writeable($in))) {
-            $content = $bucket->data;
-            $bucket->data = str_replace($this->search, $this->replace, $content);
-            $consumed += $bucket->datalen;
-            stream_bucket_append($out, $bucket);
-        }
+		return ! in_array( '', array( $this->replace, $this->search ), true );
+	}
 
-        return PSFS_PASS_ON;
-    }
+	public function filter( $in, $out, &$consumed, bool $closing ): int {
+		while ( null !== ( $bucket = stream_bucket_make_writeable( $in ) ) ) {
+			$content      = $bucket->data;
+			$bucket->data = str_replace( $this->search, $this->replace, $content );
+			$consumed    += $bucket->datalen;
+			stream_bucket_append( $out, $bucket );
+		}
+
+		return PSFS_PASS_ON;
+	}
 }

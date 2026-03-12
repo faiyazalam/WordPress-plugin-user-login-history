@@ -93,7 +93,7 @@ class Frontend {
 	 * Register the JavaScript for the public-facing side of the site.
 	 */
 	public function enqueue_scripts() {
-		wp_register_script( $this->plugin_name . '-public-custom.js', plugin_dir_url( __FILE__ ) . 'js/custom.js', array('jquery', 'jquery-ui-datepicker'), $this->version, 'all' );
+		wp_register_script( $this->plugin_name . '-public-custom.js', plugin_dir_url( __FILE__ ) . 'js/custom.js', array( 'jquery', 'jquery-ui-datepicker' ), $this->version, 'all' );
 		wp_localize_script(
 			$this->plugin_name . '-public-custom.js',
 			'public_custom_object',
@@ -159,5 +159,4 @@ class Frontend {
 		require_once plugin_dir_path( __FILE__ ) . 'views/listing.php';
 		return ob_get_clean();
 	}
-
 }

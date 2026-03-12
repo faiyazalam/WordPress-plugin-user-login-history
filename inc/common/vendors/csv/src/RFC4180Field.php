@@ -41,152 +41,150 @@ use const STREAM_FILTER_WRITE;
  *
  * @see https://tools.ietf.org/html/rfc4180#section-2
  */
-class RFC4180Field extends php_user_filter
-{
-    public const FILTERNAME = 'convert.league.csv.rfc4180';
+class RFC4180Field extends php_user_filter {
 
-    /**
-     * The value being search for.
-     *
-     * @var array<string>
-     */
-    protected array $search;
+	public const FILTERNAME = 'convert.league.csv.rfc4180';
 
-    /**
-     * The replacement value that replace found $search values.
-     *
-     * @var array<string>
-     */
-    protected array $replace;
+	/**
+	 * The value being search for.
+	 *
+	 * @var array<string>
+	 */
+	protected array $search;
 
-    /**
-     * Characters that triggers enclosure with PHP fputcsv.
-     */
-    protected static string $force_enclosure = "\n\r\t ";
+	/**
+	 * The replacement value that replace found $search values.
+	 *
+	 * @var array<string>
+	 */
+	protected array $replace;
 
-    /**
-     * Static method to add the stream filter to a {@link AbstractCsv} object.
-     */
-    public static function addTo(AbstractCsv $csv, string $whitespace_replace = ''): AbstractCsv
-    {
-        self::register();
+	/**
+	 * Characters that triggers enclosure with PHP fputcsv.
+	 */
+	protected static string $force_enclosure = "\n\r\t ";
 
-        $params = [
-            'enclosure' => $csv->getEnclosure(),
-            'escape' => $csv->getEscape(),
-            'mode' => $csv->supportsStreamFilterOnWrite() ? STREAM_FILTER_WRITE : STREAM_FILTER_READ,
-        ];
+	/**
+	 * Static method to add the stream filter to a {@link AbstractCsv} object.
+	 */
+	public static function addTo( AbstractCsv $csv, string $whitespace_replace = '' ): AbstractCsv {
+		self::register();
 
-        if ($csv instanceof Writer && '' !== $whitespace_replace) {
-            self::addFormatterTo($csv, $whitespace_replace);
-            $params['whitespace_replace'] = $whitespace_replace;
-        }
+		$params = array(
+			'enclosure' => $csv->getEnclosure(),
+			'escape'    => $csv->getEscape(),
+			'mode'      => $csv->supportsStreamFilterOnWrite() ? STREAM_FILTER_WRITE : STREAM_FILTER_READ,
+		);
 
-        return $csv->addStreamFilter(self::FILTERNAME, $params);
-    }
+		if ( $csv instanceof Writer && '' !== $whitespace_replace ) {
+			self::addFormatterTo( $csv, $whitespace_replace );
+			$params['whitespace_replace'] = $whitespace_replace;
+		}
 
-    /**
-     * Add a formatter to the {@link Writer} object to format the record
-     * field to avoid enclosure around a field with an empty space.
-     */
-    public static function addFormatterTo(Writer $csv, string $whitespace_replace): Writer
-    {
-        if ('' == $whitespace_replace || strlen($whitespace_replace) !== strcspn($whitespace_replace, self::$force_enclosure)) {
-            throw new InvalidArgumentException('The sequence contains a character that enforces enclosure or is a CSV control character or is an empty string.');
-        }
+		return $csv->addStreamFilter( self::FILTERNAME, $params );
+	}
 
-        $mapper = fn ($value) => is_string($value)
-            ? str_replace(' ', $whitespace_replace, $value)
-            : $value;
+	/**
+	 * Add a formatter to the {@link Writer} object to format the record
+	 * field to avoid enclosure around a field with an empty space.
+	 */
+	public static function addFormatterTo( Writer $csv, string $whitespace_replace ): Writer {
+		if ( '' == $whitespace_replace || strlen( $whitespace_replace ) !== strcspn( $whitespace_replace, self::$force_enclosure ) ) {
+			throw new InvalidArgumentException( 'The sequence contains a character that enforces enclosure or is a CSV control character or is an empty string.' );
+		}
 
-        return $csv->addFormatter(fn (array $record): array => array_map($mapper, $record));
-    }
+		$mapper = fn ( $value ) => is_string( $value )
+			? str_replace( ' ', $whitespace_replace, $value )
+			: $value;
 
-    /**
-     * Static method to register the class as a stream filter.
-     */
-    public static function register(): void
-    {
-        if (!in_array(self::FILTERNAME, stream_get_filters(), true)) {
-            stream_filter_register(self::FILTERNAME, self::class);
-        }
-    }
+		return $csv->addFormatter( fn ( array $record ): array => array_map( $mapper, $record ) );
+	}
 
-    /**
-     * Static method to return the stream filter filtername.
-     */
-    public static function getFiltername(): string
-    {
-        return self::FILTERNAME;
-    }
+	/**
+	 * Static method to register the class as a stream filter.
+	 */
+	public static function register(): void {
+		if ( ! in_array( self::FILTERNAME, stream_get_filters(), true ) ) {
+			stream_filter_register( self::FILTERNAME, self::class );
+		}
+	}
 
-    /**
-     * @param resource $in
-     * @param resource $out
-     * @param int $consumed
-     */
-    public function filter($in, $out, &$consumed, bool $closing): int
-    {
-        while (null !== ($bucket = stream_bucket_make_writeable($in))) {
-            $bucket->data = str_replace($this->search, $this->replace, $bucket->data);
-            $consumed += $bucket->datalen;
-            stream_bucket_append($out, $bucket);
-        }
+	/**
+	 * Static method to return the stream filter filtername.
+	 */
+	public static function getFiltername(): string {
+		return self::FILTERNAME;
+	}
 
-        return PSFS_PASS_ON;
-    }
+	/**
+	 * @param resource $in
+	 * @param resource $out
+	 * @param int      $consumed
+	 */
+	public function filter( $in, $out, &$consumed, bool $closing ): int {
+		while ( null !== ( $bucket = stream_bucket_make_writeable( $in ) ) ) {
+			$bucket->data = str_replace( $this->search, $this->replace, $bucket->data );
+			$consumed    += $bucket->datalen;
+			stream_bucket_append( $out, $bucket );
+		}
 
-    public function onCreate(): bool
-    {
-        if (!is_array($this->params)) {
-            throw new TypeError('The filter parameters must be an array.');
-        }
+		return PSFS_PASS_ON;
+	}
 
-        static $mode_list = [STREAM_FILTER_READ => 1, STREAM_FILTER_WRITE => 1];
+	public function onCreate(): bool {
+		if ( ! is_array( $this->params ) ) {
+			throw new TypeError( 'The filter parameters must be an array.' );
+		}
 
-        $state = isset($this->params['enclosure'], $this->params['escape'], $this->params['mode'], $mode_list[$this->params['mode']])
-            && 1 === strlen($this->params['enclosure'])
-            && 1 === strlen($this->params['escape']);
+		static $mode_list = array(
+			STREAM_FILTER_READ  => 1,
+			STREAM_FILTER_WRITE => 1,
+		);
 
-        if (false === $state) {
-            return false;
-        }
+		$state = isset( $this->params['enclosure'], $this->params['escape'], $this->params['mode'], $mode_list[ $this->params['mode'] ] )
+			&& 1 === strlen( $this->params['enclosure'] )
+			&& 1 === strlen( $this->params['escape'] );
 
-        $this->search = [$this->params['escape'].$this->params['enclosure']];
-        $this->replace = [$this->params['enclosure'].$this->params['enclosure']];
-        if (STREAM_FILTER_WRITE !== $this->params['mode']) {
-            return true;
-        }
+		if ( false === $state ) {
+			return false;
+		}
 
-        $this->search = [$this->params['escape'].$this->params['enclosure']];
-        $this->replace = [$this->params['escape'].$this->params['enclosure'].$this->params['enclosure']];
-        if ($this->isValidSequence($this->params)) {
-            $this->search[] = $this->params['whitespace_replace'];
-            $this->replace[] = ' ';
-        }
+		$this->search  = array( $this->params['escape'] . $this->params['enclosure'] );
+		$this->replace = array( $this->params['enclosure'] . $this->params['enclosure'] );
+		if ( STREAM_FILTER_WRITE !== $this->params['mode'] ) {
+			return true;
+		}
 
-        return true;
-    }
+		$this->search  = array( $this->params['escape'] . $this->params['enclosure'] );
+		$this->replace = array( $this->params['escape'] . $this->params['enclosure'] . $this->params['enclosure'] );
+		if ( $this->isValidSequence( $this->params ) ) {
+			$this->search[]  = $this->params['whitespace_replace'];
+			$this->replace[] = ' ';
+		}
 
-    /**
-     * @codeCoverageIgnore
-     * Validate params property.
-     */
-    protected function isValidParams(array $params): bool
-    {
-        static $mode_list = [STREAM_FILTER_READ => 1, STREAM_FILTER_WRITE => 1];
+		return true;
+	}
 
-        return isset($params['enclosure'], $params['escape'], $params['mode'], $mode_list[$params['mode']])
-            && 1 === strlen($params['enclosure'])
-            && 1 === strlen($params['escape']);
-    }
+	/**
+	 * @codeCoverageIgnore
+	 * Validate params property.
+	 */
+	protected function isValidParams( array $params ): bool {
+		static $mode_list = array(
+			STREAM_FILTER_READ  => 1,
+			STREAM_FILTER_WRITE => 1,
+		);
 
-    /**
-     * Is Valid White space replaced sequence.
-     */
-    protected function isValidSequence(array $params): bool
-    {
-        return isset($params['whitespace_replace'])
-            && strlen($params['whitespace_replace']) === strcspn($params['whitespace_replace'], self::$force_enclosure);
-    }
+		return isset( $params['enclosure'], $params['escape'], $params['mode'], $mode_list[ $params['mode'] ] )
+			&& 1 === strlen( $params['enclosure'] )
+			&& 1 === strlen( $params['escape'] );
+	}
+
+	/**
+	 * Is Valid White space replaced sequence.
+	 */
+	protected function isValidSequence( array $params ): bool {
+		return isset( $params['whitespace_replace'] )
+			&& strlen( $params['whitespace_replace'] ) === strcspn( $params['whitespace_replace'], self::$force_enclosure );
+	}
 }

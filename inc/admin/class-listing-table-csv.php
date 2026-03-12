@@ -109,16 +109,15 @@ final class Listing_Table_Csv {
 			}
 
 			if ( 0 == $i ) {
-				$csv->insertOne(array_keys( $record ) );
+				$csv->insertOne( array_keys( $record ) );
 
 			}
 
 			$csv->insertOne( $record );
 
-			$i++;
+			++$i;
 		}
-		$csv->output(); 
+		$csv->output();
 		die();
 	}
-
 }

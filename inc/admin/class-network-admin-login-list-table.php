@@ -37,14 +37,14 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 	/**
 	 * Holds the where clause values.
-	 * 
+	 *
 	 * @var array
 	 */
 	private array $where_query_values = array();
 
 	/**
 	 * Holds the where clause.
-	 * 
+	 *
 	 * @var string
 	 */
 	private string $where_query = '';
@@ -61,14 +61,14 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 * Prepares the where clause.
 	 */
 	public function prepare_where_query() {
-		$where = parent::prepare_where_query();
-		$this->where_query = $where['where_query'] ?? "";
-		$this->where_query_values = $where['where_query_values'] ?? [];
+		$where                    = parent::prepare_where_query();
+		$this->where_query        = $where['where_query'] ?? '';
+		$this->where_query_values = $where['where_query_values'] ?? array();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_get = $_GET;
 		if ( ! empty( $the_get['is_super_admin'] ) && in_array( $the_get['is_super_admin'], array( 'yes', 'no' ), true ) ) {
-			$this->where_query .= " AND `FaUserLogin`.`is_super_admin` = %d";
+			$this->where_query         .= ' AND `FaUserLogin`.`is_super_admin` = %d';
 			$this->where_query_values[] = absint( 'yes' == $the_get['is_super_admin'] );
 		}
 	}
@@ -82,30 +82,30 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		$this->prepare_where_query();
 		global $wpdb;
 
-		$i        = 0;
+		$i = 0;
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_get = $_GET;
 
-		if (empty($the_get['blog_id'])) {
-			$blog_ids = get_sites(['fields' => 'ids']);
+		if ( empty( $the_get['blog_id'] ) ) {
+			$blog_ids = get_sites( array( 'fields' => 'ids' ) );
 		} else {
 
-			if (!is_numeric($the_get['blog_id'])) {
+			if ( ! is_numeric( $the_get['blog_id'] ) ) {
 				return;
 			}
 
-			if ($the_get['blog_id'] <= 0) {
+			if ( $the_get['blog_id'] <= 0 ) {
 				return;
 			}
 
-			$blog_id_to_filter = absint($the_get['blog_id']);
+			$blog_id_to_filter = absint( $the_get['blog_id'] );
 
-			if (!get_site($blog_id_to_filter)) {
+			if ( ! get_site( $blog_id_to_filter ) ) {
 				return;
 			}
 
-			$blog_ids = array($blog_id_to_filter);
+			$blog_ids = array( $blog_id_to_filter );
 		}
 
 		foreach ( $blog_ids as $blog_id ) {
@@ -150,9 +150,9 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			if ( $this->where_query ) {
 				$this->rows_sql  .= $this->where_query;
 				$this->count_sql .= $this->where_query;
-			 }
+			}
 
-			$i++;
+			++$i;
 		}
 
 		$this->rows_sql  = "SELECT * FROM ({$this->rows_sql}) AS FaUserLoginAllRows";
@@ -212,12 +212,12 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 */
 	public function get_rows( $per_page = 20, $page_number = 1 ) {
 		// phpcs:ignore	WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
-		$the_request = $_REQUEST;
-		$sanitize_sql_orderby = sanitize_sql_orderby( "time_login DESC");
+		$the_request          = $_REQUEST;
+		$sanitize_sql_orderby = sanitize_sql_orderby( 'time_login DESC' );
 
 		if ( ! empty( $the_request['orderby'] ) ) {
-			$direction            = ! empty( $the_request['order'] ) ? strtoupper($the_request['order']) : 'ASC';
-			$direction = in_array( $direction, array( 'ASC', 'DESC' ), true ) ? $direction : 'ASC';
+			$direction            = ! empty( $the_request['order'] ) ? strtoupper( $the_request['order'] ) : 'ASC';
+			$direction            = in_array( $direction, array( 'ASC', 'DESC' ), true ) ? $direction : 'ASC';
 			$sanitize_sql_orderby = sanitize_sql_orderby( $the_request['orderby'] . ' ' . $direction );
 		}
 
@@ -226,13 +226,13 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		}
 
 		if ( $per_page > 0 ) {
-			$this->rows_sql .= " LIMIT " . absint($per_page);
-			$this->rows_sql .= " OFFSET " . absint(($page_number - 1) * $per_page);
+			$this->rows_sql .= ' LIMIT ' . absint( $per_page );
+			$this->rows_sql .= ' OFFSET ' . absint( ( $page_number - 1 ) * $per_page );
 		}
 
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, [...$this->where_query_values, ...$this->where_query_values] ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, array( ...$this->where_query_values, ...$this->where_query_values ) ), ARRAY_A );
 	}
 
 	/**
@@ -243,7 +243,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	public function record_count() {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_var($wpdb->prepare($this->count_sql, [...$this->where_query_values, ...$this->where_query_values]));
+		return $wpdb->get_var( $wpdb->prepare( $this->count_sql, array( ...$this->where_query_values, ...$this->where_query_values ) ) );
 	}
 
 	/**
@@ -272,12 +272,12 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			'delete' => sprintf(
 				'<a href="?page=%s&action=%s&blog_id=%s&record_id=%s&_wpnonce=%s">%s</a>',
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to generate delete button.
-				esc_attr(sanitize_text_field(wp_unslash($_REQUEST['page'] ??""))),
+				esc_attr( sanitize_text_field( wp_unslash( $_REQUEST['page'] ?? '' ) ) ),
 				$this->delete_action,
-				absint($item['blog_id']),
-				absint($item['id']),
+				absint( $item['blog_id'] ),
+				absint( $item['id'] ),
 				$delete_nonce,
-				esc_html__('Delete', 'user-login-history')
+				esc_html__( 'Delete', 'user-login-history' )
 			),
 		);
 
@@ -291,19 +291,19 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		$nonce = '_wpnonce';
 
-		if (!isset($_POST[$this->get_bulk_action_form()])) {
+		if ( ! isset( $_POST[ $this->get_bulk_action_form() ] ) ) {
 			return;
 		}
 
-		if (empty($_POST[$nonce])) {
+		if ( empty( $_POST[ $nonce ] ) ) {
 			return;
 		}
 
-		if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[$nonce])), $this->get_bulk_action_nonce())) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce ] ) ), $this->get_bulk_action_nonce() ) ) {
 			return;
 		}
 
-		if (!current_user_can('manage_network_users')) {
+		if ( ! current_user_can( 'manage_network_users' ) ) {
 			return;
 		}
 
@@ -313,11 +313,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			case 'bulk-delete':
 				if ( ! empty( $_POST['bulk-delete-ids'] ) ) {
 					// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized with absint.
-					$ids = wp_unslash($_POST['bulk-delete-ids']);
+					$ids = wp_unslash( $_POST['bulk-delete-ids'] );
 
 					foreach ( $ids as $blog_id => $record_ids ) {
 						$record_ids = array_map( 'absint', $record_ids );
-						$blog_id = absint($blog_id);
+						$blog_id    = absint( $blog_id );
 						switch_to_blog( $blog_id );
 						$status = Db_Helper::delete_rows_by_table_and_ids( $this->table, $record_ids );
 						restore_current_blog();
@@ -333,11 +333,11 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 				global $wpdb;
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
 				$wpdb->query( 'START TRANSACTION' );
-				$blog_ids = get_sites(['fields' => 'ids']);
-				if(is_array($blog_ids)  && !empty( $blog_ids ) ) {
+				$blog_ids = get_sites( array( 'fields' => 'ids' ) );
+				if ( is_array( $blog_ids ) && ! empty( $blog_ids ) ) {
 					foreach ( $blog_ids as $blog_id ) {
 						switch_to_blog( $blog_id );
-						$status = $wpdb->query($wpdb->prepare( "TRUNCATE TABLE %i", $wpdb->prefix . $this->table)) ;
+						$status = $wpdb->query( $wpdb->prepare( 'TRUNCATE TABLE %i', $wpdb->prefix . $this->table ) );
 						restore_current_blog();
 						if ( ! $status ) {
 							break;
@@ -348,17 +348,17 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 				if ( $status ) {
 					$message = esc_html__( 'All records deleted.', 'user-login-history' );
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
-				$wpdb->query( 'COMMIT' );
+					$wpdb->query( 'COMMIT' );
 				} else {
 				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Transaction control statement.
-				$wpdb->query( 'ROLLBACK' );
+					$wpdb->query( 'ROLLBACK' );
 				}
 
 				break;
 		}
 
 		$this->admin_notice->add_notice( $message, $status ? 'success' : 'error' );
-		wp_safe_redirect( esc_url( 'admin.php?page=' . sanitize_text_field(wp_unslash($_GET['page']??"")) ) );
+		wp_safe_redirect( esc_url( 'admin.php?page=' . sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ) ) );
 		exit;
 	}
 
@@ -367,35 +367,36 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 */
 	public function process_single_action() {
 
-		if(!wp_verify_nonce( sanitize_file_name(wp_unslash($_GET[ '_wpnonce' ]??"")), $this->get_delete_action_nonce() )){
+		if ( ! wp_verify_nonce( sanitize_file_name( wp_unslash( $_GET['_wpnonce'] ?? '' ) ), $this->get_delete_action_nonce() ) ) {
 			return;
 		}
 
 		$the_get = $_GET;
 
-		if(empty($the_get['record_id']) || empty($the_get['blog_id'])){
+		if ( empty( $the_get['record_id'] ) || empty( $the_get['blog_id'] ) ) {
 			return;
 		}
 
-		if (!is_numeric($the_get['record_id']) || $the_get['record_id'] <= 0) {
+		if ( ! is_numeric( $the_get['record_id'] ) || $the_get['record_id'] <= 0 ) {
 			return;
 		}
 
-		if (!is_numeric($the_get['blog_id']) || $the_get['blog_id'] <= 0) {
+		if ( ! is_numeric( $the_get['blog_id'] ) || $the_get['blog_id'] <= 0 ) {
 			return;
 		}
 
-
-		if (!current_user_can('manage_network_users')) {
+		if ( ! current_user_can( 'manage_network_users' ) ) {
 			return;
 		}
 
-		$id      = absint( $_GET['record_id']??0 );
-		$blog_id = absint( $_GET['blog_id']??0 );
+		$id      = absint( $_GET['record_id'] ?? 0 );
+		$blog_id = absint( $_GET['blog_id'] ?? 0 );
 
-		$blog_ids = get_sites([
-			'site__in' => [$blog_id]
-		]);
+		$blog_ids = get_sites(
+			array(
+				'site__in' => array( $blog_id ),
+			)
+		);
 
 		if ( empty( $blog_ids ) ) {
 			return;
@@ -417,8 +418,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		}
 
 		$this->admin_notice->add_notice( $message, $status ? 'success' : 'error' );
-		wp_safe_redirect(esc_url('admin.php?page=' . sanitize_text_field(wp_unslash($_GET['page'] ?? ""))));
+		wp_safe_redirect( esc_url( 'admin.php?page=' . sanitize_text_field( wp_unslash( $_GET['page'] ?? '' ) ) ) );
 		exit;
 	}
-
 }

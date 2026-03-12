@@ -11,7 +11,9 @@
 
 namespace User_Login_History\Inc\Common\Helpers;
 
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Backend Functionality.
@@ -25,15 +27,15 @@ class Db {
 	 * @param string $table The table name.
 	 * @param [int]  $ids The record IDs.
 	 */
-	public static function delete_rows_by_table_and_ids( string $table = '', array $ids = [] ) {
+	public static function delete_rows_by_table_and_ids( string $table = '', array $ids = array() ) {
 		if ( empty( $table ) || empty( $ids ) ) {
 			return false;
 		}
 
 		global $wpdb;
-		$ids    = implode(",", array_map('absint', $ids));
+		$ids = implode( ',', array_map( 'absint', $ids ) );
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already sanitized.
-		$status = $wpdb->query($wpdb->prepare("DELETE FROM %i WHERE id IN ($ids)", $wpdb->prefix . $table));
+		$status = $wpdb->query( $wpdb->prepare( "DELETE FROM %i WHERE id IN ($ids)", $wpdb->prefix . $table ) );
 
 		if ( $wpdb->last_error ) {
 			Error_Log::error_log( $wpdb->last_error . ' ' . $wpdb->last_query );
@@ -58,7 +60,7 @@ class Db {
 		dbDelta( $sql );
 		if ( ! empty( $wpdb->last_error ) ) {
 			Error_Log::error_log( 'Error while creating or updatiing tables-' . $wpdb->last_error, __LINE__, __FILE__ );
-			wp_die( esc_html($wpdb->last_error) );
+			wp_die( esc_html( $wpdb->last_error ) );
 		}
 	}
 }

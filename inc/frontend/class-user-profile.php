@@ -30,23 +30,23 @@ class User_Profile extends User_Profile_Abstract {
 		$key   = $this->plugin_name . '_update_user_timezone';
 		$nonce = '_wpnonce';
 
-		if(!isset($_POST[ $key ])){
+		if ( ! isset( $_POST[ $key ] ) ) {
 			return;
 		}
 
-		if(empty( $_POST[ $nonce ] )){
+		if ( empty( $_POST[ $nonce ] ) ) {
 			return;
 		}
 
-		if(!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST[ $nonce ])), $key )){
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce ] ) ), $key ) ) {
 			return;
 		}
 
-		if(!$this->get_user_id()){
+		if ( ! $this->get_user_id() ) {
 			return;
 		}
 
-		if(!current_user_can( 'edit_user', $this->get_user_id() )){
+		if ( ! current_user_can( 'edit_user', $this->get_user_id() ) ) {
 			return;
 		}
 
@@ -56,5 +56,4 @@ class User_Profile extends User_Profile_Abstract {
 		wp_safe_redirect( esc_url_raw( add_query_arg() ) );
 		exit;
 	}
-
 }

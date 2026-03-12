@@ -16,26 +16,26 @@ namespace League\Csv;
 /**
  * A class to insert records into a CSV Document.
  */
-interface TabularDataWriter
-{
-    /**
-     * Adds multiple records to the CSV document.
-     *
-     * @see TabularDataWriter::insertOne
-     *
-     * @throws CannotInsertRecord If the record can not be inserted
-     * @throws Exception If the record can not be inserted
-     */
-    public function insertAll(iterable $records): int;
+interface TabularDataWriter {
 
-    /**
-     * Adds a single record to a CSV document.
-     *
-     * A record is an array that can contain scalar type values, NULL values
-     * or objects implementing the __toString method.
-     *
-     * @throws CannotInsertRecord If the record can not be inserted
-     * @throws Exception If the record can not be inserted
-     */
-    public function insertOne(array $record): int;
+	/**
+	 * Adds multiple records to the CSV document.
+	 *
+	 * @see TabularDataWriter::insertOne
+	 *
+	 * @throws CannotInsertRecord If the record can not be inserted
+	 * @throws Exception If the record can not be inserted
+	 */
+	public function insertAll( iterable $records ): int;
+
+	/**
+	 * Adds a single record to a CSV document.
+	 *
+	 * A record is an array that can contain scalar type values, NULL values
+	 * or objects implementing the __toString method.
+	 *
+	 * @throws CannotInsertRecord If the record can not be inserted
+	 * @throws Exception If the record can not be inserted
+	 */
+	public function insertOne( array $record ): int;
 }

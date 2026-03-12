@@ -43,105 +43,105 @@ use IteratorAggregate;
  * @method iterable<TabularDataReader> chunkBy(int $recordsCount) Chunk the TabulaDataReader into smaller TabularDataReader instances of the given size or less.
  * @method TabularDataReader mapHeader(array $headers) Returns a new TabulaDataReader with a new set of headers.
  */
-interface TabularDataReader extends Countable, IteratorAggregate
-{
-    /**
-     * Returns the number of records contained in the tabular data structure
-     * excluding the header record.
-     */
-    public function count(): int;
+interface TabularDataReader extends Countable, IteratorAggregate {
 
-    /**
-     * Returns the tabular data records as an iterator object containing flat array.
-     *
-     * Each record is represented as a simple array containing strings or null values.
-     *
-     * If the CSV document has a header record then each record is combined
-     * to the header record and the header record is removed from the iterator.
-     *
-     * If the CSV document is inconsistent. Missing record fields are
-     * filled with null values while extra record fields are strip from
-     * the returned object.
-     *
-     * @return Iterator<array-key, array<array-key, mixed>>
-     */
-    public function getIterator(): Iterator;
+	/**
+	 * Returns the number of records contained in the tabular data structure
+	 * excluding the header record.
+	 */
+	public function count(): int;
 
-    /**
-     * Returns the header associated with the tabular data.
-     *
-     * The header must contain unique string or to be an empty array
-     * if no header was specified.
-     *
-     * @return array<string>
-     */
-    public function getHeader(): array;
+	/**
+	 * Returns the tabular data records as an iterator object containing flat array.
+	 *
+	 * Each record is represented as a simple array containing strings or null values.
+	 *
+	 * If the CSV document has a header record then each record is combined
+	 * to the header record and the header record is removed from the iterator.
+	 *
+	 * If the CSV document is inconsistent. Missing record fields are
+	 * filled with null values while extra record fields are strip from
+	 * the returned object.
+	 *
+	 * @return Iterator<array-key, array<array-key, mixed>>
+	 */
+	public function getIterator(): Iterator;
 
-    /**
-     * Returns the tabular data records as an iterator object.
-     *
-     * Each record is represented as a simple array containing strings or null values.
-     *
-     * If the tabular data has a header record then each record is combined
-     * to the header record and the header record is removed from the iterator.
-     *
-     * If the tabular data is inconsistent. Missing record fields are
-     * filled with null values while extra record fields are strip from
-     * the returned object.
-     *
-     * @param array<string> $header an optional header mapper to use instead of the CSV document header
-     *
-     * @return Iterator<array-key, array<array-key, mixed>>
-     */
-    public function getRecords(array $header = []): Iterator;
+	/**
+	 * Returns the header associated with the tabular data.
+	 *
+	 * The header must contain unique string or to be an empty array
+	 * if no header was specified.
+	 *
+	 * @return array<string>
+	 */
+	public function getHeader(): array;
 
-    /**
-     * Returns the next key-value pairs from the tabular data (first
-     * column is the key, second column is the value).
-     *
-     * By default, if no column index is provided:
-     * - the first column is used to provide the keys
-     * - the second column is used to provide the value
-     *
-     * @param string|int $offset_index The column index to serve as offset
-     * @param string|int $value_index The column index to serve as value
-     *
-     * @throws UnableToProcessCsv if the column index is invalid or not found
-     */
-    public function fetchPairs($offset_index = 0, $value_index = 1): Iterator;
+	/**
+	 * Returns the tabular data records as an iterator object.
+	 *
+	 * Each record is represented as a simple array containing strings or null values.
+	 *
+	 * If the tabular data has a header record then each record is combined
+	 * to the header record and the header record is removed from the iterator.
+	 *
+	 * If the tabular data is inconsistent. Missing record fields are
+	 * filled with null values while extra record fields are strip from
+	 * the returned object.
+	 *
+	 * @param array<string> $header an optional header mapper to use instead of the CSV document header
+	 *
+	 * @return Iterator<array-key, array<array-key, mixed>>
+	 */
+	public function getRecords( array $header = array() ): Iterator;
 
-    /**
-     * DEPRECATION WARNING! This class will be removed in the next major point release.
-     *
-     * @deprecated since version 9.9.0
-     *
-     * Returns the nth record from the tabular data.
-     *
-     * By default, if no index is provided the first record of the tabular data is returned
-     *
-     * @param int $nth_record the tabular data record offset
-     *
-     * @throws UnableToProcessCsv if argument is less than 0
-     */
-    public function fetchOne(int $nth_record = 0): array;
+	/**
+	 * Returns the next key-value pairs from the tabular data (first
+	 * column is the key, second column is the value).
+	 *
+	 * By default, if no column index is provided:
+	 * - the first column is used to provide the keys
+	 * - the second column is used to provide the value
+	 *
+	 * @param string|int $offset_index The column index to serve as offset
+	 * @param string|int $value_index The column index to serve as value
+	 *
+	 * @throws UnableToProcessCsv if the column index is invalid or not found
+	 */
+	public function fetchPairs( $offset_index = 0, $value_index = 1 ): Iterator;
 
-    /**
-     * DEPRECATION WARNING! This class will be removed in the next major point release.
-     *
-     * @deprecated since version 9.8.0
-     *
-     * @see ::fetchColumnByName
-     * @see ::fetchColumnByOffset
-     *
-     * Returns a single column from the next record of the tabular data.
-     *
-     * By default, if no value is supplied the first column is fetched
-     *
-     * @param string|int $index CSV column index
-     *
-     * @throws UnableToProcessCsv if the column index is invalid or not found
-     *
-     * @return Iterator<int, mixed>
-     */
-    public function fetchColumn(string|int $index = 0): Iterator;
+	/**
+	 * DEPRECATION WARNING! This class will be removed in the next major point release.
+	 *
+	 * @deprecated since version 9.9.0
+	 *
+	 * Returns the nth record from the tabular data.
+	 *
+	 * By default, if no index is provided the first record of the tabular data is returned
+	 *
+	 * @param int $nth_record the tabular data record offset
+	 *
+	 * @throws UnableToProcessCsv if argument is less than 0
+	 */
+	public function fetchOne( int $nth_record = 0 ): array;
+
+	/**
+	 * DEPRECATION WARNING! This class will be removed in the next major point release.
+	 *
+	 * @deprecated since version 9.8.0
+	 *
+	 * @see ::fetchColumnByName
+	 * @see ::fetchColumnByOffset
+	 *
+	 * Returns a single column from the next record of the tabular data.
+	 *
+	 * By default, if no value is supplied the first column is fetched
+	 *
+	 * @param string|int $index CSV column index
+	 *
+	 * @throws UnableToProcessCsv if the column index is invalid or not found
+	 *
+	 * @return Iterator<int, mixed>
+	 */
+	public function fetchColumn( string|int $index = 0 ): Iterator;
 }

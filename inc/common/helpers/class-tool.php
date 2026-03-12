@@ -62,5 +62,4 @@ class Tool {
 
 		return implode( ', ', $names );
 	}
-
 }

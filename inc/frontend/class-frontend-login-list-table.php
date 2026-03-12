@@ -233,16 +233,15 @@ class Frontend_Login_List_Table {
 	 * @return string
 	 */
 	public function prepare_where_query() {
-		$where_query = '';
+		$where_query        = '';
 		$where_query_values = array();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
 		$the_get = $_GET;
-		if (! empty($the_get['user_id'])) {
-			$where_query .= " AND `FaUserLogin`.`user_id` = %d";
+		if ( ! empty( $the_get['user_id'] ) ) {
+			$where_query         .= ' AND `FaUserLogin`.`user_id` = %d';
 			$where_query_values[] = get_current_user_id();
 		}
-		
 
 		if ( ! empty( $the_get['date_type'] ) ) {
 			$input_timezone = $this->get_table_timezone();
@@ -263,14 +262,13 @@ class Frontend_Login_List_Table {
 			}
 		}
 
-
-		$where_query = apply_filters( 'faulh_public_prepare_where_query', $where_query );
+		$where_query        = apply_filters( 'faulh_public_prepare_where_query', $where_query );
 		$where_query_values = apply_filters( 'faulh_public_prepare_where_query_values', $where_query_values );
 
-		return [
-			'where_query' => $where_query,
+		return array(
+			'where_query'        => $where_query,
 			'where_query_values' => $where_query_values,
-		];
+		);
 	}
 
 	/**
@@ -287,8 +285,8 @@ class Frontend_Login_List_Table {
 				. ' FROM ' . $this->table . '  AS FaUserLogin'
 				. ' WHERE 1 ';
 
-		$where = $this->prepare_where_query();
-		$where_query = $where['where_query'] ?? "";
+		$where              = $this->prepare_where_query();
+		$where_query        = $where['where_query'] ?? '';
 		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
@@ -333,8 +331,8 @@ class Frontend_Login_List_Table {
 				. ' FROM ' . $this->table . '  AS FaUserLogin'
 				. ' WHERE 1 ';
 
-		$where = $this->prepare_where_query();
-		$where_query = $where['where_query'] ?? "";
+		$where              = $this->prepare_where_query();
+		$where_query        = $where['where_query'] ?? '';
 		$where_query_values = $where['where_query_values'] ?? array();
 
 		if ( $where_query ) {
@@ -371,7 +369,7 @@ class Frontend_Login_List_Table {
 			'time_logout'      => esc_html__( 'Logout', 'user-login-history' ),
 			'login_status'     => esc_html__( 'Login Status', 'user-login-history' ),
 		);
-  
+
 		return apply_filters( 'faulh_public_get_columns', $columns );
 	}
 
@@ -404,7 +402,7 @@ class Frontend_Login_List_Table {
 	 * Display the pagination link.
 	 */
 	private function display_pagination() {
-		echo wp_kses_post($this->pagination_links);
+		echo wp_kses_post( $this->pagination_links );
 	}
 
 	/**
@@ -444,7 +442,7 @@ class Frontend_Login_List_Table {
 		$sortable_columns = $this->get_sortable_columns();
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce is not required here to fetch records.
-		$the_get = $_GET;
+		$the_get            = $_GET;
 		$requested_order    = ! empty( $the_get['order'] ) ? $the_get['order'] : '';
 		$page_number_string = ! empty( $the_get[ self::DEFALUT_QUERY_ARG_PAGE_NUMBER ] ) ? '&' . self::DEFALUT_QUERY_ARG_PAGE_NUMBER . '=' . $this->page_number : '';
 		// print only allowed column headers.
@@ -563,7 +561,7 @@ class Frontend_Login_List_Table {
 		$allowed_columns = $this->get_allowed_columns();
 		foreach ( $allowed_columns as $column_name ) {
 			$column_content = $this->column_default( $item, $column_name );
-			echo "<td>".wp_kses_post( $column_content )."</td>";
+			echo '<td>' . wp_kses_post( $column_content ) . '</td>';
 		}
 	}
 
@@ -693,8 +691,7 @@ class Frontend_Login_List_Table {
 				if ( $new_column_data ) {
 					return $new_column_data;
 				}
-				return __('not supported', 'user-login-history');
+				return __( 'not supported', 'user-login-history' );
 		}
 	}
-
 }

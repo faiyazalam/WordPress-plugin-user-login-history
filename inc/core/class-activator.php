@@ -31,12 +31,12 @@ class Activator {
 		// Check PHP Version and deactivate & die if it doesn't meet minimum requirements.
 		if ( version_compare( PHP_VERSION, FAULH_PHP_VERSION, '<' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( esc_html('This plugin requires a minmum PHP Version of ' . FAULH_PHP_VERSION) );
+			wp_die( esc_html( 'This plugin requires a minmum PHP Version of ' . FAULH_PHP_VERSION ) );
 		}
 
 		if ( is_multisite() && $network_wide ) {
 
-			$blog_ids = get_sites(['fields' => 'ids']);
+			$blog_ids = get_sites( array( 'fields' => 'ids' ) );
 
 			foreach ( $blog_ids as $blog_id ) {
 				switch_to_blog( $blog_id );
@@ -109,5 +109,4 @@ INDEX idx_is_super_admin (is_super_admin)
 	public static function update_options() {
 		update_option( FAULH_PLUGIN_OPTION_NAME_VERSION, FAULH_PLUGIN_VERSION );
 	}
-
 }

@@ -159,5 +159,4 @@ abstract class User_Profile {
 			delete_user_meta( $this->get_user_id(), $this->get_usermeta_key_timezone() );
 		}
 	}
-
 }

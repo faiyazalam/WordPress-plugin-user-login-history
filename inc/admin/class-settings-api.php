@@ -12,7 +12,9 @@ namespace User_Login_History\Inc\Admin;
  * @link https://tareq.co Tareq Hasan
  * @example example/oop-example.php How to use the class
  */
-if (! defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 class Settings_Api {
 
 	/**
@@ -108,8 +110,8 @@ class Settings_Api {
 
 			if ( isset( $section['desc'] ) && ! empty( $section['desc'] ) ) {
 				$section['desc'] = '<div class="inside">' . $section['desc'] . '</div>';
-				$callback        = function () use ($section) {
-					echo esc_html(str_replace('"', '\"', $section['desc']));
+				$callback        = function () use ( $section ) {
+					echo esc_html( str_replace( '"', '\"', $section['desc'] ) );
 				};
 			} elseif ( isset( $section['callback'] ) ) {
 				$callback = $section['callback'];
@@ -184,30 +186,33 @@ class Settings_Api {
 		$type        = isset( $args['type'] ) ? $args['type'] : 'text';
 		$placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';
 
-		$html  = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s/>', esc_attr($type), esc_attr($size), esc_attr($args['section']), esc_attr($args['id']), esc_attr($value), esc_attr($placeholder) );
+		$html  = sprintf( '<input type="%1$s" class="%2$s-text" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s/>', esc_attr( $type ), esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $value ), esc_attr( $placeholder ) );
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'input' => [
-				'type' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'value' => true,
-				'placeholder' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => true
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'input'  => array(
+					'type'        => true,
+					'class'       => true,
+					'id'          => true,
+					'name'        => true,
+					'value'       => true,
+					'placeholder' => true,
+				),
+				'p'      => array( 'class' => true ),
+				'span'   => array( 'class' => true ),
+				'br'     => array(),
+				'a'      => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => true,
+				),
+				'strong' => array(),
+				'em'     => array(),
+				'code'   => array(),
+			)
+		);
 	}
 
 	/**
@@ -233,26 +238,29 @@ class Settings_Api {
 		$max         = empty( $args['max'] ) ? '' : ' max="' . $args['max'] . '"';
 		$step        = empty( $args['max'] ) ? '' : ' step="' . $args['step'] . '"';
 
-		$html  = sprintf( '<input type="%1$s" class="%2$s-number" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s%8$s%9$s/>', esc_attr($type), esc_attr($size), esc_attr($args['section']), esc_attr($args['id']), esc_attr($value), esc_attr($placeholder), esc_attr($min), esc_attr($max), esc_attr($step) );
+		$html  = sprintf( '<input type="%1$s" class="%2$s-number" id="%3$s[%4$s]" name="%3$s[%4$s]" value="%5$s"%6$s%7$s%8$s%9$s/>', esc_attr( $type ), esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $value ), esc_attr( $placeholder ), esc_attr( $min ), esc_attr( $max ), esc_attr( $step ) );
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'input' => [
-				'type' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'value' => true,
-				'placeholder' => true,
-				'min' => true,
-				'max' => true,
-				'step' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'em' => [],
-			'strong' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'input'  => array(
+					'type'        => true,
+					'class'       => true,
+					'id'          => true,
+					'name'        => true,
+					'value'       => true,
+					'placeholder' => true,
+					'min'         => true,
+					'max'         => true,
+					'step'        => true,
+				),
+				'p'      => array( 'class' => true ),
+				'span'   => array( 'class' => true ),
+				'br'     => array(),
+				'em'     => array(),
+				'strong' => array(),
+			)
+		);
 	}
 
 	/**
@@ -265,36 +273,39 @@ class Settings_Api {
 		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 
 		$html  = '<fieldset>';
-		$html .= sprintf( '<label for="wpuf-%1$s[%2$s]">', esc_attr($args['section']), esc_attr($args['id']) );
-		$html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', esc_attr($args['section']), esc_attr($args['id']) );
-		$html .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />', esc_attr($args['section']), esc_attr($args['id']), esc_attr(checked( $value, 'on', false )) );
-		$html .= sprintf( '%1$s</label>', esc_html($args['desc']) );
+		$html .= sprintf( '<label for="wpuf-%1$s[%2$s]">', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );
+		$html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="off" />', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );
+		$html .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s]" name="%1$s[%2$s]" value="on" %3$s />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( checked( $value, 'on', false ) ) );
+		$html .= sprintf( '%1$s</label>', esc_html( $args['desc'] ) );
 		$html .= '</fieldset>';
-		echo wp_kses($html, [
-			'fieldset' => [],
-			'label' => [
-				'for' => true
-			],
-			'input' => [
-				'type' => true,
-				'name' => true,
-				'value' => true,
-				'class' => true,
-				'id' => true,
-				'checked' => true
-			],
-			'br' => [],
-			'em' => [],
-			'strong' => [],
-			'span' => [
-				'class' => true
-			],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true
-			]
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'fieldset' => array(),
+				'label'    => array(
+					'for' => true,
+				),
+				'input'    => array(
+					'type'    => true,
+					'name'    => true,
+					'value'   => true,
+					'class'   => true,
+					'id'      => true,
+					'checked' => true,
+				),
+				'br'       => array(),
+				'em'       => array(),
+				'strong'   => array(),
+				'span'     => array(
+					'class' => true,
+				),
+				'a'        => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+				),
+			)
+		);
 	}
 
 	/**
@@ -306,46 +317,49 @@ class Settings_Api {
 
 		$value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 		$html  = '<fieldset>';
-		$html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="" />', esc_attr($args['section']), esc_attr($args['id']) );
+		$html .= sprintf( '<input type="hidden" name="%1$s[%2$s]" value="" />', esc_attr( $args['section'] ), esc_attr( $args['id'] ) );
 		foreach ( $args['options'] as $key => $label ) {
 			$checked = isset( $value[ $key ] ) ? $value[ $key ] : '0';
-			$html   .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', esc_attr($args['section']), esc_attr($args['id']), esc_attr($key) );
-			$html   .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />', esc_attr($args['section']), esc_attr($args['id']), esc_attr($key), esc_attr(checked( $checked, $key, false )) );
-			$html   .= sprintf( '%1$s</label><br>', esc_html($label) );
+			$html   .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ) );
+			$html   .= sprintf( '<input type="checkbox" class="checkbox" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ), esc_attr( checked( $checked, $key, false ) ) );
+			$html   .= sprintf( '%1$s</label><br>', esc_html( $label ) );
 		}
 
 		$html .= $this->get_field_description( $args );
 		$html .= '</fieldset>';
-		echo wp_kses($html, [
-			'fieldset' => [],
-			'label' => [
-				'for' => true
-			],
-			'input' => [
-				'type' => true,
-				'name' => true,
-				'value' => true,
-				'class' => true,
-				'id' => true,
-				'checked' => true
-			],
-			'br' => [],
-			'span' => [
-				'class' => true
-			],
-			'p' => [
-				'class' => true
-			],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => true
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'fieldset' => array(),
+				'label'    => array(
+					'for' => true,
+				),
+				'input'    => array(
+					'type'    => true,
+					'name'    => true,
+					'value'   => true,
+					'class'   => true,
+					'id'      => true,
+					'checked' => true,
+				),
+				'br'       => array(),
+				'span'     => array(
+					'class' => true,
+				),
+				'p'        => array(
+					'class' => true,
+				),
+				'a'        => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => true,
+				),
+				'strong'   => array(),
+				'em'       => array(),
+				'code'     => array(),
+			)
+		);
 	}
 
 	/**
@@ -359,46 +373,49 @@ class Settings_Api {
 		$html  = '<fieldset>';
 
 		foreach ( $args['options'] as $key => $label ) {
-			$html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', esc_attr($args['section']), esc_attr($args['id']), esc_attr($key) );
-			$html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', esc_attr($args['section']), esc_attr($args['id']), esc_attr($key), esc_attr(checked( $value, $key, false )) );
-			$html .= sprintf( '%1$s</label><br>', esc_html($label) );
+			$html .= sprintf( '<label for="wpuf-%1$s[%2$s][%3$s]">', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ) );
+			$html .= sprintf( '<input type="radio" class="radio" id="wpuf-%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s" %4$s />', esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $key ), esc_attr( checked( $value, $key, false ) ) );
+			$html .= sprintf( '%1$s</label><br>', esc_html( $label ) );
 		}
 
 		$html .= $this->get_field_description( $args );
 		$html .= '</fieldset>';
-		echo wp_kses($html, [
-			'fieldset' => [],
-			'label' => [
-				'for' => true
-			],
-			'input' => [
-				'type' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'value' => true,
-				'checked' => true
-			],
-			'br' => [],
-			'p' => [
-				'class' => true
-			],
-			'span' => [
-				'class' => true
-			],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => ['noreferrer', 'noopener']
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => [],
-			'ul' => [],
-			'ol' => [],
-			'li' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'fieldset' => array(),
+				'label'    => array(
+					'for' => true,
+				),
+				'input'    => array(
+					'type'    => true,
+					'class'   => true,
+					'id'      => true,
+					'name'    => true,
+					'value'   => true,
+					'checked' => true,
+				),
+				'br'       => array(),
+				'p'        => array(
+					'class' => true,
+				),
+				'span'     => array(
+					'class' => true,
+				),
+				'a'        => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => array( 'noreferrer', 'noopener' ),
+				),
+				'strong'   => array(),
+				'em'       => array(),
+				'code'     => array(),
+				'ul'       => array(),
+				'ol'       => array(),
+				'li'       => array(),
+			)
+		);
 	}
 
 	/**
@@ -410,35 +427,38 @@ class Settings_Api {
 
 		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
-		$html  = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', esc_attr($size), esc_attr($args['section']), esc_attr($args['id']) );
+		$html  = sprintf( '<select class="%1$s" name="%2$s[%3$s]" id="%2$s[%3$s]">', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ) );
 
 		foreach ( $args['options'] as $key => $label ) {
-			$html .= sprintf( '<option value="%s"%s>%s</option>', esc_attr($key), esc_attr(selected( $value, $key, false )), esc_html( $label) );
+			$html .= sprintf( '<option value="%s"%s>%s</option>', esc_attr( $key ), esc_attr( selected( $value, $key, false ) ), esc_html( $label ) );
 		}
 
 		$html .= sprintf( '</select>' );
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'select' => [
-				'class' => true,
-				'name' => true,
-				'id' => true
-			],
-			'option' => [
-				'value' => true,
-				'selected' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true
-			],
-			'strong' => [],
-			'em' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'select' => array(
+					'class' => true,
+					'name'  => true,
+					'id'    => true,
+				),
+				'option' => array(
+					'value'    => true,
+					'selected' => true,
+				),
+				'p'      => array( 'class' => true ),
+				'span'   => array( 'class' => true ),
+				'br'     => array(),
+				'a'      => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+				),
+				'strong' => array(),
+				'em'     => array(),
+			)
+		);
 	}
 
 	/**
@@ -452,33 +472,36 @@ class Settings_Api {
 		$size        = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 		$placeholder = empty( $args['placeholder'] ) ? '' : ' placeholder="' . $args['placeholder'] . '"';
 
-		$html  = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]"%4$s>%5$s</textarea>', esc_attr($size), esc_attr($args['section']), esc_attr($args['id']), esc_attr($placeholder), esc_html($value) );
+		$html  = sprintf( '<textarea rows="5" cols="55" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]"%4$s>%5$s</textarea>', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $placeholder ), esc_html( $value ) );
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'textarea' => [
-				'rows' => true,
-				'cols' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'placeholder' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => true
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => [],
-			'ul' => [],
-			'ol' => [],
-			'li' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'textarea' => array(
+					'rows'        => true,
+					'cols'        => true,
+					'class'       => true,
+					'id'          => true,
+					'name'        => true,
+					'placeholder' => true,
+				),
+				'p'        => array( 'class' => true ),
+				'span'     => array( 'class' => true ),
+				'br'       => array(),
+				'a'        => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => true,
+				),
+				'strong'   => array(),
+				'em'       => array(),
+				'code'     => array(),
+				'ul'       => array(),
+				'ol'       => array(),
+				'li'       => array(),
+			)
+		);
 	}
 
 	/**
@@ -488,7 +511,7 @@ class Settings_Api {
 	 * @return string
 	 */
 	function callback_html( $args ) {
-		echo wp_kses_post($this->get_field_description( $args ));
+		echo wp_kses_post( $this->get_field_description( $args ) );
 	}
 
 	/**
@@ -501,7 +524,7 @@ class Settings_Api {
 		$value = $this->get_option( $args['id'], $args['section'], $args['std'] );
 		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : '500px';
 
-		echo '<div style="max-width: ' . esc_attr($size) . ';">';
+		echo '<div style="max-width: ' . esc_attr( $size ) . ';">';
 
 		$editor_settings = array(
 			'teeny'         => true,
@@ -517,7 +540,7 @@ class Settings_Api {
 
 		echo '</div>';
 
-		echo wp_kses_post($this->get_field_description( $args ));
+		echo wp_kses_post( $this->get_field_description( $args ) );
 	}
 
 	/**
@@ -532,30 +555,33 @@ class Settings_Api {
 		$id    = $args['section'] . '[' . $args['id'] . ']';
 		$label = isset( $args['options']['button_label'] ) ? $args['options']['button_label'] : __( 'Choose File', 'user-login-history' );
 
-		$html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', esc_attr($size), esc_attr($args['section']), esc_attr($args['id']), esc_attr($value) );
-		$html .= '<input type="button" class="button wpsa-browse" value="' . esc_attr($label) . '" />';
+		$html  = sprintf( '<input type="text" class="%1$s-text wpsa-url" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $value ) );
+		$html .= '<input type="button" class="button wpsa-browse" value="' . esc_attr( $label ) . '" />';
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'input' => [
-				'type' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'value' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => true
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'input'  => array(
+					'type'  => true,
+					'class' => true,
+					'id'    => true,
+					'name'  => true,
+					'value' => true,
+				),
+				'p'      => array( 'class' => true ),
+				'span'   => array( 'class' => true ),
+				'br'     => array(),
+				'a'      => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => true,
+				),
+				'strong' => array(),
+				'em'     => array(),
+				'code'   => array(),
+			)
+		);
 	}
 
 	/**
@@ -568,29 +594,32 @@ class Settings_Api {
 		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-		$html  = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', esc_attr($size), esc_attr($args['section']), esc_attr($args['id']), esc_attr($value) );
+		$html  = sprintf( '<input type="password" class="%1$s-text" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s"/>', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $value ) );
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'input' => [
-				'type' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'value' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => ['noreferrer', 'noopener']
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'input'  => array(
+					'type'  => true,
+					'class' => true,
+					'id'    => true,
+					'name'  => true,
+					'value' => true,
+				),
+				'p'      => array( 'class' => true ),
+				'span'   => array( 'class' => true ),
+				'br'     => array(),
+				'a'      => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => array( 'noreferrer', 'noopener' ),
+				),
+				'strong' => array(),
+				'em'     => array(),
+				'code'   => array(),
+			)
+		);
 	}
 
 	/**
@@ -603,30 +632,33 @@ class Settings_Api {
 		$value = esc_attr( $this->get_option( $args['id'], $args['section'], $args['std'] ) );
 		$size  = isset( $args['size'] ) && ! is_null( $args['size'] ) ? $args['size'] : 'regular';
 
-		$html  = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" data-default-color="%5$s" />', esc_attr($size), esc_attr($args['section']), esc_attr($args['id']), esc_attr($value), esc_attr($args['std']) );
+		$html  = sprintf( '<input type="text" class="%1$s-text wp-color-picker-field" id="%2$s[%3$s]" name="%2$s[%3$s]" value="%4$s" data-default-color="%5$s" />', esc_attr( $size ), esc_attr( $args['section'] ), esc_attr( $args['id'] ), esc_attr( $value ), esc_attr( $args['std'] ) );
 		$html .= $this->get_field_description( $args );
-		echo wp_kses($html, [
-			'input' => [
-				'type' => true,
-				'class' => true,
-				'id' => true,
-				'name' => true,
-				'value' => true,
-				'data-default-color' => true
-			],
-			'p' => ['class' => true],
-			'span' => ['class' => true],
-			'br' => [],
-			'a' => [
-				'href' => true,
-				'title' => true,
-				'target' => true,
-				'rel' => ['noreferrer', 'noopener']
-			],
-			'strong' => [],
-			'em' => [],
-			'code' => []
-		]);
+		echo wp_kses(
+			$html,
+			array(
+				'input'  => array(
+					'type'               => true,
+					'class'              => true,
+					'id'                 => true,
+					'name'               => true,
+					'value'              => true,
+					'data-default-color' => true,
+				),
+				'p'      => array( 'class' => true ),
+				'span'   => array( 'class' => true ),
+				'br'     => array(),
+				'a'      => array(
+					'href'   => true,
+					'title'  => true,
+					'target' => true,
+					'rel'    => array( 'noreferrer', 'noopener' ),
+				),
+				'strong' => array(),
+				'em'     => array(),
+				'code'   => array(),
+			)
+		);
 	}
 
 
@@ -644,7 +676,7 @@ class Settings_Api {
 			'echo'     => 0,
 		);
 		//phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo wp_dropdown_pages($dropdown_args);
+		echo wp_dropdown_pages( $dropdown_args );
 	}
 
 	/**
@@ -733,12 +765,12 @@ class Settings_Api {
 		}
 
 		foreach ( $this->settings_sections as $tab ) {
-			$html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', esc_attr($tab['id']), esc_html($tab['title']) );
+			$html .= sprintf( '<a href="#%1$s" class="nav-tab" id="%1$s-tab">%2$s</a>', esc_attr( $tab['id'] ), esc_html( $tab['title'] ) );
 		}
 
 		$html .= '</h2>';
 
-		echo wp_kses_post($html);
+		echo wp_kses_post( $html );
 	}
 
 	/**
@@ -750,7 +782,7 @@ class Settings_Api {
 		?>
 		<div class="metabox-holder">
 			<?php foreach ( $this->settings_sections as $form ) { ?>
-				<div id="<?php echo esc_attr($form['id']); ?>" class="group" style="display: none;">
+				<div id="<?php echo esc_attr( $form['id'] ); ?>" class="group" style="display: none;">
 					<form method="post" action="options.php">
 						<?php
 						do_action( 'faulh_form_top_' . $form['id'], $form );
@@ -873,7 +905,6 @@ class Settings_Api {
 			<?php
 		endif;
 	}
-
 }
 
 

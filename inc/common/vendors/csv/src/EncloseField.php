@@ -37,86 +37,80 @@ use function strlen;
  * @see https://tools.ietf.org/html/rfc4180#section-2
  * @see https://bugs.php.net/bug.php?id=38301
  */
-class EncloseField extends php_user_filter
-{
-    public const FILTERNAME = 'convert.league.csv.enclosure';
+class EncloseField extends php_user_filter {
 
-    /** Default sequence. */
-    protected string $sequence;
-    /** Characters that triggers enclosure in PHP. */
-    protected static string $force_enclosure = "\n\r\t ";
+	public const FILTERNAME = 'convert.league.csv.enclosure';
 
-    /**
-     * Static method to return the stream filter filtername.
-     */
-    public static function getFiltername(): string
-    {
-        return self::FILTERNAME;
-    }
+	/** Default sequence. */
+	protected string $sequence;
+	/** Characters that triggers enclosure in PHP. */
+	protected static string $force_enclosure = "\n\r\t ";
 
-    /**
-     * Static method to register the class as a stream filter.
-     */
-    public static function register(): void
-    {
-        if (!in_array(self::FILTERNAME, stream_get_filters(), true)) {
-            stream_filter_register(self::FILTERNAME, self::class);
-        }
-    }
+	/**
+	 * Static method to return the stream filter filtername.
+	 */
+	public static function getFiltername(): string {
+		return self::FILTERNAME;
+	}
 
-    /**
-     * Static method to add the stream filter to a {@link Writer} object.
-     *
-     * @throws InvalidArgumentException if the sequence is malformed
-     * @throws Exception
-     */
-    public static function addTo(Writer $csv, string $sequence): Writer
-    {
-        self::register();
+	/**
+	 * Static method to register the class as a stream filter.
+	 */
+	public static function register(): void {
+		if ( ! in_array( self::FILTERNAME, stream_get_filters(), true ) ) {
+			stream_filter_register( self::FILTERNAME, self::class );
+		}
+	}
 
-        if (!self::isValidSequence($sequence)) {
-            throw new InvalidArgumentException('The sequence must contain at least one character to force enclosure');
-        }
+	/**
+	 * Static method to add the stream filter to a {@link Writer} object.
+	 *
+	 * @throws InvalidArgumentException if the sequence is malformed
+	 * @throws Exception
+	 */
+	public static function addTo( Writer $csv, string $sequence ): Writer {
+		self::register();
 
-        return $csv
-            ->addFormatter(fn (array $record): array => array_map(fn (?string $value): string => $sequence.$value, $record))
-            ->addStreamFilter(self::FILTERNAME, ['sequence' => $sequence]);
-    }
+		if ( ! self::isValidSequence( $sequence ) ) {
+			throw new InvalidArgumentException( 'The sequence must contain at least one character to force enclosure' );
+		}
 
-    /**
-     * Filter type and sequence parameters.
-     *
-     * The sequence to force enclosure MUST contain one of the following character ("\n\r\t ")
-     */
-    protected static function isValidSequence(string $sequence): bool
-    {
-        return strlen($sequence) !== strcspn($sequence, self::$force_enclosure);
-    }
+		return $csv
+			->addFormatter( fn ( array $record ): array => array_map( fn ( ?string $value ): string => $sequence . $value, $record ) )
+			->addStreamFilter( self::FILTERNAME, array( 'sequence' => $sequence ) );
+	}
 
-    public function onCreate(): bool
-    {
-        return is_array($this->params)
-            && isset($this->params['sequence'])
-            && self::isValidSequence($this->params['sequence']);
-    }
+	/**
+	 * Filter type and sequence parameters.
+	 *
+	 * The sequence to force enclosure MUST contain one of the following character ("\n\r\t ")
+	 */
+	protected static function isValidSequence( string $sequence ): bool {
+		return strlen( $sequence ) !== strcspn( $sequence, self::$force_enclosure );
+	}
 
-    /**
-     * @param resource $in
-     * @param resource $out
-     * @param int $consumed
-     */
-    public function filter($in, $out, &$consumed, bool $closing): int
-    {
-        /** @var array $params */
-        $params = $this->params;
-        /** @var string $sequence */
-        $sequence = $params['sequence'];
-        while (null !== ($bucket = stream_bucket_make_writeable($in))) {
-            $bucket->data = str_replace($sequence, '', $bucket->data);
-            $consumed += $bucket->datalen;
-            stream_bucket_append($out, $bucket);
-        }
+	public function onCreate(): bool {
+		return is_array( $this->params )
+			&& isset( $this->params['sequence'] )
+			&& self::isValidSequence( $this->params['sequence'] );
+	}
 
-        return PSFS_PASS_ON;
-    }
+	/**
+	 * @param resource $in
+	 * @param resource $out
+	 * @param int      $consumed
+	 */
+	public function filter( $in, $out, &$consumed, bool $closing ): int {
+		/** @var array $params */
+		$params = $this->params;
+		/** @var string $sequence */
+		$sequence = $params['sequence'];
+		while ( null !== ( $bucket = stream_bucket_make_writeable( $in ) ) ) {
+			$bucket->data = str_replace( $sequence, '', $bucket->data );
+			$consumed    += $bucket->datalen;
+			stream_bucket_append( $out, $bucket );
+		}
+
+		return PSFS_PASS_ON;
+	}
 }

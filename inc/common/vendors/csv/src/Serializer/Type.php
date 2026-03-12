@@ -30,134 +30,127 @@ use const FILTER_VALIDATE_BOOL;
 use const FILTER_VALIDATE_FLOAT;
 use const FILTER_VALIDATE_INT;
 
-enum Type: string
-{
-    case Bool = 'bool';
-    case True = 'true';
-    case False = 'false';
-    case Null = 'null';
-    case Int = 'int';
-    case Float = 'float';
-    case String = 'string';
-    case Mixed = 'mixed';
-    case Array = 'array';
-    case Iterable = 'iterable';
-    case Enum = UnitEnum::class;
-    case Date = DateTimeInterface::class;
+enum Type: string {
 
-    public function equals(mixed $value): bool
-    {
-        return $value instanceof self
-            && $value === $this;
-    }
+	case Bool     = 'bool';
+	case True     = 'true';
+	case False    = 'false';
+	case Null     = 'null';
+	case Int      = 'int';
+	case Float    = 'float';
+	case String   = 'string';
+	case Mixed    = 'mixed';
+	case Array    = 'array';
+	case Iterable = 'iterable';
+	case Enum     = UnitEnum::class;
+	case Date     = DateTimeInterface::class;
 
-    public function isOneOf(self ...$types): bool
-    {
-        return in_array($this, $types, true);
-    }
+	public function equals( mixed $value ): bool {
+		return $value instanceof self
+			&& $value === $this;
+	}
 
-    public function filterFlag(): int
-    {
-        return match ($this) {
-            self::Bool,
-            self::True,
-            self::False => FILTER_VALIDATE_BOOL,
-            self::Int => FILTER_VALIDATE_INT,
-            self::Float => FILTER_VALIDATE_FLOAT,
-            default => FILTER_UNSAFE_RAW,
-        };
-    }
+	public function isOneOf( self ...$types ): bool {
+		return in_array( $this, $types, true );
+	}
 
-    public static function resolve(ReflectionProperty|ReflectionParameter $reflectionProperty, array $arguments = []): TypeCasting
-    {
-        try {
-            $cast = match (self::tryFromAccessor($reflectionProperty)) {
-                self::Mixed, self::Null, self::String => new CastToString($reflectionProperty),
-                self::Iterable, self::Array => new CastToArray($reflectionProperty),
-                self::False, self::True, self::Bool => new CastToBool($reflectionProperty),
-                self::Float => new CastToFloat($reflectionProperty),
-                self::Int => new CastToInt($reflectionProperty),
-                self::Date => new CastToDate($reflectionProperty),
-                self::Enum => new CastToEnum($reflectionProperty),
-                null => throw MappingFailed::dueToUnsupportedType($reflectionProperty),
-            };
+	public function filterFlag(): int {
+		return match ( $this ) {
+			self::Bool,
+			self::True,
+			self::False => FILTER_VALIDATE_BOOL,
+			self::Int => FILTER_VALIDATE_INT,
+			self::Float => FILTER_VALIDATE_FLOAT,
+			default => FILTER_UNSAFE_RAW,
+		};
+	}
 
-            $cast->setOptions(...$arguments);
+	public static function resolve( ReflectionProperty|ReflectionParameter $reflectionProperty, array $arguments = array() ): TypeCasting {
+		try {
+			$cast = match ( self::tryFromAccessor( $reflectionProperty ) ) {
+				self::Mixed, self::Null, self::String => new CastToString( $reflectionProperty ),
+				self::Iterable, self::Array => new CastToArray( $reflectionProperty ),
+				self::False, self::True, self::Bool => new CastToBool( $reflectionProperty ),
+				self::Float => new CastToFloat( $reflectionProperty ),
+				self::Int => new CastToInt( $reflectionProperty ),
+				self::Date => new CastToDate( $reflectionProperty ),
+				self::Enum => new CastToEnum( $reflectionProperty ),
+				null => throw MappingFailed::dueToUnsupportedType( $reflectionProperty ),
+			};
 
-            return $cast;
-        } catch (MappingFailed $exception) {
-            throw $exception;
-        } catch (Throwable $exception) {
-            throw MappingFailed::dueToInvalidCastingArguments($exception);
-        }
-    }
+			$cast->setOptions( ...$arguments );
 
-    /**
-     * @return list<array{0:Type, 1: ReflectionNamedType}>
-     */
-    public static function list(ReflectionParameter|ReflectionProperty $reflectionProperty): array
-    {
-        $reflectionType = $reflectionProperty->getType() ?? throw MappingFailed::dueToUnsupportedType($reflectionProperty);
+			return $cast;
+		} catch ( MappingFailed $exception ) {
+			throw $exception;
+		} catch ( Throwable $exception ) {
+			throw MappingFailed::dueToInvalidCastingArguments( $exception );
+		}
+	}
 
-        $foundTypes = static function (array $res, ReflectionType $reflectionType) {
-            if (!$reflectionType instanceof ReflectionNamedType) {
-                return $res;
-            }
+	/**
+	 * @return list<array{0:Type, 1: ReflectionNamedType}>
+	 */
+	public static function list( ReflectionParameter|ReflectionProperty $reflectionProperty ): array {
+		$reflectionType = $reflectionProperty->getType() ?? throw MappingFailed::dueToUnsupportedType( $reflectionProperty );
 
-            $type = self::tryFromName($reflectionType->getName());
-            if (null !== $type) {
-                $res[] = [$type, $reflectionType];
-            }
+		$foundTypes = static function ( array $res, ReflectionType $reflectionType ) {
+			if ( ! $reflectionType instanceof ReflectionNamedType ) {
+				return $res;
+			}
 
-            return $res;
-        };
+			$type = self::tryFromName( $reflectionType->getName() );
+			if ( null !== $type ) {
+				$res[] = array( $type, $reflectionType );
+			}
 
-        return match (true) {
-            $reflectionType instanceof ReflectionNamedType => $foundTypes([], $reflectionType),
-            $reflectionType instanceof ReflectionUnionType => array_reduce($reflectionType->getTypes(), $foundTypes, []),
-            default => [],
-        };
-    }
+			return $res;
+		};
 
-    public static function tryFromName(string $propertyType): ?self
-    {
-        $interfaceExists = interface_exists($propertyType);
+		return match ( true ) {
+			$reflectionType instanceof ReflectionNamedType => $foundTypes( array(), $reflectionType ),
+			$reflectionType instanceof ReflectionUnionType => array_reduce( $reflectionType->getTypes(), $foundTypes, array() ),
+			default => array(),
+		};
+	}
 
-        return match (true) {
-            enum_exists($propertyType),
-            $interfaceExists && (new ReflectionClass($propertyType))->implementsInterface(UnitEnum::class) => self::Enum,
-            $interfaceExists && (new ReflectionClass($propertyType))->implementsInterface(DateTimeInterface::class),
-            class_exists($propertyType) && (new ReflectionClass($propertyType))->implementsInterface(DateTimeInterface::class) => self::Date,
-            default => self::tryFrom($propertyType),
-        };
-    }
+	public static function tryFromName( string $propertyType ): ?self {
+		$interfaceExists = interface_exists( $propertyType );
 
-    public static function tryFromAccessor(ReflectionProperty|ReflectionParameter $reflectionProperty): ?self
-    {
-        $type = $reflectionProperty->getType();
-        if (null === $type) {
-            return Type::Mixed;
-        }
+		return match ( true ) {
+			enum_exists( $propertyType ),
+			$interfaceExists && ( new ReflectionClass( $propertyType ) )->implementsInterface( UnitEnum::class ) => self::Enum,
+			$interfaceExists && ( new ReflectionClass( $propertyType ) )->implementsInterface( DateTimeInterface::class ),
+			class_exists( $propertyType ) && ( new ReflectionClass( $propertyType ) )->implementsInterface( DateTimeInterface::class ) => self::Date,
+			default => self::tryFrom( $propertyType ),
+		};
+	}
 
-        if ($type instanceof ReflectionNamedType) {
-            return self::tryFromName($type->getName());
-        }
+	public static function tryFromAccessor( ReflectionProperty|ReflectionParameter $reflectionProperty ): ?self {
+		$type = $reflectionProperty->getType();
+		if ( null === $type ) {
+			return Type::Mixed;
+		}
 
-        if (!$type instanceof ReflectionUnionType) {
-            return null;
-        }
+		if ( $type instanceof ReflectionNamedType ) {
+			return self::tryFromName( $type->getName() );
+		}
 
-        foreach ($type->getTypes() as $innerType) {
-            if (!$innerType instanceof ReflectionNamedType) {
-                continue;
-            }
+		if ( ! $type instanceof ReflectionUnionType ) {
+			return null;
+		}
 
-            $result = self::tryFromName($innerType->getName());
-            if ($result instanceof self) {
-                return $result;
-            }
-        }
+		foreach ( $type->getTypes() as $innerType ) {
+			if ( ! $innerType instanceof ReflectionNamedType ) {
+				continue;
+			}
 
-        return null;
-    }
+			$result = self::tryFromName( $innerType->getName() );
+			if ( $result instanceof self ) {
+				return $result;
+			}
+		}
+
+		return null;
+	}
 }

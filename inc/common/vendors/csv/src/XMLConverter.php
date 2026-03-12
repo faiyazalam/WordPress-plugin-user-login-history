@@ -21,163 +21,152 @@ use DOMException;
 /**
  * Converts tabular data into a DOMDocument object.
  */
-class XMLConverter
-{
-    /** XML Root name. */
-    protected string $root_name = 'csv';
-    /** XML Node name. */
-    protected string $record_name = 'row';
-    /** XML Item name. */
-    protected string $field_name = 'cell';
-    /** XML column attribute name. */
-    protected string $column_attr = '';
-    /** XML offset attribute name. */
-    protected string $offset_attr = '';
+class XMLConverter {
 
-    public static function create(): self
-    {
-        return new self();
-    }
+	/** XML Root name. */
+	protected string $root_name = 'csv';
+	/** XML Node name. */
+	protected string $record_name = 'row';
+	/** XML Item name. */
+	protected string $field_name = 'cell';
+	/** XML column attribute name. */
+	protected string $column_attr = '';
+	/** XML offset attribute name. */
+	protected string $offset_attr = '';
 
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated since version 9.7.0
-     * @see XMLConverter::create()
-     */
-    public function __construct()
-    {
-    }
+	public static function create(): self {
+		return new self();
+	}
 
-    /**
-     * Converts a Record collection into a DOMDocument.
-     */
-    public function convert(iterable $records): DOMDocument
-    {
-        $doc = new DOMDocument('1.0');
-        $node = $this->import($records, $doc);
-        $doc->appendChild($node);
+	/**
+	 * DEPRECATION WARNING! This method will be removed in the next major point release.
+	 *
+	 * @deprecated since version 9.7.0
+	 * @see XMLConverter::create()
+	 */
+	public function __construct() {
+	}
 
-        return $doc;
-    }
+	/**
+	 * Converts a Record collection into a DOMDocument.
+	 */
+	public function convert( iterable $records ): DOMDocument {
+		$doc  = new DOMDocument( '1.0' );
+		$node = $this->import( $records, $doc );
+		$doc->appendChild( $node );
 
-    /**
-     * Creates a new DOMElement related to the given DOMDocument.
-     *
-     * **DOES NOT** attach to the DOMDocument
-     */
-    public function import(iterable $records, DOMDocument $doc): DOMElement
-    {
-        $root = $doc->createElement($this->root_name);
-        foreach ($records as $offset => $record) {
-            $node = $this->recordToElement($doc, $record, $offset);
-            $root->appendChild($node);
-        }
+		return $doc;
+	}
 
-        return $root;
-    }
+	/**
+	 * Creates a new DOMElement related to the given DOMDocument.
+	 *
+	 * **DOES NOT** attach to the DOMDocument
+	 */
+	public function import( iterable $records, DOMDocument $doc ): DOMElement {
+		$root = $doc->createElement( $this->root_name );
+		foreach ( $records as $offset => $record ) {
+			$node = $this->recordToElement( $doc, $record, $offset );
+			$root->appendChild( $node );
+		}
 
-    /**
-     * Converts a CSV record into a DOMElement and
-     * adds its offset as DOMElement attribute.
-     */
-    protected function recordToElement(DOMDocument $doc, array $record, int $offset): DOMElement
-    {
-        $node = $doc->createElement($this->record_name);
-        foreach ($record as $node_name => $value) {
-            $item = $this->fieldToElement($doc, (string) $value, $node_name);
-            $node->appendChild($item);
-        }
+		return $root;
+	}
 
-        if ('' !== $this->offset_attr) {
-            $node->setAttribute($this->offset_attr, (string) $offset);
-        }
+	/**
+	 * Converts a CSV record into a DOMElement and
+	 * adds its offset as DOMElement attribute.
+	 */
+	protected function recordToElement( DOMDocument $doc, array $record, int $offset ): DOMElement {
+		$node = $doc->createElement( $this->record_name );
+		foreach ( $record as $node_name => $value ) {
+			$item = $this->fieldToElement( $doc, (string) $value, $node_name );
+			$node->appendChild( $item );
+		}
 
-        return $node;
-    }
+		if ( '' !== $this->offset_attr ) {
+			$node->setAttribute( $this->offset_attr, (string) $offset );
+		}
 
-    /**
-     * Converts Cell to Item.
-     *
-     * Converts the CSV item into a DOMElement and adds the item offset
-     * as attribute to the returned DOMElement
-     */
-    protected function fieldToElement(DOMDocument $doc, string $value, int|string $node_name): DOMElement
-    {
-        $item = $doc->createElement($this->field_name);
-        $item->appendChild($doc->createTextNode($value));
+		return $node;
+	}
 
-        if ('' !== $this->column_attr) {
-            $item->setAttribute($this->column_attr, (string) $node_name);
-        }
+	/**
+	 * Converts Cell to Item.
+	 *
+	 * Converts the CSV item into a DOMElement and adds the item offset
+	 * as attribute to the returned DOMElement
+	 */
+	protected function fieldToElement( DOMDocument $doc, string $value, int|string $node_name ): DOMElement {
+		$item = $doc->createElement( $this->field_name );
+		$item->appendChild( $doc->createTextNode( $value ) );
 
-        return $item;
-    }
+		if ( '' !== $this->column_attr ) {
+			$item->setAttribute( $this->column_attr, (string) $node_name );
+		}
 
-    /**
-     * XML root element setter.
-     *
-     * @throws DOMException
-     */
-    public function rootElement(string $node_name): self
-    {
-        $clone = clone $this;
-        $clone->root_name = $this->filterElementName($node_name);
+		return $item;
+	}
 
-        return $clone;
-    }
+	/**
+	 * XML root element setter.
+	 *
+	 * @throws DOMException
+	 */
+	public function rootElement( string $node_name ): self {
+		$clone            = clone $this;
+		$clone->root_name = $this->filterElementName( $node_name );
 
-    /**
-     * Filters XML element name.
-     *
-     * @throws DOMException If the Element name is invalid
-     */
-    protected function filterElementName(string $value): string
-    {
-        return (new DOMElement($value))->tagName;
-    }
+		return $clone;
+	}
 
-    /**
-     * XML Record element setter.
-     *
-     * @throws DOMException
-     */
-    public function recordElement(string $node_name, string $record_offset_attribute_name = ''): self
-    {
-        $clone = clone $this;
-        $clone->record_name = $this->filterElementName($node_name);
-        $clone->offset_attr = $this->filterAttributeName($record_offset_attribute_name);
+	/**
+	 * Filters XML element name.
+	 *
+	 * @throws DOMException If the Element name is invalid
+	 */
+	protected function filterElementName( string $value ): string {
+		return ( new DOMElement( $value ) )->tagName;
+	}
 
-        return $clone;
-    }
+	/**
+	 * XML Record element setter.
+	 *
+	 * @throws DOMException
+	 */
+	public function recordElement( string $node_name, string $record_offset_attribute_name = '' ): self {
+		$clone              = clone $this;
+		$clone->record_name = $this->filterElementName( $node_name );
+		$clone->offset_attr = $this->filterAttributeName( $record_offset_attribute_name );
 
-    /**
-     * Filters XML attribute name.
-     *
-     * @param string $value Element name
-     *
-     * @throws DOMException If the Element attribute name is invalid
-     */
-    protected function filterAttributeName(string $value): string
-    {
-        if ('' === $value) {
-            return $value;
-        }
+		return $clone;
+	}
 
-        return (new DOMAttr($value))->name;
-    }
+	/**
+	 * Filters XML attribute name.
+	 *
+	 * @param string $value Element name
+	 *
+	 * @throws DOMException If the Element attribute name is invalid
+	 */
+	protected function filterAttributeName( string $value ): string {
+		if ( '' === $value ) {
+			return $value;
+		}
 
-    /**
-     * XML Field element setter.
-     *
-     * @throws DOMException
-     */
-    public function fieldElement(string $node_name, string $fieldname_attribute_name = ''): self
-    {
-        $clone = clone $this;
-        $clone->field_name = $this->filterElementName($node_name);
-        $clone->column_attr = $this->filterAttributeName($fieldname_attribute_name);
+		return ( new DOMAttr( $value ) )->name;
+	}
 
-        return $clone;
-    }
+	/**
+	 * XML Field element setter.
+	 *
+	 * @throws DOMException
+	 */
+	public function fieldElement( string $node_name, string $fieldname_attribute_name = '' ): self {
+		$clone              = clone $this;
+		$clone->field_name  = $this->filterElementName( $node_name );
+		$clone->column_attr = $this->filterAttributeName( $fieldname_attribute_name );
+
+		return $clone;
+	}
 }

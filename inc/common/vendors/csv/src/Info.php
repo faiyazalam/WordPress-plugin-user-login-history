@@ -22,75 +22,73 @@ use function strlen;
 
 use const COUNT_RECURSIVE;
 
-final class Info implements ByteSequence
-{
-    private const BOM_SEQUENCE_LIST = [
-        ByteSequence::BOM_UTF32_BE,
-        ByteSequence::BOM_UTF32_LE,
-        ByteSequence::BOM_UTF16_BE,
-        ByteSequence::BOM_UTF16_LE,
-        ByteSequence::BOM_UTF8,
-    ];
+final class Info implements ByteSequence {
 
-    /**
-     * Returns the BOM sequence found at the start of the string.
-     *
-     * If no valid BOM sequence is found an empty string is returned
-     */
-    public static function fetchBOMSequence(string $str): ?string
-    {
-        foreach (self::BOM_SEQUENCE_LIST as $sequence) {
-            if (str_starts_with($str, $sequence)) {
-                return $sequence;
-            }
-        }
+	private const BOM_SEQUENCE_LIST = array(
+		ByteSequence::BOM_UTF32_BE,
+		ByteSequence::BOM_UTF32_LE,
+		ByteSequence::BOM_UTF16_BE,
+		ByteSequence::BOM_UTF16_LE,
+		ByteSequence::BOM_UTF8,
+	);
 
-        return null;
-    }
+	/**
+	 * Returns the BOM sequence found at the start of the string.
+	 *
+	 * If no valid BOM sequence is found an empty string is returned
+	 */
+	public static function fetchBOMSequence( string $str ): ?string {
+		foreach ( self::BOM_SEQUENCE_LIST as $sequence ) {
+			if ( str_starts_with( $str, $sequence ) ) {
+				return $sequence;
+			}
+		}
 
-    /**
-     * Detect Delimiters usage in a {@link Reader} object.
-     *
-     * Returns a associative array where each key represents
-     * a submitted delimiter and each value the number CSV fields found
-     * when processing at most $limit CSV records with the given delimiter
-     *
-     * @param array<string> $delimiters
-     *
-     * @return array<string, int>
-     */
-    public static function getDelimiterStats(Reader $csv, array $delimiters, int $limit = 1): array
-    {
-        $stmt = Statement::create()->offset(0)->limit($limit);
+		return null;
+	}
 
-        $delimiterStats = function (array $stats, string $delimiter) use ($csv, $stmt): array {
-            $csv->setDelimiter($delimiter);
-            $foundRecords = [];
-            foreach ($stmt->process($csv)->getRecords() as $record) {
-                if (1 < count($record)) {
-                    $foundRecords[] = $record;
-                }
-            }
+	/**
+	 * Detect Delimiters usage in a {@link Reader} object.
+	 *
+	 * Returns a associative array where each key represents
+	 * a submitted delimiter and each value the number CSV fields found
+	 * when processing at most $limit CSV records with the given delimiter
+	 *
+	 * @param array<string> $delimiters
+	 *
+	 * @return array<string, int>
+	 */
+	public static function getDelimiterStats( Reader $csv, array $delimiters, int $limit = 1 ): array {
+		$stmt = Statement::create()->offset( 0 )->limit( $limit );
 
-            $stats[$delimiter] = count($foundRecords, COUNT_RECURSIVE);
+		$delimiterStats = function ( array $stats, string $delimiter ) use ( $csv, $stmt ): array {
+			$csv->setDelimiter( $delimiter );
+			$foundRecords = array();
+			foreach ( $stmt->process( $csv )->getRecords() as $record ) {
+				if ( 1 < count( $record ) ) {
+					$foundRecords[] = $record;
+				}
+			}
 
-            return $stats;
-        };
+			$stats[ $delimiter ] = count( $foundRecords, COUNT_RECURSIVE );
 
-        $currentDelimiter = $csv->getDelimiter();
-        $currentHeaderOffset = $csv->getHeaderOffset();
+			return $stats;
+		};
 
-        $csv->setHeaderOffset(null);
+		$currentDelimiter    = $csv->getDelimiter();
+		$currentHeaderOffset = $csv->getHeaderOffset();
 
-        $stats = array_reduce(
-            array_unique(array_filter($delimiters, fn (string $value): bool => 1 === strlen($value))),
-            $delimiterStats,
-            array_fill_keys($delimiters, 0)
-        );
+		$csv->setHeaderOffset( null );
 
-        $csv->setHeaderOffset($currentHeaderOffset);
-        $csv->setDelimiter($currentDelimiter);
+		$stats = array_reduce(
+			array_unique( array_filter( $delimiters, fn ( string $value ): bool => 1 === strlen( $value ) ) ),
+			$delimiterStats,
+			array_fill_keys( $delimiters, 0 )
+		);
 
-        return $stats;
-    }
+		$csv->setHeaderOffset( $currentHeaderOffset );
+		$csv->setDelimiter( $currentDelimiter );
+
+		return $stats;
+	}
 }

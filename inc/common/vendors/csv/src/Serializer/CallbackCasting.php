@@ -28,297 +28,287 @@ use function class_exists;
  * @internal Container for registering Closure as type and/or type alias casting
  * @template TValue
  */
-final class CallbackCasting implements TypeCasting
-{
-    /** @var array<string, Closure(?string, bool, mixed...): mixed> */
-    private static array $types = [];
+final class CallbackCasting implements TypeCasting {
 
-    /** @var array<string, array<string, Closure(?string, bool, mixed...): mixed>> */
-    private static array $aliases = [];
+	/** @var array<string, Closure(?string, bool, mixed...): mixed> */
+	private static array $types = array();
 
-    private string $type;
-    private readonly bool $isNullable;
-    /** @var Closure(?string, bool, mixed...): mixed */
-    private Closure $callback;
-    private array $options;
-    private string $message;
+	/** @var array<string, array<string, Closure(?string, bool, mixed...): mixed>> */
+	private static array $aliases = array();
 
-    public function __construct(
-        ReflectionProperty|ReflectionParameter $reflectionProperty,
-        private readonly ?string $alias = null
-    ) {
-        [$this->type, $this->isNullable] = self::resolve($reflectionProperty);
+	private string $type;
+	private readonly bool $isNullable;
+	/** @var Closure(?string, bool, mixed...): mixed */
+	private Closure $callback;
+	private array $options;
+	private string $message;
 
-        $this->message = match (true) {
-            $reflectionProperty instanceof ReflectionParameter => 'The method `'.$reflectionProperty->getDeclaringClass()?->getName().'::'.$reflectionProperty->getDeclaringFunction()->getName().'` argument `'.$reflectionProperty->getName().'` must be typed with a supported type.',
-            $reflectionProperty instanceof ReflectionProperty => 'The property `'.$reflectionProperty->getDeclaringClass()->getName().'::'.$reflectionProperty->getName().'` must be typed with a supported type.',
-        };
+	public function __construct(
+		ReflectionProperty|ReflectionParameter $reflectionProperty,
+		private readonly ?string $alias = null
+	) {
+		[$this->type, $this->isNullable] = self::resolve( $reflectionProperty );
 
-        $this->callback = fn (?string $value, bool $isNullable, mixed ...$arguments): ?string => $value;
-    }
+		$this->message = match ( true ) {
+			$reflectionProperty instanceof ReflectionParameter => 'The method `' . $reflectionProperty->getDeclaringClass()?->getName() . '::' . $reflectionProperty->getDeclaringFunction()->getName() . '` argument `' . $reflectionProperty->getName() . '` must be typed with a supported type.',
+			$reflectionProperty instanceof ReflectionProperty => 'The property `' . $reflectionProperty->getDeclaringClass()->getName() . '::' . $reflectionProperty->getName() . '` must be typed with a supported type.',
+		};
 
-    /**
-     * @throws MappingFailed
-     */
-    public function setOptions(string $type = null, mixed ...$options): void
-    {
-        if (null === $this->alias) {
-            if (Type::Mixed->value === $this->type && null !== $type) {
-                $this->type = $type;
-            }
+		$this->callback = fn ( ?string $value, bool $isNullable, mixed ...$arguments ): ?string => $value;
+	}
 
-            if (array_key_exists($this->type, self::$types)) {
-                $this->callback = self::$types[$this->type];
-                $this->options = $options;
+	/**
+	 * @throws MappingFailed
+	 */
+	public function setOptions( string $type = null, mixed ...$options ): void {
+		if ( null === $this->alias ) {
+			if ( Type::Mixed->value === $this->type && null !== $type ) {
+				$this->type = $type;
+			}
 
-                return;
-            }
+			if ( array_key_exists( $this->type, self::$types ) ) {
+				$this->callback = self::$types[ $this->type ];
+				$this->options  = $options;
 
-            throw new MappingFailed($this->message);
-        }
+				return;
+			}
 
-        if (Type::Mixed->value === $this->type) {
-            $this->type = self::aliases()[$this->alias];
-        }
+			throw new MappingFailed( $this->message );
+		}
 
-        /** @var Closure $callback */
-        $callback = self::$aliases[$this->type][$this->alias];
-        $this->callback = $callback;
-        $this->options = $options;
-    }
+		if ( Type::Mixed->value === $this->type ) {
+			$this->type = self::aliases()[ $this->alias ];
+		}
 
-    /**
-     * @return TValue
-     */
-    public function toVariable(?string $value): mixed
-    {
-        try {
-            return ($this->callback)($value, $this->isNullable, ...$this->options);
-        } catch (Throwable $exception) {
-            if ($exception instanceof TypeCastingFailed) {
-                throw $exception;
-            }
+		/** @var Closure $callback */
+		$callback       = self::$aliases[ $this->type ][ $this->alias ];
+		$this->callback = $callback;
+		$this->options  = $options;
+	}
 
-            if (null === $value) {
-                throw TypeCastingFailed::dueToNotNullableType($this->type, $exception);
-            }
+	/**
+	 * @return TValue
+	 */
+	public function toVariable( ?string $value ): mixed {
+		try {
+			return ( $this->callback )( $value, $this->isNullable, ...$this->options );
+		} catch ( Throwable $exception ) {
+			if ( $exception instanceof TypeCastingFailed ) {
+				throw $exception;
+			}
 
-            throw TypeCastingFailed::dueToInvalidValue(match (true) {
-                '' === $value => 'empty string',
-                default => $value,
-            }, $this->type, $exception);
-        }
-    }
+			if ( null === $value ) {
+				throw TypeCastingFailed::dueToNotNullableType( $this->type, $exception );
+			}
 
-    /**
-     * @param Closure(?string, bool, mixed...): TValue $callback
-     */
-    public static function register(string $type, Closure $callback, string $alias = null): void
-    {
-        if (null === $alias) {
-            self::$types[$type] = match (true) {
-                class_exists($type),
-                interface_exists($type),
-                Type::tryFrom($type) instanceof Type => $callback,
-                default => throw new MappingFailed('The `'.$type.'` could not be register.'),
-            };
+			throw TypeCastingFailed::dueToInvalidValue(
+				match ( true ) {
+				'' === $value => 'empty string',
+				default => $value,
+				},
+				$this->type,
+				$exception
+			);
+		}
+	}
 
-            return;
-        }
+	/**
+	 * @param Closure(?string, bool, mixed...): TValue $callback
+	 */
+	public static function register( string $type, Closure $callback, string $alias = null ): void {
+		if ( null === $alias ) {
+			self::$types[ $type ] = match ( true ) {
+				class_exists( $type ),
+				interface_exists( $type ),
+				Type::tryFrom( $type ) instanceof Type => $callback,
+				default => throw new MappingFailed( 'The `' . $type . '` could not be register.' ),
+			};
 
-        if (1 !== preg_match('/^@\w+$/', $alias)) {
-            throw new MappingFailed("The alias `$alias` is invalid. It must start with an `@` character and contain alphanumeric (letters, numbers, regardless of case) plus underscore (_).");
-        }
+			return;
+		}
 
-        foreach (self::$aliases as $aliases) {
-            foreach ($aliases as $registeredAlias => $__) {
-                if ($alias === $registeredAlias) {
-                    throw new MappingFailed("The alias `$alias` is already registered. Please choose another name.");
-                }
-            }
-        }
+		if ( 1 !== preg_match( '/^@\w+$/', $alias ) ) {
+			throw new MappingFailed( "The alias `$alias` is invalid. It must start with an `@` character and contain alphanumeric (letters, numbers, regardless of case) plus underscore (_)." );
+		}
 
-        self::$aliases[$type][$alias] = match (true) {
-            class_exists($type),
-            interface_exists($type),
-            Type::tryFrom($type) instanceof Type => $callback,
-            default => throw new MappingFailed('The `'.$type.'` could not be register.'),
-        };
-    }
+		foreach ( self::$aliases as $aliases ) {
+			foreach ( $aliases as $registeredAlias => $__ ) {
+				if ( $alias === $registeredAlias ) {
+					throw new MappingFailed( "The alias `$alias` is already registered. Please choose another name." );
+				}
+			}
+		}
 
-    public static function unregisterType(string $type): bool
-    {
-        if (!array_key_exists($type, self::$types)) {
-            return false;
-        }
+		self::$aliases[ $type ][ $alias ] = match ( true ) {
+			class_exists( $type ),
+			interface_exists( $type ),
+			Type::tryFrom( $type ) instanceof Type => $callback,
+			default => throw new MappingFailed( 'The `' . $type . '` could not be register.' ),
+		};
+	}
 
-        unset(self::$types[$type]);
+	public static function unregisterType( string $type ): bool {
+		if ( ! array_key_exists( $type, self::$types ) ) {
+			return false;
+		}
 
-        return true;
-    }
+		unset( self::$types[ $type ] );
 
-    public static function unregisterTypes(): void
-    {
-        self::$types = [];
-    }
+		return true;
+	}
 
-    public static function unregisterAlias(string $alias): bool
-    {
-        if (1 !== preg_match('/^@\w+$/', $alias)) {
-            return false;
-        }
+	public static function unregisterTypes(): void {
+		self::$types = array();
+	}
 
-        foreach (self::$aliases as $type => $aliases) {
-            foreach ($aliases as $registeredAlias => $__) {
-                if ($registeredAlias === $alias) {
-                    unset(self::$aliases[$type][$registeredAlias]);
+	public static function unregisterAlias( string $alias ): bool {
+		if ( 1 !== preg_match( '/^@\w+$/', $alias ) ) {
+			return false;
+		}
 
-                    return true;
-                }
-            }
-        }
+		foreach ( self::$aliases as $type => $aliases ) {
+			foreach ( $aliases as $registeredAlias => $__ ) {
+				if ( $registeredAlias === $alias ) {
+					unset( self::$aliases[ $type ][ $registeredAlias ] );
 
-        return false;
-    }
+					return true;
+				}
+			}
+		}
 
-    public static function unregisterAliases(): void
-    {
-        self::$aliases = [];
-    }
+		return false;
+	}
 
-    public static function unregisterAll(): void
-    {
-        self::$types = [];
-        self::$aliases = [];
-    }
+	public static function unregisterAliases(): void {
+		self::$aliases = array();
+	}
 
-    public static function supportsAlias(?string $alias): bool
-    {
-        return null !== $alias && array_key_exists($alias, self::aliases());
-    }
+	public static function unregisterAll(): void {
+		self::$types   = array();
+		self::$aliases = array();
+	}
 
-    public static function supportsType(?string $type): bool
-    {
-        return null !== $type && array_key_exists($type, self::$types);
-    }
+	public static function supportsAlias( ?string $alias ): bool {
+		return null !== $alias && array_key_exists( $alias, self::aliases() );
+	}
 
-    /**
-     * @return array<string>
-     */
-    public static function types(): array
-    {
-        return array_keys(self::$types);
-    }
+	public static function supportsType( ?string $type ): bool {
+		return null !== $type && array_key_exists( $type, self::$types );
+	}
 
-    /**
-     * @return array<string, string>
-     */
-    public static function aliases(): array
-    {
-        $res = [];
-        foreach (self::$aliases as $registeredType => $aliases) {
-            foreach ($aliases as $registeredAlias => $__) {
-                $res[$registeredAlias] = $registeredType;
-            }
-        }
+	/**
+	 * @return array<string>
+	 */
+	public static function types(): array {
+		return array_keys( self::$types );
+	}
 
-        return $res;
-    }
+	/**
+	 * @return array<string, string>
+	 */
+	public static function aliases(): array {
+		$res = array();
+		foreach ( self::$aliases as $registeredType => $aliases ) {
+			foreach ( $aliases as $registeredAlias => $__ ) {
+				$res[ $registeredAlias ] = $registeredType;
+			}
+		}
 
-    public static function supports(ReflectionParameter|ReflectionProperty $reflectionProperty, string $alias = null): bool
-    {
-        $propertyTypeList = self::getTypes($reflectionProperty->getType());
-        if ([] === $propertyTypeList && self::supportsAlias($alias)) {
-            return true;
-        }
+		return $res;
+	}
 
-        foreach ($propertyTypeList as $propertyType) {
-            $type = $propertyType->getName();
-            if (null === $alias) {
-                if (array_key_exists($type, self::$types)) {
-                    return true;
-                }
+	public static function supports( ReflectionParameter|ReflectionProperty $reflectionProperty, string $alias = null ): bool {
+		$propertyTypeList = self::getTypes( $reflectionProperty->getType() );
+		if ( array() === $propertyTypeList && self::supportsAlias( $alias ) ) {
+			return true;
+		}
 
-                continue;
-            }
+		foreach ( $propertyTypeList as $propertyType ) {
+			$type = $propertyType->getName();
+			if ( null === $alias ) {
+				if ( array_key_exists( $type, self::$types ) ) {
+					return true;
+				}
 
-            if ((self::aliases()[$alias] ?? null) === $type || (Type::Mixed->value === $type && self::supportsAlias($alias))) {
-                return true;
-            }
-        }
+				continue;
+			}
 
-        return false;
-    }
+			if ( ( self::aliases()[ $alias ] ?? null ) === $type || ( Type::Mixed->value === $type && self::supportsAlias( $alias ) ) ) {
+				return true;
+			}
+		}
 
-    /**
-     * @throws MappingFailed
-     *
-     * @return array{0:string, 1:bool}
-     */
-    private static function resolve(ReflectionParameter|ReflectionProperty $reflectionProperty): array
-    {
-        if (null === $reflectionProperty->getType()) {
-            return [Type::Mixed->value, true];
-        }
+		return false;
+	}
 
-        $types = self::getTypes($reflectionProperty->getType());
+	/**
+	 * @throws MappingFailed
+	 *
+	 * @return array{0:string, 1:bool}
+	 */
+	private static function resolve( ReflectionParameter|ReflectionProperty $reflectionProperty ): array {
+		if ( null === $reflectionProperty->getType() ) {
+			return array( Type::Mixed->value, true );
+		}
 
-        $type = null;
-        $isNullable = false;
-        $hasMixed = false;
-        foreach ($types as $foundType) {
-            if (!$isNullable && $foundType->allowsNull()) {
-                $isNullable = true;
-            }
+		$types = self::getTypes( $reflectionProperty->getType() );
 
-            if (null === $type) {
-                if (
-                    array_key_exists($foundType->getName(), self::$types)
-                    || array_key_exists($foundType->getName(), self::$aliases)
-                ) {
-                    $type = $foundType;
-                }
+		$type       = null;
+		$isNullable = false;
+		$hasMixed   = false;
+		foreach ( $types as $foundType ) {
+			if ( ! $isNullable && $foundType->allowsNull() ) {
+				$isNullable = true;
+			}
 
-                if (true !== $hasMixed && Type::Mixed->value === $foundType->getName()) {
-                    $hasMixed = true;
-                }
-            }
-        }
+			if ( null === $type ) {
+				if (
+					array_key_exists( $foundType->getName(), self::$types )
+					|| array_key_exists( $foundType->getName(), self::$aliases )
+				) {
+					$type = $foundType;
+				}
 
-        return match (true) {
-            $type instanceof ReflectionNamedType => [$type->getName(), $isNullable],
-            $hasMixed => [Type::Mixed->value, true],
-            default => throw new MappingFailed(match (true) {
-                $reflectionProperty instanceof ReflectionParameter => 'The method `'.$reflectionProperty->getDeclaringClass()?->getName().'::'.$reflectionProperty->getDeclaringFunction()->getName().'` argument `'.$reflectionProperty->getName().'` must be typed with a supported type.',
-                $reflectionProperty instanceof ReflectionProperty => 'The property `'.$reflectionProperty->getDeclaringClass()->getName().'::'.$reflectionProperty->getName().'` must be typed with a supported type.',
-            }),
-        };
-    }
+				if ( true !== $hasMixed && Type::Mixed->value === $foundType->getName() ) {
+					$hasMixed = true;
+				}
+			}
+		}
 
-    /**
-     * @return array<ReflectionNamedType>
-     */
-    private static function getTypes(?ReflectionType $type): array
-    {
-        return match (true) {
-            $type instanceof ReflectionNamedType => [$type],
-            $type instanceof ReflectionUnionType => array_filter(
-                $type->getTypes(),
-                fn (ReflectionType $innerType) => $innerType instanceof ReflectionNamedType
-            ),
-            default => [],
-        };
-    }
+		return match ( true ) {
+			$type instanceof ReflectionNamedType => array( $type->getName(), $isNullable ),
+			$hasMixed => array( Type::Mixed->value, true ),
+			default => throw new MappingFailed(
+				match ( true ) {
+				$reflectionProperty instanceof ReflectionParameter => 'The method `' . $reflectionProperty->getDeclaringClass()?->getName() . '::' . $reflectionProperty->getDeclaringFunction()->getName() . '` argument `' . $reflectionProperty->getName() . '` must be typed with a supported type.',
+				$reflectionProperty instanceof ReflectionProperty => 'The property `' . $reflectionProperty->getDeclaringClass()->getName() . '::' . $reflectionProperty->getName() . '` must be typed with a supported type.',
+				}
+			),
+		};
+	}
 
-    /**
-     * DEPRECATION WARNING! This method will be removed in the next major point release.
-     *
-     * @deprecated since version 9.13.0
-     * @see CallbackCasting::unregisterType()
-     * @codeCoverageIgnore
-     */
-    public static function unregister(string $type): bool
-    {
-        return self::unregisterType($type);
-    }
+	/**
+	 * @return array<ReflectionNamedType>
+	 */
+	private static function getTypes( ?ReflectionType $type ): array {
+		return match ( true ) {
+			$type instanceof ReflectionNamedType => array( $type ),
+			$type instanceof ReflectionUnionType => array_filter(
+				$type->getTypes(),
+				fn ( ReflectionType $innerType ) => $innerType instanceof ReflectionNamedType
+			),
+			default => array(),
+		};
+	}
+
+	/**
+	 * DEPRECATION WARNING! This method will be removed in the next major point release.
+	 *
+	 * @deprecated since version 9.13.0
+	 * @see CallbackCasting::unregisterType()
+	 * @codeCoverageIgnore
+	 */
+	public static function unregister( string $type ): bool {
+		return self::unregisterType( $type );
+	}
 }

@@ -27,365 +27,360 @@ use const FILTER_VALIDATE_INT;
 /**
  * @phpstan-type selection array{selection:string, start:int<-1, max>, end:?int, length:int, columns:array<int>}
  */
-class FragmentFinder
-{
-    private const REGEXP_URI_FRAGMENT = ',^(?<type>row|cell|col)=(?<selections>.*)$,i';
-    private const REGEXP_ROWS_COLUMNS_SELECTION = '/^(?<start>\d+)(-(?<end>\d+|\*))?$/';
-    private const REGEXP_CELLS_SELECTION = '/^(?<csr>\d+),(?<csc>\d+)(-(?<end>((?<cer>\d+),(?<cec>\d+))|\*))?$/';
-    private const TYPE_ROW = 'row';
-    private const TYPE_COLUMN = 'col';
-    private const TYPE_UNKNOWN = 'unknown';
+class FragmentFinder {
 
-    public static function create(): self
-    {
-        return new self();
-    }
+	private const REGEXP_URI_FRAGMENT           = ',^(?<type>row|cell|col)=(?<selections>.*)$,i';
+	private const REGEXP_ROWS_COLUMNS_SELECTION = '/^(?<start>\d+)(-(?<end>\d+|\*))?$/';
+	private const REGEXP_CELLS_SELECTION        = '/^(?<csr>\d+),(?<csc>\d+)(-(?<end>((?<cer>\d+),(?<cec>\d+))|\*))?$/';
+	private const TYPE_ROW                      = 'row';
+	private const TYPE_COLUMN                   = 'col';
+	private const TYPE_UNKNOWN                  = 'unknown';
 
-    /**
-     * @throws SyntaxError
-     *
-     * @return iterable<int, TabularDataReader>
-     */
-    public function findAll(string $expression, TabularDataReader $tabularDataReader): iterable
-    {
-        return $this->find($this->parseExpression($expression, $tabularDataReader), $tabularDataReader);
-    }
+	public static function create(): self {
+		return new self();
+	}
 
-    /**
-     * @throws SyntaxError
-     */
-    public function findFirst(string $expression, TabularDataReader $tabularDataReader): ?TabularDataReader
-    {
-        $fragment = $this->find($this->parseExpression($expression, $tabularDataReader), $tabularDataReader)[0];
+	/**
+	 * @throws SyntaxError
+	 *
+	 * @return iterable<int, TabularDataReader>
+	 */
+	public function findAll( string $expression, TabularDataReader $tabularDataReader ): iterable {
+		return $this->find( $this->parseExpression( $expression, $tabularDataReader ), $tabularDataReader );
+	}
 
-        return match ([]) {
-            $fragment->first() => null,
-            default => $fragment,
-        };
-    }
+	/**
+	 * @throws SyntaxError
+	 */
+	public function findFirst( string $expression, TabularDataReader $tabularDataReader ): ?TabularDataReader {
+		$fragment = $this->find( $this->parseExpression( $expression, $tabularDataReader ), $tabularDataReader )[0];
 
-    /**
-     * @throws SyntaxError
-     * @throws FragmentNotFound if the expression can not be parsed
-     */
-    public function findFirstOrFail(string $expression, TabularDataReader $tabularDataReader): TabularDataReader
-    {
-        $parsedExpression = $this->parseExpression($expression, $tabularDataReader);
-        if ([] !== array_filter($parsedExpression['selections'], fn (array $selection) => -1 === $selection['start'])) {
-            throw new FragmentNotFound('The expression `'.$expression.'` contains an invalid or an unsupported selection for the tabular data.');
-        }
+		return match ( array() ) {
+			$fragment->first() => null,
+			default => $fragment,
+		};
+	}
 
-        $fragment = $this->find($parsedExpression, $tabularDataReader)[0];
+	/**
+	 * @throws SyntaxError
+	 * @throws FragmentNotFound if the expression can not be parsed
+	 */
+	public function findFirstOrFail( string $expression, TabularDataReader $tabularDataReader ): TabularDataReader {
+		$parsedExpression = $this->parseExpression( $expression, $tabularDataReader );
+		if ( array() !== array_filter( $parsedExpression['selections'], fn ( array $selection ) => -1 === $selection['start'] ) ) {
+			throw new FragmentNotFound( 'The expression `' . $expression . '` contains an invalid or an unsupported selection for the tabular data.' );
+		}
 
-        return match ([]) {
-            $fragment->first() => throw new FragmentNotFound('No fragment found in the tabular data with the expression `'.$expression.'`.'),
-            default => $fragment,
-        };
-    }
+		$fragment = $this->find( $parsedExpression, $tabularDataReader )[0];
 
-    /**
-     * @param array{type:string, selections:non-empty-array<selection>} $parsedExpression
-     *
-     * @throws SyntaxError
-     *
-     * @return array<int, TabularDataReader>
-     */
-    private function find(array $parsedExpression, TabularDataReader $tabularDataReader): array
-    {
-        ['type' => $type, 'selections' => $selections] = $parsedExpression;
+		return match ( array() ) {
+			$fragment->first() => throw new FragmentNotFound( 'No fragment found in the tabular data with the expression `' . $expression . '`.' ),
+			default => $fragment,
+		};
+	}
 
-        $selections = array_filter($selections, fn (array $selection) => -1 !== $selection['start']);
-        if ([] === $selections) {
-            return [ResultSet::createFromRecords()];
-        }
+	/**
+	 * @param array{type:string, selections:non-empty-array<selection>} $parsedExpression
+	 *
+	 * @throws SyntaxError
+	 *
+	 * @return array<int, TabularDataReader>
+	 */
+	private function find( array $parsedExpression, TabularDataReader $tabularDataReader ): array {
+		['type' => $type, 'selections' => $selections] = $parsedExpression;
 
-        if (self::TYPE_ROW === $type) {
-            $rowFilter = fn (array $record, int $offset): bool => [] !== array_filter(
-                $selections,
-                fn (array $selection) =>
-                        $offset >= $selection['start'] &&
-                        (null === $selection['end'] || $offset <= $selection['end'])
-            );
+		$selections = array_filter( $selections, fn ( array $selection ) => -1 !== $selection['start'] );
+		if ( array() === $selections ) {
+			return array( ResultSet::createFromRecords() );
+		}
 
-            return [Statement::create()->where($rowFilter)->process($tabularDataReader)];
-        }
+		if ( self::TYPE_ROW === $type ) {
+			$rowFilter = fn ( array $record, int $offset ): bool => array() !== array_filter(
+				$selections,
+				fn ( array $selection ) =>
+						$offset >= $selection['start'] &&
+						( null === $selection['end'] || $offset <= $selection['end'] )
+			);
 
-        if (self::TYPE_COLUMN === $type) {
-            $columns = array_reduce(
-                $selections,
-                fn (array $columns, array $selection) => [...$columns, ...$selection['columns']],
-                []
-            );
+			return array( Statement::create()->where( $rowFilter )->process( $tabularDataReader ) );
+		}
 
-            return [match ([]) {
-                $columns => ResultSet::createFromRecords(),
-                default => Statement::create()->select(...$columns)->process($tabularDataReader),
-            }];
-        }
+		if ( self::TYPE_COLUMN === $type ) {
+			$columns = array_reduce(
+				$selections,
+				fn ( array $columns, array $selection ) => array( ...$columns, ...$selection['columns'] ),
+				array()
+			);
 
-        return array_map(
-            fn (array $selection) => Statement::create()
-                ->select(...$selection['columns'])
-                ->offset($selection['start'])
-                ->limit($selection['length'])
-                ->process($tabularDataReader),
-            $selections
-        );
-    }
+			return array(
+				match ( array() ) {
+								$columns => ResultSet::createFromRecords(),
+								default => Statement::create()->select( ...$columns )->process( $tabularDataReader ),
+				},
+			);
+		}
 
-    /**
-     * @return array{type:string, selections:non-empty-array<selection>}
-     */
-    private function parseExpression(string $expression, TabularDataReader $tabularDataReader): array
-    {
-        if (1 !== preg_match(self::REGEXP_URI_FRAGMENT, $expression, $matches)) {
-            return [
-                'type' => self::TYPE_UNKNOWN,
-                'selections' => [
-                    [
-                        'selection' => $expression,
-                        'start' => -1,
-                        'end' => null,
-                        'length' => -1,
-                        'columns' => [],
-                    ],
-                ],
-            ];
-        }
+		return array_map(
+			fn ( array $selection ) => Statement::create()
+				->select( ...$selection['columns'] )
+				->offset( $selection['start'] )
+				->limit( $selection['length'] )
+				->process( $tabularDataReader ),
+			$selections
+		);
+	}
 
-        $type = strtolower($matches['type']);
+	/**
+	 * @return array{type:string, selections:non-empty-array<selection>}
+	 */
+	private function parseExpression( string $expression, TabularDataReader $tabularDataReader ): array {
+		if ( 1 !== preg_match( self::REGEXP_URI_FRAGMENT, $expression, $matches ) ) {
+			return array(
+				'type'       => self::TYPE_UNKNOWN,
+				'selections' => array(
+					array(
+						'selection' => $expression,
+						'start'     => -1,
+						'end'       => null,
+						'length'    => -1,
+						'columns'   => array(),
+					),
+				),
+			);
+		}
 
-        /** @var non-empty-array<selection> $res */
-        $res = array_reduce(
-            explode(';', $matches['selections']),
-            fn (array $selections, string $selection): array => [...$selections, match ($type) {
-                self::TYPE_ROW => $this->parseRowSelection($selection),
-                self::TYPE_COLUMN => $this->parseColumnSelection($selection, $tabularDataReader),
-                default => $this->parseCellSelection($selection, $tabularDataReader),
-            }],
-            []
-        );
+		$type = strtolower( $matches['type'] );
 
-        return [
-            'type' => $type,
-            'selections' => $res,
-        ];
-    }
+		/** @var non-empty-array<selection> $res */
+		$res = array_reduce(
+			explode( ';', $matches['selections'] ),
+			fn ( array $selections, string $selection ): array => array(
+				...$selections,
+				match ( $type ) {
+								self::TYPE_ROW => $this->parseRowSelection( $selection ),
+								self::TYPE_COLUMN => $this->parseColumnSelection( $selection, $tabularDataReader ),
+								default => $this->parseCellSelection( $selection, $tabularDataReader ),
+							},
+			),
+			array()
+		);
 
-    /**
-     * @return selection
-     */
-    private function parseRowSelection(string $selection): array
-    {
-        [$start, $end] = $this->parseRowColumnSelection($selection);
+		return array(
+			'type'       => $type,
+			'selections' => $res,
+		);
+	}
 
-        return match (true) {
-            -1 === $start,
-            null === $end => [
-                'selection' => $selection,
-                'start' => $start,
-                'end' => $start,
-                'length' => 1,
-                'columns' => [],
-            ],
-            '*' === $end => [
-                'selection' => $selection,
-                'start' => $start,
-                'end' => null,
-                'length' => -1,
-                'columns' => [],
-            ],
-            default => [
-                'selection' => $selection,
-                'start' => $start,
-                'end' => $end,
-                'length' => $end - $start + 1,
-                'columns' => [],
-            ],
-        };
-    }
+	/**
+	 * @return selection
+	 */
+	private function parseRowSelection( string $selection ): array {
+		[$start, $end] = $this->parseRowColumnSelection( $selection );
 
-    /**
-     * @return selection
-     */
-    private function parseColumnSelection(string $selection, TabularDataReader $tabularDataReader): array
-    {
-        [$start, $end] = $this->parseRowColumnSelection($selection);
-        $header = $tabularDataReader->getHeader();
-        if ([] === $header) {
-            $header = $tabularDataReader->first();
-        }
+		return match ( true ) {
+			-1 === $start,
+			null === $end => array(
+				'selection' => $selection,
+				'start'     => $start,
+				'end'       => $start,
+				'length'    => 1,
+				'columns'   => array(),
+			),
+			'*' === $end => array(
+				'selection' => $selection,
+				'start'     => $start,
+				'end'       => null,
+				'length'    => -1,
+				'columns'   => array(),
+			),
+			default => array(
+				'selection' => $selection,
+				'start'     => $start,
+				'end'       => $end,
+				'length'    => $end - $start + 1,
+				'columns'   => array(),
+			),
+		};
+	}
 
-        $nbColumns = count($header);
+	/**
+	 * @return selection
+	 */
+	private function parseColumnSelection( string $selection, TabularDataReader $tabularDataReader ): array {
+		[$start, $end] = $this->parseRowColumnSelection( $selection );
+		$header        = $tabularDataReader->getHeader();
+		if ( array() === $header ) {
+			$header = $tabularDataReader->first();
+		}
 
-        return match (true) {
-            -1 === $start,
-            $start >= $nbColumns => [
-                'selection' => $selection,
-                'start' => -1,
-                'end' => null,
-                'length' => -1,
-                'columns' => [],
-            ],
-            null === $end => [
-                'selection' => $selection,
-                'start' => 0,
-                'end' => null,
-                'length' => -1,
-                'columns' => [$start],
-            ],
-            '*' === $end,
-            $end > ($nbColumns - 1) => [
-                'selection' => $selection,
-                'start' => 0,
-                'end' => null,
-                'length' => -1,
-                'columns' => range($start, $nbColumns - 1),
-            ],
-            default => [
-                'selection' => $selection,
-                'start' => 0,
-                'end' => $end,
-                'length' => -1,
-                'columns' => range($start, $end),
-            ],
-        };
-    }
+		$nbColumns = count( $header );
 
-    /**
-     * @return array{int<-1, max>, int|null|'*'}
-     */
-    private function parseRowColumnSelection(string $selection): array
-    {
-        if (1 !== preg_match(self::REGEXP_ROWS_COLUMNS_SELECTION, $selection, $found)) {
-            return [-1, 0];
-        }
+		return match ( true ) {
+			-1 === $start,
+			$start >= $nbColumns => array(
+				'selection' => $selection,
+				'start'     => -1,
+				'end'       => null,
+				'length'    => -1,
+				'columns'   => array(),
+			),
+			null === $end => array(
+				'selection' => $selection,
+				'start'     => 0,
+				'end'       => null,
+				'length'    => -1,
+				'columns'   => array( $start ),
+			),
+			'*' === $end,
+			$end > ( $nbColumns - 1 ) => array(
+				'selection' => $selection,
+				'start'     => 0,
+				'end'       => null,
+				'length'    => -1,
+				'columns'   => range( $start, $nbColumns - 1 ),
+			),
+			default => array(
+				'selection' => $selection,
+				'start'     => 0,
+				'end'       => $end,
+				'length'    => -1,
+				'columns'   => range( $start, $end ),
+			),
+		};
+	}
 
-        $start = $found['start'];
-        $end = $found['end'] ?? null;
-        $start = filter_var($start, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if (false === $start) {
-            return [-1, 0];
-        }
-        --$start;
+	/**
+	 * @return array{int<-1, max>, int|null|'*'}
+	 */
+	private function parseRowColumnSelection( string $selection ): array {
+		if ( 1 !== preg_match( self::REGEXP_ROWS_COLUMNS_SELECTION, $selection, $found ) ) {
+			return array( -1, 0 );
+		}
 
-        if (null === $end || '*' === $end) {
-            return [$start, $end];
-        }
+		$start = $found['start'];
+		$end   = $found['end'] ?? null;
+		$start = filter_var( $start, FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+		if ( false === $start ) {
+			return array( -1, 0 );
+		}
+		--$start;
 
-        $end = filter_var($end, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if (false === $end) {
-            return [-1, 0];
-        }
-        --$end;
+		if ( null === $end || '*' === $end ) {
+			return array( $start, $end );
+		}
 
-        if ($end <= $start) {
-            return [-1, 0];
-        }
+		$end = filter_var( $end, FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+		if ( false === $end ) {
+			return array( -1, 0 );
+		}
+		--$end;
 
-        return [$start, $end];
-    }
+		if ( $end <= $start ) {
+			return array( -1, 0 );
+		}
 
-    /**
-     * @return selection
-     */
-    private function parseCellSelection(string $selection, TabularDataReader $tabularDataReader): array
-    {
-        if (1 !== preg_match(self::REGEXP_CELLS_SELECTION, $selection, $found)) {
-            return [
-                'selection' => $selection,
-                'start' => -1,
-                'end' => null,
-                'length' => 1,
-                'columns' => [],
-            ];
-        }
+		return array( $start, $end );
+	}
 
-        $cellStartRow = filter_var($found['csr'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        $cellStartCol = filter_var($found['csc'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if (false === $cellStartRow || false === $cellStartCol) {
-            return [
-                'selection' => $selection,
-                'start' => -1,
-                'end' => null,
-                'length' => 1,
-                'columns' => [],
-            ];
-        }
+	/**
+	 * @return selection
+	 */
+	private function parseCellSelection( string $selection, TabularDataReader $tabularDataReader ): array {
+		if ( 1 !== preg_match( self::REGEXP_CELLS_SELECTION, $selection, $found ) ) {
+			return array(
+				'selection' => $selection,
+				'start'     => -1,
+				'end'       => null,
+				'length'    => 1,
+				'columns'   => array(),
+			);
+		}
 
-        --$cellStartRow;
-        --$cellStartCol;
+		$cellStartRow = filter_var( $found['csr'], FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+		$cellStartCol = filter_var( $found['csc'], FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+		if ( false === $cellStartRow || false === $cellStartCol ) {
+			return array(
+				'selection' => $selection,
+				'start'     => -1,
+				'end'       => null,
+				'length'    => 1,
+				'columns'   => array(),
+			);
+		}
 
-        $header = $tabularDataReader->getHeader();
-        if ([] === $header) {
-            $header = $tabularDataReader->first();
-        }
+		--$cellStartRow;
+		--$cellStartCol;
 
-        $nbColumns = count($header);
+		$header = $tabularDataReader->getHeader();
+		if ( array() === $header ) {
+			$header = $tabularDataReader->first();
+		}
 
-        if ($cellStartCol > $nbColumns - 1) {
-            return [
-                'selection' => $selection,
-                'start' => -1,
-                'end' => null,
-                'length' => 1,
-                'columns' => [],
-            ];
-        }
+		$nbColumns = count( $header );
 
-        $cellEnd = $found['end'] ?? null;
-        if (null === $cellEnd) {
-            return [
-                'selection' => $selection,
-                'start' => $cellStartRow,
-                'end' => null,
-                'length' => 1,
-                'columns' => [$cellStartCol],
-            ];
-        }
+		if ( $cellStartCol > $nbColumns - 1 ) {
+			return array(
+				'selection' => $selection,
+				'start'     => -1,
+				'end'       => null,
+				'length'    => 1,
+				'columns'   => array(),
+			);
+		}
 
-        if ('*' === $cellEnd) {
-            return [
-                'selection' => $selection,
-                'start' => $cellStartRow,
-                'end' => null,
-                'length' => -1,
-                'columns' => range($cellStartCol, $nbColumns - 1),
-            ];
-        }
+		$cellEnd = $found['end'] ?? null;
+		if ( null === $cellEnd ) {
+			return array(
+				'selection' => $selection,
+				'start'     => $cellStartRow,
+				'end'       => null,
+				'length'    => 1,
+				'columns'   => array( $cellStartCol ),
+			);
+		}
 
-        $cellEndRow = filter_var($found['cer'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        $cellEndCol = filter_var($found['cec'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+		if ( '*' === $cellEnd ) {
+			return array(
+				'selection' => $selection,
+				'start'     => $cellStartRow,
+				'end'       => null,
+				'length'    => -1,
+				'columns'   => range( $cellStartCol, $nbColumns - 1 ),
+			);
+		}
 
-        if (false === $cellEndRow || false === $cellEndCol) {
-            return [
-                'selection' => $selection,
-                'start' => -1,
-                'end' => null,
-                'length' => 1,
-                'columns' => [],
-            ];
-        }
+		$cellEndRow = filter_var( $found['cer'], FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
+		$cellEndCol = filter_var( $found['cec'], FILTER_VALIDATE_INT, array( 'options' => array( 'min_range' => 1 ) ) );
 
-        --$cellEndRow;
-        --$cellEndCol;
+		if ( false === $cellEndRow || false === $cellEndCol ) {
+			return array(
+				'selection' => $selection,
+				'start'     => -1,
+				'end'       => null,
+				'length'    => 1,
+				'columns'   => array(),
+			);
+		}
 
-        if ($cellEndRow < $cellStartRow || $cellEndCol < $cellStartCol) {
-            return [
-                'selection' => $selection,
-                'start' => -1,
-                'end' => null,
-                'length' => 1,
-                'columns' => [],
-            ];
-        }
+		--$cellEndRow;
+		--$cellEndCol;
 
-        return [
-            'selection' => $selection,
-            'start' => $cellStartRow,
-            'end' => $cellEndRow,
-            'length' => $cellEndRow - $cellStartRow + 1,
-            'columns' => range($cellStartCol, ($cellEndCol > $nbColumns - 1) ? $nbColumns - 1 : $cellEndCol),
-        ];
-    }
+		if ( $cellEndRow < $cellStartRow || $cellEndCol < $cellStartCol ) {
+			return array(
+				'selection' => $selection,
+				'start'     => -1,
+				'end'       => null,
+				'length'    => 1,
+				'columns'   => array(),
+			);
+		}
+
+		return array(
+			'selection' => $selection,
+			'start'     => $cellStartRow,
+			'end'       => $cellEndRow,
+			'length'    => $cellEndRow - $cellStartRow + 1,
+			'columns'   => range( $cellStartCol, ( $cellEndCol > $nbColumns - 1 ) ? $nbColumns - 1 : $cellEndCol ),
+		);
+	}
 }

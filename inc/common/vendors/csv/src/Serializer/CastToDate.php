@@ -28,119 +28,116 @@ use function is_string;
 /**
  * @implements TypeCasting<DateTimeImmutable|DateTime|null>
  */
-final class CastToDate implements TypeCasting
-{
-    /** @var class-string */
-    private string $class;
-    private readonly bool $isNullable;
-    private DateTimeImmutable|DateTime|null $default = null;
-    private readonly Type $type;
-    private readonly string $propertyName;
-    private ?DateTimeZone $timezone = null;
-    private ?string $format = null;
+final class CastToDate implements TypeCasting {
 
-    /**
-     * @throws MappingFailed
-     */
-    public function __construct(
-        ReflectionProperty|ReflectionParameter $reflectionProperty,
-    ) {
-        [$this->type, $this->class, $this->isNullable] = $this->init($reflectionProperty);
-        $this->propertyName = $reflectionProperty->getName();
-    }
+	/** @var class-string */
+	private string $class;
+	private readonly bool $isNullable;
+	private DateTimeImmutable|DateTime|null $default = null;
+	private readonly Type $type;
+	private readonly string $propertyName;
+	private ?DateTimeZone $timezone = null;
+	private ?string $format         = null;
 
-    /**
-     * @param ?class-string $className
-     *
-     * @throws MappingFailed
-     */
-    public function setOptions(
-        ?string $default = null,
-        ?string $format = null,
-        DateTimeZone|string|null $timezone = null,
-        ?string $className = null
-    ): void {
-        $this->class = match (true) {
-            !interface_exists($this->class) && !Type::Mixed->equals($this->type) => $this->class,
-            DateTimeInterface::class === $this->class && null === $className => DateTimeImmutable::class,
-            interface_exists($this->class) && null !== $className && class_exists($className) && (new ReflectionClass($className))->implementsInterface($this->class) => $className,
-            default => throw new MappingFailed('`'.$this->propertyName.'` type is `'.($this->class ?? 'mixed').'` but the specified class via the `$className` argument is invalid or could not be found.'),
-        };
+	/**
+	 * @throws MappingFailed
+	 */
+	public function __construct(
+		ReflectionProperty|ReflectionParameter $reflectionProperty,
+	) {
+		[$this->type, $this->class, $this->isNullable] = $this->init( $reflectionProperty );
+		$this->propertyName                            = $reflectionProperty->getName();
+	}
 
-        try {
-            $this->format = $format;
-            $this->timezone = is_string($timezone) ? new DateTimeZone($timezone) : $timezone;
-            $this->default = (null !== $default) ? $this->cast($default) : $default;
-        } catch (Throwable $exception) {
-            throw new MappingFailed('The `timezone` and/or `format` options used for `'.self::class.'` are invalud.', 0, $exception);
-        }
-    }
+	/**
+	 * @param ?class-string $className
+	 *
+	 * @throws MappingFailed
+	 */
+	public function setOptions(
+		?string $default = null,
+		?string $format = null,
+		DateTimeZone|string|null $timezone = null,
+		?string $className = null
+	): void {
+		$this->class = match ( true ) {
+			! interface_exists( $this->class ) && ! Type::Mixed->equals( $this->type ) => $this->class,
+			DateTimeInterface::class === $this->class && null === $className => DateTimeImmutable::class,
+			interface_exists( $this->class ) && null !== $className && class_exists( $className ) && ( new ReflectionClass( $className ) )->implementsInterface( $this->class ) => $className,
+			default => throw new MappingFailed( '`' . $this->propertyName . '` type is `' . ( $this->class ?? 'mixed' ) . '` but the specified class via the `$className` argument is invalid or could not be found.' ),
+		};
 
-    /**
-     * @throws TypeCastingFailed
-     */
-    public function toVariable(?string $value): DateTimeImmutable|DateTime|null
-    {
-        return match (true) {
-            null !== $value && '' !== $value => $this->cast($value),
-            $this->isNullable => $this->default,
-            default => throw TypeCastingFailed::dueToNotNullableType($this->class),
-        };
-    }
+		try {
+			$this->format   = $format;
+			$this->timezone = is_string( $timezone ) ? new DateTimeZone( $timezone ) : $timezone;
+			$this->default  = ( null !== $default ) ? $this->cast( $default ) : $default;
+		} catch ( Throwable $exception ) {
+			throw new MappingFailed( 'The `timezone` and/or `format` options used for `' . self::class . '` are invalud.', 0, $exception );
+		}
+	}
 
-    /**
-     * @throws TypeCastingFailed
-     */
-    private function cast(string $value): DateTimeImmutable|DateTime
-    {
-        try {
-            $date = null !== $this->format ?
-                ($this->class)::createFromFormat($this->format, $value, $this->timezone) :
-                new ($this->class)($value, $this->timezone);
-            if (false === $date) {
-                throw TypeCastingFailed::dueToInvalidValue($value, $this->class);
-            }
-        } catch (Throwable $exception) {
-            if ($exception instanceof TypeCastingFailed) {
-                throw $exception;
-            }
+	/**
+	 * @throws TypeCastingFailed
+	 */
+	public function toVariable( ?string $value ): DateTimeImmutable|DateTime|null {
+		return match ( true ) {
+			null !== $value && '' !== $value => $this->cast( $value ),
+			$this->isNullable => $this->default,
+			default => throw TypeCastingFailed::dueToNotNullableType( $this->class ),
+		};
+	}
 
-            throw TypeCastingFailed::dueToInvalidValue($value, $this->class, $exception);
-        }
+	/**
+	 * @throws TypeCastingFailed
+	 */
+	private function cast( string $value ): DateTimeImmutable|DateTime {
+		try {
+			$date = null !== $this->format ?
+				( $this->class )::createFromFormat( $this->format, $value, $this->timezone ) :
+				new ( $this->class )( $value, $this->timezone );
+			if ( false === $date ) {
+				throw TypeCastingFailed::dueToInvalidValue( $value, $this->class );
+			}
+		} catch ( Throwable $exception ) {
+			if ( $exception instanceof TypeCastingFailed ) {
+				throw $exception;
+			}
 
-        return $date;
-    }
+			throw TypeCastingFailed::dueToInvalidValue( $value, $this->class, $exception );
+		}
 
-    /**
-     * @throws MappingFailed
-     *
-     * @return array{0:Type, 1:class-string<DateTimeInterface>, 2:bool}
-     */
-    private function init(ReflectionProperty|ReflectionParameter $reflectionProperty): array
-    {
-        if (null === $reflectionProperty->getType()) {
-            return [Type::Mixed, DateTimeInterface::class, true];
-        }
+		return $date;
+	}
 
-        $type = null;
-        $isNullable = false;
-        foreach (Type::list($reflectionProperty) as $found) {
-            if (!$isNullable && $found[1]->allowsNull()) {
-                $isNullable = true;
-            }
+	/**
+	 * @throws MappingFailed
+	 *
+	 * @return array{0:Type, 1:class-string<DateTimeInterface>, 2:bool}
+	 */
+	private function init( ReflectionProperty|ReflectionParameter $reflectionProperty ): array {
+		if ( null === $reflectionProperty->getType() ) {
+			return array( Type::Mixed, DateTimeInterface::class, true );
+		}
 
-            if (null === $type && $found[0]->isOneOf(Type::Mixed, Type::Date)) {
-                $type = $found;
-            }
-        }
+		$type       = null;
+		$isNullable = false;
+		foreach ( Type::list( $reflectionProperty ) as $found ) {
+			if ( ! $isNullable && $found[1]->allowsNull() ) {
+				$isNullable = true;
+			}
 
-        if (null === $type) {
-            throw throw MappingFailed::dueToTypeCastingUnsupportedType($reflectionProperty, $this, DateTimeInterface::class, 'mixed');
-        }
+			if ( null === $type && $found[0]->isOneOf( Type::Mixed, Type::Date ) ) {
+				$type = $found;
+			}
+		}
 
-        /** @var class-string<DateTimeInterface> $className */
-        $className = $type[1]->getName();
+		if ( null === $type ) {
+			throw throw MappingFailed::dueToTypeCastingUnsupportedType( $reflectionProperty, $this, DateTimeInterface::class, 'mixed' );
+		}
 
-        return [$type[0], $className, $isNullable];
-    }
+		/** @var class-string<DateTimeInterface> $className */
+		$className = $type[1]->getName();
+
+		return array( $type[0], $className, $isNullable );
+	}
 }

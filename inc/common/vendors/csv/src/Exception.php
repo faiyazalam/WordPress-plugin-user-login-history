@@ -18,6 +18,6 @@ use Exception as PhpException;
 /**
  * League Csv Base Exception.
  */
-class Exception extends PhpException implements UnableToProcessCsv
-{
+class Exception extends PhpException implements UnableToProcessCsv {
+
 }
