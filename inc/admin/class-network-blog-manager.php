@@ -14,6 +14,10 @@ namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Core\Activator;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Network Blog Management Functionality.
  */

@@ -14,6 +14,10 @@ namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Admin\Settings_Api;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Admin specific settings.
  */

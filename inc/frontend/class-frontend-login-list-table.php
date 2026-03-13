@@ -15,6 +15,10 @@ use User_Login_History\Inc\Common\Helpers\Date_Time as DateTimeHelper;
 use User_Login_History\Inc\Common\Helpers;
 use User_Login_History\Inc\Common\Helpers\Error_Log as ErrorLogHelper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The frontend shortcode-specific functionality of the plugin.
  *

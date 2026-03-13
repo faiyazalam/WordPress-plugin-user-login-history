@@ -14,6 +14,10 @@ namespace User_Login_History\Inc\Frontend;
 use User_Login_History\Inc\Common\Abstracts\User_Profile as UserProfileAbstract;
 use User_Login_History\Inc\Frontend\Frontend_Login_List_Table as List_Table;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Frontend Functionality.
  */

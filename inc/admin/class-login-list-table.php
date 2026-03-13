@@ -18,6 +18,10 @@ use User_Login_History\Inc\Common\Login_Tracker;
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
 use User_Login_History\Inc\Common\Helpers;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Base class to handle admin and network admin login listing functionality.
  */

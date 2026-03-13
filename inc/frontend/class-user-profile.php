@@ -13,6 +13,10 @@ namespace User_Login_History\Inc\Frontend;
 
 use User_Login_History\Inc\Common\Abstracts\User_Profile as User_Profile_Abstract;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Frontend Functionality
  */

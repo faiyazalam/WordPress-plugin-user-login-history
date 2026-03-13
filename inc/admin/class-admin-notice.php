@@ -11,6 +11,10 @@
 
 namespace User_Login_History\Inc\Admin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Handle admin notice functionality.
  *
