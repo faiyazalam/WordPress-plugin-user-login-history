@@ -11,10 +11,6 @@
 
 namespace User_Login_History\Inc\Common\Abstracts;
 
-use User_Login_History as NS;
-use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
-use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
-use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 use User_Login_History\Inc\Common\Helpers\Validation as Validation_Helper;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -316,5 +312,4 @@ abstract class List_Table extends \WP_List_Table {
 		$this->delete_action_nonce = $value;
 		return $this;
 	}
-
 }

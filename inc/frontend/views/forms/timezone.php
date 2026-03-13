@@ -10,18 +10,28 @@
  */
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
-<form method="post" id="<?php echo esc_attr($this->plugin_name); ?>_update_user_timezone">
+<form class="faulh-timezone-form" method="post" id="<?php echo esc_attr( $this->plugin_name ); ?>_update_user_timezone">
 	<fieldset>
-		<input type="hidden" name="_wpnonce" value="<?php echo esc_attr(wp_create_nonce( $this->plugin_name . '_update_user_timezone' )); ?>">
-		<p><?php esc_html_e( 'This table is showing time in the timezone', 'user-login-history' ); ?> - <strong><?php echo esc_html($this->get_list_table()->get_table_timezone()); ?></strong></p>
-		<select style="width:78%" required="required"  id="select_timezone" name="<?php echo esc_attr($this->get_user_profile()->get_usermeta_key_timezone()); ?>">
-			<option value=""><?php esc_html_e( 'Select Timezone', 'user-login-history' ); ?></option>
-			<?php
-			Template_Helper::dropdown_timezones( $this->get_list_table()->get_table_timezone() );
-			?>
-		</select>
-		<input type="submit" name="<?php echo esc_attr($this->plugin_name . '_update_user_timezone'); ?>" value="<?php echo esc_html__( 'Apply', 'user-login-history' ); ?>">
-
+		<input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce( $this->plugin_name . '_update_user_timezone' ) ); ?>">
+		<div class="faulh-timezone-info">
+			<span><?php esc_html_e( 'Timezone for this table', 'user-login-history' ); ?></span>
+			<strong><?php echo esc_html( $this->get_list_table()->get_table_timezone() ); ?></strong>
+		</div>
+		<div class="faulh-timezone-controls">
+			<div class="faulh-field">
+				<label class="faulh-label" for="select_timezone"><?php esc_html_e( 'Select Timezone', 'user-login-history' ); ?></label>
+				<select required="required" id="select_timezone" name="<?php echo esc_attr( $this->get_user_profile()->get_usermeta_key_timezone() ); ?>">
+					<option value=""><?php esc_html_e( 'Select Timezone', 'user-login-history' ); ?></option>
+					<?php
+					Template_Helper::dropdown_timezones( $this->get_list_table()->get_table_timezone() );
+					?>
+				</select>
+			</div>
+			<input class="faulh-button" type="submit" name="<?php echo esc_attr( $this->plugin_name . '_update_user_timezone' ); ?>" value="<?php echo esc_html__( 'Apply', 'user-login-history' ); ?>">
+		</div>
 	</fieldset>
 </form>

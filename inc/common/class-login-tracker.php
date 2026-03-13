@@ -14,10 +14,6 @@ namespace User_Login_History\Inc\Common;
 use User_Login_History\Inc\Common\Helpers\Browser as Browser_Helper;
 use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Helpers\Geo as Geo_Helper;
-use User_Login_History\Inc\Common\Helpers\Error_Log as Error_Log_Helper;
-use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
-use User_Login_History\Inc\Admin\Network_Admin_Settings;
-use User_Login_History\Inc\Admin\Settings as Admin_Settings;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -245,7 +241,7 @@ class Login_Tracker {
 		$this->login_status             = self::LOGIN_STATUS_BLOCK;
 		$this->current_loggedin_blog_id = get_current_blog_id();
 		wp_logout();
-		wp_die( esc_html($this->get_message_for_cross_blog_login()) );
+		wp_die( esc_html( $this->get_message_for_cross_blog_login() ) );
 	}
 
 	/**
@@ -277,7 +273,7 @@ class Login_Tracker {
 			'browser_version'  => $browser_helper->getVersion(),
 			'operating_system' => $browser_helper->getPlatform(),
 			'old_role'         => ! empty( $user->roles ) ? implode( ',', $user->roles ) : '',
-			'user_agent'       => isset( $_SERVER['HTTP_USER_AGENT'] ) ? $_SERVER['HTTP_USER_AGENT'] : $unknown,
+			'user_agent'       => isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : $unknown,
 			'login_status'     => $status,
 			'is_super_admin'   => is_multisite() ? is_super_admin( $user_id ) : false,
 		);
@@ -296,7 +292,11 @@ class Login_Tracker {
 			$data = array_merge( $data, $filtered_data );
 		}
 
-		if ( ! Db_Helper::insert( $this->table, $data ) ) {
+		global $wpdb;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Insert login record, no WP native alternative for custom table.
+		if ( false === $wpdb->insert( $wpdb->prefix . $this->table, $data ) ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Just ignoring WARNING.
+			error_log( 'Error saving login details: ' . $wpdb->last_error );
 			return;
 		}
 
@@ -327,12 +327,17 @@ class Login_Tracker {
 		$table         = $wpdb->get_blog_prefix( $this->current_loggedin_blog_id ) . $this->table;
 		$current_date  = Date_Time_Helper::get_current_date_time();
 		$session_token = wp_get_session_token();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Real-time last seen update, caching not applicable.
 		$wpdb->update(
 			$table,
-			array('time_last_seen' => $current_date),
-			array('session_token' => $session_token, 'user_id' => $current_user->ID),
-			array('%s'),
-			array('%s', '%d')
+			array( 'time_last_seen' => $current_date ),
+			array(
+				'session_token' => $session_token,
+				'user_id'       => $current_user->ID,
+			),
+			array( '%s' ),
+			array( '%s', '%d' )
 		);
 
 		$data = array(
@@ -366,12 +371,18 @@ class Login_Tracker {
 		$time_logout  = Date_Time_Helper::get_current_date_time();
 		$login_status = $this->login_status ? $this->login_status : self::LOGIN_STATUS_LOGOUT;
 		$table        = $wpdb->get_blog_prefix( $this->current_loggedin_blog_id ) . $this->table;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Real-time last seen update, caching not applicable.
 		$wpdb->update(
 			$table,
-			array('time_logout' => $time_logout, 'time_last_seen' => $time_logout, 'login_status' => $login_status),
-			array('session_token' => $session_token),
-			array('%s', '%s', '%s'),
-			array('%s')
+			array(
+				'time_logout'    => $time_logout,
+				'time_last_seen' => $time_logout,
+				'login_status'   => $login_status,
+			),
+			array( 'session_token' => $session_token ),
+			array( '%s', '%s', '%s' ),
+			array( '%s' )
 		);
 
 		$data = array(
@@ -415,5 +426,4 @@ class Login_Tracker {
 	public function get_session_token() {
 		return $this->session_token;
 	}
-
 }

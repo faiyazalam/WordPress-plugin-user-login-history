@@ -27,8 +27,27 @@ class User_Profile extends User_Profile_Abstract {
 	 */
 	public function update_user_timezone() {
 
-		if ( ! $this->is_valid_request_for_update() ) {
-			return false;
+		$key   = $this->plugin_name . '_update_user_timezone';
+		$nonce = '_wpnonce';
+
+		if ( ! isset( $_POST[ $key ] ) ) {
+			return;
+		}
+
+		if ( empty( $_POST[ $nonce ] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce ] ) ), $key ) ) {
+			return;
+		}
+
+		if ( ! $this->get_user_id() ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_user', $this->get_user_id() ) ) {
+			return;
 		}
 
 		$this->update_usermeta_key_timezone();
@@ -37,16 +56,4 @@ class User_Profile extends User_Profile_Abstract {
 		wp_safe_redirect( esc_url_raw( add_query_arg() ) );
 		exit;
 	}
-
-	/**
-	 * Validate the request for timezone update
-	 *
-	 * @access private
-	 */
-	private function is_valid_request_for_update() {
-		$key   = $this->plugin_name . '_update_user_timezone';
-		$nonce = '_wpnonce';
-		return isset( $_POST[ $key ] ) && ! empty( $_POST[ $nonce ] ) && wp_verify_nonce( $_POST[ $nonce ], $key ) && $this->get_user_id() && current_user_can( 'edit_user', $this->get_user_id() );
-	}
-
 }

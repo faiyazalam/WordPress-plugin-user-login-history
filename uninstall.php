@@ -80,7 +80,8 @@ if ( ! function_exists( 'faulh_drop_tables' ) ) {
 	 */
 	function faulh_drop_tables() {
 		global $wpdb;
-		$wpdb->query($wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . 'fa_user_logins' ));
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange	-- droping the database table on uninstallation of the plugin, catching is not required here.
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . 'fa_user_logins' ) );
 	}
 }
 
@@ -93,9 +94,11 @@ if ( ! function_exists( 'faulh_uninstall_plugin' ) ) {
 		faulh_delete_user_metadata();
 
 		if ( is_multisite() ) {
-			$blog_ids = get_sites([
-				'fields' => 'ids',
-			]);
+			$blog_ids = get_sites(
+				array(
+					'fields' => 'ids',
+				)
+			);
 			foreach ( $blog_ids as $blog_id ) {
 				switch_to_blog( $blog_id );
 				faulh_delete_options();

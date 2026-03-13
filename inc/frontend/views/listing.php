@@ -8,18 +8,21 @@
  * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  * @link     http://userloginhistory.com
  */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
-<div class="<?php echo esc_attr($this->plugin_name . '-wrapper'); ?>">
+<div class="<?php echo esc_attr( $this->plugin_name . '-wrapper' ); ?>">
 	<?php do_action( 'faulh_public_before_search_form' ); ?>
-	<?php echo ! empty( $attributes['title'] ) ? "<div class='" . esc_attr($this->plugin_name) . "-listing_title'>" . esc_html($attributes['title']) . '</div>' : ''; ?>
-	<div><?php require plugin_dir_path( dirname( __FILE__ ) ) . 'views/forms/filter.php'; ?></div>
+	<?php echo ! empty( $attributes['title'] ) ? "<div class='" . esc_attr( $this->plugin_name ) . "-listing_title'>" . esc_html( $attributes['title'] ) . '</div>' : ''; ?>
+	<div><?php require plugin_dir_path( __DIR__ ) . 'views/forms/filter.php'; ?></div>
 	<?php do_action( 'faulh_public_after_search_form' ); ?>
 	<hr>
 	<div>
 		<?php
 		if ( ! empty( $attributes['show_timezone_selector'] ) && 'true' == $attributes['show_timezone_selector'] ) {
 			?>
-		<div><?php require plugin_dir_path( dirname( __FILE__ ) ) . 'views/forms/timezone.php'; ?></div>
+		<div><?php require plugin_dir_path( __DIR__ ) . 'views/forms/timezone.php'; ?></div>
 			<?php
 		}
 		?>

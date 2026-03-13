@@ -10,9 +10,12 @@
  */
 
 use User_Login_History as NS;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <?php
-$all_features = array(
+$faulh_all_features = array(
 	array(
 		'title'       => 'AUTO LOGOUT',
 		'description' => 'Automatically logout idle users every x minute. You can also specify roles. This feature is built on WordPress Cron Job.',
@@ -60,27 +63,27 @@ $all_features = array(
 	),
 );
 
-$chunked_features = array_chunk( $all_features, 3 );
+$faulh_chunked_features = array_chunk( $faulh_all_features, 3 );
 ?>
 <div class="wrap">
-	<h1><?php echo esc_html(NS\PLUGIN_NAME); ?> (<?php echo esc_html__( 'Pro Version', 'user-login-history' ); ?>) <?php echo esc_html__( 'Features', 'user-login-history' ); ?></h1>
+	<h1><?php echo esc_html( FAULH_PLUGIN_NAME ); ?> (<?php echo esc_html__( 'Pro Version', 'user-login-history' ); ?>) <?php echo esc_html__( 'Features', 'user-login-history' ); ?></h1>
 	<br>
 
 	<div class="clearfix">
 		<div class="container-fluid">
 			<?php
-			foreach ( $chunked_features as $features ) {
+			foreach ( $faulh_chunked_features as $faulh_features ) {
 				echo '<div class="row">';
-				foreach ( $features as $feature ) {
+				foreach ( $faulh_features as $faulh_feature ) {
 					?>
 					<div class="col-lg-4">
 						<div class="row">
 							<div class="col-lg-12">
 								<div class="box">  
-									<div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo esc_attr($feature['icon']); ?>"></i></div></div>
-									<div class="heading-1 pull-left"><?php echo esc_html(strtoupper( $feature['title'] )); ?></div>
+									<div class="img"><div class="icon"><i aria-hidden="true" class="fa <?php echo esc_attr( $faulh_feature['icon'] ); ?>"></i></div></div>
+									<div class="heading-1 pull-left"><?php echo esc_html( strtoupper( $faulh_feature['title'] ) ); ?></div>
 									<div class="clearfix"></div>
-									<div style="height: 100px" class="text"><?php echo esc_html($feature['description']); ?></div>
+									<div style="height: 100px" class="text"><?php echo esc_html( $faulh_feature['description'] ); ?></div>
 								</div>  
 							</div>
 						</div>
@@ -92,8 +95,8 @@ $chunked_features = array_chunk( $all_features, 3 );
 			?>
 			<div class="row">
 				<div class="text-center">
-		<a href="<?php echo esc_url(NS\PLUGIN_FEATURE_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'user-login-history' ); ?></a>
-		<a href="<?php echo esc_url(NS\PLUGIN_GO_PRO_LINK) ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'user-login-history' ); ?></a>
+		<a href="<?php echo esc_url( FAULH_PLUGIN_FEATURE_LINK ); ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'View All Features', 'user-login-history' ); ?></a>
+		<a href="<?php echo esc_url( FAULH_PLUGIN_GO_PRO_LINK ); ?>" target="_blank" class="btn btn-primary button-edit"><?php esc_html_e( 'Buy Now', 'user-login-history' ); ?></a>
 				</div>
 			</div>  
 		</div>

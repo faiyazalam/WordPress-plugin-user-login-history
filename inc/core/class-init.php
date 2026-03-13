@@ -11,7 +11,6 @@
 
 namespace User_Login_History\Inc\Core;
 
-use User_Login_History as NS;
 use User_Login_History\Inc\Admin\Admin;
 use User_Login_History\Inc\Admin\Admin_Notice;
 use User_Login_History\Inc\Admin\User_Profile;
@@ -25,6 +24,10 @@ use User_Login_History\Inc\Admin\Listing_Table_Csv;
 use User_Login_History\Inc\Frontend\Frontend;
 use User_Login_History\Inc\Frontend\Frontend_Login_List_Table;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The core plugin class.
  * Defines internationalization, admin-specific hooks, and public-facing site hooks.
@@ -36,13 +39,6 @@ class Init {
 	 * @var      string    $plugin_name    The plugin name.
 	 */
 	protected $plugin_name;
-
-	/**
-	 * The plugin text domain.
-	 *
-	 * @var      string    $plugin_text_domain    The plugin text domain.
-	 */
-	protected $plugin_text_domain;
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -71,13 +67,11 @@ class Init {
 	 */
 	public function __construct() {
 
-		$this->plugin_name        = NS\USER_LOGIN_HISTORY;
-		$this->version            = NS\PLUGIN_VERSION;
-		$this->plugin_basename    = NS\PLUGIN_BASENAME;
-		$this->plugin_text_domain = NS\PLUGIN_TEXT_DOMAIN;
+		$this->plugin_name     = FAULH;
+		$this->version         = FAULH_PLUGIN_VERSION;
+		$this->plugin_basename = FAULH_PLUGIN_BASENAME;
 
 		$this->load_dependencies();
-		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 	}
@@ -86,25 +80,11 @@ class Init {
 	 * Loads the following required dependencies for this plugin.
 	 *
 	 * - Loader - Orchestrates the hooks of the plugin.
-	 * - Internationalization_I18n - Defines internationalization functionality.
 	 * - Admin - Defines all hooks for the admin area.
 	 * - Frontend - Defines all hooks for the public side of the site.
 	 */
 	private function load_dependencies() {
 		$this->loader = new Loader();
-	}
-
-	/**
-	 * Define the locale for this plugin for internationalization.
-	 *
-	 * Uses the Internationalization_I18n class in order to set the domain and to register the hook
-	 * with WordPress.
-	 */
-	private function set_locale() {
-
-		$plugin_i18n = new Internationalization_I18n( $this->plugin_text_domain );
-
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
 
 	/**
@@ -125,14 +105,14 @@ class Init {
 			$this->loader->add_action( 'wp_delete_site', $network_blog_manager, 'deleted_blog', 10, 1 );
 		}
 
-		$login_tracker = new Login_Tracker( $this->get_plugin_name(), $this->get_version(), NS\PLUGIN_TABLE_FA_USER_LOGINS );
+		$login_tracker = new Login_Tracker( $this->get_plugin_name(), $this->get_version(), FAULH_PLUGIN_TABLE_FA_USER_LOGINS );
 		$login_tracker->set_is_geo_tracker_enabled( $admin_setting->is_geo_tracker_enabled() );
 		$login_tracker->set_is_cross_blog_login_blocked( $network_admin_settings->get_block_user() );
 		$login_tracker->set_message_for_cross_blog_login( $network_admin_settings->get_block_user_message() );
 
 		$this->loader->add_action( 'admin_init', $admin, 'admin_init' );
 		$this->loader->add_action( 'admin_init', $admin, 'check_update_version' );
-		$this->loader->add_action( 'plugin_action_links_' . (NS\PLUGIN_BASENAME), $admin, 'add_action_links' );
+		$this->loader->add_action( 'plugin_action_links_' . ( FAULH_PLUGIN_BASENAME ), $admin, 'add_action_links' );
 
 		if ( is_network_admin() ) {
 			$this->loader->add_action( 'admin_init', $network_admin_settings, 'update' );
@@ -216,14 +196,4 @@ class Init {
 	public function get_version() {
 		return $this->version;
 	}
-
-	/**
-	 * Retrieve the text domain of the plugin.
-	 *
-	 * @return    string    The text domain of the plugin.
-	 */
-	public function get_plugin_text_domain() {
-		return $this->plugin_text_domain;
-	}
-
 }

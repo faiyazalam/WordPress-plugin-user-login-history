@@ -1,0 +1,496 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: User Login History\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-12 01:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.1; wp-6.9.3; php-8.2.29\n"
+"X-Domain: user-login-history"
+
+#: inc/frontend/class-frontend-login-list-table.php:222
+msgid "&laquo;"
+msgstr ""
+
+#: inc/frontend/class-frontend-login-list-table.php:223
+msgid "&raquo;"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:67
+msgid "(Basic Version)"
+msgstr ""
+
+#: inc/admin/class-settings.php:133
+msgid "(Not Recommended)"
+msgstr ""
+
+#: inc/admin/class-settings.php:87
+msgid "Advanced Settings"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:269
+#: inc/admin/class-login-list-table.php:404
+#: inc/frontend/class-frontend-login-list-table.php:678
+msgid "ago"
+msgstr ""
+
+#: inc/admin/class-admin-login-list-table.php:181
+msgid "All record(s) deleted."
+msgstr ""
+
+#: inc/admin/class-network-admin-login-list-table.php:352
+msgid "All records deleted."
+msgstr ""
+
+#: inc/frontend/views/forms/timezone.php:27
+msgid "Apply"
+msgstr ""
+
+#: inc/admin/class-admin.php:159
+msgid "Are your sure?"
+msgstr ""
+
+#: inc/admin/class-settings.php:83
+msgid "Basic Settings"
+msgstr ""
+
+#: inc/admin/views/settings/network-admin.php:24
+msgid "Block User"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:154
+msgid "Blocked"
+msgstr ""
+
+#: inc/admin/class-network-admin-login-list-table.php:175
+#: inc/admin/views/forms/filter.php:40 inc/admin/views/forms/filter.php:40
+msgid "Blog ID"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:210
+#: inc/frontend/class-frontend-login-list-table.php:360
+#: inc/admin/views/forms/filter.php:36
+msgid "Browser"
+msgstr ""
+
+#: inc/admin/views/pro.php:99
+msgid "Buy Now"
+msgstr ""
+
+#: inc/admin/class-admin.php:336
+msgid "Buy Pro"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:181
+msgid "BUY PRO VERSION"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:182
+msgid "Buy pro version"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:80
+msgid "CANCEL"
+msgstr ""
+
+#: inc/admin/class-settings-api.php:556
+msgid "Choose File"
+msgstr ""
+
+#: inc/admin/views/more_plugins.php:29
+msgid "Countera - Track post view count by user and date for better insights."
+msgstr ""
+
+#: inc/admin/views/more_plugins.php:30
+msgid ""
+"Countera is a lightweight and efficient plugin that helps you track and "
+"display the number of views each of your posts receives."
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:214
+#: inc/frontend/class-frontend-login-list-table.php:364
+#: inc/admin/views/forms/filter.php:35
+msgid "Country"
+msgstr ""
+
+#: inc/admin/class-admin-login-list-table.php:126
+#: inc/admin/class-network-admin-login-list-table.php:283
+msgid "Delete"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:194
+msgid "Delete All Records"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:193
+msgid "Delete Selected Records"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:175
+msgid "Donate"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:176
+msgid "Donate and Support Us"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:82
+msgid "DOWNLOAD CSV"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:216
+#: inc/frontend/class-frontend-login-list-table.php:366
+msgid "Duration"
+msgstr ""
+
+#: inc/common/abstracts/class-list-table.php:208
+msgid "Edit"
+msgstr ""
+
+#: inc/admin/class-settings.php:134
+msgid "Enable tracking of country and timezone."
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:36
+msgid "Enter Browser"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:35
+msgid "Enter Country"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:38
+msgid "Enter IP Address"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:37
+msgid "Enter Operating System"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:33
+msgid "Enter User ID"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:34
+msgid "Enter Username"
+msgstr ""
+
+#. Author of the plugin
+msgid "Er Faiyaz Alam"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:150
+msgid "Failed"
+msgstr ""
+
+#: inc/admin/views/pro.php:69
+msgid "Features"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:81 inc/frontend/views/forms/filter.php:36
+msgid "FILTER"
+msgstr ""
+
+#: inc/admin/views/more_plugins.php:31
+msgid "Free Download"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:26 inc/frontend/views/forms/filter.php:24
+msgid "From"
+msgstr ""
+
+#: inc/admin/class-settings.php:133
+msgid "Geo Tracker"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Helps you to know your website's visitors by tracking their login related "
+"information like login/logout time, country, browser and many more."
+msgstr ""
+
+#: inc/admin/class-admin.php:164
+msgid "Hide Advanced Filters"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://userloginhistory.com/"
+msgstr ""
+
+#. URI of the plugin
+msgid "http://userloginhistory.com/home/"
+msgstr ""
+
+#: inc/admin/class-settings.php:117
+msgid "Idle"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:212
+#: inc/frontend/class-frontend-login-list-table.php:362
+#: inc/admin/views/forms/filter.php:38
+msgid "IP Address"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:217
+#: inc/frontend/class-frontend-login-list-table.php:367
+#: inc/common/helpers/class-template.php:137
+msgid "Last Seen"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:148
+msgid "Logged In"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:149
+msgid "Logged Out"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:218
+#: inc/frontend/class-frontend-login-list-table.php:368
+#: inc/common/helpers/class-template.php:135
+msgid "Login"
+msgstr ""
+
+#: inc/admin/class-admin.php:222 inc/admin/class-admin.php:230
+#: inc/admin/class-admin.php:230 inc/admin/views/login-list-table.php:16
+msgid "Login List"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:220
+#: inc/frontend/class-frontend-login-list-table.php:370
+#: inc/admin/views/forms/filter.php:59
+msgid "Login Status"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:219
+#: inc/frontend/class-frontend-login-list-table.php:369
+#: inc/common/helpers/class-template.php:136
+msgid "Logout"
+msgstr ""
+
+#. %s: Default idle timeout in minutes.
+#: inc/admin/class-settings.php:120
+#, php-format
+msgid ""
+"Maximum number of minutes for idle users. This should be greater than that "
+"of online users. Default is %s"
+msgstr ""
+
+#. %s: Default online timeout in minutes.
+#: inc/admin/class-settings.php:106
+#, php-format
+msgid "Maximum number of minutes for online users. Default is %s"
+msgstr ""
+
+#: inc/admin/views/settings/network-admin.php:33
+msgid "Message for Blocked User"
+msgstr ""
+
+#: inc/admin/class-admin.php:232
+msgid "More Plugins"
+msgstr ""
+
+#: inc/admin/views/more_plugins.php:26
+msgid "More Useful Plugins"
+msgstr ""
+
+#: inc/admin/views/settings/network-admin.php:18
+msgid "Network Settings"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:124
+msgid "No"
+msgstr ""
+
+#: inc/frontend/class-frontend-login-list-table.php:484
+msgid "No columns is selected to display."
+msgstr ""
+
+#: inc/frontend/class-frontend-login-list-table.php:541
+msgid "No items found."
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:431
+#: inc/frontend/class-frontend-login-list-table.php:694
+msgid "not supported"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:169
+msgid "Official Website"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:209
+#: inc/frontend/class-frontend-login-list-table.php:359
+#: inc/admin/views/forms/filter.php:50
+msgid "Old Role"
+msgstr ""
+
+#: inc/admin/class-settings.php:103
+msgid "Online"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:211
+#: inc/frontend/class-frontend-login-list-table.php:361
+#: inc/admin/views/forms/filter.php:37
+msgid "Operating System"
+msgstr ""
+
+#: inc/admin/class-admin.php:160 inc/frontend/class-frontend.php:101
+msgid "Please provide a valid date range."
+msgstr ""
+
+#: inc/admin/class-admin-login-list-table.php:159
+#: inc/admin/class-admin-login-list-table.php:212
+#: inc/admin/class-network-admin-settings.php:158
+#: inc/admin/class-network-admin-login-list-table.php:313
+#: inc/admin/class-network-admin-login-list-table.php:408
+msgid "Please try again."
+msgstr ""
+
+#: inc/admin/class-admin.php:231
+msgid "Pro Features"
+msgstr ""
+
+#: inc/admin/views/pro.php:69
+msgid "Pro Version"
+msgstr ""
+
+#: inc/admin/class-admin-login-list-table.php:217
+msgid "Record deleted."
+msgstr ""
+
+#: inc/frontend/views/forms/filter.php:34
+msgid "RESET"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:208
+#: inc/frontend/class-frontend-login-list-table.php:358
+msgid "Role"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:60
+msgid "Select Login Status"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:51
+msgid "Select Old Role"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:68
+msgid "Select Super Admin"
+msgstr ""
+
+#: inc/admin/class-user-profile.php:36 inc/admin/views/forms/filter.php:46
+#: inc/frontend/views/forms/timezone.php:22
+msgid "Select Timezone"
+msgstr ""
+
+#: inc/admin/class-network-admin-login-list-table.php:417
+msgid "Selected record deleted."
+msgstr ""
+
+#: inc/admin/class-admin-login-list-table.php:171
+#: inc/admin/class-network-admin-login-list-table.php:330
+msgid "Selected record(s) deleted."
+msgstr ""
+
+#: inc/admin/class-settings.php:192
+msgid "Settings"
+msgstr ""
+
+#: inc/admin/class-network-admin-settings.php:156
+msgid "Settings updated successfully."
+msgstr ""
+
+#: inc/admin/class-admin.php:163 inc/admin/views/forms/filter.php:83
+msgid "Show Advanced Filters"
+msgstr ""
+
+#: inc/admin/class-admin.php:276
+msgid "Show Records Per Page"
+msgstr ""
+
+#: inc/admin/class-network-admin-login-list-table.php:172
+#: inc/admin/views/forms/filter.php:66
+msgid "Super Admin"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:57
+msgid "Super Administrator"
+msgstr ""
+
+#: inc/admin/class-settings.php:134
+msgid ""
+"This functionality is dependent on a free third-party API service, hence not "
+"recommended."
+msgstr ""
+
+#: inc/admin/class-user-profile.php:41
+msgid ""
+"This is used to convert date-time (e.g. login time, last seen time etc.) on "
+"the user login history listing table."
+msgstr ""
+
+#: inc/common/abstracts/class-list-table.php:208
+#: inc/frontend/views/forms/timezone.php:20
+msgid "This table is showing time in the timezone"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:213 inc/admin/class-user-profile.php:33
+#: inc/frontend/class-frontend-login-list-table.php:363
+#: inc/admin/views/forms/filter.php:44
+msgid "Timezone"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:27 inc/frontend/views/forms/filter.php:25
+msgid "To"
+msgstr ""
+
+#: inc/admin/views/forms/filter.php:47 inc/admin/views/forms/filter.php:62
+msgid "Unknown"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:215
+#: inc/frontend/class-frontend-login-list-table.php:365
+msgid "User Agent"
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:206
+#: inc/frontend/class-frontend-login-list-table.php:356
+#: inc/admin/views/forms/filter.php:33
+msgid "User ID"
+msgstr ""
+
+#. Name of the plugin
+msgid "User Login History"
+msgstr ""
+
+#: inc/admin/views/settings/network-admin.php:28
+msgid "User will not be able to login on another blog on the network."
+msgstr ""
+
+#: inc/admin/class-login-list-table.php:207
+#: inc/frontend/class-frontend-login-list-table.php:357
+#: inc/admin/views/forms/filter.php:34
+msgid "Username"
+msgstr ""
+
+#: inc/admin/views/pro.php:98
+msgid "View All Features"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:170
+msgid "Visit Plugin Official Website"
+msgstr ""
+
+#: inc/common/helpers/class-template.php:123
+msgid "Yes"
+msgstr ""

@@ -8,7 +8,9 @@
  * @license  http://www.gnu.org/licenses/gpl-2.0.txt GPL-2.0+
  * @link     http://userloginhistory.com
  */
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->

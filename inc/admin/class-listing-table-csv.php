@@ -11,7 +11,6 @@
 
 namespace User_Login_History\Inc\Admin;
 
-use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 
 /**
@@ -35,7 +34,7 @@ final class Listing_Table_Csv {
 	 *
 	 * @var string
 	 */
-	private $unknown_symbol = '---';
+	private $unknown_symbol = '';
 
 	/**
 	 * Set the listing table.
@@ -50,8 +49,9 @@ final class Listing_Table_Csv {
 	 * Set content type in header.
 	 */
 	private function set_headers() {
-		header( 'Content-Type: text/csv' );
-		header( 'Content-Disposition: attachment;filename=' . $this->get_suffix() . '.csv' );
+		$filename = sanitize_file_name( $this->get_suffix() . '.csv' );
+		header( 'Content-Type: text/csv; charset=UTF-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 	}
 
 	/**
@@ -60,7 +60,7 @@ final class Listing_Table_Csv {
 	 * @return string
 	 */
 	private function get_suffix() {
-		return 'login_list_' . date( 'n-j-y_H-i' );
+		return 'login_list_' . wp_date( 'n-j-y_H-i' );
 	}
 
 	/**
@@ -85,40 +85,114 @@ final class Listing_Table_Csv {
 	 * Exports CSV.
 	 */
 	private function export() {
-		$data = $this->listing_table->get_all_rows();
-
-		if ( ! $data ) {
-			$this->listing_table->no_items();
-			exit;
+		$handle = fopen( 'php://temp', 'r+' );
+		if ( false === $handle ) {
+			return;
 		}
-
-		$csv = \League\Csv\Writer::createFromString();
 		$this->listing_table->set_unknown_symbol( $this->unknown_symbol );
 		$columns = $this->listing_table->get_columns();
 
 		$i      = 0;
 		$record = array();
-		foreach ( $data as $row ) {
+		$page   = 1;
+		$limit  = 100;
 
-			foreach ( $columns as $field_name => $field_label ) {
-				if ( ! key_exists( $field_name, $row ) ) {
-					continue;
+		while ( true ) {
+			$batch = $this->listing_table->get_rows( $limit, $page );
+
+			if ( empty( $batch ) ) {
+				if ( 0 === $i ) {
+					$this->listing_table->no_items();
+					exit;
+				}
+				break;
+			}
+
+			foreach ( $batch as $row ) {
+				$record = array();
+				foreach ( $columns as $field_name => $field_label ) {
+					if ( ! key_exists( $field_name, $row ) ) {
+						continue;
+					}
+
+					$record[ $field_name ] = $this->listing_table->column_default( $row, $field_name );
 				}
 
-				$record[ $field_name ] = $this->listing_table->column_default( $row, $field_name );
+				if ( 0 == $i ) {
+					fputcsv( $handle, $this->escape_csv_record( array_keys( $record ) ), ',', '"', '\\' );
+				}
+
+				fputcsv( $handle, $this->escape_csv_record( $record ), ',', '"', '\\' );
+
+				++$i;
 			}
 
-			if ( 0 == $i ) {
-				$csv->insertOne(array_keys( $record ) );
-
-			}
-
-			$csv->insertOne( $record );
-
-			$i++;
+			++$page;
+			wp_cache_flush_runtime();
 		}
-		$csv->output(); 
+		wp_cache_flush_runtime();
+		rewind( $handle );
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw CSV binary stream output, escaping would corrupt the data.
+		echo stream_get_contents( $handle );
+		fclose( $handle );
 		die();
 	}
 
+	/**
+	 * Escape CSV formula injection characters.
+	 *
+	 * @param array $record CSV record.
+	 * @return array
+	 */
+	private function escape_csv_record( array $record ) {
+		foreach ( $record as $key => $value ) {
+			$record[ $key ] = $this->escape_csv_field( $value );
+		}
+
+		return $record;
+	}
+
+	/**
+	 * Escape a single CSV field if it looks like a formula.
+	 *
+	 * @param mixed $value CSV field value.
+	 * @return mixed
+	 */
+	private function escape_csv_field( $value ) {
+		if ( is_string( $value ) ) {
+			$str = $value;
+		} elseif ( is_object( $value ) && method_exists( $value, '__toString' ) ) {
+			$str = (string) $value;
+		} else {
+			return $value;
+		}
+
+		// Decode HTML entities from DB storage
+		$str = html_entity_decode( $str, ENT_QUOTES, 'UTF-8' );
+
+		// Strip HTML tags
+		$str = wp_strip_all_tags( $str );
+
+		// Strip NULL bytes
+		$str = str_replace( "\0", '', $str );
+
+		if ( '' === $str ) {
+			return $str;
+		}
+
+		// Trim ALL unicode whitespace variants before checking first char
+		$trimmed = preg_replace( '/^[\pZ\pC]+/u', '', $str );
+
+		if ( '' === $trimmed ) {
+			return $str;
+		}
+
+		$dangerous_chars = array( '=', '-', '+', '@', '|', "\t", "\r", "\n" );
+
+		if ( in_array( $trimmed[0], $dangerous_chars, true ) ) {
+			return "'\t" . $str; // \t after quote breaks formula parsing in Excel/Sheets
+		}
+
+		return $str;
+	}
 }

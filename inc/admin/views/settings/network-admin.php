@@ -10,11 +10,14 @@
  */
 
 use User_Login_History\Inc\Common\Helpers\Template as Template_Helper;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="wrap">
 	<?php Template_Helper::head( esc_html__( 'Network Settings', 'user-login-history' ) ); ?>
 	<form method="post">
-		<input type="hidden" name="<?php echo esc_attr($this->get_form_name()); ?>" >
+		<input type="hidden" name="<?php echo esc_attr( $this->get_form_name() ); ?>" >
 		<table class="form-table">
 			<tbody>
 				<tr>

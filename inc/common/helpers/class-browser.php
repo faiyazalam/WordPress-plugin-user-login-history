@@ -12,7 +12,7 @@
 namespace User_Login_History\Inc\Common\Helpers;
 
 if ( ! class_exists( 'Browser' ) ) {
-	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'vendors/Browser/Browser.php';
+	require_once plugin_dir_path( __DIR__ ) . 'vendors/Browser/Browser.php';
 }
 
 /**

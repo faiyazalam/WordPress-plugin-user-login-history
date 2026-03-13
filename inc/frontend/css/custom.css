@@ -9,11 +9,281 @@ and open the template in the editor.
 */
 
 
-.date-inputss {
-  width: 40%;
+.faulh-date-inputs {
+  width: 100%;
   background-image: url(images/cal.png) !important;
   background-position: 98% center !important;
   background-repeat: no-repeat !important;
   background-size: 32px !important;
-  background-color: white !important;
+  background-color: transparent !important;
+}
+
+.faulh-wrapper {
+  --faulh-border: rgba(0, 0, 0, 0.12);
+  --faulh-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
+  margin: 24px auto;
+  background: transparent;
+  border: 1px solid var(--faulh-border);
+  border-radius: 20px;
+  padding: 32px;
+  color: inherit;
+  box-shadow: var(--faulh-shadow);
+}
+
+.faulh-wrapper hr {
+  border: 0;
+  border-top: 1px solid var(--faulh-border);
+  margin: 20px 0;
+}
+
+.faulh-wrapper .faulh-listing_title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  margin-bottom: 20px;
+}
+
+.faulh-wrapper form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: end;
+  background: transparent;
+  border: 1px solid var(--faulh-border);
+  border-radius: 16px;
+  padding: 16px;
+  column-gap: 50px;
+}
+
+.faulh-wrapper .faulh-filter-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.faulh-wrapper .faulh-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.faulh-wrapper .faulh-date-field + .faulh-date-field {
+  margin-left: 8px;
+}
+
+.faulh-wrapper .faulh-label {
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  opacity: 0.8;
+}
+
+.faulh-wrapper .faulh-button {
+  min-width: 120px;
+}
+
+.faulh-wrapper .faulh-link {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--faulh-border);
+}
+
+.faulh-wrapper .faulh-link:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  border-color: currentColor;
+  text-decoration: none;
+}
+
+.faulh-wrapper .faulh-timezone-form fieldset {
+  border: 1px solid var(--faulh-border);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0 0;
+  display: grid;
+  gap: 14px;
+}
+
+.faulh-wrapper .faulh-timezone-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.faulh-wrapper .faulh-timezone-controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+@media (max-width: 720px) {
+  .faulh-wrapper .faulh-timezone-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+.faulh-wrapper .faulh-date-inputs,
+.faulh-wrapper select,
+.faulh-wrapper input[type="text"],
+.faulh-wrapper input[type="number"] {
+  width: 100%;
+  height: 46px;
+  border: 1px solid var(--faulh-border);
+  border-radius: 12px;
+  padding: 0 14px;
+  background: transparent;
+  color: inherit;
+  font-size: 15px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.faulh-wrapper select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 18px) 18px, calc(100% - 12px) 18px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.faulh-wrapper input[type="submit"] {
+  height: 46px;
+  border: 1px solid currentColor;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  padding: 0 22px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.faulh-wrapper input[type="submit"]:hover {
+  background: color-mix(in srgb, currentColor 15%, transparent);
+  border-color: currentColor;
+}
+
+.faulh-wrapper a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.faulh-wrapper a:hover {
+  text-decoration: underline;
+}
+
+.faulh-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  border: 1px solid var(--faulh-border);
+  border-radius: 16px;
+  overflow: hidden;
+  font-size: 15px;
+}
+
+.faulh-wrapper thead th {
+  text-align: left;
+  background: transparent;
+  color: inherit;
+  padding: 14px 16px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--faulh-border);
+}
+
+.faulh-wrapper tbody td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--faulh-border);
+  vertical-align: top;
+}
+
+.faulh-wrapper tbody tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.faulh-wrapper tbody tr:hover td {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.faulh-wrapper .sorting_link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+  font-weight: 600;
+}
+
+.faulh-wrapper .sorting,
+.faulh-wrapper .sorting_hover {
+  color: inherit;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.faulh-wrapper .page-numbers {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  margin: 20px 0 0;
+  flex-wrap: wrap;
+}
+
+.faulh-wrapper .page-numbers a,
+.faulh-wrapper .page-numbers span {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--faulh-border);
+  background: transparent;
+  color: inherit;
+}
+
+.faulh-wrapper .page-numbers .current {
+  background: currentColor;
+  border-color: currentColor;
+  color: inherit;
+  filter: brightness(0.9);
+}
+
+.faulh-wrapper span.page-numbers.current {
+  color: inherit;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .faulh-wrapper {
+    padding: 16px;
+    margin: 16px;
+  }
+
+  .faulh-wrapper table,
+  .faulh-wrapper thead,
+  .faulh-wrapper tbody,
+  .faulh-wrapper th,
+  .faulh-wrapper td,
+  .faulh-wrapper tr {
+    display: block;
+  }
+
+  .faulh-wrapper thead {
+    display: none;
+  }
+
+  .faulh-wrapper tbody tr {
+    border: 1px solid var(--faulh-border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .faulh-wrapper tbody td {
+    border-bottom: 1px solid var(--faulh-border);
+  }
 }

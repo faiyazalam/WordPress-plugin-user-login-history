@@ -16,9 +16,11 @@
  * Thanks to Tom McFarlin
  * https://code.tutsplus.com/tutorials/using-namespaces-and-autoloading-in-wordpress-plugins-4--cms-27342
  */
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 spl_autoload_register(
-	function( $class_name ) {
+	function ( $class_name ) {
 
 		// If the specified $class_name does not include our namespace, duck out.
 		if ( false === strpos( $class_name, 'User_Login_History' ) ) {
