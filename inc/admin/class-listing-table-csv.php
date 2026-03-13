@@ -13,6 +13,10 @@ namespace User_Login_History\Inc\Admin;
 
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * CSV Export Functionality
  *
@@ -85,7 +89,8 @@ final class Listing_Table_Csv {
 	 * Exports CSV.
 	 */
 	private function export() {
-		$handle = fopen( 'php://temp', 'r+' );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- WP_Filesystem is actually not ideal for CSV export.
+		$handle = fopen( 'php://output', 'w' );
 		if ( false === $handle ) {
 			return;
 		}
@@ -102,7 +107,7 @@ final class Listing_Table_Csv {
 
 			if ( empty( $batch ) ) {
 				if ( 0 === $i ) {
-					$this->listing_table->no_items();
+					fputcsv( $handle,[__( 'No records found', 'user-login-history' )], ',', '"', '\\' );
 					exit;
 				}
 				break;
@@ -131,9 +136,7 @@ final class Listing_Table_Csv {
 			wp_cache_flush_runtime();
 		}
 		wp_cache_flush_runtime();
-		rewind( $handle );
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Raw CSV binary stream output, escaping would corrupt the data.
-		echo stream_get_contents( $handle );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- WP_Filesystem is actually not ideal for CSV export.
 		fclose( $handle );
 		die();
 	}

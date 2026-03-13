@@ -13,6 +13,10 @@ namespace User_Login_History\Inc\Core;
 
 use User_Login_History\Inc\Common\Helpers\Db as Db_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Fired during plugin activation.
  *

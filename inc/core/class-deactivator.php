@@ -11,6 +11,10 @@
 
 namespace User_Login_History\Inc\Core;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Fired during plugin deactivation.
  *

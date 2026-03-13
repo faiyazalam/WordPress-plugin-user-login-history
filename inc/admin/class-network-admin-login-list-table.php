@@ -16,6 +16,10 @@ use User_Login_History\Inc\Common\Helpers\Tool as Tool_Helper;
 use User_Login_History\Inc\Common\Interfaces\Admin_Csv as Admin_Csv_Interface;
 use User_Login_History\Inc\Common\Interfaces\Admin_List_Table as Admin_List_Table_Interface;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The login listing table for network admin.
  */

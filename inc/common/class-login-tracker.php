@@ -15,6 +15,10 @@ use User_Login_History\Inc\Common\Helpers\Browser as Browser_Helper;
 use User_Login_History\Inc\Common\Helpers\Date_Time as Date_Time_Helper;
 use User_Login_History\Inc\Common\Helpers\Geo as Geo_Helper;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The admin-specific functionality of the plugin.
  */

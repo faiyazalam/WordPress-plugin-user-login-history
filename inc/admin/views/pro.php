@@ -9,7 +9,6 @@
  * @link     http://userloginhistory.com
  */
 
-use User_Login_History as NS;
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }

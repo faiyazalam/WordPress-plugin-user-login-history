@@ -11,6 +11,10 @@
 
 namespace User_Login_History\Inc\Common\Interfaces;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Backend Functionality
  */
