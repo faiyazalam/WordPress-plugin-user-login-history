@@ -217,6 +217,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		// phpcs:ignore	WordPress.Security.NonceVerification.Recommended -- no need of nonce to fetch the data.
 		$the_request          = $_REQUEST;
 		$sanitize_sql_orderby = sanitize_sql_orderby( 'time_login DESC' );
+		$rows_sql             = $this->rows_sql;
 
 		if ( ! empty( $the_request['orderby'] ) ) {
 			$direction            = ! empty( $the_request['order'] ) ? strtoupper( $the_request['order'] ) : 'ASC';
@@ -225,17 +226,17 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 		}
 
 		if ( $sanitize_sql_orderby ) {
-			$this->rows_sql .= ' ORDER BY ' . $sanitize_sql_orderby;
+			$rows_sql .= ' ORDER BY ' . $sanitize_sql_orderby;
 		}
 
 		if ( $per_page > 0 ) {
-			$this->rows_sql .= ' LIMIT ' . absint( $per_page );
-			$this->rows_sql .= ' OFFSET ' . absint( ( $page_number - 1 ) * $per_page );
+			$rows_sql .= ' LIMIT ' . absint( $per_page );
+			$rows_sql .= ' OFFSET ' . absint( ( $page_number - 1 ) * $per_page );
 		}
 
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_results( $wpdb->prepare( $this->rows_sql, $this->where_query_values ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( $rows_sql, $this->where_query_values ), ARRAY_A );
 	}
 
 	/**
