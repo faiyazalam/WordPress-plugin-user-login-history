@@ -134,7 +134,7 @@ class Network_Admin_Settings {
 			return false;
 		}
 
-		if ( ! current_user_can( 'administrator' ) ) {
+		if ( ! current_user_can( 'manage_network_options' ) ) {
 			return false;
 		}
 

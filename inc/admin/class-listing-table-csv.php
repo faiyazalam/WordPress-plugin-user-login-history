@@ -107,7 +107,7 @@ final class Listing_Table_Csv {
 
 			if ( empty( $batch ) ) {
 				if ( 0 === $i ) {
-					fputcsv( $handle,[__( 'No records found', 'user-login-history' )], ',', '"', '\\' );
+					fputcsv( $handle, array( __( 'No records found', 'user-login-history' ) ), ',', '"', '\\' );
 					exit;
 				}
 				break;

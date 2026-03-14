@@ -58,13 +58,13 @@ if ( ! function_exists( 'faulh_delete_user_metadata' ) ) {
 	 * Delete the user metadata.
 	 */
 	function faulh_delete_user_metadata() {
-		$plugin_name = 'faulh';
-
+		$plugin_name    = 'faulh';
 		$user_meta_keys = array(
 			$plugin_name . '_timezone',
 			$plugin_name . '_rows_per_page',
 			$plugin_name . '_last_seen_time',
 			'managetoplevel_page_' . $plugin_name . '-login-listingcolumnshidden',
+			'managetoplevel_page_' . $plugin_name . '-login-listing-networkcolumnshidden',
 		);
 
 		foreach ( $user_meta_keys as $user_meta_key ) {
@@ -94,6 +94,7 @@ if ( ! function_exists( 'faulh_uninstall_plugin' ) ) {
 		faulh_delete_user_metadata();
 
 		if ( is_multisite() ) {
+			delete_site_option( 'faulh_network_settings' );
 			$blog_ids = get_sites(
 				array(
 					'fields' => 'ids',
