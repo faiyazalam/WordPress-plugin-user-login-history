@@ -151,7 +151,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 			! isset( $_POST[ $this->get_bulk_action_form() ] )
 			|| empty( $_POST[ $nonce ] )
 			|| ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST[ $nonce ] ) ), $this->get_bulk_action_nonce() )
-			|| ! current_user_can( 'administrator' )
+			|| ! current_user_can( 'edit_users' )
 		) {
 			return;
 		}
@@ -202,7 +202,7 @@ final class Admin_Login_List_Table extends Login_List_Table implements Admin_Csv
 				sanitize_text_field( wp_unslash( $_GET[ $nonce ] ) ),
 				$this->get_delete_action_nonce()
 			)
-			|| ! current_user_can( 'administrator' )
+			|| ! current_user_can( 'edit_users' )
 		) {
 			return;
 		}
