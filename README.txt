@@ -213,10 +213,17 @@ It means that:
 
 == Changelog ==
 
-= 2.1.8 (6th March 2026) =
+= 2.1.8 (14th March 2026) =
 
-* [Security] Improved SQL queries against injection attacks on the network admin login listing page.
-* [UI] Refined admin login listing page styles.
+* Improved CSV export feature.
+* Removed external CSV League library dependency.
+* Improved UI for frontend login list page (shortcode).
+* Improved UI for login list page in admin.
+* Improved SQL queries.
+* Updated text domain.
+* Renamed hook manage_faulh_admin_custom_column to faulh_manage_admin_custom_column.
+* Renamed hook manage_faulh_public_custom_column to faulh_manage_public_custom_column.
+* General plugin check improvements and cleanup.
 
 
 = 2.1.7 (15th June 2025) =
