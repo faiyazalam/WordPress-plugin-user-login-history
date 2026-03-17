@@ -47,6 +47,20 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	private array $where_query_values = array();
 
 	/**
+	 * Holds the row query values.
+	 *
+	 * @var array
+	 */
+	private array $rows_query_values = array();
+
+	/**
+	 * Holds the count query values.
+	 *
+	 * @var array
+	 */
+	private array $count_query_values = array();
+
+	/**
 	 * Holds the where clause.
 	 *
 	 * @var string
@@ -84,7 +98,8 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	 */
 	private function prepare_sql_queries() {
 		$this->prepare_where_query();
-		$where_query_values = array();
+		$rows_query_values  = array();
+		$count_query_values = array();
 		global $wpdb;
 
 		$i = 0;
@@ -117,8 +132,6 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 			$blog_prefix = $wpdb->get_blog_prefix( $blog_id );
 			$table       = $blog_prefix . $this->table;
 
-			$table = '`' . str_replace( '`', '``', $table ) . '`';
-
 			if ( 0 < $i ) {
 				$this->rows_sql  .= ' UNION ALL';
 				$this->count_sql .= ' UNION ALL';
@@ -143,25 +156,32 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 					. ' FaUserLogin.login_status,'
 					. ' FaUserLogin.is_super_admin,'
 					. ' TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,'
-					. " $blog_id as blog_id"
-					. " FROM $table  AS FaUserLogin"
+					. ' %d as blog_id'
+					. " FROM %i  AS FaUserLogin"
 					. ' WHERE 1 ';
+
+			$rows_query_values[] = absint( $blog_id );
+			$rows_query_values[] = $table;
 
 			$this->count_sql .= ' SELECT'
 					. ' COUNT(FaUserLogin.id) AS count'
-					. " FROM $table  AS FaUserLogin"
+					. " FROM %i  AS FaUserLogin"
 					. ' WHERE 1 ';
+
+			$count_query_values[] = $table;
 
 			if ( $this->where_query ) {
 				$this->rows_sql    .= $this->where_query;
 				$this->count_sql   .= $this->where_query;
-				$where_query_values = array_merge( $where_query_values, $this->where_query_values );
+				$rows_query_values  = array_merge( $rows_query_values, $this->where_query_values );
+				$count_query_values = array_merge( $count_query_values, $this->where_query_values );
 			}
 
 			++$i;
 		}
 
-		$this->where_query_values = $where_query_values;
+		$this->rows_query_values  = $rows_query_values;
+		$this->count_query_values = $count_query_values;
 		$this->rows_sql           = "SELECT * FROM ({$this->rows_sql}) AS FaUserLoginAllRows";
 		$this->count_sql          = "SELECT SUM(count) as total FROM ({$this->count_sql}) AS FaUserLoginCount";
 	}
@@ -240,7 +260,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_results( $wpdb->prepare( $rows_sql, $this->where_query_values ), ARRAY_A );
+		return $wpdb->get_results( $wpdb->prepare( $rows_sql, $this->rows_query_values ), ARRAY_A );
 	}
 
 	/**
@@ -251,7 +271,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 	public function record_count() {
 		global $wpdb;
 		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- already scaped.
-		return $wpdb->get_var( $wpdb->prepare( $this->count_sql, $this->where_query_values ) );
+		return $wpdb->get_var( $wpdb->prepare( $this->count_sql, $this->count_query_values ) );
 	}
 
 	/**
