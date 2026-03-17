@@ -157,7 +157,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 					. ' FaUserLogin.is_super_admin,'
 					. ' TIMESTAMPDIFF(SECOND,FaUserLogin.time_login,FaUserLogin.time_last_seen) as duration,'
 					. ' %d as blog_id'
-					. " FROM %i  AS FaUserLogin"
+					. ' FROM %i  AS FaUserLogin'
 					. ' WHERE 1 ';
 
 			$rows_query_values[] = absint( $blog_id );
@@ -165,7 +165,7 @@ final class Network_Admin_Login_List_Table extends Login_List_Table implements A
 
 			$this->count_sql .= ' SELECT'
 					. ' COUNT(FaUserLogin.id) AS count'
-					. " FROM %i  AS FaUserLogin"
+					. ' FROM %i  AS FaUserLogin'
 					. ' WHERE 1 ';
 
 			$count_query_values[] = $table;
